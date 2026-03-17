@@ -1,0 +1,196 @@
+import { Loader, Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+
+interface PlayerControlsProps {
+  isPlaying: boolean
+  onPlayPause: () => void
+  currentTime: number
+  duration: number
+  onSeek: (time: number) => void
+  volume: number
+  onVolumeChange: (vol: number) => void
+  onFullscreen: () => void
+  isLoading?: boolean
+  qualities: string[]
+  currentQuality: number
+  onQualityChange?: (index: number) => void
+}
+
+export const PlayerControls = ({
+  isPlaying,
+  onPlayPause,
+  currentTime,
+  duration,
+  onSeek,
+  volume,
+  onVolumeChange,
+  onFullscreen,
+  isLoading = false,
+  qualities,
+  currentQuality,
+  onQualityChange,
+}: PlayerControlsProps) => {
+  const [isVisible, setIsVisible] = useState(true)
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    // Auto-hide controls após inatividade
+    if (isPlaying && isVisible) {
+      hideTimeoutRef.current = setTimeout(() => {
+        setIsVisible(false)
+      }, 3000)
+    }
+
+    return () => {
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current)
+    }
+  }, [isPlaying, isVisible])
+
+  const handleMouseMove = () => {
+    setIsVisible(true)
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current)
+  }
+
+  const formatTime = (seconds: number) => {
+    if (!isFinite(seconds)) return '0:00'
+    const hrs = Math.floor(seconds / 3600)
+    const mins = Math.floor((seconds % 3600) / 60)
+    const secs = Math.floor(seconds % 60)
+
+    if (hrs > 0) {
+      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    }
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
+
+  return (
+    <div
+      onMouseMove={handleMouseMove}
+      className="absolute inset-0 flex flex-col justify-between group"
+    >
+      {/* Gradient top */}
+      <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Title bar */}
+      <div
+        className={`absolute top-4 left-4 right-4 text-white transition-opacity duration-300 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <h2 className="text-xl font-bold">Reprodutor</h2>
+      </div>
+
+      {/* Loading spinner */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Loader className="w-12 h-12 text-red-600 animate-spin" />
+        </div>
+      )}
+
+      {/* Controls bar */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 transition-opacity duration-300 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        {/* Progress bar */}
+        <div className="mb-4 group/progress cursor-pointer">
+          <div className="w-full h-1 bg-gray-700 rounded-full hover:h-2 transition-all">
+            <div
+              className="h-full bg-red-600 rounded-full transition-all"
+              style={{ width: `${progressPercent}%` }}
+            >
+              <div className="w-4 h-4 bg-white rounded-full shadow-lg translate-y-1 -translate-x-2 opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+            </div>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max={duration || 0}
+            value={currentTime}
+            onChange={(e) => onSeek(parseFloat(e.target.value))}
+            className="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
+          />
+        </div>
+
+        {/* Controls container */}
+        <div className="flex items-center justify-between gap-4">
+          {/* Left controls */}
+          <div className="flex items-center gap-3">
+            {/* Play/Pause */}
+            <button
+              onClick={onPlayPause}
+              className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
+              title={isPlaying ? 'Pausar (Espaço)' : 'Reproduzir (Espaço)'}
+            >
+              {isPlaying ? (
+                <Pause className="w-6 h-6 fill-current" />
+              ) : (
+                <Play className="w-6 h-6 fill-current" />
+              )}
+            </button>
+
+            {/* Volume */}
+            <div className="flex items-center gap-2 group/volume">
+              <button
+                onClick={() => onVolumeChange(volume === 0 ? 1 : 0)}
+                className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
+                title="Mutar (M)"
+              >
+                {volume === 0 ? (
+                  <VolumeX className="w-6 h-6" />
+                ) : (
+                  <Volume2 className="w-6 h-6" />
+                )}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={volume}
+                onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
+                className="w-0 group-hover/volume:w-20 transition-all duration-200 cursor-pointer accent-red-600"
+              />
+            </div>
+
+            {/* Time display */}
+            <span className="text-white text-sm font-mono ml-2">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+          </div>
+
+          {/* Right controls */}
+          <div className="flex items-center gap-2">
+            {/* Quality selector */}
+            {qualities.length > 0 && (
+              <select
+                value={currentQuality}
+                onChange={(e) => onQualityChange?.(parseInt(e.target.value))}
+                className="bg-gray-800/80 text-white text-xs px-2 py-1 rounded border border-gray-600 hover:border-red-600 transition-colors"
+              >
+                <option value={-1}>Auto</option>
+                {qualities.map((q, idx) => (
+                  <option key={idx} value={idx}>
+                    {q}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* Fullscreen */}
+            <button
+              onClick={onFullscreen}
+              className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
+              title="Tela cheia (F)"
+            >
+              <Maximize className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

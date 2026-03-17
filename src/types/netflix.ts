@@ -17,7 +17,7 @@ export interface Movie {
   genre: string[];
   rating: number;
   videoUrl: string;
-  type: 'movie' | 'series';
+  type: 'movie' | 'series' | 'tv';
   seasons?: number;
   episodes?: number;
   isNew?: boolean;

@@ -1,0 +1,133 @@
+// Credenciais do servidor
+export interface ServerConfig {
+  url: string
+  username: string
+  password: string
+}
+
+// Perfil de usuário
+export interface Profile {
+  id: string
+  name: string
+  avatar: string // emoji ou cor hex
+  pin?: string
+  createdAt: Date
+}
+
+// Canal de TV ao vivo
+export interface Channel {
+  num: number           // → número de exibição
+  name: string          // → "UFC TV 03"
+  stream_id: number     // → chave para montar a URL
+  stream_type: string     // → chave para montar a URL
+  stream_icon: string   // → logo do canal
+  category_id: string   // → para agrupar por categoria
+  tv_archive: number    // → 1 = tem gravação disponível
+}
+
+// Filme
+export interface Movie {
+  id: string
+  name: string
+  poster: string
+  streamUrl: string
+  category: string
+  rating?: string
+  year?: string
+  isFavorite: boolean
+}
+
+// Série
+export interface Series {
+  id: string
+  name: string
+  poster: string
+  category: string
+  seasons: Season[]
+  isFavorite: boolean
+}
+
+export interface Season {
+  number: number
+  episodes: Episode[]
+}
+
+export interface Episode {
+  id: string
+  name: string
+  number: number
+  streamUrl: string
+  watched: boolean
+  progress?: number // segundos assistidos
+}
+
+// Resposta da API Xtream
+export interface XtreamAuthResponse {
+  user_info?: {
+    username: string
+    password: string
+    status: string
+    exp_date: number
+    isp_friendly_name: string
+    max_connections: number
+  }
+  server_info?: {
+    url: string
+    port: number
+    https_port: number
+    rtmp_port: number
+    timezone: string
+    timestamp_now: number
+    time_now: string
+  }
+}
+
+// Tipos das respostas da API Xtream Codes
+export interface XtreamLiveStream {
+  num: number
+  name: string
+  stream_type: string
+  stream_id: number
+  stream_icon: string
+  epg_channel_id: string | null
+  added: string
+  custom_sid: string
+  tv_archive: number
+  direct_source: string
+  tv_archive_duration: number
+  category_id: string | number
+  category_ids: (string | number)[]
+  thumbnail: string
+}
+
+export interface XtreamVodStream {
+  num: number
+  name: string
+  stream_type: string
+  stream_id: number
+  stream_icon: string
+  rating?: string
+  year?: string
+  category_id: string | number
+  category_ids: (string | number)[]
+  duration?: string
+}
+
+export interface XtreamSeries {
+  series_id: number
+  name: string
+  cover: string
+  series_cover?: string
+  category_id: string | number
+  category_ids: (string | number)[]
+  plot?: string
+  cast?: string
+  director?: string
+  genre?: string
+  year?: number
+}
+
+export interface XtreamCategory {
+  category_id: string | number
+  category_name: string
+}
