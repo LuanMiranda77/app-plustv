@@ -85,7 +85,7 @@ export const Live = () => {
       {/* Grid */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {filteredChannels.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-1 gap-1">
             {filteredChannels.map((channel) => (
               <ChannelCard
                 key={channel.num}

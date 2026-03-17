@@ -100,7 +100,7 @@ export const PlayerControls = ({
           <div className="w-full h-1 bg-gray-700 rounded-full hover:h-2 transition-all">
             <div
               className="h-full bg-red-600 rounded-full transition-all"
-              style={{ width: `${progressPercent}%` }}
+              style={{ width: `${progressPercent>100?100:progressPercent}%` }}
             >
               <div className="w-4 h-4 bg-white rounded-full shadow-lg translate-y-1 -translate-x-2 opacity-0 group-hover/progress:opacity-100 transition-opacity" />
             </div>

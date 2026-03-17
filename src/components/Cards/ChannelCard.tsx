@@ -42,15 +42,22 @@ export const ChannelCard = ({ channel, onPlay }: ChannelCardProps) => {
   }
 
   return (
-    <div className='flex itens-center justify-between'>
-      <button className="flex itens-center gap-2 relative w-full bg-gray-800 rounded-lg overflow-hidden hover:scale-101 transition-transform duration-200" onClick={()=>{handleFullscreen(); onPlay?.()}}>
+    <div className='flex items-center justify-between'>
+      <button className="flex itens-center relative w-full bg-gray-800 rounded-lg overflow-hidden hover:scale-101 transition-transform duration-200" onClick={()=>{handleFullscreen(); onPlay?.()}}>
         {/* Logo/Thumbnail */}
         <div className="aspect-video bg-gray-900">
           {channel.stream_icon ? (
             <img
               src={channel.stream_icon}
               alt={channel.name}
-              className="w-[80px] h-[80px] object-cover group-hover:brightness-75 transition-brightness"
+              className="w-[140px] h-[70px] object-cover group-hover:brightness-75 transition-brightness"
+              sizes='150px'
+              // className="max-w-full max-h-full w-auto h-auto object-contain"
+          onError={(e) => {
+            // fallback se imagem quebrar
+            e.currentTarget.style.display = 'none'
+            e.currentTarget.nextElementSibling.style.display = 'flex'
+          }}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-600">

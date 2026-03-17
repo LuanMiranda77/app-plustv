@@ -1,4 +1,4 @@
-import { Clock, Film, Heart, Play, Radio, RefreshCw, Sparkles, TrendingUp, Tv2 } from 'lucide-react'
+import { Clock, Film, Play, Sparkles, TrendingUp, Tv2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChannelCard } from '../components/Cards/ChannelCard'
@@ -16,7 +16,6 @@ import {
   mockVodCategories,
   mockWatchHistory,
 } from '../data/mockData'
-import { useServerContent } from '../hooks/useServerContent'
 import { useAuthStore } from '../store/authStore'
 import { useContentStore } from '../store/contentStore'
 import { useWatchHistoryStore } from '../store/watchHistoryStore'
@@ -26,7 +25,6 @@ export const Home = () => {
   const { activeProfile, serverConfig } = useAuthStore()
   const { movies, channels, series, isLoading, error, setMovies, setSeries, setChannels, setVodCategories, setSeriesCategories, setLiveCategories, fetchServerContent } = useContentStore()
   const { addToHistory, getRecentlyWatched } = useWatchHistoryStore()
-  const { forceRefresh, lastUpdate } = useServerContent()
   const [scrolling, setScrolling] = useState(false)
   const [recentlyWatched, setRecentlyWatched] = useState<typeof mockWatchHistory>([])
   const hasLoadedData = useRef(false)
@@ -147,7 +145,7 @@ export const Home = () => {
         </button>
       </div>
       {subtitle && <p className="text-gray-400 text-sm">{subtitle}</p>}
-      
+
       {items.length > 0 ? (
         <Carousel>
           {items.map((item) => (
@@ -164,43 +162,12 @@ export const Home = () => {
     </section>
   )
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
-      {/* Header */}
-      <div className={`border-b border-gray-800 sticky top-0 z-40 transition-all duration-300 ${
-        scrolling ? 'bg-gray-950/95 backdrop-blur' : 'bg-gray-950/80 backdrop-blur'
-      }`}>
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-1">PlusTV</h1>
-              <p className="text-gray-400">
-                {activeProfile && `Bem-vindo de volta, ${activeProfile.name}!`}
-              </p>
-            </div>
-            {lastUpdate && (
-              <div className="flex items-center gap-2">
-                <div className="text-right text-sm">
-                  <p className="text-gray-400">Atualizado</p>
-                  <p className="text-gray-500">{lastUpdate.toLocaleTimeString('pt-BR')}</p>
-                </div>
-                <button
-                  onClick={() => forceRefresh()}
-                  disabled={isLoading}
-                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Atualizar agora"
-                >
-                  <RefreshCw className={`w-5 h-5 text-red-600 ${isLoading ? 'animate-spin' : ''}`} />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
       {/* Hero Banner */}
-      <div className="max-w-7xl mx-auto px-6 pt-8">
-        <div className="relative h-96 bg-gradient-to-r from-red-600/40 via-transparent to-transparent rounded-xl border border-gray-700 overflow-hidden flex items-center p-8 mb-16">
+      <div className="w-full bg-no-repeat bg-right" style={{ backgroundImage: 'url(/icons.png)' }}>
+        <div className="relative h-96 bg-gradient-to-r from-red-600/40 via-transparent to-transparent overflow-hidden flex items-center p-8 mb-16">
           <div className="absolute inset-0 -z-10">
             <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent opacity-50" />
             <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl" />
@@ -239,8 +206,8 @@ export const Home = () => {
 
         {!isLoading && (
           <>
-        {/* Navigation Cards */}
-        <div>
+            {/* Navigation Cards */}
+            {/* <div>
           <h2 className="text-2xl font-bold text-white mb-6">Navegação Rápida</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <NavigationCard
@@ -272,124 +239,124 @@ export const Home = () => {
               count={0}
             />
           </div>
-        </div>
+        </div> */}
 
-        {/* Continue Watching */}
-        {recentlyWatched.length > 0 && (
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Clock className="w-6 h-6 text-red-600" />
-                <h2 className="text-2xl font-bold text-white">Continue Assistindo</h2>
-              </div>
-              <button
-                onClick={() => navigate('/watch-history')}
-                className="text-red-600 hover:text-red-500 font-semibold text-sm transition-colors flex items-center gap-1"
-              >
-                Ver histórico <span className="text-lg">→</span>
-              </button>
-            </div>
-            <p className="text-gray-400 text-sm">Onde você parou</p>
-
-            <Carousel>
-              {recentlyWatched.map((item) => {
-                let streamUrl = ''
-                if (item.type === 'movie' && 'streamUrl' in item.content) {
-                  streamUrl = item.content.streamUrl
-                } else if (item.type === 'channel' && 'streamUrl' in item.content) {
-                  streamUrl = item.content.streamUrl
-                } else if (item.type === 'series' && 'seasons' in item.content && item.content.seasons[0]?.episodes[0]) {
-                  streamUrl = item.content.seasons[0].episodes[0].streamUrl
-                }
-
-                return (
-                  <div key={item.id} className="w-80 flex-shrink-0">
-                    <ContinueWatchingCard
-                      item={item}
-                      onPlay={() => {
-                        if (item.type === 'movie') {
-                          navigate('/player', {
-                            state: { movieId: item.id, streamUrl },
-                          })
-                        } else if (item.type === 'series') {
-                          navigate('/player', {
-                            state: { seriesId: item.id, streamUrl },
-                          })
-                        } else {
-                          navigate('/player', {
-                            state: { channelId: item.id, streamUrl },
-                          })
-                        }
-                      }}
-                    />
+            {/* Continue Watching */}
+            {recentlyWatched.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-6 h-6 text-red-600" />
+                    <h2 className="text-2xl font-bold text-white">Continue Assistindo</h2>
                   </div>
-                )
-              })}
-            </Carousel>
-          </section>
-        )}
+                  <button
+                    onClick={() => navigate('/watch-history')}
+                    className="text-red-600 hover:text-red-500 font-semibold text-sm transition-colors flex items-center gap-1"
+                  >
+                    Ver histórico <span className="text-lg">→</span>
+                  </button>
+                </div>
+                <p className="text-gray-400 text-sm">Onde você parou</p>
 
-        {/* Trending Movies */}
-        {trendingMovies.length > 0 && (
-          <CarouselSection
-            title="Filmes em Tendência"
-            subtitle="Os filmes mais assistidos neste mês"
-            icon={TrendingUp}
-            items={trendingMovies}
-            badge="trending"
-            renderItem={(movie) => <MovieCard movie={movie} />}
-            onViewMore={() => navigate('/movies')}
-          />
-        )}
+                <Carousel>
+                  {recentlyWatched.map((item) => {
+                    let streamUrl = ''
+                    if (item.type === 'movie' && 'streamUrl' in item.content) {
+                      streamUrl = item.content.streamUrl
+                    } else if (item.type === 'channel' && 'streamUrl' in item.content) {
+                      streamUrl = item.content.streamUrl
+                    } else if (item.type === 'series' && 'seasons' in item.content && item.content.seasons[0]?.episodes[0]) {
+                      streamUrl = item.content.seasons[0].episodes[0].streamUrl
+                    }
 
-        {/* New Movies */}
-        {newMovies.length > 0 && (
-          <CarouselSection
-            title="Lançamentos"
-            subtitle="Confira os novos filmes adicionados"
-            icon={Sparkles}
-            items={newMovies}
-            badge="novo"
-            renderItem={(movie) => <MovieCard movie={movie} />}
-            onViewMore={() => navigate('/movies')}
-          />
-        )}
+                    return (
+                      <div key={item.id} className="w-80 flex-shrink-0">
+                        <ContinueWatchingCard
+                          item={item}
+                          onPlay={() => {
+                            if (item.type === 'movie') {
+                              navigate('/player', {
+                                state: { movieId: item.id, streamUrl },
+                              })
+                            } else if (item.type === 'series') {
+                              navigate('/player', {
+                                state: { seriesId: item.id, streamUrl },
+                              })
+                            } else {
+                              navigate('/player', {
+                                state: { channelId: item.id, streamUrl },
+                              })
+                            }
+                          }}
+                        />
+                      </div>
+                    )
+                  })}
+                </Carousel>
+              </section>
+            )}
 
-        {/* Live Channels */}
-        {topChannels.length > 0 && (
-          <CarouselSection
-            title="Canais ao Vivo"
-            subtitle="Seus canais favoritos em tempo real"
-            icon={Radio}
-            items={topChannels}
-            renderItem={(channel) => <ChannelCard channel={channel} />}
-            onViewMore={() => navigate('/live')}
-          />
-        )}
+            {/* Trending Movies */}
+            {trendingMovies.length > 0 && (
+              <CarouselSection
+                title="Filmes em Tendência"
+                subtitle="Os filmes mais assistidos neste mês"
+                icon={TrendingUp}
+                items={trendingMovies}
+                badge="trending"
+                renderItem={(movie) => <MovieCard movie={movie} />}
+                onViewMore={() => navigate('/movies')}
+              />
+            )}
 
-        {/* Trending Series */}
-        {trendingSeries.length > 0 && (
-          <CarouselSection
-            title="Séries Populares"
-            subtitle="Acompanhe as séries mais assistidas"
-            icon={Tv2}
-            items={trendingSeries}
-            badge="trending"
-            renderItem={(s) => <SeriesCard series={s} />}
-            onViewMore={() => navigate('/series')}
-          />
-        )}
+            {/* New Movies */}
+            {newMovies.length > 0 && (
+              <CarouselSection
+                title="Lançamentos"
+                subtitle="Confira os novos filmes adicionados"
+                icon={Sparkles}
+                items={newMovies}
+                badge="novo"
+                renderItem={(movie) => <MovieCard movie={movie} />}
+                onViewMore={() => navigate('/movies')}
+              />
+            )}
 
-        {/* Empty State */}
-        {trendingMovies.length === 0 && topChannels.length === 0 && trendingSeries.length === 0 && (
-          <div className="text-center py-16">
-            <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
-            <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
-            <p className="text-gray-500 text-sm mt-2">
-              Faça login com suas credenciais IPTV para ver o conteúdo
-            </p>
-          </div>
-        )}
+            {/* Live Channels */}
+            {topChannels.length > 0 && (
+              <CarouselSection
+                title="Canais ao Vivo"
+                subtitle="Seus canais favoritos em tempo real"
+                icon={Tv2}
+                items={topChannels}
+                renderItem={(channel) => <ChannelCard channel={channel} />}
+                onViewMore={() => navigate('/live')}
+              />
+            )}
+
+            {/* Trending Series */}
+            {trendingSeries.length > 0 && (
+              <CarouselSection
+                title="Séries Populares"
+                subtitle="Acompanhe as séries mais assistidas"
+                icon={Tv2}
+                items={trendingSeries}
+                badge="trending"
+                renderItem={(s) => <SeriesCard series={s} />}
+                onViewMore={() => navigate('/series')}
+              />
+            )}
+
+            {/* Empty State */}
+            {trendingMovies.length === 0 && topChannels.length === 0 && trendingSeries.length === 0 && (
+              <div className="text-center py-16">
+                <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
+                <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
+                <p className="text-gray-500 text-sm mt-2">
+                  Faça login com suas credenciais IPTV para ver o conteúdo
+                </p>
+              </div>
+            )}
           </>
         )}
       </div>

@@ -160,11 +160,11 @@ export const VideoPlayer = ({
         className="w-full h-full"
         poster={poster}
         autoPlay={autoPlay}
-        controls
+        // controls
         
-        // playsInline
-        // onPlay={() => setIsPlaying(true)}
-        // onPause={() => setIsPlaying(false)}
+        playsInline
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         onTimeUpdate={() => {
           if (videoRef.current) {
             setCurrentTime(videoRef.current.currentTime)
@@ -179,11 +179,11 @@ export const VideoPlayer = ({
           setIsPlaying(false)
           onEnded?.()
         }}
-        // onVolumeChange={() => {
-        //   if (videoRef.current) {
-        //     setVolume(videoRef.current.volume)
-        //   }
-        // }}
+        onVolumeChange={() => {
+          if (videoRef.current) {
+            setVolume(videoRef.current.volume)
+          }
+        }}
       />
 
       {/* Error display */}
@@ -197,7 +197,7 @@ export const VideoPlayer = ({
       )}
 
       {/* Player Controls */}
-      {/* <PlayerControls
+      <PlayerControls
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
         currentTime={currentTime}
@@ -210,7 +210,7 @@ export const VideoPlayer = ({
         qualities={qualities}
         currentQuality={currentQuality}
         onQualityChange={handleQualityChange}
-      /> */}
+      />
     </div>
   )
 }

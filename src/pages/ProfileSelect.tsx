@@ -5,6 +5,7 @@ import { Button } from '../components/UI/Button'
 import { Input } from '../components/UI/Input'
 import { useAuthStore } from '../store/authStore'
 import type { Profile } from '../types'
+import LogoHeader from '../components/Logos/LogoHeader'
 
 export const ProfileSelect = () => {
   const navigate = useNavigate()
@@ -37,18 +38,10 @@ export const ProfileSelect = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-10">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">PlusTV</h1>
-            <p className="text-gray-400">Seleione um perfil para continuar</p>
+          <div className="">
+            <LogoHeader/>
+            <p className="text-gray-400 mt-2">Seleione um perfil para continuar</p>
           </div>
-          <button
-            onClick={() => navigate('/player-test')}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
-            title="Testar o player com streams HLS.js"
-          >
-            <Play className="w-4 h-4" />
-            <span className="text-sm">Testar Player</span>
-          </button>
         </div>
 
         {/* Profiles Grid */}
@@ -91,16 +84,15 @@ export const ProfileSelect = () => {
                     Escolha um avatar
                   </label>
                   <div className="flex gap-2 flex-wrap">
-                    {['🎬', '🎥', '📺', '🎭', '🎪', '🎨'].map((emoji) => (
+                    {['🐵​', '🐯', '🦁​', '🦄', '🐼', '🦈','😈​','😇','🤖','👽​'].map((emoji) => (
                       <button
                         key={emoji}
                         type="button"
                         onClick={() => setNewProfile({ ...newProfile, avatar: emoji })}
-                        className={`text-3xl p-2 rounded-lg transition-all ${
-                          newProfile.avatar === emoji
-                            ? 'bg-red-600 scale-110'
-                            : 'bg-gray-800 hover:bg-gray-700'
-                        }`}
+                        className={`text-3xl p-2 rounded-lg transition-all ${newProfile.avatar === emoji
+                          ? 'bg-red-600 scale-110'
+                          : 'bg-gray-800 hover:bg-gray-700'
+                          }`}
                       >
                         {emoji}
                       </button>
