@@ -1,26 +1,29 @@
-import { Heart } from 'lucide-react'
-import { useFavoritesStore } from '../../store/favoritesStore'
-import type { Series } from '../../types'
+import { Heart } from 'lucide-react';
+import { useFavoritesStore } from '../../store/favoritesStore';
+import type { Series } from '../../types';
 
 interface SeriesCardProps {
-  series: Series
-  onPlay?: () => void
+  series: Series;
+  onPlay?: () => void;
 }
 
 export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore()
-  const isFav = isFavorite(series.id)
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const isFav = isFavorite(series.id);
 
   const toggleFavorite = () => {
     if (isFav) {
-      removeFavorite(series.id)
+      removeFavorite(series.id);
     } else {
-      addFavorite(series)
+      addFavorite(series);
     }
-  }
+  };
 
   return (
-    <div className="group relative bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-200">
+    <button
+      className="group relative bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-200"
+      onClick={onPlay}
+    >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
         {series.poster ? (
@@ -74,6 +77,6 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
           {series.year == 'N/A' ? '0000' : series.year}
         </div>
       )}
-    </div>
+    </button>
   );
-}
+};

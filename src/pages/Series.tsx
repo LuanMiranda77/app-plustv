@@ -7,7 +7,6 @@ import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import type { Episode, Season, Series } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
-import { title } from 'process';
 
 export const PageSeries = () => {
   const navigate = useNavigate();

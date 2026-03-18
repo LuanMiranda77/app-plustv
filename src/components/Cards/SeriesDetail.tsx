@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import type { Episode, Season, Series } from '../../types';
-import SeasonSelector from './SeasonSelector';
-import EpisodeCard from './EpisodeCard';
 import { ArrowLeft } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import type { Episode, Season, Series } from '../../types';
+import { indexedDbStorage } from '../../utils/indexedDbStorage';
+import EpisodeCard from './EpisodeCard';
+import SeasonSelector from './SeasonSelector';
 
 interface SeriesDetailProps {
   series: Series | null;
@@ -68,16 +69,56 @@ export const SeriesDetail = ({
     if (series) {
       if (series.loaded || !onLoadDetail) return;
       setLoading(true);
-      onLoadDetail(series.id)
-        .then((loadedSeasons) => {
-          setSeasons(loadedSeasons);
-          // Ir para a temporada do episódio atual se houver
-          if (currentEpisodeId) {
-            const seasonNum = findNextSeasonForEpisode(loadedSeasons, currentEpisodeId);
-            setActiveSeason(seasonNum);
+
+      // Tentar carregar do cache primeiro
+      indexedDbStorage
+        .get(`list_episodes_cache_${series.id}`)
+        .then((cachedSeasons) => {
+          if (cachedSeasons && Array.isArray(cachedSeasons)) {
+            console.log('📺 Episódios carregados do cache:', series.id);
+            setSeasons(cachedSeasons);
+            if (currentEpisodeId) {
+              const seasonNum = findNextSeasonForEpisode(cachedSeasons, currentEpisodeId);
+              setActiveSeason(seasonNum);
+            }
+            setLoading(false);
+            return;
           }
+
+          // Se não houver cache, carregar da API
+          onLoadDetail(series.id)
+            .then((loadedSeasons) => {
+              setSeasons(loadedSeasons);
+              // Salvar no cache
+              indexedDbStorage
+                .set(`list_episodes_cache_${series.id}`, loadedSeasons)
+                .catch((error) => {
+                  console.error('❌ Erro ao salvar episodes no cache:', error);
+                });
+              if (currentEpisodeId) {
+                const seasonNum = findNextSeasonForEpisode(loadedSeasons, currentEpisodeId);
+                setActiveSeason(seasonNum);
+              }
+            })
+            .finally(() => setLoading(false));
         })
-        .finally(() => setLoading(false));
+        .catch(() => {
+          // Se cache falhar, carregar da API
+          onLoadDetail(series.id)
+            .then((loadedSeasons) => {
+              setSeasons(loadedSeasons);
+              indexedDbStorage
+                .set(`list_episodes_cache_${series.id}`, loadedSeasons)
+                .catch((error) => {
+                  console.error('❌ Erro ao salvar episodes no cache:', error);
+                });
+              if (currentEpisodeId) {
+                const seasonNum = findNextSeasonForEpisode(loadedSeasons, currentEpisodeId);
+                setActiveSeason(seasonNum);
+              }
+            })
+            .finally(() => setLoading(false));
+        });
     }
   }, [series?.id]);
 
@@ -131,7 +172,7 @@ export const SeriesDetail = ({
             className="absolute top-6 left-6 z-10 flex items-center gap-2 px-4 py-2 rounded
                      text-white transition-colors hover:text-red-600 hover:bg-white/10"
           >
-            <ArrowLeft size={15}/>
+            <ArrowLeft size={15} />
             <span className="text-sm font-medium">Voltar</span>
           </button>
 

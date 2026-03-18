@@ -40,8 +40,6 @@ const getProgressPercent = (progress: number, duration?: number): number => {
   return Math.min(Math.round((progress / duration) * 100), 100)
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export const EpisodeCard = ({
   episode,
   seasonNumber,
@@ -62,15 +60,15 @@ export const EpisodeCard = ({
         group relative flex gap-4 rounded-xl p-3 cursor-pointer
         transition-all duration-300 ease-out
         border border-transparent
-        ${isActive
-          ? 'bg-red-950/40 border-red-600/60 shadow-lg shadow-red-900/20'
-          : 'bg-zinc-900/60 hover:bg-zinc-800/80 hover:border-zinc-600/40'
+        ${
+          isActive
+            ? 'bg-red-950/40 border-red-600/60 shadow-lg shadow-red-900/20'
+            : 'bg-zinc-900/60 hover:bg-zinc-800/80 hover:border-zinc-600/40'
         }
         ${isWatched && !isActive ? 'opacity-60 hover:opacity-90' : ''}
       `}
       style={{ fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}
     >
-
       {/* ── Thumbnail ── */}
       <div
         className="relative flex-shrink-0 w-40 h-24 rounded-lg overflow-hidden bg-zinc-800"
@@ -98,9 +96,11 @@ export const EpisodeCard = ({
 
         {/* Overlay play */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200
+          <div
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200
                           w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm
-                          flex items-center justify-center border border-white/30">
+                          flex items-center justify-center border border-white/30"
+          >
             <svg className="w-4 h-4 text-white fill-white ml-0.5" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
@@ -119,9 +119,17 @@ export const EpisodeCard = ({
 
         {/* Badge assistido */}
         {isWatched && (
-          <div className="absolute top-1.5 left-1.5 bg-black/70 backdrop-blur-sm
-                          rounded-full px-1.5 py-0.5 flex items-center gap-1">
-            <svg className="w-3 h-3 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <div
+            className="absolute top-1.5 left-1.5 bg-black/70 backdrop-blur-sm
+                          rounded-full px-1.5 py-0.5 flex items-center gap-1"
+          >
+            <svg
+              className="w-3 h-3 text-green-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span className="text-green-400 text-[10px] font-medium">Assistido</span>
@@ -130,8 +138,10 @@ export const EpisodeCard = ({
 
         {/* Badge ao vivo / ativo */}
         {isActive && (
-          <div className="absolute top-1.5 right-1.5 bg-red-600 rounded-full px-2 py-0.5
-                          flex items-center gap-1 animate-pulse">
+          <div
+            className="absolute top-1.5 right-1.5 bg-red-600 rounded-full px-2 py-0.5
+                          flex items-center gap-1 animate-pulse"
+          >
             <div className="w-1.5 h-1.5 rounded-full bg-white" />
             <span className="text-white text-[10px] font-bold uppercase tracking-wider">Agora</span>
           </div>
@@ -140,29 +150,28 @@ export const EpisodeCard = ({
 
       {/* ── Info ── */}
       <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-
         {/* Topo: número + nome + duração */}
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-zinc-500 text-xs font-mono tracking-wider">
-                S{String(seasonNumber).padStart(2, '0')}E{String(episode.number).padStart(2, '0')}
+                T{String(seasonNumber).padStart(2, '0')}-E{String(episode.number).padStart(2, '0')}
               </span>
               {episode.rating && (
                 <span className="text-yellow-400 text-xs flex items-center gap-0.5">
                   <svg className="w-3 h-3 fill-yellow-400" viewBox="0 0 24 24">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                   </svg>
-                  {episode.rating}
+                  {Number(episode.rating).toFixed(1)}
                 </span>
               )}
             </div>
             <h4
-              className={`text-sm font-semibold leading-snug truncate
+              className={`font-semibold leading-snug truncate text-lg
                 ${isActive ? 'text-red-300' : 'text-white'}`}
               style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
             >
-              {episode.name}
+              {episode.name.replaceAll(`- S${String(seasonNumber).padStart(2, '0')}E${String(episode.number).padStart(2, '0')} -`, '')}
             </h4>
           </div>
 
@@ -178,7 +187,7 @@ export const EpisodeCard = ({
         {episode.plot && (
           <div className="mt-1.5">
             <p
-              className={`text-zinc-400 text-xs leading-relaxed transition-all duration-300
+              className={`text-zinc-400 text-sm max-md:text-xs leading-relaxed transition-all duration-300 text-justify
                 ${expanded ? '' : 'line-clamp-2'}`}
             >
               {episode.plot}
@@ -186,7 +195,10 @@ export const EpisodeCard = ({
             {episode.plot.length > 120 && (
               <button
                 className="text-zinc-500 hover:text-zinc-300 text-xs mt-0.5 transition-colors"
-                onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpanded(!expanded);
+                }}
               >
                 {expanded ? 'Ver menos ↑' : 'Ver mais ↓'}
               </button>
@@ -197,9 +209,7 @@ export const EpisodeCard = ({
         {/* Rodapé: data de exibição + progresso + ações */}
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-3">
-            {episode.airDate && (
-              <span className="text-zinc-600 text-xs">{episode.airDate}</span>
-            )}
+            {episode.airDate && <span className="text-zinc-600 text-xs">{episode.airDate}</span>}
             {hasProgress && (
               <span className="text-zinc-500 text-xs">
                 {progressPercent}% assistido
@@ -212,19 +222,28 @@ export const EpisodeCard = ({
 
           {/* Ações */}
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-
             {/* Marcar como assistido */}
             {onToggleWatched && (
               <button
                 title={isWatched ? 'Marcar como não assistido' : 'Marcar como assistido'}
                 className={`p-1.5 rounded-lg transition-colors duration-200
-                  ${isWatched
-                    ? 'text-green-400 hover:text-green-300 hover:bg-green-900/30'
-                    : 'text-zinc-500 hover:text-white hover:bg-zinc-700'
+                  ${
+                    isWatched
+                      ? 'text-green-400 hover:text-green-300 hover:bg-green-900/30'
+                      : 'text-zinc-500 hover:text-white hover:bg-zinc-700'
                   }`}
-                onClick={(e) => { e.stopPropagation(); onToggleWatched(episode.id) }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleWatched(episode.id);
+                }}
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
@@ -234,7 +253,10 @@ export const EpisodeCard = ({
             <button
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
                          bg-red-600 hover:bg-red-500 text-white transition-colors duration-200"
-              onClick={(e) => { e.stopPropagation(); onPlay(episode) }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onPlay(episode);
+              }}
             >
               <svg className="w-3 h-3 fill-white" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
@@ -246,11 +268,9 @@ export const EpisodeCard = ({
       </div>
 
       {/* Linha lateral colorida quando ativo */}
-      {isActive && (
-        <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full bg-red-500" />
-      )}
+      {isActive && <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full bg-red-500" />}
     </div>
-  )
+  );
 }
 
 export default EpisodeCard
