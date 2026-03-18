@@ -1,7 +1,8 @@
-import { Heart, Play } from 'lucide-react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Heart } from 'lucide-react'
+import { useRef, useState } from 'react'
 import { useFavoritesStore } from '../../store/favoritesStore'
 import type { Channel } from '../../types'
-import { useRef, useState } from 'react'
 
 interface ChannelCardProps {
   channel: Channel
@@ -10,18 +11,18 @@ interface ChannelCardProps {
 
 export const ChannelCard = ({ channel, onPlay }: ChannelCardProps) => {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore()
-  const isFav = isFavorite(String(channel.num))
+  const isFav = isFavorite(String(channel.id))
 
   const toggleFavorite = () => {
     if (isFav) {
-      removeFavorite(String(channel.num))
+      removeFavorite(String(channel.id))
     } else {
       addFavorite(channel)
     }
   }
   const containerRef = useRef<HTMLDivElement>(null)
-    const [isFullscreen, setIsFullscreen] = useState(false)
-    const handleFullscreen = async () => {
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const handleFullscreen = async () => {
     if (!containerRef.current) return
 
     try {
@@ -42,36 +43,49 @@ export const ChannelCard = ({ channel, onPlay }: ChannelCardProps) => {
   }
 
   return (
-    <div className='flex items-center justify-between'>
-      <button className="flex itens-center relative w-full bg-gray-800 rounded-lg overflow-hidden hover:scale-101 transition-transform duration-200" onClick={()=>{handleFullscreen(); onPlay?.()}}>
+    <div className='relative flex items-center justify-between'>
+      <button className="
+        group
+        relative flex 
+        flex-col w-full 
+        overflow-hidden 
+        transition-transform 
+        duration-200 bg-gray-800 
+        rounded-lg itens-center 
+        hover:scale-105
+      " 
+      onClick={() => { handleFullscreen(); onPlay?.() }}>
         {/* Logo/Thumbnail */}
-        <div className="aspect-video bg-gray-900">
-          {channel.stream_icon ? (
+        <h3 className="font-semibold text-white text-2xl line-clamp-1 
+          group-focus:ring-2 group-focus:bg-red-600 group-focus:ring-offset-2 group-focus:ring-offset-gray-800
+          group-hover:ring-2 group-hover:bg-red-600 group-hover:ring-offset-2 group-hover:ring-offset-gray-800
+          ">  
+          {channel.name}
+        </h3>
+        <div className="bg-gray-900 aspect-video flex items-center justify-center">
+          {channel.logo ? (
             <img
-              src={channel.stream_icon}
+              src={channel.logo}
               alt={channel.name}
-              className="w-[140px] h-[70px] object-cover group-hover:brightness-75 transition-brightness"
-              sizes='150px'
-              // className="max-w-full max-h-full w-auto h-auto object-contain"
-          onError={(e) => {
-            // fallback se imagem quebrar
-            e.currentTarget.style.display = 'none'
-            e.currentTarget.nextElementSibling.style.display = 'flex'
-          }}
+              className="max-w-[350px] h-[150px] object-cover group-hover:brightness-75 transition-brightness"
+              // className="object-contain w-auto h-auto max-w-full max-h-full"
+              onError={(e:any) => {
+                // fallback se imagem quebrar
+                e.currentTarget.style.display = 'none'
+                e.currentTarget.nextElementSibling.style.display = 'flex'
+              }}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-600">
+            <div className="flex items-center justify-center w-full h-full text-gray-600">
               <span className="text-5xl">📺</span>
             </div>
           )}
         </div>
-        <h3 className="text-white font-semibold text-xl-3 line-clamp-1 ml-3">
-          {channel.name}
-        </h3>
+        
       </button>
       <button
         onClick={toggleFavorite}
-        className={`px-3 py-1.5 rounded transition-colors ${isFav
+        className={`absolute right-0 bottom-0 px-3 py-1.5 rounded transition-colors ${isFav
           ? 'bg-red-600 text-white'
           : 'bg-gray-600/50 text-gray-300 hover:bg-gray-600'
           }`}

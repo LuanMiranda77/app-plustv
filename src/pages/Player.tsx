@@ -24,82 +24,33 @@ export const Player = () => {
 
   // Pegar streamUrl do state ou como query param
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const state = location.state as any
-    const server = serverConfig?.url
-    const username = serverConfig?.username
-    const password = serverConfig?.password
-    if (state?.stream_id) {
-      const streamId = state.stream_id
-      const extension = state.extension
-      const streamType = state.type
-      const streamUrl = `${server}/${streamType}/${username}/${password}/${streamId}.${extension}`
+    // const server = serverConfig?.url
+    // const username = serverConfig?.username
+    // const password = serverConfig?.password
+    if (state?.streamUrl) {
+      // const streamId = state.stream_id
+      // const extension = state.extension
+      // const streamType = state.type
+      // const streamUrl = `${server}/${streamType}/${username}/${password}/${streamId}.${extension}`
       setCurrentStream({
-        url: streamUrl,
+        url: state.streamUrl,
         title: state.title || 'Reproduzindo',
         poster: state.poster,
         type: state.type || 'live',
       })
-      console.log('Stream URL:', state.stream_id)
+      console.log('Stream URL:', state.streamUrl)
     }
   }, [location])
 
-  // URLs de teste (exemplos com streams públicos)
-  const testStreams = [
-    {
-      id: 'test-hls',
-      title: 'Teste HLS (Big Buck Bunny)',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-library/sample/BigBuckBunny.mp4',
-      poster: 'https://via.placeholder.com/1280x720?text=Big+Buck+Bunny',
-    },
-    {
-      id: 'test-tears',
-      title: 'Teste Stream (Tears of Steel)',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-library/sample/TearsOfSteel.mp4',
-      poster: 'https://via.placeholder.com/1280x720?text=Tears+of+Steel',
-    },
-    {
-      id: 'test-hls-vod',
-      title: 'HLS Live Test',
-      url: 'https://test-streams.mux.dev/x36xhzz/x3zzv.m3u8',
-      poster: 'https://via.placeholder.com/1280x720?text=Mux+Stream',
-    },
-  ]
-
-  const handlePlayStream = (stream: (typeof testStreams)[0]) => {
-    setCurrentStream({
-      url: stream.url,
-      title: stream.title,
-      poster: stream.poster,
-    })
-  }
-
-  const handleCustomUrl = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!testUrl.trim()) return
-
-    setCurrentStream({
-      url: testUrl,
-      title: testUrl.split('/').pop() || 'Stream Customizado',
-      type: 'custom',
-    })
-    setShowUrlInput(false)
-  }
-
-  const copyUrlToClipboard = () => {
-    if (currentStream?.url) {
-      navigator.clipboard.writeText(currentStream.url)
-      setCopiedUrl(true)
-      setTimeout(() => setCopiedUrl(false), 2000)
-    }
-  }
-
   return currentStream && (
-    <div className="min-h-screen  bg-black flex flex-col">
+    <div className="flex flex-col min-h-screen bg-black">
       {/* Back button */}
-      <div className="flex itens-center absolute top-4 left-4 z-10">
+      <div className="absolute z-10 flex itens-center top-4 left-4">
         <button
           onClick={() => { navigate('/live'); setCurrentStream(null); }}
-          className="flex items-center gap-2 text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
+          className="flex items-center gap-2 p-2 text-white transition-colors rounded hover:text-red-600 hover:bg-white/10"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Voltar</span>
@@ -107,7 +58,7 @@ export const Player = () => {
       </div>
 
       {/* Player */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex items-center justify-center flex-1">
         <VideoPlayer
           source={currentStream.url}
           poster={currentStream.poster}
@@ -119,18 +70,18 @@ export const Player = () => {
       </div>
 
       {/* Info com URL Debug */}
-      {/* <div className="bg-gray-900 p-4 border-t border-gray-800 max-h-48 overflow-y-auto">
-          <h2 className="text-white font-semibold mb-2">{currentStream.title}</h2>
+      {/* <div className="p-4 overflow-y-auto bg-gray-900 border-t border-gray-800 max-h-48">
+          <h2 className="mb-2 font-semibold text-white">{currentStream.title}</h2>
           <div className="space-y-2">
             <div>
-              <p className="text-gray-400 text-xs mb-1">URL Completa:</p>
-              <p className="text-gray-300 text-xs font-mono break-all bg-gray-950 p-2 rounded border border-gray-700">
+              <p className="mb-1 text-xs text-gray-400">URL Completa:</p>
+              <p className="p-2 font-mono text-xs text-gray-300 break-all border border-gray-700 rounded bg-gray-950">
                 {currentStream.url}
               </p>
             </div>
             {currentStream.type && (
               <div>
-                <p className="text-gray-400 text-xs">Tipo: <span className="text-gray-300">{currentStream.type}</span></p>
+                <p className="text-xs text-gray-400">Tipo: <span className="text-gray-300">{currentStream.type}</span></p>
               </div>
             )}
           </div>

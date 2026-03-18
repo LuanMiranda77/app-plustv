@@ -1,5 +1,6 @@
 // Credenciais do servidor
 export interface ServerConfig {
+  name: string
   url: string
   username: string
   password: string
@@ -16,13 +17,12 @@ export interface Profile {
 
 // Canal de TV ao vivo
 export interface Channel {
-  num: number           // → número de exibição
+  id: number           // → número de exibição
   name: string          // → "UFC TV 03"
-  stream_id: number     // → chave para montar a URL
-  stream_type: string     // → chave para montar a URL
-  stream_icon: string   // → logo do canal
-  category_id: string   // → para agrupar por categoria
-  tv_archive: number    // → 1 = tem gravação disponível
+  streamUrl: number     // → chave para montar a URL    // → chave para montar a URL
+  logo: string   // → logo do canal
+  category: string   // → para agrupar por categoria
+  isFavorite: boolean    // → 1 = tem gravação disponível
 }
 
 // Filme

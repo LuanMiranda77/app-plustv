@@ -24,13 +24,13 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
 
 
     const navigate = useNavigate()
-    const rounteInvisible = ["/profiles", "/player"]
+    const rounteInvisible = ["/profiles", "/player", "/"]
 
     return !rounteInvisible.includes(window.location.pathname) && <div className={`fixed z-50 w-full border-b border-gray-800 top-0 transition-all duration-300 ${scrolling ? 'bg-gray-950/95 backdrop-blur' : 'bg-gray-950/80 backdrop-blur'
         }`}>
 
 
-        <div className="w-full px-2 py-2">
+        <div className="w-full px-6 py-2">
             <div className="flex items-center justify-between">
                 <LogoHeader />
                 <section className="flex items-center gap-2">
@@ -39,7 +39,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                             key={menu.title}
                             onClick={() => navigate(menu.path)}
                             autoFocus={window.location.pathname === menu.path}
-                            className="flex items-center gap-1 px-3 py-2 focus:bg-gray-800 focus:outline-1 focus:outline-indigo-950 hover:bg-gray-800 rounded-lg transition-colors"
+                            className="flex items-center gap-1 px-3 py-2 transition-colors rounded-lg focus:bg-gray-800 focus:outline-1 focus:outline-indigo-950 hover:bg-gray-800"
                         >
                             <menu.icon className="w-4 h-4 text-red-600" />
                             <span className="text-sm text-gray-300">{menu.title}</span>
@@ -49,14 +49,14 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                 <section className="flex items-center gap-4">
                     {lastUpdate && (
                         <div className="flex items-center gap-2">
-                            <div className="text-right text-sm">
+                            <div className="text-sm text-right">
                                 <p className="text-gray-400 text-[10px]">Atualizado</p>
                                 <p className="text-gray-500 text-[11px]">{moment(lastUpdate).format('DD/MM/YY, HH:mm')}</p>
                             </div>
                             {/* <button
                                 onClick={() => forceRefresh()}
                                 disabled={isLoading}
-                                className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-2 transition-colors rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Atualizar agora"
                             >
                                 <RefreshCw className={`w-5 h-5 text-red-600 ${isLoading ? 'animate-spin' : ''}`} />
