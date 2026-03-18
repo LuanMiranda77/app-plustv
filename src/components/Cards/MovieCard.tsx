@@ -32,6 +32,8 @@ export const MovieCard = ({ movie, onPlay, onAddFavorite }: MovieCardProps) => {
           <img
             src={movie.poster}
             alt={movie.name}
+            loading="lazy" // carrega só quando visível
+            decoding="async" // não bloqueia render
             className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
           />
         ) : (
@@ -65,8 +67,14 @@ export const MovieCard = ({ movie, onPlay, onAddFavorite }: MovieCardProps) => {
 
       {/* Badge */}
       {movie.rating && (
-        <div className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
-          {movie.rating}
+        <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-1  rounded-bl opacity-80">
+          {movie.rating == 'N/A' ? '0.0' : Number(movie.rating).toFixed(1)}
+        </div>
+      )}
+      {/* year lacament */}
+      {movie.year && (
+        <div className="absolute bottom-0 right-0 bg-red-600 text-white text-xs px-1 py-0.5 rounded-tl opacity-80">
+          {movie.year == 'N/A' ? '0000' : movie.year}
         </div>
       )}
     </button>

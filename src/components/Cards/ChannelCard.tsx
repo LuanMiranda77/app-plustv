@@ -49,8 +49,9 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
         id={`cd-${id}`}
         className="
         group
-        relative flex 
-        flex-col w-full 
+        relative 
+        flex items-start
+        w-full 
         overflow-hidden 
         transition-transform 
         duration-200 bg-gray-800 
@@ -63,20 +64,13 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
         }}
       >
         {/* Logo/Thumbnail */}
-        <h3
-          className="font-semibold text-white text-2xl line-clamp-1 
-          group-focus:ring-2 group-focus:bg-red-600 group-focus:ring-offset-2 group-focus:ring-offset-gray-800
-          group-hover:ring-2 group-hover:bg-red-600 group-hover:ring-offset-2 group-hover:ring-offset-gray-800
-          "
-        >
-          {channel.name}
-        </h3>
-        <div className="bg-gray-900 aspect-video flex items-center justify-center">
+        <div className="bg-gray-600/50 hover:bg-gray-600 aspect-video flex items-center justify-center z-40">
           <img
-            src={channel.logo??'/placeholder.png'}
+            src={channel.logo ?? '/placeholder.png'}
             alt={channel.name}
-            className="max-w-[350px] h-[150px] object-cover group-hover:brightness-75 transition-brightness"
-            // className="object-contain w-auto h-auto max-w-full max-h-full"
+            loading="lazy" // carrega só quando visível
+            decoding="async" // não bloqueia render
+            className="max-w-[80px] h-[80px] max-md:max-w-[50px] max-md:h-[50px]  object-contain group-hover:brightness-75 transition-brightness p-1"
             onError={(e: any) => {
               // fallback se imagem quebrar
               e.currentTarget.style.display = 'none';
@@ -84,6 +78,16 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
             }}
           />
         </div>
+        <h3
+          className="
+          w-full h-[80px] max-md:h-[50px] text-left font-semibold 
+          text-white text-2xl max-md:text-sm line-clamp-1 py-2 px-2 break-all
+          group-focus:ring-2 group-focus:bg-red-600 group-focus:ring-offset-2 group-focus:ring-offset-gray-800
+          group-hover:ring-2 group-hover:bg-red-600 group-hover:ring-offset-2 group-hover:ring-offset-gray-800
+          "
+        >
+          {channel.name}
+        </h3>
       </button>
       <button
         onClick={toggleFavorite}

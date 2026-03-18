@@ -41,9 +41,9 @@ export const Movies = () => {
                 {vodCategories.map((cat) => (
                   <button
                     key={cat.id}
-                    onClick={() => setSelectedCategory(cat.name)}
+                    onClick={() => setSelectedCategory(cat.id)}
                     className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg font-semibold whitespace-nowrap transition-colors ${
-                      selectedCategory === cat.name
+                      selectedCategory === cat.id
                         ? 'bg-red-600 text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}

@@ -18,7 +18,6 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
       addFavorite(series)
     }
   }
-  console.log(series);
 
   return (
     <div className="group relative bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-200">
@@ -28,6 +27,8 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
           <img
             src={series.poster}
             alt={series.name}
+            loading="lazy" // carrega só quando visível
+            decoding="async" // não bloqueia render
             className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
           />
         ) : (
@@ -62,9 +63,15 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
       </div>
 
       {/* Badge */}
-      {series.category && (
-        <div className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
-          {series.category.slice(0, 10)}
+      {series.rating && (
+        <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl opacity-80">
+          {series.rating == 'N/A' ? '0.0' : Number(series.rating).toFixed(1)}
+        </div>
+      )}
+      {/* year lacament */}
+      {series.year && (
+        <div className="absolute bottom-0 right-0 bg-red-600 text-white text-xs px-1 py-0.5 rounded-tl opacity-80">
+          {series.year == 'N/A' ? '0000' : series.year}
         </div>
       )}
     </div>

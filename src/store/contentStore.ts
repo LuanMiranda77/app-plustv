@@ -372,8 +372,8 @@ export const useContentStore = create<ContentState>((set, get) => {
         }));
 
         const seriesCategories = data.seriesCategories.map((cat: any) => ({
-          id: String(cat.series_id),
-          name: cat.name,
+          id: String(cat.category_id),
+          name: cat.category_name,
         }));
 
         const timestamp = Date.now();
