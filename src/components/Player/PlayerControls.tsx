@@ -2,6 +2,7 @@ import { Loader, Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 interface PlayerControlsProps {
+  title: string
   isPlaying: boolean
   onPlayPause: () => void
   currentTime: number
@@ -17,6 +18,7 @@ interface PlayerControlsProps {
 }
 
 export const PlayerControls = ({
+  title,
   isPlaying,
   onPlayPause,
   currentTime,
@@ -74,13 +76,13 @@ export const PlayerControls = ({
       <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {/* Title bar */}
-      <div
+      {/* <div
         className={`absolute top-4 left-4 right-4 text-white transition-opacity duration-300 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <h2 className="text-xl font-bold">Reprodutor</h2>
-      </div>
+        <h2 className="text-xl font-bold">{title}</h2>
+      </div> */}
 
       {/* Loading spinner */}
       {isLoading && (

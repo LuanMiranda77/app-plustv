@@ -1,14 +1,19 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
+import { VideoPlayer } from '../components/Player/VideoPlayer';
 import { Input } from '../components/UI/Input';
 import { useContentStore } from '../store/contentStore';
 
 export const Live = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { channels, liveCategories } = useContentStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [currentStream, setCurrentStream] = useState<any | null>(null);
 
   const filteredChannels = channels.filter((channel) => {
     const matchesSearch =
@@ -18,6 +23,20 @@ export const Live = () => {
 
     return matchesSearch && matchesCategory;
   });
+
+  useEffect(() => {
+    const state = location.state as any;
+    if (state) {
+      setCurrentStream(state);
+      setSelectedCategory(state.category || null);
+      console.log(`cd-${state.id}`);
+      console.log(document.getElementById(`cd-${state.id}`));
+      document.getElementById(`cd-${state.id}`)?.focus();
+      document.getElementById(state.id)?.click();
+    } else {
+      setCurrentStream(null);
+    }
+  }, [location]);
 
   return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
@@ -39,7 +58,10 @@ export const Live = () => {
                 {liveCategories.map((cat) => (
                   <button
                     key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
+                    onClick={() => {
+                      setCurrentStream(null);
+                      setSelectedCategory(cat.id);
+                    }}
                     className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg font-semibold whitespace-nowrap transition-colors ${
                       selectedCategory === cat.id
                         ? 'bg-red-600 text-white'
@@ -55,8 +77,8 @@ export const Live = () => {
         )}
 
         {/* Grid */}
-        <div className="w-9/12 px-6 py-8 overflow-y-scroll">
-          <div className="flex-1">
+        <div className={`${currentStream ? 'w-6/12' : 'w-9/12'} px-6 py-8 overflow-y-scroll`}>
+          <div className="flex-1 mb-5">
             <Input
               type="text"
               placeholder="Buscar canais..."
@@ -74,17 +96,30 @@ export const Live = () => {
               {filteredChannels.map((channel) => (
                 <ChannelCard
                   key={channel.id}
+                  id={channel.id}
                   channel={channel}
                   onPlay={() => {
-                    navigate('/player', {
-                      state: {
+                    if (Boolean(currentStream) == false || currentStream.id !== channel.id) {
+                      setCurrentStream({
+                        id: channel.id,
                         streamUrl: channel.streamUrl,
                         title: channel.name,
                         poster: channel.logo,
                         type: 'live',
-                        extension: 'm3u8',
-                      },
-                    });
+                        category: channel.category,
+                      });
+                    } else {
+                      navigate('/player', {
+                        state: {
+                          id: channel.id,
+                          streamUrl: channel.streamUrl,
+                          title: channel.name,
+                          poster: channel.logo,
+                          type: 'live',
+                          category: channel.category,
+                        },
+                      });
+                    }
                   }}
                 />
               ))}
@@ -95,6 +130,24 @@ export const Live = () => {
             </div>
           )}
         </div>
+        {currentStream && (
+          <div className="flex-1 mt-[30px]">
+            <div className="flex flex-col items-center justify-center flex-1 border-6 border-gray-950 rounded-lg mx-4">
+              <div className="w-full text-3xl line-clamp-1 bg-netflix-red">Preview</div>
+              <VideoPlayer
+                title={currentStream.title}
+                source={currentStream.streamUrl}
+                poster={currentStream.poster}
+                autoPlay
+                isControlsVisible={false}
+                onError={(error) => {
+                  console.error('Erro no player:', error);
+                }}
+              />
+            </div>
+            <div></div>
+          </div>
+        )}
       </div>
     </div>
   );

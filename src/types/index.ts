@@ -19,7 +19,7 @@ export interface Profile {
 export interface Channel {
   id: number           // → número de exibição
   name: string          // → "UFC TV 03"
-  streamUrl: number     // → chave para montar a URL    // → chave para montar a URL
+  streamUrl: string     // → chave para montar a URL    // → chave para montar a URL
   logo: string   // → logo do canal
   category: string   // → para agrupar por categoria
   isFavorite: boolean    // → 1 = tem gravação disponível
