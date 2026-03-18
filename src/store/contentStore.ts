@@ -1,38 +1,50 @@
-import { create } from 'zustand'
-import type { Channel, Movie, Series, ServerConfig } from '../types'
-import { storage, STORAGE_KEYS } from '../utils/storage'
-import { xtreamApi } from '../utils/xtreamApi'
+import { create } from 'zustand';
+import type { Channel, Movie, Series, ServerConfig } from '../types';
+import { storage, STORAGE_KEYS } from '../utils/storage';
+import { xtreamApi } from '../utils/xtreamApi';
 
 interface ContentState {
   // Content
-  channels: Channel[]
-  movies: Movie[]
-  series: Series[]
-  
+  channels: Channel[];
+  movies: Movie[];
+  series: Series[];
+
   // Categories
-  liveCategories: Array<{ id: string; name: string }>
-  vodCategories: Array<{ id: string; name: string }>
-  seriesCategories: Array<{ id: string; name: string }>
-  
+  liveCategories: Array<{ id: string; name: string }>;
+  vodCategories: Array<{ id: string; name: string }>;
+  seriesCategories: Array<{ id: string; name: string }>;
+
   // Loading states
-  isLoading: boolean
-  error: string | null
-  lastUpdate: number | null // timestamp do último update
-  
+  isLoading: boolean;
+  error: string | null;
+  lastUpdate: number | null; // timestamp do último update
+
   // Actions
-  setChannels: (channels: Channel[]) => void
-  setMovies: (movies: Movie[]) => void
-  setSeries: (series: Series[]) => void
-  setLiveCategories: (categories: Array<{ id: string; name: string }>) => void
-  setVodCategories: (categories: Array<{ id: string; name: string }>) => void
-  setSeriesCategories: (categories: Array<{ id: string; name: string }>) => void
-  setLoading: (loading: boolean) => void
-  setError: (error: string | null) => void
-  loadFromCache: () => void
-  clearCache: () => void
-  isCacheValid: () => boolean // Verifica se cache é válido (menos de 24h)
-  fetchServerContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>
+  setChannels: (channels: Channel[]) => void;
+  setMovies: (movies: Movie[]) => void;
+  setSeries: (series: Series[]) => void;
+  setLiveCategories: (categories: Array<{ id: string; name: string }>) => void;
+  setVodCategories: (categories: Array<{ id: string; name: string }>) => void;
+  setSeriesCategories: (categories: Array<{ id: string; name: string }>) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  loadFromCache: () => void;
+  clearCache: () => void;
+  isCacheValid: () => boolean; // Verifica se cache é válido (menos de 24h)
+  fetchServerContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>;
 }
+
+const saveToCache = (state: any) => {
+  storage.set(STORAGE_KEYS.PLAYLIST_CACHE, {
+    channels: state.channels,
+    movies: state.movies,
+    series: state.series,
+    liveCategories: state.liveCategories,
+    vodCategories: state.vodCategories,
+    seriesCategories: state.seriesCategories,
+    timestamp: Date.now(),
+  });
+};
 
 export const useContentStore = create<ContentState>((set, get) => ({
   channels: [],
@@ -46,55 +58,63 @@ export const useContentStore = create<ContentState>((set, get) => ({
   lastUpdate: null,
 
   setChannels: (channels) => {
-    storage.set(STORAGE_KEYS.PLAYLIST_CACHE, {
-      channels,
-      timestamp: Date.now(),
-    })
-    set({ channels })
+    const newState = { ...get(), channels };
+    saveToCache(newState);
+    set({ channels });
   },
 
   setMovies: (movies) => {
-    set({ movies })
+    const newState = { ...get(), movies };
+    saveToCache(newState);
+    set({ movies });
   },
 
   setSeries: (series) => {
-    set({ series })
+    const newState = { ...get(), series };
+    saveToCache(newState);
+    set({ series });
   },
 
   setLiveCategories: (categories) => {
-    set({ liveCategories: categories })
+    const newState = { ...get(), liveCategories: categories };
+    saveToCache(newState);
+    set({ liveCategories: categories });
   },
 
   setVodCategories: (categories) => {
-    set({ vodCategories: categories })
+    const newState = { ...get(), vodCategories: categories };
+    saveToCache(newState);
+    set({ vodCategories: categories });
   },
 
   setSeriesCategories: (categories) => {
-    set({ seriesCategories: categories })
+    const newState = { ...get(), seriesCategories: categories };
+    saveToCache(newState);
+    set({ seriesCategories: categories });
   },
 
   setLoading: (loading) => {
-    set({ isLoading: loading })
+    set({ isLoading: loading });
   },
 
   setError: (error) => {
-    set({ error })
+    set({ error });
   },
 
   isCacheValid: () => {
-    const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE)
-    if (!cached || !cached.timestamp) return false
-    
+    const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE);
+    if (!cached || !cached.timestamp) return false;
+
     // 24 horas em milissegundos
-    const CACHE_DURATION = 24 * 60 * 60 * 1000
-    const now = Date.now()
-    const cacheAge = now - cached.timestamp
-    
-    return cacheAge < CACHE_DURATION
+    const CACHE_DURATION = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const cacheAge = now - cached.timestamp;
+
+    return cacheAge < CACHE_DURATION;
   },
 
   loadFromCache: () => {
-    const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE)
+    const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE);
     if (cached) {
       set({
         channels: cached.channels || [],
@@ -104,33 +124,33 @@ export const useContentStore = create<ContentState>((set, get) => ({
         vodCategories: cached.vodCategories || [],
         seriesCategories: cached.seriesCategories || [],
         lastUpdate: cached.timestamp || null,
-      })
+      });
     }
   },
 
   clearCache: () => {
-    storage.remove(STORAGE_KEYS.PLAYLIST_CACHE)
-    set({ 
-      channels: [], 
-      movies: [], 
+    storage.remove(STORAGE_KEYS.PLAYLIST_CACHE);
+    set({
+      channels: [],
+      movies: [],
       series: [],
       liveCategories: [],
       vodCategories: [],
       seriesCategories: [],
       lastUpdate: null,
-    })
+    });
   },
 
   fetchServerContent: async (config: ServerConfig, forceRefresh = false) => {
     // Se cache é válido e não está forçando refresh, usar cache
     if (!forceRefresh && get().isCacheValid()) {
-      get().loadFromCache()
-      return
+      get().loadFromCache();
+      return;
     }
 
-    set({ isLoading: true, error: null })
+    set({ isLoading: true, error: null });
     try {
-      const data = await xtreamApi.getAllContent(config)
+      const data = await xtreamApi.getAllContent(config);
 
       // Converter live streams para Channel
       const channels: Channel[] = data.liveStreams.map((stream: any) => ({
@@ -146,7 +166,7 @@ export const useContentStore = create<ContentState>((set, get) => ({
         ),
         category: stream.category_id || 'Sem categoria',
         isFavorite: false,
-      }))
+      }));
 
       // Converter VOD streams para Movie
       const movies: Movie[] = data.vodStreams.map((stream: any) => ({
@@ -164,7 +184,7 @@ export const useContentStore = create<ContentState>((set, get) => ({
         rating: stream.rating || 'N/A',
         year: stream.year || 'N/A',
         isFavorite: false,
-      }))
+      }));
 
       // Converter séries para Series
       const series: Series[] = data.seriesStreams.map((stream: any) => ({
@@ -194,25 +214,25 @@ export const useContentStore = create<ContentState>((set, get) => ({
             ],
           },
         ],
-      }))
+      }));
 
       // Converter categorias
       const liveCategories = data.liveCategories.map((cat: any) => ({
         id: String(cat.category_id),
         name: cat.category_name,
-      }))
+      }));
 
       const vodCategories = data.vodCategories.map((cat: any) => ({
         id: String(cat.category_id),
         name: cat.category_name,
-      }))
+      }));
 
       const seriesCategories = data.seriesCategories.map((cat: any) => ({
         id: String(cat.series_id),
         name: cat.name,
-      }))
+      }));
 
-      const timestamp = Date.now()
+      const timestamp = Date.now();
 
       // Salvar em cache com todas as informações
       storage.set(STORAGE_KEYS.PLAYLIST_CACHE, {
@@ -223,7 +243,7 @@ export const useContentStore = create<ContentState>((set, get) => ({
         vodCategories,
         seriesCategories,
         timestamp,
-      })
+      });
 
       set({
         channels,
@@ -234,13 +254,13 @@ export const useContentStore = create<ContentState>((set, get) => ({
         seriesCategories,
         lastUpdate: timestamp,
         isLoading: false,
-      })
+      });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro ao buscar conteúdo'
-      console.error('Erro ao buscar conteúdo do servidor:', error)
-      
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao buscar conteúdo';
+      console.error('Erro ao buscar conteúdo do servidor:', error);
+
       // Se houver erro, tentar carregar do cache mesmo que expirado
-      const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE)
+      const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE);
       if (cached) {
         set({
           channels: cached.channels || [],
@@ -252,10 +272,10 @@ export const useContentStore = create<ContentState>((set, get) => ({
           lastUpdate: cached.timestamp || null,
           isLoading: false,
           error: errorMessage + ' (mostrando dados em cache)',
-        })
+        });
       } else {
-        set({ error: errorMessage, isLoading: false })
+        set({ error: errorMessage, isLoading: false });
       }
     }
   },
-}))
+}));

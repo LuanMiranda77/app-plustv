@@ -18,6 +18,7 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
       addFavorite(series)
     }
   }
+  console.log(series);
 
   return (
     <div className="group relative bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-200">
@@ -38,13 +39,9 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
-        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">
-          {series.name}
-        </h3>
+        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{series.name}</h3>
 
-        <div className="text-gray-300 text-xs mb-2">
-          {series.seasons?.length || 0} temporada(s)
-        </div>
+        <div className="text-gray-300 text-xs mb-2">{series.seasons?.length || 0} temporada(s)</div>
 
         <div className="flex gap-2">
           <button
@@ -56,9 +53,7 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
           <button
             onClick={toggleFavorite}
             className={`px-3 py-1.5 rounded transition-colors ${
-              isFav
-                ? 'bg-red-600 text-white'
-                : 'bg-gray-600/50 text-gray-300 hover:bg-gray-600'
+              isFav ? 'bg-red-600 text-white' : 'bg-gray-600/50 text-gray-300 hover:bg-gray-600'
             }`}
           >
             <Heart className="w-4 h-4 fill-current" />
@@ -68,10 +63,10 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
 
       {/* Badge */}
       {series.category && (
-        <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
           {series.category.slice(0, 10)}
         </div>
       )}
     </div>
-  )
+  );
 }

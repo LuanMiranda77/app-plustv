@@ -39,14 +39,14 @@ export const Home = () => {
       fetchServerContent(serverConfig)
     } else {
       // Fallback para mock data se não houver config do servidor
-      if (movies.length === 0) {
-        setMovies(mockMovies)
-        setSeries(mockSeries)
-        setChannels(mockChannels)
-        setVodCategories(mockVodCategories)
-        setSeriesCategories(mockSeriesCategories)
-        setLiveCategories(mockLiveCategories)
-      }
+      // if (movies.length === 0) {
+      //   setMovies(mockMovies)
+      //   setSeries(mockSeries)
+      //   setChannels(mockChannels)
+      //   setVodCategories(mockVodCategories)
+      //   setSeriesCategories(mockSeriesCategories)
+      //   setLiveCategories(mockLiveCategories)
+      // }
     }
 
     // Load mock watch history
