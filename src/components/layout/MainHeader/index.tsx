@@ -13,7 +13,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const menus = [
     { title: 'Início', icon: Home, path: '/home' },
     { title: 'TV ao Vivo', icon: Tv2, path: '/live' },
-    { title: 'Filmes', icon: Film, path: '/movies' },
+    { title: 'Filmes', icon: Film, path: '/movie' },
     { title: 'Séries', icon: TvMinimalPlay, path: '/series' },
     { title: 'Favoritos', icon: Heart, path: '/favorites' },
   ];

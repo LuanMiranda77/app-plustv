@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Channel, Movie, Series, ServerConfig } from '../types';
+import type { Channel, Movie, Series, ServerConfig, XtreamLiveStream } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
 import { storage, STORAGE_KEYS } from '../utils/storage';
 import { xtreamApi } from '../utils/xtreamApi';
@@ -323,6 +323,9 @@ export const useContentStore = create<ContentState>((set, get) => {
           genre: stream.genre || '',
           plot: stream.plot || '',
           isFavorite: false,
+          watched: false,
+          progress: 0,
+          duration: stream.duration || 0,
         }));
 
         // Converter séries para Series
@@ -337,27 +340,29 @@ export const useContentStore = create<ContentState>((set, get) => {
           year: stream.year || '',
           youtube_trailer: stream.youtube_trailer || '',
           isFavorite: false,
-          seasons: [
-            {
-              number: 1,
-              episodes: [
-                {
-                  id: String(stream.series_id),
-                  name: stream.name,
-                  number: 1,
-                  streamUrl: xtreamApi.buildStreamUrl(
-                    config.url,
-                    config.username,
-                    config.password,
-                    stream.series_id,
-                    'series'
-                  ),
-                  watched: false,
-                  progress: 0,
-                },
-              ],
-            },
-          ],
+          seasons: [],
+          loaded: false,
+          // seasons: [
+          //   {
+          //     number: 1,
+          //     episodes: [
+          //       {
+          //         id: String(stream.series_id),
+          //         name: stream.name,
+          //         number: 1,
+          //         streamUrl: xtreamApi.buildStreamUrl(
+          //           config.url,
+          //           config.username,
+          //           config.password,
+          //           stream.series_id,
+          //           'series'
+          //         ),
+          //         watched: false,
+          //         progress: 0,
+          //       },
+          //     ],
+          //   },
+          // ],
         }));
 
         // Converter categorias

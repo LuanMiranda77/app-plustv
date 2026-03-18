@@ -185,6 +185,32 @@ export const xtreamApi = {
     }
   },
 
+  // Obter detalhes de uma série (episódios, temporadas)
+  async getSeriesInfo(config: ServerConfig, streamId: string | number) {
+    try {
+      if (Boolean(streamId) == false) {
+        console.error('Erro ao obter séries:', new Error('Stream ID é obrigatório'));
+        return [];
+      }
+
+      const baseUrl = normalizeUrl(config.url);
+      const params: any = {
+        username: config.username,
+        password: config.password,
+        action: 'get_series_info',
+      };
+      params.series_id = streamId;
+      const response = await api.get(`${baseUrl}/player_api.php`, {
+        params,
+        timeout: 10000,
+      });
+      return response.data || [];
+    } catch (error) {
+      console.error('Erro ao obter séries:', error);
+      return [];
+    }
+  },
+
   // Obter todas as categorias e streams
   async getAllContent(config: ServerConfig) {
     try {

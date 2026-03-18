@@ -1,15 +1,48 @@
-import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SeriesCard } from '../components/Cards/SeriesCard';
+import SeriesDetail from '../components/Cards/SeriesDetail';
 import { Input } from '../components/UI/Input';
+import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
+import type { Episode, Season, Series } from '../types';
+import { xtreamApi } from '../utils/xtreamApi';
+import { title } from 'process';
 
-export const Series = () => {
+export const PageSeries = () => {
   const navigate = useNavigate();
   const { series, seriesCategories } = useContentStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { serverConfig } = useAuthStore();
+  const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
+  const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
+
+  // 2. Só busca episódios quando o usuário ABRE a série
+  const loadSeriesDetail = async (seriesId: string) => {
+    const data = await xtreamApi.getSeriesInfo(serverConfig!, seriesId);
+    const episodesMap = data.episodes as Record<string, any[]>;
+    const seasons: Season[] = Object.entries(episodesMap)
+      .map(([seasonNum, episodes]) => ({
+        number: Number(seasonNum),
+        episodes: episodes.map((ep) => ({
+          id: String(ep.id),
+          name: ep.title || `Episódio ${ep.episode_num}`,
+          number: ep.episode_num,
+          streamUrl: `${serverConfig!.url}/series/${serverConfig!.username}/${serverConfig!.password}/${ep.id}.${ep.container_extension}`,
+          watched: false,
+          progress: 0,
+          thumbnail: ep.info?.movie_image || '',
+          plot: ep.info?.plot || '',
+          duration: ep.info?.duration_secs || undefined,
+          rating: ep.info?.rating || '',
+          airDate: ep.air_date || '',
+        })),
+      }))
+      .sort((a, b) => a.number - b.number); // ordenar temporadas
+
+    return seasons;
+  };
 
   const filteredSeries = series.filter((s) => {
     const matchesSearch =
@@ -20,7 +53,25 @@ export const Series = () => {
     return matchesSearch && matchesCategory;
   });
 
-  return (
+  // const loadInBatches = async (seriesList: Series[]) => {
+  //   const batchSize = 5;
+  //   for (let i = 0; i < seriesList.length; i += batchSize) {
+  //     const batch = seriesList.slice(i, i + batchSize);
+  //     await Promise.all(batch.map((s) => loadSeriesDetail(s.id)));
+  //   }
+  // };
+
+  return currentSerie ? (
+    <SeriesDetail
+      series={currentSerie}
+      onPlay={(episode, season) => navigate(`/player?url=${episode.streamUrl}`)}
+      onBack={() => setCurrentSerie(null)}
+      onToggleFavorite={(id) => toggleFavorite(id)}
+      onToggleWatched={(id) => toggleWatched(id)}
+      onLoadDetail={(id) => loadSeriesDetail(id)}
+      currentEpisodeId={currentEpisode?.id}
+    />
+  ) : (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] max-h-[calc(100vh-60px)]">
         {/* Filters */}
@@ -75,24 +126,7 @@ export const Series = () => {
           {filteredSeries.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {filteredSeries.map((s) => (
-                <SeriesCard
-                  key={s.id}
-                  series={s}
-                  onPlay={() => {
-                    // Play first episode
-                    const firstEpisode = s.seasons?.[0]?.episodes?.[0];
-                    if (firstEpisode) {
-                      navigate('/player', {
-                        state: {
-                          streamUrl: firstEpisode.streamUrl,
-                          title: `${s.name} - ${firstEpisode.name}`,
-                          poster: s.poster,
-                          type: 'series',
-                        },
-                      });
-                    }
-                  }}
-                />
+                <SeriesCard key={s.id} series={s} onPlay={() => setCurrentSerie(s)} />
               ))}
             </div>
           ) : (

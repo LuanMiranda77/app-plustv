@@ -1,6 +1,6 @@
 import type { WatchHistoryItem } from '../store/watchHistoryStore'
 import type { Channel, Movie, Series } from '../types'
-import channel_json from './data.json'
+import channel_json from './channel_ex.json'
 
 export const mockMovies: Movie[] = [
   {

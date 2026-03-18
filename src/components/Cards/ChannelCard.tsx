@@ -5,7 +5,7 @@ import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Channel } from '../../types';
 
 interface ChannelCardProps {
-  id: string | number;
+  id?: string | number;
   channel: Channel;
   onPlay?: () => void;
 }

@@ -38,6 +38,9 @@ export interface Movie {
   genre?: string;
   plot?: string;
   isFavorite: boolean;
+  watched: boolean;
+  progress?: number; // segundos assistidos
+  duration?: number; // duração total em segundos
 }
 
 // Série
@@ -53,11 +56,15 @@ export interface Series {
   youtube_trailer?: string;
   seasons: Season[];
   isFavorite: boolean;
+  loaded: false;
 }
 
 export interface Season {
   number: number;
   episodes: Episode[];
+  cover?: string;
+  name?: string;
+  airDate?: string;
 }
 
 export interface Episode {
@@ -65,8 +72,15 @@ export interface Episode {
   name: string;
   number: number;
   streamUrl: string;
+  rating?: string;
+  thumbnail?: string;
+  airDate?: string;
+  plot?: string;
+  genre?: string;
+  year?: string;
   watched: boolean;
   progress?: number; // segundos assistidos
+  duration?: number; // duração total em segundos
 }
 
 // Resposta da API Xtream

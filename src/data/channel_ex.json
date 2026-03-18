@@ -1,0 +1,74 @@
+[
+    {
+        "num": 1,
+        "name": "UFC TV 01",
+        "stream_type": "live",
+        "stream_id": 289465,
+        "stream_icon": "https://imgscc.top/logos/UFC_TV_01_20260118_151607.png",
+        "epg_channel_id": "Ufcfightpass.br",
+        "added": "1673369507",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "49",
+        "category_ids": [
+            49
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 2,
+        "name": "UFC TV 02",
+        "stream_type": "live",
+        "stream_id": 291092,
+        "stream_icon": "https://imgscc.top/logos/UFC_TV_01_20260118_151607.png",
+        "epg_channel_id": null,
+        "added": "1673564498",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "49",
+        "category_ids": [
+            49
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 3,
+        "name": "UFC TV 03",
+        "stream_type": "live",
+        "stream_id": 313225,
+        "stream_icon": "https://imgscc.top/logos/UFC_TV_01_20260118_151607.png",
+        "epg_channel_id": null,
+        "added": "1680988973",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "49",
+        "category_ids": [
+            49
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 4,
+        "name": "UFC TV 04",
+        "stream_type": "live",
+        "stream_id": 313226,
+        "stream_icon": "https://imgscc.top/logos/UFC_TV_01_20260118_151607.png",
+        "epg_channel_id": null,
+        "added": "1680989353",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "49",
+        "category_ids": [
+            49
+        ],
+        "thumbnail": ""
+    }
+]

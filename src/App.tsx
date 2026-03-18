@@ -7,12 +7,12 @@ import { Login } from './pages/Login'
 import { Movies } from './pages/Movies'
 import { Player } from './pages/Player'
 import { ProfileSelect } from './pages/ProfileSelect'
-import { Series } from './pages/Series'
+import { PageSeries } from './pages/Series'
 import { WatchHistory } from './pages/WatchHistory'
 import { useAuthStore } from './store/authStore'
 
 function App() {
-  const { isAuthenticated, profiles } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
 
   return (
     <Routes>
@@ -33,8 +33,8 @@ function App() {
         }
       />
       <Route path="/home" element={<Home />} />
-      <Route path="/movies" element={<Movies />} />
-      <Route path="/series" element={<Series />} />
+      <Route path="/movie" element={<Movies />} />
+      <Route path="/series" element={<PageSeries />} />
       <Route path="/live" element={<Live />} />
       <Route path="/favorites" element={<Favorites />} />
       <Route path="/watch-history" element={<WatchHistory />} />

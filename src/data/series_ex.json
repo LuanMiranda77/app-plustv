@@ -1,0 +1,137 @@
+[
+    {
+        "num": 1,
+        "name": "Vladimir",
+        "title": "Vladimir",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7840,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/j02VBIGVIk2OTwTUZ1YzyzcONAy.jpg",
+        "plot": "Uma professora de inglês fica obcecada pelo novo colega bonitão. O resultado? O casamento e a carreira, que já estavam meio complicados, ficam mergulhados no caos.",
+        "cast": "Rachel Weisz, Leo Woodall, John Slattery, Ellen Robertson, Jessica Henwick",
+        "director": "Jason Winer, Jonnie Katz, Robert Pulcini",
+        "genre": "Drama",
+        "release_date": "2026-03-05",
+        "releaseDate": "2026-03-05",
+        "last_modified": "1773088465",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/fqWXGP79tEMAyLKW0wkJLbKSP61.jpg"
+        ],
+        "youtube_trailer": "63P0HHjGHrU",
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 2,
+        "name": "Um Amor Que Ilumina",
+        "title": "Um Amor Que Ilumina",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7839,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/6ayQpRaaJdGimfyWzspmzbCXbC9.jpg",
+        "plot": "Apaixonados na adolescência, dois jovens se reencontram 10 anos depois e confrontam suas dores, aprendizados e novos desafios.",
+        "cast": "Park Jin Young, 김민주, 신재하, 박세현, 김태훈",
+        "director": "Kim Yoon-jin",
+        "genre": "Drama",
+        "release_date": "2026-03-06",
+        "releaseDate": "2026-03-06",
+        "last_modified": "1773088465",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/gtxt1avGOgu3nhYGqWQWFPHSpKc.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 3,
+        "name": "Sullivans Crossing: Um Lugar para Recomeçar",
+        "title": "Sullivans Crossing: Um Lugar para Recomeçar",
+        "year": "2023",
+        "stream_type": "series",
+        "series_id": 7838,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/oMHXc848yjkQJiNu1RhqARWJx3x.jpg",
+        "plot": "Após a vida pessoal e profissional da neurocirurgiã Maggie Sullivan entrar em turbulência, ela retorna para casa, em Sullivan's Crossing. Lá, Maggie é forçada a lidar com seu presente complicado enquanto confronta o passado doloroso que escolheu ignorar por anos.",
+        "cast": "Morgan Kohan, Chad Michael Murray, Tom Jackson, Andrea Menard, Amalia Williamson",
+        "director": "",
+        "genre": "Drama",
+        "release_date": "2023-03-19",
+        "releaseDate": "2023-03-19",
+        "last_modified": "1773088464",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/zZAqez7FW5bnQwkGcpR3evWGgBp.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "428",
+        "category_ids": [
+            428
+        ]
+    },
+    {
+        "num": 4,
+        "name": "Ripple",
+        "title": "Ripple",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7837,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/exoDCWUEF7dTpCdatH23OammvQ7.jpg",
+        "plot": "Quatro nova-iorquinos enfrentam os desafios da vida: doença, morte, desemprego e esperança, enquanto vivem muito perto, com suas vidas complicadas entrelaçadas como se fizessem parte de uma rede secreta.",
+        "cast": "Frankie Faison, Julia Chan, Ian Harding, Sydney Agudong, Isabella Astbury",
+        "director": "",
+        "genre": "Drama",
+        "release_date": "2025-12-03",
+        "releaseDate": "2025-12-03",
+        "last_modified": "1773088464",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/eEDy1AdGn2gMCCHAblVqe0RtPTY.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 5,
+        "name": "Os Dinossauros",
+        "title": "Os Dinossauros",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7836,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/wdpc2htHKoUX42rQNCmlRQ1dMGn.jpg",
+        "plot": "Dos primeiros aos últimos dinossauros, esta série documental fascinante explora seu reinado de 165 milhões de anos na Terra e as forças que moldaram essa evolução.",
+        "cast": "Morgan Freeman",
+        "director": "Steven Spielberg, Alastair Fothergill, Nick Shoolingin-Jordan",
+        "genre": "Documentário",
+        "release_date": "2026-03-06",
+        "releaseDate": "2026-03-06",
+        "last_modified": "1773088463",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/xBCqa89aObojLlXu6MuGgnAmhcP.jpg"
+        ],
+        "youtube_trailer": "ZQhR8DH_g-A",
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    }
+]

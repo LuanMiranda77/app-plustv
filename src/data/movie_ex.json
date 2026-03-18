@@ -1,0 +1,54 @@
+[
+    {
+        "num": 1,
+        "name": "A Cidade das Crianças",
+        "title": "A Cidade das Crianças",
+        "year": null,
+        "stream_type": "movie",
+        "stream_id": 532906,
+        "stream_icon": "https://image.tmdb.org/t/p/w500/berKaNhug7HHl5RHVeI2ksfwKOX.jpg",
+        "rating": 6.1,
+        "rating_5based": 3.1,
+        "added": "1773680082",
+        "plot": "Na vila de Timpelbach, as crianças afrontam os adultos e todas as formas de autoridade. Impotentes, os adultos decidem abandonar a vila, deixando-os a imaginar que todos partiram numa viagem. Quando as crianças se dão conta de que não existe um só adulto na vila, eles tomam conta de tudo, fazendo suas próprias leis. Mas existe algo com o que eles não contavam...",
+        "cast": "Raphaël Katz, Adèle Exarchopoulos, Léo Legrand, Carole Bouquet, Gérard Depardieu",
+        "director": "Nicolas Bary",
+        "genre": "Fantasia, Aventura, Família",
+        "release_date": null,
+        "youtube_trailer": "",
+        "episode_run_time": null,
+        "category_id": "439",
+        "category_ids": [
+            439
+        ],
+        "container_extension": "mp4",
+        "custom_sid": "",
+        "direct_source": ""
+    },
+    {
+        "num": 2,
+        "name": "Inocente ou Culpado? [L]",
+        "title": "Inocente ou Culpado? [L]",
+        "year": null,
+        "stream_type": "movie",
+        "stream_id": 532905,
+        "stream_icon": "https://image.tmdb.org/t/p/w500/ilOOl2NoNXbUroR9Vtk7HvCAyWE.jpg",
+        "rating": 5.6,
+        "rating_5based": 2.8,
+        "added": "1773680070",
+        "plot": "Após conseguir uma absolvição em um julgamento por assassinato, o advogado de defesa Ben Chase tenta provar que o cliente, Martin Thiel, é um assassino em série. Quando acontecem novas mortes, Ben decide agir, dando início a uma batalha psicológica com Martin.",
+        "cast": "Gary Oldman, Kevin Bacon, Tess Harper, Karen Young, Joe Don Baker",
+        "director": "Martin Campbell",
+        "genre": "Drama, Thriller, Romance",
+        "release_date": null,
+        "youtube_trailer": "",
+        "episode_run_time": null,
+        "category_id": "309",
+        "category_ids": [
+            309
+        ],
+        "container_extension": "mp4",
+        "custom_sid": "",
+        "direct_source": ""
+    },
+]
