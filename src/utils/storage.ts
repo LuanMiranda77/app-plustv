@@ -7,41 +7,57 @@ export const STORAGE_KEYS = {
   WATCH_HISTORY: 'iptv_watch_history',
   PLAYLIST_CACHE: 'iptv_playlist_cache',
   SETTINGS: 'iptv_settings',
-} as const
+} as const;
 
 // Funções auxiliares de storage
 export const storage = {
   get: (key: string) => {
     try {
-      const item = localStorage.getItem(key)
-      return item ? JSON.parse(item) : null
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : null;
     } catch (error) {
-      console.error(`Erro ao ler localStorage [${key}]:`, error)
-      return null
+      console.error(`Erro ao ler localStorage [${key}]:`, error);
+      return null;
     }
   },
 
   set: (key: string, value: any) => {
     try {
-      localStorage.setItem(key, JSON.stringify(value))
-    } catch (error) {
-      console.error(`Erro ao escrever localStorage [${key}]:`, error)
+      const jsonStr = JSON.stringify(value);
+      localStorage.setItem(key, jsonStr);
+      console.log(`✅ Salvo em localStorage [${key}]`);
+    } catch (error: any) {
+      if (error.name === 'QuotaExceededError') {
+        console.error(`❌ localStorage CHEIO! Limpando dados antigos...`);
+        // Tentar limpar dados antigos
+        localStorage.removeItem(STORAGE_KEYS.WATCH_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.PLAYLIST_CACHE);
+        console.log(`🧹 Dados limpos. Tentando salvar novamente...`);
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+          console.log(`✅ Salvo após limpeza!`);
+        } catch (retryError) {
+          console.error(`❌ Ainda não foi possível salvar.`);
+        }
+      } else {
+        console.error(`Erro ao escrever localStorage [${key}]:`, error);
+      }
     }
   },
 
   remove: (key: string) => {
     try {
-      localStorage.removeItem(key)
+      localStorage.removeItem(key);
     } catch (error) {
-      console.error(`Erro ao deletar localStorage [${key}]:`, error)
+      console.error(`Erro ao deletar localStorage [${key}]:`, error);
     }
   },
 
   clear: () => {
     try {
-      localStorage.clear()
+      localStorage.clear();
     } catch (error) {
-      console.error('Erro ao limpar localStorage:', error)
+      console.error('Erro ao limpar localStorage:', error);
     }
   },
-}
+};
