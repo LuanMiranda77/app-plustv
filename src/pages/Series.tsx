@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SeriesCard } from '../components/Cards/SeriesCard';
-import SeriesDetail from '../components/Cards/SeriesDetail';
 import { Input } from '../components/UI/Input';
+import SeriesDetail from '../components/UI/SeriesDetail';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
-import type { Episode, Season, Series } from '../types';
+import type { Season, Series } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
 
 export const PageSeries = () => {
-  const navigate = useNavigate();
   const { series, seriesCategories } = useContentStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { serverConfig } = useAuthStore();
-  const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
 
   // 2. Só busca episódios quando o usuário ABRE a série
@@ -24,6 +22,7 @@ export const PageSeries = () => {
     const seasons: Season[] = Object.entries(episodesMap)
       .map(([seasonNum, episodes]) => ({
         number: Number(seasonNum),
+        progress: 0,
         episodes: episodes.map((ep) => ({
           id: String(ep.id),
           name: ep.title || `Episódio ${ep.episode_num}`,
@@ -34,6 +33,7 @@ export const PageSeries = () => {
           thumbnail: ep.info?.movie_image || '',
           plot: ep.info?.plot || '',
           duration: ep.info?.duration_secs || undefined,
+          displayDuration: ep.info?.duration || undefined,
           rating: ep.info?.rating || '',
           airDate: ep.air_date || '',
         })),
@@ -43,11 +43,16 @@ export const PageSeries = () => {
     return seasons;
   };
 
-  const filteredSeries = series.filter((s) => {
+  const filteredSeries = series.filter((s, index) => {
     const matchesSearch =
       s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.category?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || s.category === selectedCategory;
+    
+    if (matchesCategory && matchesSearch ) {
+      const ratringNum = s.rating && s.rating != 'N/A' ? Number(s.rating ?? 0) : 0;
+      return index < 60 && ratringNum > 5;
+    }
 
     return matchesSearch && matchesCategory;
   });
@@ -63,12 +68,10 @@ export const PageSeries = () => {
   return currentSerie ? (
     <SeriesDetail
       series={currentSerie}
-      onPlay={(episode, season) => navigate(`/player?url=${episode.streamUrl}`)}
       onBack={() => setCurrentSerie(null)}
       onToggleFavorite={(id) => toggleFavorite(id)}
       onToggleWatched={(id) => toggleWatched(id)}
       onLoadDetail={(id) => loadSeriesDetail(id)}
-      currentEpisodeId={currentEpisode?.id}
     />
   ) : (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
@@ -88,23 +91,19 @@ export const PageSeries = () => {
                 >
                   30 MELHORES
                 </button>
-                {seriesCategories.map((cat, i) => {
-                  const isNew = i < 30;
-                  const isVisible = selectedCategory ? true : selectedCategory === null && isNew;
+                {seriesCategories.map((cat) => {
                   return (
-                    isVisible && (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.name)}
-                        className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg font-semibold whitespace-nowrap transition-colors ${
-                          selectedCategory === cat.name
-                            ? 'bg-red-600 text-white'
-                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                        }`}
-                      >
-                        {cat.name}
-                      </button>
-                    )
+                    <button
+                      key={cat.id}
+                      onClick={() => setSelectedCategory(cat.name)}
+                      className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg font-semibold whitespace-nowrap transition-colors ${
+                        selectedCategory === cat.name
+                          ? 'bg-red-600 text-white'
+                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
                   );
                 })}
               </div>

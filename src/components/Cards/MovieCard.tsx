@@ -1,6 +1,7 @@
 import { Heart } from 'lucide-react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Movie } from '../../types';
+import StartRating from '../UI/StarRating';
 
 interface MovieCardProps {
   movie: Movie;
@@ -67,8 +68,11 @@ export const MovieCard = ({ movie, onPlay, onAddFavorite }: MovieCardProps) => {
 
       {/* Badge */}
       {movie.rating && (
-        <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-1  rounded-bl opacity-80">
-          {movie.rating == 'N/A' ? '0.0' : Number(movie.rating).toFixed(1)}
+        <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-0.5  rounded-bl opacity-80">
+          <StartRating
+            rating={movie.rating == 'N/A' ? '0.0' : Number(movie.rating).toFixed(1)}
+            color="white"
+          />
         </div>
       )}
       {/* year lacament */}

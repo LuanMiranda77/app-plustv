@@ -1,6 +1,7 @@
 import { Heart } from 'lucide-react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Series } from '../../types';
+import StartRating from '../UI/StarRating';
 
 interface SeriesCardProps {
   series: Series;
@@ -67,8 +68,8 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
 
       {/* Badge */}
       {series.rating && (
-        <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl opacity-80">
-          {series.rating == 'N/A' ? '0.0' : Number(series.rating).toFixed(1)}
+        <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-0.5 rounded-bl opacity-80">
+          <StartRating rating={series.rating == 'N/A' ? '0.0' : Number(series.rating).toFixed(1)} color='white' />
         </div>
       )}
       {/* year lacament */}

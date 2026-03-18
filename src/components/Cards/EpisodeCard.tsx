@@ -1,21 +1,6 @@
 import { useState } from 'react'
 import type { Episode } from '../../types'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-// interface Episode {
-//   id: string
-//   name: string
-//   number: number
-//   streamUrl: string
-//   watched: boolean
-//   progress: number // segundos assistidos
-//   duration?: number // duração total em segundos
-//   thumbnail?: string
-//   plot?: string
-//   airDate?: string
-//   rating?: string
-// }
+import StartRating from '../UI/StarRating'
 
 interface EpisodeCardProps {
   episode: Episode
@@ -158,12 +143,7 @@ export const EpisodeCard = ({
                 T{String(seasonNumber).padStart(2, '0')}-E{String(episode.number).padStart(2, '0')}
               </span>
               {episode.rating && (
-                <span className="text-yellow-400 text-xs flex items-center gap-0.5">
-                  <svg className="w-3 h-3 fill-yellow-400" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                  {Number(episode.rating).toFixed(1)}
-                </span>
+                <StartRating rating={Number(episode.rating).toFixed(1)} />
               )}
             </div>
             <h4

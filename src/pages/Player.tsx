@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/set-state-in-effect */
-import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { VideoPlayer } from '../components/Player/VideoPlayer';
+import { ButtonBack } from '../components/UI/ButtonBack';
 // import { useAuthStore } from '../store/authStore';
 
 export const Player = () => {
@@ -42,21 +41,16 @@ export const Player = () => {
     currentStream && (
       <div className="flex flex-col min-h-screen bg-black">
         {/* Back button */}
-        <div className="absolute z-10 flex items-center top-4 left-4 gap-2">
-          <button
-            onClick={() => {
-              navigate(`/${!currentStream.type ? 'home' : currentStream.type}`, {
-                state: currentStream,
-              });
-              setCurrentStream(null);
-            }}
-            className="flex items-center gap-2 p-2 text-white transition-colors rounded hover:text-red-600 hover:bg-white/10"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Voltar</span>
-          </button>
-          <h6>{currentStream.title}</h6>
-        </div>
+        <ButtonBack
+          className="absolute z-10 top-2"
+          title={currentStream.title}
+          onClick={() => {
+            navigate(`/${!currentStream.type ? 'home' : currentStream.type}`, {
+              state: currentStream,
+            });
+            setCurrentStream(null);
+          }}
+        />
 
         {/* Player */}
         <div className="flex items-center justify-center flex-1">

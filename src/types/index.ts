@@ -41,6 +41,7 @@ export interface Movie {
   watched: boolean;
   progress?: number; // segundos assistidos
   duration?: number; // duração total em segundos
+  displayDuration?: string; // duração formatada (ex: "1h 30m")
 }
 
 // Série
@@ -81,6 +82,7 @@ export interface Episode {
   watched: boolean;
   progress?: number; // segundos assistidos
   duration?: number; // duração total em segundos
+  displayDuration?: string; // duração formatada (ex: "1h 30m")
 }
 
 // Resposta da API Xtream

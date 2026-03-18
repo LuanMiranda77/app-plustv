@@ -11,11 +11,16 @@ export const Movies = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const filteredMovies = movies.filter((movie) => {
+  const filteredMovies = movies.filter((movie, index) => {
     const matchesSearch =
       movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || movie.category === selectedCategory;
+    
+    if (matchesCategory && matchesSearch) {
+      const ratringNum = movie.rating && movie.rating != 'N/A' ? Number(movie.rating ?? 0) : 0;
+      return index < 60 && ratringNum > 6;
+    }
 
     return matchesSearch && matchesCategory;
   });
@@ -69,28 +74,24 @@ export const Movies = () => {
           </div>
           {filteredMovies.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {filteredMovies.map((movie, i) => {
-                const isNew = i < 30; 
-                const isVisible = selectedCategory ? true : selectedCategory === null && isNew; // Marcar os 30 primeiros filmes como "novidades"
+              {filteredMovies.map((movie) => {
                 return (
-                  isVisible && (
-                    <MovieCard
-                      key={movie.id}
-                      movie={movie}
-                      onPlay={() => {
-                        navigate('/player', {
-                          state: {
-                            id: movie.id,
-                            streamUrl: movie.streamUrl,
-                            title: movie.name,
-                            poster: movie.poster,
-                            type: 'movie',
-                            category: movie.category,
-                          },
-                        });
-                      }}
-                    />
-                  )
+                  <MovieCard
+                    key={movie.id}
+                    movie={movie}
+                    onPlay={() => {
+                      navigate('/player', {
+                        state: {
+                          id: movie.id,
+                          streamUrl: movie.streamUrl,
+                          title: movie.name,
+                          poster: movie.poster,
+                          type: 'movie',
+                          category: movie.category,
+                        },
+                      });
+                    }}
+                  />
                 );
               })}
             </div>
