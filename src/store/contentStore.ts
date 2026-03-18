@@ -69,7 +69,7 @@ const saveToCache = (
 
   // Salvar no localStorage (apenas timestamp para validação rápida)
   storage.set(STORAGE_KEYS.PLAYLIST_CACHE, minimalCache);
-};;
+};
 
 export const useContentStore = create<ContentState>((set, get) => {
   // Carregar cache na inicialização
@@ -319,6 +319,9 @@ export const useContentStore = create<ContentState>((set, get) => {
           category: stream.category_id || 'Sem categoria',
           rating: stream.rating || 'N/A',
           year: stream.year || 'N/A',
+          youtube_trailer: stream.youtube_trailer || '',
+          genre: stream.genre || '',
+          plot: stream.plot || '',
           isFavorite: false,
         }));
 
@@ -328,6 +331,11 @@ export const useContentStore = create<ContentState>((set, get) => {
           name: stream.name,
           poster: stream.cover || stream.series_cover || '',
           category: stream.category_id || 'Sem categoria',
+          rating: stream.rating || 'N/A',
+          plot: stream.plot || '',
+          genre: stream.genre || '',
+          year: stream.year || '',
+          youtube_trailer: stream.youtube_trailer || '',
           isFavorite: false,
           seasons: [
             {
