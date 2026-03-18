@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useHls } from '../../hooks/useHls';
 import { PlayerControls } from './PlayerControls';
+import { useProgress } from '../../hooks/useProgress';
 
 interface VideoPlayerProps {
   title: string;
@@ -10,6 +11,10 @@ interface VideoPlayerProps {
   onError?: (error: string) => void;
   onEnded?: () => void;
   isControlsVisible?: boolean;
+  streamId: string | number;
+  saveInterval?: number;
+  isAutoSave?: boolean;
+  type: 'movie' | 'series' | 'live';
 }
 
 export const VideoPlayer = ({
@@ -20,16 +25,26 @@ export const VideoPlayer = ({
   autoPlay = false,
   onError,
   onEnded,
+  streamId,
+  saveInterval,
+  isAutoSave = false,
+  type,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { saveNow } = useProgress({
+    type: type, // ou 'series' dependendo do contexto
+    streamId: String(streamId),
+    videoRef,
+    saveInterval: saveInterval ?? 5000, // salva a cada 5 segundos
+    isAutoSave,
+  });
 
   const { hls, error, isLoading, currentQuality, qualities } = useHls(
     videoRef as React.RefObject<HTMLVideoElement>,

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import type { Episode, Season, Series } from '../../types';
+import { useAuthStore } from '../../store/authStore';
+import type { Episode, ProgressWatched, Season, Series } from '../../types';
 import { indexedDbStorage } from '../../utils/indexedDbStorage';
 import EpisodeCard from '../Cards/EpisodeCard';
 import { VideoPlayer } from '../Player/VideoPlayer';
 import { ButtonBack } from './ButtonBack';
 import { LoadingSpinner } from './LoadingSpinner';
 import SeasonSelector from './SeasonSelector';
-import StartRating from './StarRating';
 import SeriesHeroBanner from './SeriesHeroBanner';
 
 interface SeriesDetailProps {
@@ -46,6 +46,65 @@ const findNextSeasonForEpisode = (seasons: Season[], episodeId: string): number 
   return 1;
 };
 
+
+const saveProgress = async (
+  seriesId: string,
+  profileId: string | undefined,
+  episodes: Episode[]
+) => {
+  const progress: ProgressWatched[] = episodes.map((ep) => ({
+    episodeId: ep.id,
+    watched: ep.watched,
+    progress: ep.progress || 0,
+    timestamp: Date.now(),
+  }));
+
+  try {
+    await indexedDbStorage.set(`series_progress_${profileId}_${seriesId}`, progress);
+    console.log('💾 Progresso salvo:', { series: seriesId });
+  } catch (error) {
+    console.error('❌ Erro ao salvar progresso:', error);
+  }
+};
+
+const loadProgress = async (
+  seriesId: string,
+  profileId: string | undefined,
+  seasons: Season[]
+): Promise<Season[]> => {
+  if (!profileId) return seasons;
+
+  try {
+    const progress = await indexedDbStorage.get(`series_progress_${profileId}_${seriesId}`);
+    if (!progress || !Array.isArray(progress)) return seasons;
+
+    console.log('📖 Progresso carregado:', { profile: profileId, series: seriesId });
+
+    return seasons.map((season) => ({
+      ...season,
+      episodes: season.episodes.map((ep) => {
+        const epProgress = progress.find((p: ProgressWatched) => p.episodeId === ep.id);
+        return epProgress
+          ? { ...ep, watched: epProgress.watched, progress: epProgress.progress }
+          : ep;
+      }),
+    }));
+  } catch (error) {
+    console.error('❌ Erro ao carregar progresso:', error);
+    return seasons;
+  }
+};
+
+const getSeasonProgress = (season: Season) => {
+  const watched = season.episodes.filter((ep) => ep.watched).length;
+  const total = season.episodes.length;
+  return {
+    watched,
+    total,
+    percent: total > 0 ? Math.round((watched / total) * 100) : 0,
+  };
+};
+
 export const SeriesDetail = ({
   series,
   onBack,
@@ -54,11 +113,11 @@ export const SeriesDetail = ({
   onLoadDetail,
   currentEpisodeId,
 }: SeriesDetailProps) => {
+  const { activeProfile } = useAuthStore();
+  const profileId = activeProfile?.id;
   const [activeSeason, setActiveSeason] = useState(1);
   const [seasons, setSeasons] = useState<Season[]>(series?.seasons || []);
   const [loading, setLoading] = useState(false);
-  const [imgError, setImgError] = useState(false);
-  const [showFullPlot, setShowFullPlot] = useState(false);
   const [isPlay, setIsPlay] = useState(false);
   const episodesRef = useRef<HTMLDivElement>(null);
   const { watched, total, percent } = getTotalProgress(seasons);
@@ -147,6 +206,43 @@ export const SeriesDetail = ({
     handlePlay(nextEpisode, nextSeasonNumber);
   };
 
+  const handleToggleWatched = async (episodeId: string) => {
+    const updatedSeasons = seasons.map((season) => ({
+      ...season,
+      episodes: season.episodes.map((ep) =>
+        ep.id === episodeId ? { ...ep, watched: !ep.watched } : ep
+      ),
+    }));
+
+    setSeasons(updatedSeasons);
+    // Salvar progresso
+    if (series && profileId) {
+      await saveProgress(
+        series.id,
+        profileId,
+        updatedSeasons.flatMap((s) => s.episodes)
+      );
+    }
+    onToggleWatched?.(episodeId);
+  };
+
+  const handleUpdateProgress = async (episodeId: string, progress: number) => {
+    const updatedSeasons = seasons.map((season) => ({
+      ...season,
+      episodes: season.episodes.map((ep) => (ep.id === episodeId ? { ...ep, progress } : ep)),
+    }));
+
+    setSeasons(updatedSeasons);
+    // Salvar progresso
+    if (series && profileId) {
+      await saveProgress(
+        series.id,
+        profileId,
+        updatedSeasons.flatMap((s) => s.episodes)
+      );
+    }
+  };
+
   const scrollToEpisodes = () => {
     episodesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -168,6 +264,9 @@ export const SeriesDetail = ({
           onError={(error) => {
             console.error('Erro no player:', error);
           }}
+          streamId={currentEpisode.id}
+          type='series'
+          isAutoSave
         />
       </div>
     </div>

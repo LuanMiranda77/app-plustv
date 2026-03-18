@@ -62,6 +62,8 @@ export const Player = () => {
             onError={(error) => {
               console.error('Erro no player:', error);
             }}
+            streamId={currentStream.id}
+            type="live"
           />
         </div>
 

@@ -85,6 +85,13 @@ export interface Episode {
   displayDuration?: string; // duração formatada (ex: "1h 30m")
 }
 
+export interface ProgressWatched {
+  episodeId: string;
+  watched: boolean;
+  progress: number; // segundos
+  timestamp: number;
+}
+
 // Resposta da API Xtream
 export interface XtreamAuthResponse {
   user_info?: {

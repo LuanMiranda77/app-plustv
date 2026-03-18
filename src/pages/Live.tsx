@@ -77,9 +77,7 @@ export const Live = () => {
         )}
 
         {/* Grid */}
-        <div
-          className={`flex-1 px-3 py-8 overflow-y-scroll`}
-        >
+        <div className={`flex-1 px-3 py-8 overflow-y-scroll`}>
           <div className="flex-1 mb-5">
             <Input
               type="text"
@@ -147,6 +145,8 @@ export const Live = () => {
                 onError={(error) => {
                   console.error('Erro no player:', error);
                 }}
+                streamId={currentStream.id}
+                type="live"
               />
             </div>
             <div></div>
