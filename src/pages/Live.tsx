@@ -84,7 +84,7 @@ export const Live = () => {
 
   return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
-      <div className="flex mt-[60px] max-h-[calc(100vh-60px)]">
+      <div className="flex mt-[60px] h-[calc(100vh-60px)]">
         {/* Filters */}
         {liveCategories.length > 0 && (
           <div className="w-3/12 max-md:w-4/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">

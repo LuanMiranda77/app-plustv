@@ -20,10 +20,10 @@ export const Home = () => {
   const { serverConfig } = useAuthStore();
   const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
   const { getRecentlyWatched, loadFromStorage } = useWatchHistoryStore();
-  const [scrolling, setScrolling] = useState(false);
+  // const [scrolling, setScrolling] = useState(false);
   const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
-  const [recentMovies, setRecentMovies] = useState<any[]>([]);
-  const [recentSeries, setRecentSeries] = useState<any[]>([]);
+  // const [recentMovies, setRecentMovies] = useState<any[]>([]);
+  // const [recentSeries, setRecentSeries] = useState<any[]>([]);
   const hasLoadedData = useRef(false);
   const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'home';

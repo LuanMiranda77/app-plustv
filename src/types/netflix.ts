@@ -27,8 +27,7 @@ export interface Movie {
 
 export interface Category {
   id: string;
-  title: string;
-  movies: Movie[];
+  name: string;
 }
 
 export interface Channel {

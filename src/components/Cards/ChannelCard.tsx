@@ -93,11 +93,14 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
       </button>
       <button
         onClick={toggleFavorite}
-        className={`max-w-[80px] h-[80px] max-md:max-w-[50px] max-md:h-[50px] px-3 py-1.5 rounded-tr rounded-br transition-colors ${
-          isFav ? 'bg-netflix-red text-white' : 'bg-gray-600/50 text-gray-300 hover:bg-gray-600'
-        }`}
+        className={`
+          max-w-[80px] h-[80px] max-md:max-w-[50px] max-md:h-[50px] 
+          px-3 py-1.5 rounded-tr rounded-br transition-colors 
+          bg-gray-600/50 hover:bg-gray-600 
+          ${isFav ? 'text-netflix-red ' : ' text-gray-300 '}
+        `}
       >
-        <Heart className="w-4 h-4 fill-current" />
+        <Heart className="w-5 h-5 fill-current" />
       </button>
     </div>
   );
