@@ -60,6 +60,8 @@ export interface Series {
   loaded: false;
 }
 
+export type StreamType = 'series' | 'movie' | 'live';
+
 export interface Season {
   number: number;
   episodes: Episode[];

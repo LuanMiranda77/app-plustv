@@ -87,13 +87,13 @@ export const MovieDetail = ({ movie, onBack, onToggleFavorite }: MovieDetailProp
       </div>
     </div>
   ) : (
-    movie && (
+    currentStream && (
       <div
         className="absolute top-0 max-h-[calc(100vh-60px)] bg-zinc-950 text-white w-full mt-[60px]"
         style={{ fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}
       >
         <MovieHeroBanner
-          movie={movie}
+          movie={currentStream}
           onPlay={() => setIsPlay(true)}
           percent={getPorcentagem}
           onBack={onBack}

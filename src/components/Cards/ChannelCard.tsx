@@ -18,7 +18,7 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
     if (isFav) {
       removeFavorite(String(channel.id));
     } else {
-      addFavorite(channel);
+      addFavorite(channel, 'live');
     }
   };
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,7 +55,8 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
         overflow-hidden 
         transition-transform 
         duration-200 bg-gray-800 
-        rounded-lg itens-center 
+        rounded-tl rounded-bl
+       itens-center 
         hover:scale-102
       "
         onClick={() => {
@@ -91,8 +92,8 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
       </button>
       <button
         onClick={toggleFavorite}
-        className={`absolute right-0 bottom-0 px-3 py-1.5 rounded transition-colors ${
-          isFav ? 'bg-red-600 text-white' : 'bg-gray-600/50 text-gray-300 hover:bg-gray-600'
+        className={`max-w-[80px] h-[80px] max-md:max-w-[50px] max-md:h-[50px] px-3 py-1.5 rounded-tr rounded-br transition-colors ${
+          isFav ? 'bg-netflix-red text-white' : 'bg-gray-600/50 text-gray-300 hover:bg-gray-600'
         }`}
       >
         <Heart className="w-4 h-4 fill-current" />

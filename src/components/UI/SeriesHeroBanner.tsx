@@ -6,6 +6,7 @@ import { TrailerModal } from '../Player/TrilerModal';
 import { ButtonBack } from './ButtonBack';
 import StartRating from './StarRating';
 import { ButtonTrailer } from './ButtonTrailer';
+import { useFavoritesStore } from '../../store/favoritesStore';
 
 interface SeriesHeroBannerProps {
   series: Series;
@@ -34,8 +35,9 @@ export const SeriesHeroBanner = ({
 }: SeriesHeroBannerProps) => {
   const [imgError, setImgError] = useState(false);
   const [showFullPlot, setShowFullPlot] = useState(false);
-  const { isMobile } = useWindowSize();
   const [showTrailer, setShowTrailer] = useState(false);
+  const { isFavorite } = useFavoritesStore();
+  const isFav = isFavorite(String(series.id));
 
   return (
     <div className="relative h-[60vh] min-h-[500px] overflow-hidden">
@@ -172,14 +174,14 @@ export const SeriesHeroBanner = ({
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium
                               border transition-all duration-200
                               ${
-                                series.isFavorite
+                                isFav
                                   ? 'bg-red-950/60 border-red-600/60 text-red-400 hover:bg-red-950'
                                   : 'bg-white/10 border-white/10 text-zinc-300 hover:bg-white/20 hover:text-white'
                               }`}
                 >
                   <svg
                     className={`w-5 h-5 transition-all duration-200
-                                ${series.isFavorite ? 'fill-red-500 stroke-red-500' : 'fill-none stroke-current'}`}
+                                ${isFav ? 'fill-red-500 stroke-red-500' : 'fill-none stroke-current'}`}
                     viewBox="0 0 24 24"
                     strokeWidth="2"
                   >
@@ -189,7 +191,7 @@ export const SeriesHeroBanner = ({
                       strokeLinejoin="round"
                     />
                   </svg>
-                  {series.isFavorite ? 'Favoritado' : 'Favoritar'}
+                  {isFav ? 'Favoritado' : 'Favoritar'}
                 </button>
               )}
 

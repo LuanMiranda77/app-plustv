@@ -23,3 +23,8 @@ export const getProgress = async (
     return { progress: 0, duration: 0, watched: false, updatedAt: '' };
   }
 };
+
+export const calcProgressPercent = (progress: number, duration?: number): number => {
+  if (!duration || !progress) return 0;
+  return Math.min(Math.round((progress / duration) * 100), 100);
+};

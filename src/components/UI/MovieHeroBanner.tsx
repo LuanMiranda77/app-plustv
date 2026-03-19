@@ -4,6 +4,8 @@ import { TrailerModal } from '../Player/TrilerModal';
 import { ButtonBack } from './ButtonBack';
 import { ButtonTrailer } from './ButtonTrailer';
 import StartRating from './StarRating';
+import { useFavoritesStore } from '../../store/favoritesStore';
+import { calcProgressPercent } from '../../utils/progressWatched';
 
 interface SeriesHeroBannerProps {
   movie: Movie;
@@ -23,6 +25,10 @@ export const MovieHeroBanner = ({
   const [imgError, setImgError] = useState(false);
   const [showFullPlot, setShowFullPlot] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const { isFavorite } = useFavoritesStore();
+  const isFav = isFavorite(String(movie.id));
+  const progressPercent = calcProgressPercent(movie.progress ?? 0, movie.duration);
+  const hasProgress = progressPercent > 0 && progressPercent < 100;
 
   return (
     <div className="relative h-[calc(100vh-60px)] overflow-hidden">
@@ -53,7 +59,7 @@ export const MovieHeroBanner = ({
         <div className="flex gap-8 items-end max-w-4xl w-full">
           {/* Poster */}
           <div
-            className="flex-shrink-0 w-40 rounded-2xl overflow-hidden
+            className="relative flex-shrink-0 w-40 rounded-2xl overflow-hidden
                           shadow-2xl shadow-black/80 border border-white/10"
           >
             <img
@@ -62,6 +68,14 @@ export const MovieHeroBanner = ({
               className="w-full aspect-[2/3] object-cover"
               onError={() => setImgError(true)}
             />
+            {hasProgress && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-700/80">
+                <div
+                  className="h-full bg-netflix-red transition-all duration-300"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Info */}
@@ -105,7 +119,7 @@ export const MovieHeroBanner = ({
                 <span
                   className={`text-sm font-medium ${percent === 100 ? 'text-green-400' : 'text-red-400'}`}
                 >
-                  {percent === 100 ? '✓ Completo' : `${percent}% assistido`}
+                  {percent === 100 ? '✓ Completo' : `${percent.toFixed(2)}% assistido`}
                 </span>
               )}
             </div>
@@ -145,15 +159,8 @@ export const MovieHeroBanner = ({
                   <path d="M8 5v14l11-7z" />
                 </svg>
                 {movie.progress && movie.progress > 0 ? 'Continuar' : 'Assistir'}
-                {movie.progress && (
-                  <span className="text-red-200 font-normal text-xs">
-                    E{String(movie.progress).padStart(2, '0')}
-                  </span>
-                )}
               </button>
-              {movie.youtube_trailer && (
-                <ButtonTrailer onClick={() => setShowTrailer(true)} />
-              )}
+              {movie.youtube_trailer && <ButtonTrailer onClick={() => setShowTrailer(true)} />}
 
               {/* Favoritar */}
               {onToggleFavorite && (
@@ -162,14 +169,14 @@ export const MovieHeroBanner = ({
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium
                               border transition-all duration-200
                               ${
-                                movie.isFavorite
+                                isFav
                                   ? 'bg-red-950/60 border-red-600/60 text-red-400 hover:bg-red-950'
                                   : 'bg-white/10 border-white/10 text-zinc-300 hover:bg-white/20 hover:text-white'
                               }`}
                 >
                   <svg
                     className={`w-5 h-5 transition-all duration-200
-                                ${movie.isFavorite ? 'fill-red-500 stroke-red-500' : 'fill-none stroke-current'}`}
+                                ${isFav ? 'fill-red-500 stroke-red-500' : 'fill-none stroke-current'}`}
                     viewBox="0 0 24 24"
                     strokeWidth="2"
                   >
@@ -179,7 +186,7 @@ export const MovieHeroBanner = ({
                       strokeLinejoin="round"
                     />
                   </svg>
-                  {movie.isFavorite ? 'Favoritado' : 'Favoritar'}
+                  {isFav ? 'Favoritado' : 'Favoritar'}
                 </button>
               )}
             </div>

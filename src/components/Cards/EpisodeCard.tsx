@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Episode } from '../../types'
 import StartRating from '../UI/StarRating'
+import { calcProgressPercent } from '../../utils/progressWatched'
 
 interface EpisodeCardProps {
   episode: Episode
@@ -20,11 +21,6 @@ const formatTime = (seconds: number): string => {
   return `${m}m`
 }
 
-const getProgressPercent = (progress: number, duration?: number): number => {
-  if (!duration || !progress) return 0
-  return Math.min(Math.round((progress / duration) * 100), 100)
-}
-
 export const EpisodeCard = ({
   episode,
   seasonNumber,
@@ -35,7 +31,7 @@ export const EpisodeCard = ({
   const [expanded, setExpanded] = useState(false)
   const [imgError, setImgError] = useState(false)
 
-  const progressPercent = getProgressPercent(episode.progress??0, episode.duration)
+  const progressPercent = calcProgressPercent(episode.progress ?? 0, episode.duration);
   const hasProgress = progressPercent > 0 && progressPercent < 100
   const isWatched = episode.watched
 

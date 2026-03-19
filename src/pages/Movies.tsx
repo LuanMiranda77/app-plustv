@@ -37,11 +37,11 @@ export const Movies = () => {
   const displayedMovies = filteredMovies.slice(0, displayCount);
   const hasMoreMovies = displayCount < filteredMovies.length;
 
-  const toggleFavorite = (movie) => {
-    if (isFav) {
-      removeFavorite(movie);
+  const toggleFavorite = (movie: Movie) => {
+    if (isFavorite(movie.id)) {
+      removeFavorite(movie.id);
     } else {
-      addFavorite(movie);
+      addFavorite(movie, 'movie');
     }
   };
 
@@ -78,18 +78,14 @@ export const Movies = () => {
   }, [searchTerm, selectedCategory]);
 
   useEffect(() => {
-    const checkFavorite = async () => {
+    const checkFavorite = () => {
       if (currentMovie) {
-        const favStatus = await isFavorite(currentMovie.id);
+        const favStatus = isFavorite(currentMovie.id);
         setIsFav(favStatus);
       }
     };
     checkFavorite();
-    // // Limpar filme selecionado ao sair da página
-    // return () => {
-    //   setCurrentMovie(null);
-    // };
-  }, [currentMovie?.id]);
+  }, [currentMovie?.id, isFavorite]);
 
   return currentMovie ? (
     <MovieDetail
@@ -173,4 +169,4 @@ export const Movies = () => {
       </div>
     </div>
   );
-};;
+};

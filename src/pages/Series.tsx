@@ -5,6 +5,7 @@ import { Input } from '../components/UI/Input';
 import SeriesDetail from '../components/UI/SeriesDetail';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
+import { useFavoritesStore } from '../store/favoritesStore';
 import type { Season, Series } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
 
@@ -16,6 +17,7 @@ export const PageSeries = () => {
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const ITEMS_PER_PAGE = 20;
@@ -46,6 +48,21 @@ export const PageSeries = () => {
       .sort((a, b) => a.number - b.number); // ordenar temporadas
 
     return seasons;
+  };
+
+  const toggleFavorite = (seriesId: string) => {
+    if (currentSerie) {
+      if (isFavorite(seriesId)) {
+        removeFavorite(seriesId);
+      } else {
+        addFavorite(currentSerie, 'series');
+      }
+    }
+  };
+
+  const toggleWatched = (episodeId: string) => {
+    // Lógica para marcar episódio como assistido
+    console.log('Episódio marcado como assistido:', episodeId);
   };
 
   const filteredSeries = series.filter((s, index) => {
@@ -106,6 +123,7 @@ export const PageSeries = () => {
       series={currentSerie}
       onBack={() => setCurrentSerie(null)}
       onToggleFavorite={(id) => toggleFavorite(id)}
+      onToggleWatched={(id) => toggleWatched(id)}
       onLoadDetail={(id) => loadSeriesDetail(id)}
     />
   ) : (
@@ -118,20 +136,20 @@ export const PageSeries = () => {
               <div className="flex flex-col gap-2 overflow-x-auto pb-2">
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg font-semibold whitespace-nowrap transition-colors ${
+                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full max-md:text-xs text-lg font-semibold whitespace-nowrap transition-colors ${
                     selectedCategory === null
                       ? 'bg-red-600 text-white'
                       : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                   }`}
                 >
-                  30 MELHORES
+                  TODOS
                 </button>
                 {seriesCategories.map((cat) => {
                   return (
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.name)}
-                      className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg font-semibold whitespace-nowrap transition-colors ${
+                      className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full max-md:text-xs text-lg font-semibold whitespace-nowrap transition-colors ${
                         selectedCategory === cat.name
                           ? 'bg-red-600 text-white'
                           : 'bg-gray-800 text-gray-300 hover:bg-gray-700'

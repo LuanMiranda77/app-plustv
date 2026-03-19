@@ -6,26 +6,20 @@ import StartRating from '../UI/StarRating';
 interface MovieCardProps {
   movie: Movie;
   onPlay?: () => void;
-  onAddFavorite?: (movie: Movie) => void;
 }
 
-export const MovieCard = ({ movie, onPlay, onAddFavorite }: MovieCardProps) => {
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+export const MovieCard = ({ movie, onPlay }: MovieCardProps) => {
+  const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(movie.id);
 
-  const toggleFavorite = () => {
-    if (isFav) {
-      removeFavorite(movie.id);
-    } else {
-      addFavorite(movie);
-      onAddFavorite?.(movie);
-    }
-  };
 
   return (
     <button
       onClick={onPlay}
-      className="group relative bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-200"
+      className="group relative bg-gray-800 rounded-lg overflow-hidden 
+      focus:scale-105 hover:scale-105 
+      transition-transform duration-200 
+      outline-netflix-red-200 hover:outline-2 focus:outline-2"
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
@@ -45,10 +39,10 @@ export const MovieCard = ({ movie, onPlay, onAddFavorite }: MovieCardProps) => {
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-focus:opacity-100 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
         <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{movie.name}</h3>
 
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <button
             onClick={onPlay}
             className="flex-1 bg-red-600 hover:bg-red-700 text-white py-1.5 rounded text-xs font-semibold transition-colors"
@@ -63,7 +57,7 @@ export const MovieCard = ({ movie, onPlay, onAddFavorite }: MovieCardProps) => {
           >
             <Heart className="w-4 h-4 fill-current" />
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Badge */}
@@ -73,6 +67,11 @@ export const MovieCard = ({ movie, onPlay, onAddFavorite }: MovieCardProps) => {
             rating={movie.rating == 'N/A' ? '0.0' : Number(movie.rating).toFixed(1)}
             color="white"
           />
+        </div>
+      )}
+      {isFav && (
+        <div className="absolute top-0 left-0 text-netflix-red text-ms px-1 py-0.5 rounded-tl opacity-80">
+          <Heart className="fill-current" size={18} />
         </div>
       )}
       {/* year lacament */}
