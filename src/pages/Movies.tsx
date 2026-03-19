@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react';
 import { MovieCard } from '../components/Cards/MovieCard';
 import { Input } from '../components/UI/Input';
@@ -11,7 +12,6 @@ export const Movies = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
-  const [isFav, setIsFav] = useState(false);
   const [displayCount, setDisplayCount] = useState(20); // Mostrar 20 itens por vez
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -19,7 +19,7 @@ export const Movies = () => {
 
   const ITEMS_PER_PAGE = 20;
 
-  const filteredMovies = movies.filter((movie, index) => {
+  const filteredMovies = movies.filter((movie) => {
     const matchesSearch =
       movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -74,18 +74,8 @@ export const Movies = () => {
 
   // Resetar displayCount ao mudar filtros
   useEffect(() => {
-    setDisplayCount(20);
+    setDisplayCount(ITEMS_PER_PAGE);
   }, [searchTerm, selectedCategory]);
-
-  useEffect(() => {
-    const checkFavorite = () => {
-      if (currentMovie) {
-        const favStatus = isFavorite(currentMovie.id);
-        setIsFav(favStatus);
-      }
-    };
-    checkFavorite();
-  }, [currentMovie?.id, isFavorite]);
 
   return currentMovie ? (
     <MovieDetail

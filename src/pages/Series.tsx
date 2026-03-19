@@ -22,7 +22,7 @@ export const PageSeries = () => {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
-  const ITEMS_PER_PAGE = 20;
+  const ITEMS_PER_PAGE = 30;
 
   // 2. Só busca episódios quando o usuário ABRE a série
   const loadSeriesDetail = async (seriesId: string) => {
@@ -62,12 +62,7 @@ export const PageSeries = () => {
     }
   };
 
-  const toggleWatched = (episodeId: string) => {
-    // Lógica para marcar episódio como assistido
-    console.log('Episódio marcado como assistido:', episodeId);
-  };
-
-  const filteredSeries = series.filter((s, index) => {
+  const filteredSeries = series.filter((s) => {
     const matchesSearch =
       s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.category?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -109,7 +104,7 @@ export const PageSeries = () => {
 
   // Resetar displayCount ao mudar filtros
   useEffect(() => {
-    setDisplayCount(20);
+    setDisplayCount(ITEMS_PER_PAGE);
   }, [searchTerm, selectedCategory]);
 
   useEffect(() => {
@@ -127,7 +122,6 @@ export const PageSeries = () => {
       series={currentSerie}
       onBack={() => setCurrentSerie(null)}
       onToggleFavorite={(id) => toggleFavorite(id)}
-      onToggleWatched={(id) => toggleWatched(id)}
       onLoadDetail={(id) => loadSeriesDetail(id)}
     />
   ) : (
@@ -152,14 +146,14 @@ export const PageSeries = () => {
                   return (
                     <button
                       key={cat.id}
-                      onClick={() => setSelectedCategory(cat.name)}
+                      onClick={() => setSelectedCategory(cat.id)}
                       className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full max-md:text-xs text-lg font-semibold whitespace-nowrap transition-colors ${
-                        selectedCategory === cat.name
+                        selectedCategory === cat.id
                           ? 'bg-red-600 text-white'
                           : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                       }`}
                     >
-                      {cat.name}
+                      {cat.name.replace('SÉRIES |', '')}
                     </button>
                   );
                 })}

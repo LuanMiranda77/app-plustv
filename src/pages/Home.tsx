@@ -1,6 +1,7 @@
 import { Clock, Film, Play, Sparkles, TrendingUp, Tv2, TvMinimalPlay } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AutoCarousel from '../components/AutoCarousel';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { ContinueWatchingCard } from '../components/Cards/ContinueWatchingCard';
 import { MovieCard } from '../components/Cards/MovieCard';
@@ -11,24 +12,12 @@ import { mockWatchHistory } from '../data/mockData';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import type { Movie } from '../types';
 
 export const Home = () => {
   const navigate = useNavigate();
-  const { activeProfile, serverConfig } = useAuthStore();
-  const {
-    movies,
-    channels,
-    series,
-    isLoading,
-    error,
-    setMovies,
-    setSeries,
-    setChannels,
-    setVodCategories,
-    setSeriesCategories,
-    setLiveCategories,
-    fetchServerContent,
-  } = useContentStore();
+  const { serverConfig } = useAuthStore();
+  const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
   const { addToHistory, getRecentlyWatched } = useWatchHistoryStore();
   const [scrolling, setScrolling] = useState(false);
   const [recentlyWatched, setRecentlyWatched] = useState<typeof mockWatchHistory>([]);
@@ -84,6 +73,53 @@ export const Home = () => {
     const ratingNum = m.rating && m.rating !== 'N/A' ? Number(m.rating) : 0;
     return ratingNum >= 7 && i < 30;
   });
+
+    const navigateMovie = (movie: any) => {
+      navigate('/player', {
+        state: {
+          id: movie.id,
+          streamUrl: movie.streamUrl,
+          title: movie.name,
+          poster: movie.poster,
+          type: 'movie',
+          category: movie.category,
+          genre: movie.genre,
+        },
+      });
+    };
+    const navigateSerie = (serie: any) => {
+      navigate('/series', {
+        state: {
+          id: serie.id,
+          streamUrl: serie.streamUrl,
+          title: serie.name,
+          poster: serie.poster,
+          type: 'serie',
+          category: serie.category,
+          genre: serie.genre,
+        },
+      });
+    };
+
+  // Preparar dados do carousel automático (destaque)
+  const heroItems = [
+    ...movies.slice(0, 5).map((m) => ({
+      id: m.id,
+      title: m.name,
+      poster: m.poster,
+      description: m.plot || m.category,
+      rating: m.rating,
+      onPlay: () => navigateMovie(m),
+    })),
+    ...series.slice(0, 5).map((s) => ({
+      id: s.id,
+      title: s.name,
+      poster: s.poster,
+      description: s.plot || s.category,
+      rating: s.rating,
+      onPlay: () => navigateSerie(s),
+    })),
+  ];
 
   const CarouselSection = ({
     title,
@@ -147,8 +183,36 @@ export const Home = () => {
     </section>
   );
 
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
+      {/* Auto Carousel Hero */}
+      {heroItems.length > 0 && !isLoading && (
+        <AutoCarousel
+          items={heroItems}
+          autoPlayInterval={5000}
+          onPlay={(item) => {
+            const movie = movies.find((m) => m.id === item.id);
+            const serie = series.find((s) => s.id === item.id);
+            if (movie) {
+              navigateMovie(item);
+            } else if (serie) {
+              navigateSerie(item);
+            }
+          }}
+          onInfo={(item) => {
+            const movie = movies.find((m) => m.id === item.id);
+            const serie = series.find((s) => s.id === item.id);
+            if (movie) {
+              navigateMovie(item);
+            } else if (serie) {
+              navigateSerie(item);
+            }
+          }}
+        />
+      )}
+
       {/* Hero Banner */}
       <div className="w-full bg-no-repeat bg-right" style={{ backgroundImage: 'url(/icons.png)' }}>
         <div className="relative h-96 bg-gradient-to-r from-red-600/40 via-transparent to-transparent overflow-hidden flex items-center p-8 mb-16">
@@ -321,21 +385,7 @@ export const Home = () => {
                 items={trendingMovies}
                 badge="trending"
                 renderItem={(movie) => (
-                  <MovieCard
-                    movie={movie}
-                    onPlay={() => {
-                      navigate('/player', {
-                        state: {
-                          id: movie.id,
-                          streamUrl: movie.streamUrl,
-                          title: movie.name,
-                          poster: movie.poster,
-                          type: 'movie',
-                          category: movie.category,
-                        },
-                      });
-                    }}
-                  />
+                  <MovieCard movie={movie} onPlay={() => navigateMovie(movie)} />
                 )}
                 onViewMore={() => navigate('/movie')}
               />
@@ -350,21 +400,7 @@ export const Home = () => {
                 items={newMovies}
                 badge="novo"
                 renderItem={(movie) => (
-                  <MovieCard
-                    movie={movie}
-                    onPlay={() => {
-                      navigate('/player', {
-                        state: {
-                          id: movie.id,
-                          streamUrl: movie.streamUrl,
-                          title: movie.name,
-                          poster: movie.poster,
-                          type: 'movie',
-                          category: movie.category,
-                        },
-                      });
-                    }}
-                  />
+                  <MovieCard movie={movie} onPlay={() => navigateMovie(movie)} />
                 )}
                 onViewMore={() => navigate('/movie')}
               />
@@ -378,23 +414,7 @@ export const Home = () => {
                 icon={TvMinimalPlay}
                 items={trendingSeries}
                 badge="trending"
-                renderItem={(s) => (
-                  <SeriesCard
-                    series={s}
-                    onPlay={() => {
-                      navigate('/series', {
-                        state: {
-                          id: s.id,
-                          streamUrl: s.streamUrl,
-                          title: s.name,
-                          poster: s.poster,
-                          type: 'series',
-                          category: s.category,
-                        },
-                      });
-                    }}
-                  />
-                )}
+                renderItem={(s) => <SeriesCard series={s} onPlay={() => navigateSerie(s)} />}
                 onViewMore={() => navigate('/series')}
               />
             )}
@@ -407,23 +427,7 @@ export const Home = () => {
                 icon={Sparkles}
                 items={newSeries}
                 badge="novo"
-                renderItem={(s) => (
-                  <SeriesCard
-                    series={s}
-                    onPlay={() => {
-                      navigate('/series', {
-                        state: {
-                          id: s.id,
-                          streamUrl: s.streamUrl,
-                          title: s.name,
-                          poster: s.poster,
-                          type: 'series',
-                          category: s.category,
-                        },
-                      });
-                    }}
-                  />
-                )}
+                renderItem={(s) => <SeriesCard series={s} onPlay={() => navigateSerie(s)} />}
                 onViewMore={() => navigate('/series')}
               />
             )}
