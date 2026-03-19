@@ -56,7 +56,7 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
         transition-transform 
         duration-200 bg-gray-800 
         rounded-lg itens-center 
-        hover:scale-105
+        hover:scale-102
       "
         onClick={() => {
           handleFullscreen();

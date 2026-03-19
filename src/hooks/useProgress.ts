@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
+import type { ProgressData } from '../types';
+import { KEYS_PROCESS } from '../utils/progressWatched';
 
 interface UseProgressProps {
   type: 'movie' | 'series' | 'live';
@@ -9,13 +11,6 @@ interface UseProgressProps {
   videoRef: React.RefObject<HTMLVideoElement> | any;
   saveInterval?: number;
   isAutoSave?: boolean;
-}
-
-interface ProgressData {
-  progress: number;
-  duration: number;
-  watched: boolean;
-  updatedAt: string;
 }
 
 export const useProgress = ({
@@ -27,10 +22,9 @@ export const useProgress = ({
 }: UseProgressProps) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { activeProfile } = useAuthStore();
-  const KEYS = { series: 'serie_progress', movie: 'movie_progress' };
 
   // Chave única por perfil + tipo + stream
-  const Key = `${KEYS[type]}_${activeProfile?.id}_${streamId}`;
+  const Key = `${KEYS_PROCESS[type]}_${activeProfile?.id}_${streamId}`;
 
   // ── Salvar ────────────────────────────────────────────────────────────────
   const saveProgress = useCallback(

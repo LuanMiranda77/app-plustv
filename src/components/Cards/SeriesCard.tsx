@@ -31,8 +31,8 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
           <img
             src={series.poster}
             alt={series.name}
-            loading="lazy" // carrega só quando visível
-            decoding="async" // não bloqueia render
+            // loading="lazy"
+            // decoding="async" 
             className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
           />
         ) : (

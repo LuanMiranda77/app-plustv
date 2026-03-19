@@ -1,40 +1,25 @@
-// src/utils/storage.ts
+import type { ProgressData } from '../types';
+import { indexedDbStorage } from './indexedDbStorage';
+interface Keys {
+  series: string;
+  movie: string;
+}
+export const KEYS_PROCESS: Keys = { series: 'serie_progress', movie: 'movie_progress' };
 
-const KEYS = {
-  PROGRESS: 'iptv_episode_progress',
-  WATCHED: 'iptv_episode_watched',
-};
+type ProgressType = 'series' | 'movie';
 
-// Formato salvo:
-// { "episodeId": { progress: 1234, duration: 2700, updatedAt: "2026-03-18" } }
-
-export const saveProgress = (episodeId: string, progress: number, duration: number) => {
-  const all = getAll();
-  all[episodeId] = {
-    progress,
-    duration,
-    updatedAt: new Date().toISOString(),
-    // marca como assistido se passou de 90%
-    watched: duration > 0 && progress / duration > 0.9,
-  };
-  localStorage.setItem(KEYS.PROGRESS, JSON.stringify(all));
-};
-
-export const getProgress = (episodeId: string) => {
-  const all = getAll();
-  return all[episodeId] ?? { progress: 0, duration: 0, watched: false };
-};
-
-export const getAll = (): Record<string, any> => {
+// ── Buscar ────────────────────────────────────────────────────────────────
+export const getProgress = async (
+  type: ProgressType,
+  profileId: any,
+  streamId: string
+): Promise<ProgressData> => {
   try {
-    return JSON.parse(localStorage.getItem(KEYS.PROGRESS) || '{}');
+    const Key = `${KEYS_PROCESS[type]}_${profileId}_${streamId}`;
+    const data = await indexedDbStorage.get(Key);
+    if (!data) return { progress: 0, duration: 0, watched: false, updatedAt: '' };
+    return data as ProgressData;
   } catch {
-    return {};
+    return { progress: 0, duration: 0, watched: false, updatedAt: '' };
   }
-};
-
-export const markWatched = (episodeId: string, watched: boolean) => {
-  const all = getAll();
-  all[episodeId] = { ...all[episodeId], watched, updatedAt: new Date().toISOString() };
-  localStorage.setItem(KEYS.PROGRESS, JSON.stringify(all));
 };

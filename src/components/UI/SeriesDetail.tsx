@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
-import type { Episode, ProgressWatched, Season, Series } from '../../types';
+import type { Episode, Season, Series } from '../../types';
 import { indexedDbStorage } from '../../utils/indexedDbStorage';
+import { getProgress } from '../../utils/progressWatched';
 import EpisodeCard from '../Cards/EpisodeCard';
 import { VideoPlayer } from '../Player/VideoPlayer';
 import { ButtonBack } from './ButtonBack';
@@ -46,65 +47,6 @@ const findNextSeasonForEpisode = (seasons: Season[], episodeId: string): number 
   return 1;
 };
 
-
-const saveProgress = async (
-  seriesId: string,
-  profileId: string | undefined,
-  episodes: Episode[]
-) => {
-  const progress: ProgressWatched[] = episodes.map((ep) => ({
-    episodeId: ep.id,
-    watched: ep.watched,
-    progress: ep.progress || 0,
-    timestamp: Date.now(),
-  }));
-
-  try {
-    await indexedDbStorage.set(`series_progress_${profileId}_${seriesId}`, progress);
-    console.log('💾 Progresso salvo:', { series: seriesId });
-  } catch (error) {
-    console.error('❌ Erro ao salvar progresso:', error);
-  }
-};
-
-const loadProgress = async (
-  seriesId: string,
-  profileId: string | undefined,
-  seasons: Season[]
-): Promise<Season[]> => {
-  if (!profileId) return seasons;
-
-  try {
-    const progress = await indexedDbStorage.get(`series_progress_${profileId}_${seriesId}`);
-    if (!progress || !Array.isArray(progress)) return seasons;
-
-    console.log('📖 Progresso carregado:', { profile: profileId, series: seriesId });
-
-    return seasons.map((season) => ({
-      ...season,
-      episodes: season.episodes.map((ep) => {
-        const epProgress = progress.find((p: ProgressWatched) => p.episodeId === ep.id);
-        return epProgress
-          ? { ...ep, watched: epProgress.watched, progress: epProgress.progress }
-          : ep;
-      }),
-    }));
-  } catch (error) {
-    console.error('❌ Erro ao carregar progresso:', error);
-    return seasons;
-  }
-};
-
-const getSeasonProgress = (season: Season) => {
-  const watched = season.episodes.filter((ep) => ep.watched).length;
-  const total = season.episodes.length;
-  return {
-    watched,
-    total,
-    percent: total > 0 ? Math.round((watched / total) * 100) : 0,
-  };
-};
-
 export const SeriesDetail = ({
   series,
   onBack,
@@ -124,65 +66,69 @@ export const SeriesDetail = ({
   const nextEpisode = findNextEpisode(seasons, currentEpisodeId);
   const nextSeasonNumber = nextEpisode ? findNextSeasonForEpisode(seasons, nextEpisode.id) : 1;
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
-
   const currentEpisodes = seasons.find((s) => s.number === activeSeason)?.episodes ?? [];
-
+  const loadProgressForEpisodes = (episodes: Episode[]) => {
+    return Promise.all(
+      episodes.map(async (episode) => {
+        const progress = await getProgress('series', profileId!, episode.id);
+        return {
+          ...episode,
+          watched: progress.watched,
+          progress: progress.progress,
+          duration: progress.duration,
+        };
+      })
+    );
+  };
   // Carregar detalhes da série
   useEffect(() => {
-    if (series) {
-      if (series.loaded || !onLoadDetail) return;
+    if (!series || series.loaded || !onLoadDetail) return;
+
+    const load = async () => {
       setLoading(true);
+      try {
+        // ── Tentar cache primeiro ──────────────────────────────────────
+        let loadedSeasons: Season[] | null = null;
 
-      // Tentar carregar do cache primeiro
-      indexedDbStorage
-        .get(`list_episodes_cache_${series.id}`)
-        .then((cachedSeasons) => {
-          if (cachedSeasons && Array.isArray(cachedSeasons)) {
-            console.log('📺 Episódios carregados do cache:', series.id);
-            setSeasons(cachedSeasons);
-            if (currentEpisodeId) {
-              const seasonNum = findNextSeasonForEpisode(cachedSeasons, currentEpisodeId);
-              setActiveSeason(seasonNum);
-            }
-            setLoading(false);
-            return;
-          }
+        const cached = await indexedDbStorage.get(`list_episodes_cache_${series.id}`);
 
-          // Se não houver cache, carregar da API
-          onLoadDetail(series.id)
-            .then((loadedSeasons) => {
-              setSeasons(loadedSeasons);
-              // Salvar no cache
-              indexedDbStorage
-                .set(`list_episodes_cache_${series.id}`, loadedSeasons)
-                .catch((error) => {
-                  console.error('❌ Erro ao salvar episodes no cache:', error);
-                });
-              if (currentEpisodeId) {
-                const seasonNum = findNextSeasonForEpisode(loadedSeasons, currentEpisodeId);
-                setActiveSeason(seasonNum);
-              }
-            })
-            .finally(() => setLoading(false));
-        })
-        .catch(() => {
-          // Se cache falhar, carregar da API
-          onLoadDetail(series.id)
-            .then((loadedSeasons) => {
-              setSeasons(loadedSeasons);
-              indexedDbStorage
-                .set(`list_episodes_cache_${series.id}`, loadedSeasons)
-                .catch((error) => {
-                  console.error('❌ Erro ao salvar episodes no cache:', error);
-                });
-              if (currentEpisodeId) {
-                const seasonNum = findNextSeasonForEpisode(loadedSeasons, currentEpisodeId);
-                setActiveSeason(seasonNum);
-              }
-            })
-            .finally(() => setLoading(false));
-        });
-    }
+        if (cached && Array.isArray(cached)) {
+          console.log('📺 Episódios carregados do cache:', series.id);
+          loadedSeasons = cached as Season[];
+        } else {
+          // ── Carregar da API ──────────────────────────────────────────
+          console.log('🌐 Carregando episódios da API:', series.id);
+          loadedSeasons = await onLoadDetail(series.id);
+
+          // Salvar no cache
+          await indexedDbStorage
+            .set(`list_episodes_cache_${series.id}`, loadedSeasons)
+            .catch((e) => console.error('❌ Erro ao salvar cache:', e));
+        }
+
+        // ── Enriquecer com progresso ───────────────────────────────────
+        const seasonsWithProgress = await Promise.all(
+          loadedSeasons.map(async (season: Season) => {
+            const episodes = await loadProgressForEpisodes(season.episodes);
+            return { ...season, episodes };
+          })
+        );
+
+        setSeasons(seasonsWithProgress);
+
+        // ── Ir para temporada do episódio atual ────────────────────────
+        if (currentEpisodeId) {
+          const seasonNum = findNextSeasonForEpisode(seasonsWithProgress, currentEpisodeId);
+          setActiveSeason(seasonNum);
+        }
+      } catch (error) {
+        console.error('❌ Erro ao carregar episódios:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
   }, [series?.id]);
 
   // Sincronizar temporada com episódio atual
@@ -204,43 +150,6 @@ export const SeriesDetail = ({
     if (!nextEpisode) return;
     setActiveSeason(nextSeasonNumber);
     handlePlay(nextEpisode, nextSeasonNumber);
-  };
-
-  const handleToggleWatched = async (episodeId: string) => {
-    const updatedSeasons = seasons.map((season) => ({
-      ...season,
-      episodes: season.episodes.map((ep) =>
-        ep.id === episodeId ? { ...ep, watched: !ep.watched } : ep
-      ),
-    }));
-
-    setSeasons(updatedSeasons);
-    // Salvar progresso
-    if (series && profileId) {
-      await saveProgress(
-        series.id,
-        profileId,
-        updatedSeasons.flatMap((s) => s.episodes)
-      );
-    }
-    onToggleWatched?.(episodeId);
-  };
-
-  const handleUpdateProgress = async (episodeId: string, progress: number) => {
-    const updatedSeasons = seasons.map((season) => ({
-      ...season,
-      episodes: season.episodes.map((ep) => (ep.id === episodeId ? { ...ep, progress } : ep)),
-    }));
-
-    setSeasons(updatedSeasons);
-    // Salvar progresso
-    if (series && profileId) {
-      await saveProgress(
-        series.id,
-        profileId,
-        updatedSeasons.flatMap((s) => s.episodes)
-      );
-    }
   };
 
   const scrollToEpisodes = () => {
@@ -265,7 +174,7 @@ export const SeriesDetail = ({
             console.error('Erro no player:', error);
           }}
           streamId={currentEpisode.id}
-          type='series'
+          type="series"
           isAutoSave
         />
       </div>

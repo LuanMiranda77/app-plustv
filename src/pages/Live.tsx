@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
+
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
@@ -14,6 +14,11 @@ export const Live = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentStream, setCurrentStream] = useState<any | null>(null);
+  const [displayCount, setDisplayCount] = useState(20);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  const ITEMS_PER_PAGE = 50;
 
   const filteredChannels = channels.filter((channel) => {
     const matchesSearch =
@@ -23,6 +28,10 @@ export const Live = () => {
 
     return matchesSearch && matchesCategory;
   });
+
+  // Canais a exibir (com limit de displayCount)
+  const displayedChannels = filteredChannels.slice(0, displayCount);
+  const hasMoreChannels = displayCount < filteredChannels.length;
 
   useEffect(() => {
     const state = location.state as any;
@@ -38,6 +47,38 @@ export const Live = () => {
     }
   }, [location]);
 
+  // Infinite scroll - detectar quando chegar ao final
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMoreChannels && !isLoadingMore) {
+          setIsLoadingMore(true);
+          // Simular delay de carregamento
+          setTimeout(() => {
+            setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+            setIsLoadingMore(false);
+          }, 300);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [hasMoreChannels, isLoadingMore]);
+
+  // Resetar displayCount ao mudar filtros
+  useEffect(() => {
+    setDisplayCount(ITEMS_PER_PAGE);
+  }, [searchTerm, selectedCategory]);
+
   return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] max-h-[calc(100vh-60px)]">
@@ -46,15 +87,16 @@ export const Live = () => {
           <div className="w-3/12 max-w-[300px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2 overflow-x-auto">
-                {/* <button
+                <button
                   onClick={() => setSelectedCategory(null)}
-                  className={`px-4 py-1 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${selectedCategory === null
+                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg max-md:text-xs font-semibold whitespace-nowrap transition-colors ${
+                    selectedCategory === null
                       ? 'bg-red-600 text-white'
                       : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    }`}
+                  }`}
                 >
-                  Todos
-                </button> */}
+                  TODOS
+                </button>
                 {liveCategories.map((cat) => (
                   <button
                     key={cat.id}
@@ -87,13 +129,9 @@ export const Live = () => {
               disabled={liveCategories.length === 0 || !selectedCategory}
             />
           </div>
-          {!selectedCategory ? (
-            <div className="flex justify-center items-center opacity-30">
-              <img src="/icons.png" />
-            </div>
-          ) : filteredChannels.length > 0 ? (
+          {filteredChannels.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {filteredChannels.map((channel) => (
+              {displayedChannels.map((channel) => (
                 <ChannelCard
                   key={channel.id}
                   id={channel.id}
@@ -123,6 +161,18 @@ export const Live = () => {
                   }}
                 />
               ))}
+
+              {/* Sentinel element para infinite scroll */}
+              <div ref={loadMoreRef} className="col-span-full py-4">
+                {hasMoreChannels && isLoadingMore && (
+                  <div className="flex justify-center">
+                    <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+                {!hasMoreChannels && displayedChannels.length > 0 && (
+                  <p className="text-center text-gray-500 text-sm">Fim da lista</p>
+                )}
+              </div>
             </div>
           ) : (
             <div className="py-16 text-center">

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useEffect, useRef, useState } from 'react';
 import { SeriesCard } from '../components/Cards/SeriesCard';
 import { Input } from '../components/UI/Input';
 import SeriesDetail from '../components/UI/SeriesDetail';
@@ -14,6 +14,11 @@ export const PageSeries = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { serverConfig } = useAuthStore();
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
+  const [displayCount, setDisplayCount] = useState(20);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  const ITEMS_PER_PAGE = 20;
 
   // 2. Só busca episódios quando o usuário ABRE a série
   const loadSeriesDetail = async (seriesId: string) => {
@@ -48,14 +53,13 @@ export const PageSeries = () => {
       s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.category?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || s.category === selectedCategory;
-    
-    if (matchesCategory && matchesSearch ) {
-      const ratringNum = s.rating && s.rating != 'N/A' ? Number(s.rating ?? 0) : 0;
-      return index < 60 && ratringNum > 5;
-    }
 
     return matchesSearch && matchesCategory;
   });
+
+  // Séries a exibir (com limit de displayCount)
+  const displayedSeries = filteredSeries.slice(0, displayCount);
+  const hasMoreSeries = displayCount < filteredSeries.length;
 
   // const loadInBatches = async (seriesList: Series[]) => {
   //   const batchSize = 5;
@@ -65,12 +69,43 @@ export const PageSeries = () => {
   //   }
   // };
 
+  // Infinite scroll - detectar quando chegar ao final
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMoreSeries && !isLoadingMore) {
+          setIsLoadingMore(true);
+          // Simular delay de carregamento
+          setTimeout(() => {
+            setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+            setIsLoadingMore(false);
+          }, 300);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [hasMoreSeries, isLoadingMore]);
+
+  // Resetar displayCount ao mudar filtros
+  useEffect(() => {
+    setDisplayCount(20);
+  }, [searchTerm, selectedCategory]);
+
   return currentSerie ? (
     <SeriesDetail
       series={currentSerie}
       onBack={() => setCurrentSerie(null)}
       onToggleFavorite={(id) => toggleFavorite(id)}
-      onToggleWatched={(id) => toggleWatched(id)}
       onLoadDetail={(id) => loadSeriesDetail(id)}
     />
   ) : (
@@ -123,9 +158,21 @@ export const PageSeries = () => {
           </div>
           {filteredSeries.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {filteredSeries.map((s) => (
+              {displayedSeries.map((s) => (
                 <SeriesCard key={s.id} series={s} onPlay={() => setCurrentSerie(s)} />
               ))}
+
+              {/* Sentinel element para infinite scroll */}
+              <div ref={loadMoreRef} className="col-span-full py-4">
+                {hasMoreSeries && isLoadingMore && (
+                  <div className="flex justify-center">
+                    <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+                {!hasMoreSeries && displayedSeries.length > 0 && (
+                  <p className="text-center text-gray-500 text-sm">Fim da lista</p>
+                )}
+              </div>
             </div>
           ) : (
             <div className="text-center py-16">

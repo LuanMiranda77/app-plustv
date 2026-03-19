@@ -1,6 +1,6 @@
 import { Film, Heart, Home, Tv2, TvMinimalPlay } from 'lucide-react';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useServerContent } from '../../../hooks/useServerContent';
 import { useAuthStore } from '../../../store/authStore';
@@ -21,6 +21,11 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const { lastUpdate } = useServerContent();
   const navigate = useNavigate();
   const rounteInvisible = ['/profiles', '/player', '/'];
+  useEffect(() => {
+    if (window.location.pathname === '/') {
+      navigate('/home');
+    }
+  },[window.location.pathname])
 
   return (
     !rounteInvisible.includes(window.location.pathname) && (
