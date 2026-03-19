@@ -10,6 +10,7 @@ interface AutoCarouselItem {
   genre?: string;
   description?: string;
   rating?: string;
+  year?: string;
   onPlay: () => void;
   onInfo?: () => void;
 }
@@ -120,25 +121,7 @@ export const AutoCarousel = ({
           </div>
 
           {/* Info */}
-          <div className="flex-1 min-w-0" style={{ animation: 'fadeSlideIn 0.6s ease 0.2s both' }}>
-            {/* Gênero badges */}
-            {currentItem.genre && (
-              <div className="flex gap-2 mb-3 flex-wrap">
-                {currentItem.genre
-                  .split(',')
-                  .slice(0, 3)
-                  .map((g) => (
-                    <span
-                      key={g}
-                      className="text-xs px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-sm
-                               border border-white/10 text-zinc-300"
-                    >
-                      {g.trim()}
-                    </span>
-                  ))}
-              </div>
-            )}
-          </div>
+
           <div className="max-w-2xl">
             {/* Título */}
             <h1 className="text-left text-4xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg line-clamp-2">
@@ -146,8 +129,30 @@ export const AutoCarousel = ({
             </h1>
 
             {/* Meta info */}
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-2">
+              {currentItem.year && (
+                <span className="text-zinc-400 text-sm">{currentItem.year}</span>
+              )}
               {currentItem.rating && <StartRating rating={currentItem.rating} />}
+              <div className="flex-1">
+                {/* Gênero badges */}
+                {currentItem.genre && (
+                  <div className="flex gap-2 flex-wrap">
+                    {currentItem.genre
+                      .split(',')
+                      .slice(0, 3)
+                      .map((g) => (
+                        <span
+                          key={g}
+                          className="text-xs px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-sm
+                               border border-white/10 text-zinc-300"
+                        >
+                          {g.trim()}
+                        </span>
+                      ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Descrição */}

@@ -12,21 +12,25 @@ import { mockWatchHistory } from '../data/mockData';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
-import type { Movie } from '../types';
 
 export const Home = () => {
   const navigate = useNavigate();
   const { serverConfig } = useAuthStore();
   const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
-  const { addToHistory, getRecentlyWatched } = useWatchHistoryStore();
+  const { addToHistory, getRecentlyWatched, loadFromStorage, removeFromHistory } = useWatchHistoryStore();
   const [scrolling, setScrolling] = useState(false);
-  const [recentlyWatched, setRecentlyWatched] = useState<typeof mockWatchHistory>([]);
+  const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
+  const [recentMovies, setRecentMovies] = useState<any[]>([]);
+  const [recentSeries, setRecentSeries] = useState<any[]>([]);
   const hasLoadedData = useRef(false);
 
   useEffect(() => {
     // Only load data once on mount
     if (hasLoadedData.current) return;
     hasLoadedData.current = true;
+
+    // Carregar histórico do localStorage
+    loadFromStorage();
 
     // Tentar buscar do servidor real se houver configuração
     if (serverConfig) {
@@ -44,13 +48,15 @@ export const Home = () => {
     }
 
     // Load mock watch history
-    mockWatchHistory.forEach((item) => {
-      addToHistory(item);
-    });
+    // mockWatchHistory.forEach((item) => {
+    //   addToHistory(item);
+    // });
 
     // Get recently watched items after loading history
     setTimeout(() => {
-      setRecentlyWatched(getRecentlyWatched(6));
+      setRecentlyWatched(getRecentlyWatched(20));
+      // setRecentMovies(getRecentMovies());
+      // setRecentSeries(getRecentSeries());
     }, 0);
   }, []);
 
@@ -74,32 +80,30 @@ export const Home = () => {
     return ratingNum >= 7 && i < 30;
   });
 
-    const navigateMovie = (movie: any) => {
-      navigate('/player', {
-        state: {
-          id: movie.id,
-          streamUrl: movie.streamUrl,
-          title: movie.name,
-          poster: movie.poster,
-          type: 'movie',
-          category: movie.category,
-          genre: movie.genre,
-        },
-      });
-    };
-    const navigateSerie = (serie: any) => {
-      navigate('/series', {
-        state: {
-          id: serie.id,
-          streamUrl: serie.streamUrl,
-          title: serie.name,
-          poster: serie.poster,
-          type: 'serie',
-          category: serie.category,
-          genre: serie.genre,
-        },
-      });
-    };
+  const navigateMovie = (movie: any) => {
+    navigate('/player', {
+      state: {
+        id: movie.id,
+        streamUrl: movie.streamUrl,
+        title: movie.name,
+        poster: movie.poster,
+        type: 'movie',
+        category: movie.category,
+      },
+    });
+  };
+  const navigateSerie = (serie: any) => {
+    navigate('/series', {
+      state: {
+        id: serie.id,
+        streamUrl: serie.streamUrl,
+        title: serie.name,
+        poster: serie.poster,
+        type: 'serie',
+        category: serie.category,
+      },
+    });
+  };
 
   // Preparar dados do carousel automático (destaque)
   const heroItems = [
@@ -109,6 +113,8 @@ export const Home = () => {
       poster: m.poster,
       description: m.plot || m.category,
       rating: m.rating,
+      genre: m.genre,
+      year: m.year,
       onPlay: () => navigateMovie(m),
     })),
     ...series.slice(0, 5).map((s) => ({
@@ -117,6 +123,8 @@ export const Home = () => {
       poster: s.poster,
       description: s.plot || s.category,
       rating: s.rating,
+      genre: s.genre,
+      year: s.year,
       onPlay: () => navigateSerie(s),
     })),
   ];
@@ -182,8 +190,6 @@ export const Home = () => {
       )}
     </section>
   );
-
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
@@ -311,8 +317,6 @@ export const Home = () => {
                     let streamUrl = '';
                     if (item.type === 'movie' && 'streamUrl' in item.content) {
                       streamUrl = item.content.streamUrl;
-                    } else if (item.type === 'channel' && 'streamUrl' in item.content) {
-                      streamUrl = item.content.streamUrl;
                     } else if (
                       item.type === 'series' &&
                       'seasons' in item.content &&
@@ -327,17 +331,9 @@ export const Home = () => {
                           item={item}
                           onPlay={() => {
                             if (item.type === 'movie') {
-                              navigate('/player', {
-                                state: { movieId: item.id, streamUrl },
-                              });
+                              navigateMovie(item);
                             } else if (item.type === 'series') {
-                              navigate('/player', {
-                                state: { seriesId: item.id, streamUrl },
-                              });
-                            } else {
-                              navigate('/player', {
-                                state: { channelId: item.id, streamUrl },
-                              });
+                              navigateSerie(item);
                             }
                           }}
                         />
