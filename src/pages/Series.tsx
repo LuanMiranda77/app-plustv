@@ -8,6 +8,7 @@ import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Season, Series } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
+import { useLocation } from 'react-router-dom';
 
 export const PageSeries = () => {
   const { series, seriesCategories } = useContentStore();
@@ -19,6 +20,7 @@ export const PageSeries = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   const ITEMS_PER_PAGE = 20;
 
@@ -78,14 +80,6 @@ export const PageSeries = () => {
   const displayedSeries = filteredSeries.slice(0, displayCount);
   const hasMoreSeries = displayCount < filteredSeries.length;
 
-  // const loadInBatches = async (seriesList: Series[]) => {
-  //   const batchSize = 5;
-  //   for (let i = 0; i < seriesList.length; i += batchSize) {
-  //     const batch = seriesList.slice(i, i + batchSize);
-  //     await Promise.all(batch.map((s) => loadSeriesDetail(s.id)));
-  //   }
-  // };
-
   // Infinite scroll - detectar quando chegar ao final
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -117,6 +111,16 @@ export const PageSeries = () => {
   useEffect(() => {
     setDisplayCount(20);
   }, [searchTerm, selectedCategory]);
+
+  useEffect(() => {
+    const state = location.state as any;
+    if (state) {
+      setCurrentSerie(state);
+      setSelectedCategory(state.category || null);
+    } else {
+      setCurrentSerie(null);
+    }
+  }, [location]);
 
   return currentSerie ? (
     <SeriesDetail

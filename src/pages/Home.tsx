@@ -1,42 +1,47 @@
-import { Clock, Film, Play, Sparkles, TrendingUp, Tv2 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ChannelCard } from '../components/Cards/ChannelCard'
-import { ContinueWatchingCard } from '../components/Cards/ContinueWatchingCard'
-import { MovieCard } from '../components/Cards/MovieCard'
-import { SeriesCard } from '../components/Cards/SeriesCard'
-import { Carousel } from '../components/Carousel'
-import { LoadingSpinner } from '../components/UI/LoadingSpinner'
-import {
-  mockChannels,
-  mockLiveCategories,
-  mockMovies,
-  mockSeries,
-  mockSeriesCategories,
-  mockVodCategories,
-  mockWatchHistory,
-} from '../data/mockData'
-import { useAuthStore } from '../store/authStore'
-import { useContentStore } from '../store/contentStore'
-import { useWatchHistoryStore } from '../store/watchHistoryStore'
+import { Clock, Film, Play, Sparkles, TrendingUp, Tv2, TvMinimalPlay } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChannelCard } from '../components/Cards/ChannelCard';
+import { ContinueWatchingCard } from '../components/Cards/ContinueWatchingCard';
+import { MovieCard } from '../components/Cards/MovieCard';
+import { SeriesCard } from '../components/Cards/SeriesCard';
+import { Carousel } from '../components/Carousel';
+import { LoadingSpinner } from '../components/UI/LoadingSpinner';
+import { mockWatchHistory } from '../data/mockData';
+import { useAuthStore } from '../store/authStore';
+import { useContentStore } from '../store/contentStore';
+import { useWatchHistoryStore } from '../store/watchHistoryStore';
 
 export const Home = () => {
-  const navigate = useNavigate()
-  const { activeProfile, serverConfig } = useAuthStore()
-  const { movies, channels, series, isLoading, error, setMovies, setSeries, setChannels, setVodCategories, setSeriesCategories, setLiveCategories, fetchServerContent } = useContentStore()
-  const { addToHistory, getRecentlyWatched } = useWatchHistoryStore()
-  const [scrolling, setScrolling] = useState(false)
-  const [recentlyWatched, setRecentlyWatched] = useState<typeof mockWatchHistory>([])
-  const hasLoadedData = useRef(false)
+  const navigate = useNavigate();
+  const { activeProfile, serverConfig } = useAuthStore();
+  const {
+    movies,
+    channels,
+    series,
+    isLoading,
+    error,
+    setMovies,
+    setSeries,
+    setChannels,
+    setVodCategories,
+    setSeriesCategories,
+    setLiveCategories,
+    fetchServerContent,
+  } = useContentStore();
+  const { addToHistory, getRecentlyWatched } = useWatchHistoryStore();
+  const [scrolling, setScrolling] = useState(false);
+  const [recentlyWatched, setRecentlyWatched] = useState<typeof mockWatchHistory>([]);
+  const hasLoadedData = useRef(false);
 
   useEffect(() => {
     // Only load data once on mount
-    if (hasLoadedData.current) return
-    hasLoadedData.current = true
+    if (hasLoadedData.current) return;
+    hasLoadedData.current = true;
 
     // Tentar buscar do servidor real se houver configuração
     if (serverConfig) {
-      fetchServerContent(serverConfig)
+      fetchServerContent(serverConfig);
     } else {
       // Fallback para mock data se não houver config do servidor
       // if (movies.length === 0) {
@@ -51,54 +56,34 @@ export const Home = () => {
 
     // Load mock watch history
     mockWatchHistory.forEach((item) => {
-      addToHistory(item)
-    })
+      addToHistory(item);
+    });
 
     // Get recently watched items after loading history
     setTimeout(() => {
-      setRecentlyWatched(getRecentlyWatched(6))
-    }, 0)
-  }, [])
+      setRecentlyWatched(getRecentlyWatched(6));
+    }, 0);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolling(window.scrollY > 100)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+      setScrolling(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const trendingMovies = movies.slice(0, 8)
-  const newMovies = movies.slice(0, 6)
-  const topChannels = channels.slice(0, 8)
-  const trendingSeries = series.slice(0, 8)
-
-  const NavigationCard = ({
-    icon: Icon,
-    title,
-    description,
-    onClick,
-    count,
-  }: {
-    icon: any
-    title: string
-    description: string
-    onClick: () => void
-    count: number
-  }) => (
-    <button
-      onClick={onClick}
-      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-red-600/50 transition-all duration-200 hover:scale-105 text-left overflow-hidden"
-    >
-      <div className="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-      <div className="relative">
-        <Icon className="w-8 h-8 text-red-600 mb-3" />
-        <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
-        <p className="text-gray-400 text-sm">{description}</p>
-        <div className="mt-4 text-xs text-gray-500">{count} itens</div>
-      </div>
-    </button>
-  )
+  const topChannels = channels.slice(0, 8);
+  const newMovies = movies.slice(0, 10);
+  const newSeries = series.slice(0, 10);
+  const trendingMovies = movies.filter((m, i) => {
+    const ratingNum = m.rating && m.rating !== 'N/A' ? Number(m.rating) : 0;
+    return ratingNum >= 7 && i < 30;
+  });
+  const trendingSeries = series.filter((m, i) => {
+    const ratingNum = m.rating && m.rating !== 'N/A' ? Number(m.rating) : 0;
+    return ratingNum >= 7 && i < 30;
+  });
 
   const CarouselSection = ({
     title,
@@ -109,19 +94,19 @@ export const Home = () => {
     onViewMore,
     badge,
   }: {
-    title: string
-    subtitle?: string
-    icon?: any
-    items: any[]
-    renderItem: (item: any) => React.ReactNode
-    onViewMore: () => void
-    badge?: 'novo' | 'trending'
+    title: string;
+    subtitle?: string;
+    icon?: any;
+    items: any[];
+    renderItem: (item: any) => React.ReactNode;
+    onViewMore: () => void;
+    badge?: 'novo' | 'trending';
   }) => (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            {Icon && <Icon className="w-6 h-6 text-red-600" />}
+            {Icon && <Icon className="w-6 h-6 text-red-600 mt-1" />}
             <h2 className="text-2xl font-bold text-white">{title}</h2>
           </div>
           {badge === 'novo' && (
@@ -160,8 +145,7 @@ export const Home = () => {
         </div>
       )}
     </section>
-  )
-
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
@@ -178,7 +162,7 @@ export const Home = () => {
               Acesse seus filmes, séries e canais favoritos em qualquer lugar
             </p>
             <button
-              onClick={() => navigate('/movies')}
+              onClick={() => navigate('/movie')}
               className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-red-600/50"
             >
               <Play className="w-5 h-5 fill-current" />
@@ -260,13 +244,17 @@ export const Home = () => {
 
                 <Carousel>
                   {recentlyWatched.map((item) => {
-                    let streamUrl = ''
+                    let streamUrl = '';
                     if (item.type === 'movie' && 'streamUrl' in item.content) {
-                      streamUrl = item.content.streamUrl
+                      streamUrl = item.content.streamUrl;
                     } else if (item.type === 'channel' && 'streamUrl' in item.content) {
-                      streamUrl = item.content.streamUrl
-                    } else if (item.type === 'series' && 'seasons' in item.content && item.content.seasons[0]?.episodes[0]) {
-                      streamUrl = item.content.seasons[0].episodes[0].streamUrl
+                      streamUrl = item.content.streamUrl;
+                    } else if (
+                      item.type === 'series' &&
+                      'seasons' in item.content &&
+                      item.content.seasons[0]?.episodes[0]
+                    ) {
+                      streamUrl = item.content.seasons[0].episodes[0].streamUrl;
                     }
 
                     return (
@@ -277,23 +265,51 @@ export const Home = () => {
                             if (item.type === 'movie') {
                               navigate('/player', {
                                 state: { movieId: item.id, streamUrl },
-                              })
+                              });
                             } else if (item.type === 'series') {
                               navigate('/player', {
                                 state: { seriesId: item.id, streamUrl },
-                              })
+                              });
                             } else {
                               navigate('/player', {
                                 state: { channelId: item.id, streamUrl },
-                              })
+                              });
                             }
                           }}
                         />
                       </div>
-                    )
+                    );
                   })}
                 </Carousel>
               </section>
+            )}
+
+            {/* Live Channels */}
+            {topChannels.length > 0 && (
+              <CarouselSection
+                title="Canais ao Vivo"
+                subtitle="Seus canais favoritos em tempo real"
+                icon={Tv2}
+                items={topChannels}
+                renderItem={(channel) => (
+                  <ChannelCard
+                    channel={channel}
+                    onPlay={() => {
+                      navigate('/player', {
+                        state: {
+                          id: channel.id,
+                          streamUrl: channel.streamUrl,
+                          title: channel.name,
+                          poster: channel.logo,
+                          type: 'live',
+                          category: channel.category,
+                        },
+                      });
+                    }}
+                  />
+                )}
+                onViewMore={() => navigate('/live')}
+              />
             )}
 
             {/* Trending Movies */}
@@ -304,8 +320,24 @@ export const Home = () => {
                 icon={TrendingUp}
                 items={trendingMovies}
                 badge="trending"
-                renderItem={(movie) => <MovieCard movie={movie} />}
-                onViewMore={() => navigate('/movies')}
+                renderItem={(movie) => (
+                  <MovieCard
+                    movie={movie}
+                    onPlay={() => {
+                      navigate('/player', {
+                        state: {
+                          id: movie.id,
+                          streamUrl: movie.streamUrl,
+                          title: movie.name,
+                          poster: movie.poster,
+                          type: 'movie',
+                          category: movie.category,
+                        },
+                      });
+                    }}
+                  />
+                )}
+                onViewMore={() => navigate('/movie')}
               />
             )}
 
@@ -317,20 +349,24 @@ export const Home = () => {
                 icon={Sparkles}
                 items={newMovies}
                 badge="novo"
-                renderItem={(movie) => <MovieCard movie={movie} />}
-                onViewMore={() => navigate('/movies')}
-              />
-            )}
-
-            {/* Live Channels */}
-            {topChannels.length > 0 && (
-              <CarouselSection
-                title="Canais ao Vivo"
-                subtitle="Seus canais favoritos em tempo real"
-                icon={Tv2}
-                items={topChannels}
-                renderItem={(channel) => <ChannelCard channel={channel} />}
-                onViewMore={() => navigate('/live')}
+                renderItem={(movie) => (
+                  <MovieCard
+                    movie={movie}
+                    onPlay={() => {
+                      navigate('/player', {
+                        state: {
+                          id: movie.id,
+                          streamUrl: movie.streamUrl,
+                          title: movie.name,
+                          poster: movie.poster,
+                          type: 'movie',
+                          category: movie.category,
+                        },
+                      });
+                    }}
+                  />
+                )}
+                onViewMore={() => navigate('/movie')}
               />
             )}
 
@@ -339,27 +375,74 @@ export const Home = () => {
               <CarouselSection
                 title="Séries Populares"
                 subtitle="Acompanhe as séries mais assistidas"
-                icon={Tv2}
+                icon={TvMinimalPlay}
                 items={trendingSeries}
                 badge="trending"
-                renderItem={(s) => <SeriesCard series={s} />}
+                renderItem={(s) => (
+                  <SeriesCard
+                    series={s}
+                    onPlay={() => {
+                      navigate('/series', {
+                        state: {
+                          id: s.id,
+                          streamUrl: s.streamUrl,
+                          title: s.name,
+                          poster: s.poster,
+                          type: 'series',
+                          category: s.category,
+                        },
+                      });
+                    }}
+                  />
+                )}
+                onViewMore={() => navigate('/series')}
+              />
+            )}
+
+            {/* New Movies */}
+            {trendingSeries.length > 0 && (
+              <CarouselSection
+                title="Lançamento"
+                subtitle="Confira os novos séries adicionados"
+                icon={Sparkles}
+                items={newSeries}
+                badge="novo"
+                renderItem={(s) => (
+                  <SeriesCard
+                    series={s}
+                    onPlay={() => {
+                      navigate('/series', {
+                        state: {
+                          id: s.id,
+                          streamUrl: s.streamUrl,
+                          title: s.name,
+                          poster: s.poster,
+                          type: 'series',
+                          category: s.category,
+                        },
+                      });
+                    }}
+                  />
+                )}
                 onViewMore={() => navigate('/series')}
               />
             )}
 
             {/* Empty State */}
-            {trendingMovies.length === 0 && topChannels.length === 0 && trendingSeries.length === 0 && (
-              <div className="text-center py-16">
-                <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
-                <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
-                <p className="text-gray-500 text-sm mt-2">
-                  Faça login com suas credenciais IPTV para ver o conteúdo
-                </p>
-              </div>
-            )}
+            {trendingMovies.length === 0 &&
+              topChannels.length === 0 &&
+              trendingSeries.length === 0 && (
+                <div className="text-center py-16">
+                  <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
+                  <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Faça login com suas credenciais IPTV para ver o conteúdo
+                  </p>
+                </div>
+              )}
           </>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
