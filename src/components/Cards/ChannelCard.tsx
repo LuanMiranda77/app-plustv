@@ -8,9 +8,10 @@ interface ChannelCardProps {
   id?: string | number;
   channel: Channel;
   onPlay?: () => void;
+  isFocused?: boolean;
 }
 
-export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
+export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps) => {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(channel.id));
 
@@ -47,18 +48,19 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
     <div className="relative flex items-center justify-between">
       <button
         id={`cd-${id}`}
-        className="
+        className={`
         group
         relative 
         flex items-start
         w-full 
         overflow-hidden 
-        transition-transform 
+        transition-all 
         duration-200 bg-gray-800 
         rounded-tl rounded-bl
-       itens-center 
-        hover:scale-102
-      "
+        items-center
+        ${isFocused ? 'scale-105 shadow-lg shadow-red-600/50' : ''}
+        hover:scale-105
+      `}
         onClick={() => {
           handleFullscreen();
           onPlay?.();
@@ -80,13 +82,13 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
           />
         </div>
         <h3
-          className="
+          className={`
           text-white text-4xl max-md:text-lg
           w-full h-[80px] max-md:h-[50px] text-left font-semibold 
           flex items-center line-clamp-1 px-2 break-all
-          group-focus:ring-2 group-focus:bg-red-600 group-focus:ring-offset-2 group-focus:ring-offset-gray-800
-          group-hover:ring-2 group-hover:bg-red-600 group-hover:ring-offset-2 group-hover:ring-offset-gray-800
-          "
+          transition-all duration-200
+          ${isFocused ? 'bg-red-600 ring-2 ring-red-500 ring-offset-2 ring-offset-gray-800' : 'group-hover:ring-2 group-hover:bg-red-600 group-hover:ring-offset-2 group-hover:ring-offset-gray-800'}
+          `}
         >
           {channel.name}
         </h3>

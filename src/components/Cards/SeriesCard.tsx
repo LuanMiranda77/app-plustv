@@ -6,18 +6,19 @@ import StartRating from '../UI/StarRating';
 interface SeriesCardProps {
   series: Series;
   onPlay?: () => void;
+  isFocused?: boolean;
 }
 
-export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
+export const SeriesCard = ({ series, onPlay, isFocused }: SeriesCardProps) => {
   const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(series.id);
 
   return (
     <button
-      className="group relative bg-gray-800 
+      className={`group relative bg-gray-800 
       rounded-lg overflow-hidden focus:scale-105 hover:scale-105 
-      transition-transform duration-200 
-      outline-netflix-red-200 hover:outline-2 focus:outline-2"
+      transition-all duration-200 
+      ${isFocused ? 'scale-105 outline-red-600 outline-2 shadow-lg shadow-red-600/50' : 'outline-2 outline-transparent'}`}
       onClick={onPlay}
     >
       {/* Poster */}
@@ -38,7 +39,15 @@ export const SeriesCard = ({ series, onPlay }: SeriesCardProps) => {
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-focus:opacity-100 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+      <div
+        className={`
+          absolute inset-0 bg-gradient-to-t 
+          from-black/80 via-transparent to-transparent opacity-0 
+          group-focus:opacity-100 group-hover:opacity-100 
+          transition-opacity flex flex-col justify-end p-3
+          ${isFocused ? 'opacity-100' : ''}
+        `}
+      >
         <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{series.name}</h3>
 
         <div className="text-gray-300 text-xs mb-2">{series.seasons?.length || 0} temporada(s)</div>

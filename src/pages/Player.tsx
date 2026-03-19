@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { VideoPlayer } from '../components/Player/VideoPlayer';
 import { ButtonBack } from '../components/UI/ButtonBack';
+import { useRemoteControl } from '../hooks/useRemotoControl';
 // import { useAuthStore } from '../store/authStore';
 
 export const Player = () => {
@@ -36,6 +37,17 @@ export const Player = () => {
       });
     }
   }, [location]);
+
+  const handleGoBack = () => {
+    navigate(`/${!currentStream?.type ? 'home' : currentStream?.type}`, {
+      state: currentStream,
+    });
+    setCurrentStream(null);
+  };
+
+  useRemoteControl({
+    onBack: () => handleGoBack(),
+  });
 
   return (
     currentStream && (

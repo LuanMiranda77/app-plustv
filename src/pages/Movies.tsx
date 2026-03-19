@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react';
 import { MovieCard } from '../components/Cards/MovieCard';
+import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
 import MovieDetail from '../components/UI/MovieDetail';
+import { useFocusZone } from '../Context/FocusContext';
+import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Movie } from '../types';
-import ButtonCategory from '../components/UI/ButtonCategory';
 
 export const Movies = () => {
   const { movies, vodCategories } = useContentStore();
@@ -17,23 +19,24 @@ export const Movies = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const { activeZone, setActiveZone } = useFocusZone();
+  const [focusedCat, setFocusedCat] = useState(0);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const isZoneCat = activeZone === 'content';
+  const isZoneList = activeZone === 'list';
 
   const ITEMS_PER_PAGE = 20;
+
+  const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...vodCategories];
+
   const filteredMovies = movies.filter((movie) => {
     const matchesSearch =
       movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || movie.category === selectedCategory;
 
-    if (selectedCategory == null) {
-      // const ratringNum = movie.rating && movie.rating != 'N/A' ? Number(movie.rating ?? 0) : 0;
-      // return index < 60 && ratringNum > 6;
-    }
-
     return matchesSearch && matchesCategory;
   });
-  filteredMovies.push({ name: 'FAVORITOS' } as Movie); // Adiciona um item vazio para evitar erro de array vazio no filtro
-  filteredMovies.push({ name: 'TODOS' } as Movie); // Adiciona um item vazio para evitar erro de array vazio no filtro
 
   // Filmes a exibir (com limit de displayCount)
   const displayedMovies = filteredMovies.slice(0, displayCount);
@@ -46,6 +49,52 @@ export const Movies = () => {
       addFavorite(movie, 'movie');
     }
   };
+
+  useRemoteControl({
+    onRight: () => {
+      if (isZoneCat) {
+        setActiveZone('list');
+        setFocusedIndex(0);
+      }
+      if (isZoneList && focusedIndex < displayedMovies.length - 1) {
+        setFocusedIndex(focusedIndex + 1);
+      }
+    },
+    onLeft: () => {
+      if (isZoneList && focusedIndex > 0) {
+        setFocusedIndex(focusedIndex - 1);
+      }
+    },
+    onDown: () => {
+      if (isZoneCat && focusedCat < vodCategories.length) {
+        setFocusedCat(Math.min(focusedCat + 1, vodCategories.length));
+      }
+      if (isZoneList && focusedIndex < displayedMovies.length - 1) {
+        setFocusedIndex(Math.min(focusedIndex + 5, displayedMovies.length - 1));
+      }
+    },
+    onUp: () => {
+      if (isZoneCat && focusedCat > 0) {
+        setFocusedCat(Math.max(focusedCat - 1, 0));
+      }
+      if (isZoneList && focusedIndex > 0) {
+        setFocusedIndex(Math.max(focusedIndex - 5, 0));
+      }
+    },
+    onOk: () => {
+      if (isZoneCat) {
+        setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
+      }
+      if (isZoneList && displayedMovies[focusedIndex]) {
+        setCurrentMovie(displayedMovies[focusedIndex]);
+      }
+    },
+    onBack: () => {
+      if (currentMovie) {
+        setCurrentMovie(null);
+      }
+    },
+  });
 
   // Infinite scroll - detectar quando chegar ao final
   useEffect(() => {
@@ -93,21 +142,16 @@ export const Movies = () => {
           <div className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
             <div className="px-6 py-4">
               <div className="flex flex-col gap-2 overflow-x-auto pb-2">
-                <ButtonCategory
-                  id={'-1'}
-                  name={'TODOS'}
-                  isSelected={selectedCategory === null}
-                  // isFocused={focusedIndex === i}
-                  onClick={() => setSelectedCategory(null)}
-                />
-                {vodCategories.map((cat) => (
+                {categoriesWithAll.map((cat, i) => (
                   <ButtonCategory
-                    key={cat.id}
-                    id={cat.id}
+                    key={cat.id || 'all'}
+                    id={String(cat.id || '-1')}
                     name={cat.name.replace('FILMES |', '')}
-                    isSelected={selectedCategory === cat.id}
-                    // isFocused={focusedIndex === i}
-                    onClick={() => setSelectedCategory(cat.id)}
+                    isSelected={selectedCategory === (cat.id as any)}
+                    isFocused={isZoneCat && focusedCat === i}
+                    onClick={() => {
+                      setSelectedCategory(cat.id as any);
+                    }}
                   />
                 ))}
               </div>
@@ -128,9 +172,14 @@ export const Movies = () => {
           </div>
           {filteredMovies.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {displayedMovies.map((movie) => {
+              {displayedMovies.map((movie, i) => {
                 return (
-                  <MovieCard key={movie.id} movie={movie} onPlay={() => setCurrentMovie(movie)} />
+                  <MovieCard
+                    key={movie.id}
+                    movie={movie}
+                    onPlay={() => setCurrentMovie(movie)}
+                    isFocused={focusedIndex === i}
+                  />
                 );
               })}
 

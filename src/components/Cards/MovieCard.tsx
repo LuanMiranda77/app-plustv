@@ -6,20 +6,20 @@ import StartRating from '../UI/StarRating';
 interface MovieCardProps {
   movie: Movie;
   onPlay?: () => void;
+  isFocused?: boolean;
 }
 
-export const MovieCard = ({ movie, onPlay }: MovieCardProps) => {
+export const MovieCard = ({ movie, onPlay, isFocused }: MovieCardProps) => {
   const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(movie.id);
-
 
   return (
     <button
       onClick={onPlay}
-      className="group relative bg-gray-800 rounded-lg overflow-hidden 
+      className={`group relative bg-gray-800 rounded-lg overflow-hidden 
       focus:scale-105 hover:scale-105 
-      transition-transform duration-200 
-      outline-netflix-red-200 hover:outline-2 focus:outline-2"
+      transition-all duration-200 
+      ${isFocused ? 'scale-105 outline-red-600 outline-2 shadow-lg shadow-red-600/50' : 'outline-2 outline-transparent'}`}
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
@@ -39,7 +39,15 @@ export const MovieCard = ({ movie, onPlay }: MovieCardProps) => {
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-focus:opacity-100 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+      <div
+        className={`
+          absolute inset-0 bg-gradient-to-t 
+          from-black/80 via-transparent to-transparent opacity-0 
+          group-focus:opacity-100 group-hover:opacity-100 
+          transition-opacity flex flex-col justify-end p-3
+          ${isFocused ? 'opacity-100' : ''}
+        `}
+      >
         <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{movie.name}</h3>
 
         {/* <div className="flex gap-2">

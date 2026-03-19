@@ -5,11 +5,15 @@ import { MovieCard } from '../components/Cards/MovieCard';
 import { SeriesCard } from '../components/Cards/SeriesCard';
 import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
+import { useFocusZone } from '../Context/FocusContext';
+import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useFavoritesStore } from '../store/favoritesStore';
 
 export const Favorites = () => {
   const navigate = useNavigate();
   const { getFavoritesByType } = useFavoritesStore();
+  const { activeZone } = useFocusZone();
+  const [focusedIndex, setFocusedIndex] = useState(0);
 
   const favoriteChannels = getFavoritesByType('live').map((item) => ({
     ...item,
@@ -26,7 +30,7 @@ export const Favorites = () => {
   const combinedList = favoriteChannels.concat(favoriteMovies, favoriteSeries);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('1');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const favoriteCategories = [
     {
       id: '1',
@@ -51,6 +55,29 @@ export const Favorites = () => {
     return matchesSearch && matchesCategory;
   });
 
+  useRemoteControl({
+    onRight: () => {
+      if (activeZone === 'content' && focusedIndex < filteredSeries.length - 1) {
+        setFocusedIndex(focusedIndex + 1);
+      }
+    },
+    onLeft: () => {
+      if (activeZone === 'content' && focusedIndex > 0) {
+        setFocusedIndex(focusedIndex - 1);
+      }
+    },
+    onDown: () => {
+      if (activeZone === 'content' && focusedIndex < filteredSeries.length - 1) {
+        setFocusedIndex(Math.min(focusedIndex + 5, filteredSeries.length - 1));
+      }
+    },
+    onUp: () => {
+      if (activeZone === 'content' && focusedIndex > 0) {
+        setFocusedIndex(Math.max(focusedIndex - 5, 0));
+      }
+    },
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
@@ -59,14 +86,14 @@ export const Favorites = () => {
           <div className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
             <div className="max-w-7xl mx-auto px-6 py-4">
               <div className="flex flex-col gap-2 overflow-x-auto pb-2">
-                {favoriteCategories.map((cat) => {
+                {favoriteCategories.map((cat, i) => {
                   return (
                     <ButtonCategory
                       key={cat.id}
                       id={cat.id}
                       name={cat.name}
                       isSelected={selectedCategory === cat.id}
-                      // isFocused={focusedIndex === i}
+                      isFocused={focusedIndex === i}
                       onClick={() => setSelectedCategory(cat.id)}
                     />
                   );
@@ -88,12 +115,13 @@ export const Favorites = () => {
           </div>
           {filteredSeries.length > 0 && selectedCategory != '1' ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {filteredSeries.map((stream) => {
+              {filteredSeries.map((stream, i) => {
                 if (stream.category_fav === '2') {
                   return (
                     <MovieCard
                       key={stream.id}
                       movie={stream as any}
+                      isFocused={activeZone === 'content' && focusedIndex === i}
                       onPlay={() => {
                         navigate('/player', {
                           state: {
@@ -114,6 +142,7 @@ export const Favorites = () => {
                     <SeriesCard
                       key={stream.id}
                       series={stream as any}
+                      isFocused={activeZone === 'content' && focusedIndex === i}
                       onPlay={() => {
                         navigate('/series', {
                           state: {
@@ -133,6 +162,7 @@ export const Favorites = () => {
                   <ChannelCard
                     key={stream.id}
                     channel={stream as any}
+                    isFocused={activeZone === 'content' && focusedIndex === i}
                     onPlay={() => {
                       navigate('/player', {
                         state: {
@@ -151,11 +181,12 @@ export const Favorites = () => {
             </div>
           ) : selectedCategory == '1' ? (
             <div className="grid grid-cols-1 gap-4">
-              {filteredSeries.map((stream) => {
+              {filteredSeries.map((stream, i) => {
                 return (
                   <ChannelCard
                     key={stream.id}
                     channel={stream as any}
+                    isFocused={activeZone === 'content' && focusedIndex === i}
                     onPlay={() => {
                       navigate('/player', {
                         state: {

@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
+import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
+import { useFocusZone } from '../Context/FocusContext';
+import { useRemoteControl } from '../hooks/useRemotoControl';
 import useWindowSize from '../hooks/useWindowSize';
 import { useContentStore } from '../store/contentStore';
-import ButtonCategory from '../components/UI/ButtonCategory';
 
 export const Live = () => {
   const navigate = useNavigate();
@@ -20,8 +22,15 @@ export const Live = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowSize();
+  const { activeZone, setActiveZone } = useFocusZone();
+  const [focusedCat, setFocusedCat] = useState(0);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const isZoneCat = activeZone === 'content';
+  const isZoneList = activeZone === 'list';
 
   const ITEMS_PER_PAGE = 20;
+
+  const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...liveCategories];
 
   const filteredChannels = channels.filter((channel) => {
     const matchesSearch =
@@ -35,6 +44,63 @@ export const Live = () => {
   // Canais a exibir (com limit de displayCount)
   const displayedChannels = filteredChannels.slice(0, displayCount);
   const hasMoreChannels = displayCount < filteredChannels.length;
+
+  useRemoteControl({
+    onRight: () => {
+      if (isZoneCat) {
+        setActiveZone('list');
+        setFocusedIndex(0);
+      }
+      if (isZoneList && focusedIndex < displayedChannels.length - 1) {
+        setFocusedIndex(focusedIndex + 1);
+      }
+    },
+    onLeft: () => {
+      if (isZoneList && focusedIndex > 0) {
+        setFocusedIndex(focusedIndex - 1);
+      }
+    },
+    onDown: () => {
+      if (isZoneCat && focusedCat < liveCategories.length) {
+        setFocusedCat(Math.min(focusedCat + 1, liveCategories.length));
+      }
+      if (isZoneList && focusedIndex < displayedChannels.length - 1) {
+        setFocusedIndex(Math.min(focusedIndex + 4, displayedChannels.length - 1));
+      }
+    },
+    onUp: () => {
+      if (isZoneCat && focusedCat > 0) {
+        setFocusedCat(Math.max(focusedCat - 1, 0));
+      }
+      if (isZoneList && focusedIndex > 0) {
+        setFocusedIndex(Math.max(focusedIndex - 4, 0));
+      }
+    },
+    onOk: () => {
+      if (isZoneCat) {
+        setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
+      }
+      if (isZoneList && displayedChannels[focusedIndex]) {
+        const channel = displayedChannels[focusedIndex];
+        setCurrentStream(channel);
+        navigate('/player', {
+          state: {
+            id: channel.id,
+            streamUrl: channel.streamUrl,
+            title: channel.name,
+            poster: channel.logo,
+            type: 'live',
+            category: channel.category,
+          },
+        });
+      }
+    },
+    onBack: () => {
+      if (currentStream) {
+        setCurrentStream(null);
+      }
+    },
+  });
 
   useEffect(() => {
     const state = location.state as any;
@@ -90,22 +156,16 @@ export const Live = () => {
           <div className="w-3/12 max-md:w-4/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2 overflow-x-auto">
-                <ButtonCategory
-                  id={'-1'}
-                  name={'TODOS'}
-                  isSelected={selectedCategory === null}
-                  // isFocused={focusedIndex === i}
-                  onClick={() => setSelectedCategory(null)}
-                />
-
-                {liveCategories.map((cat) => (
+                {categoriesWithAll.map((cat, i) => (
                   <ButtonCategory
-                    key={cat.id}
-                    id={cat.id}
+                    key={cat.id || 'all'}
+                    id={String(cat.id || '-1')}
                     name={cat.name.replace('CANAIS |', '')}
-                    isSelected={selectedCategory === cat.id}
-                    // isFocused={focusedIndex === i}
-                    onClick={() => setSelectedCategory(cat.id)}
+                    isSelected={selectedCategory === (cat.id as any)}
+                    isFocused={isZoneCat && focusedCat === i}
+                    onClick={() => {
+                      setSelectedCategory(cat.id as any);
+                    }}
                   />
                 ))}
               </div>
@@ -126,11 +186,12 @@ export const Live = () => {
           </div>
           {filteredChannels.length > 0 ? (
             <div className="grid gap-4 grid-cols-1">
-              {displayedChannels.map((channel) => (
+              {displayedChannels.map((channel, i) => (
                 <ChannelCard
                   key={channel.id}
                   id={channel.id}
                   channel={channel}
+                  isFocused={isZoneList && focusedIndex === i}
                   onPlay={() => {
                     if (
                       !isMobile &&

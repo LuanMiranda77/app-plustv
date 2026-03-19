@@ -1,15 +1,17 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { SeriesCard } from '../components/Cards/SeriesCard';
+import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
 import SeriesDetail from '../components/UI/SeriesDetail';
+import { useFocusZone } from '../Context/FocusContext';
+import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Season, Series } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
-import { useLocation } from 'react-router-dom';
-import ButtonCategory from '../components/UI/ButtonCategory';
 
 export const PageSeries = () => {
   const { series, seriesCategories } = useContentStore();
@@ -22,8 +24,61 @@ export const PageSeries = () => {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const { activeZone, setActiveZone } = useFocusZone();
+  const [focusedCat, setFocusedCat] = useState(0);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const isZoneCat = activeZone === 'content';
+  const isZoneList = activeZone === 'list';
 
   const ITEMS_PER_PAGE = 30;
+
+  const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...seriesCategories];
+
+  useRemoteControl({
+    onRight: () => {
+      if (isZoneCat) {
+        setActiveZone('list');
+        setFocusedIndex(0);
+      }
+      if (isZoneList && focusedIndex < displayedSeries.length - 1) {
+        setFocusedIndex(focusedIndex + 1);
+      }
+    },
+    onLeft: () => {
+      if (isZoneList && focusedIndex > 0) {
+        setFocusedIndex(focusedIndex - 1);
+      }
+    },
+    onDown: () => {
+      if (isZoneCat && focusedCat < seriesCategories.length) {
+        setFocusedCat(Math.min(focusedCat + 1, seriesCategories.length));
+      }
+      if (isZoneList && focusedIndex < displayedSeries.length - 1) {
+        setFocusedIndex(Math.min(focusedIndex + 5, displayedSeries.length - 1));
+      }
+    },
+    onUp: () => {
+      if (isZoneCat && focusedCat > 0) {
+        setFocusedCat(Math.max(focusedCat - 1, 0));
+      }
+      if (isZoneList && focusedIndex > 0) {
+        setFocusedIndex(Math.max(focusedIndex - 5, 0));
+      }
+    },
+    onOk: () => {
+      if (isZoneCat) {
+        setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
+      }
+      if (isZoneList && displayedSeries[focusedIndex]) {
+        setCurrentSerie(displayedSeries[focusedIndex]);
+      }
+    },
+    onBack: () => {
+      if (currentSerie) {
+        setCurrentSerie(null);
+      }
+    },
+  });
 
   // 2. Só busca episódios quando o usuário ABRE a série
   const loadSeriesDetail = async (seriesId: string) => {
@@ -133,22 +188,17 @@ export const PageSeries = () => {
           <div className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
             <div className="max-w-7xl mx-auto px-6 py-4">
               <div className="flex flex-col gap-2 overflow-x-auto pb-2">
-                <ButtonCategory
-                  id={'-1'}
-                  name={'TODOS'}
-                  isSelected={selectedCategory === null}
-                  // isFocused={focusedIndex === i}
-                  onClick={() => setSelectedCategory(null)}
-                />
-                {seriesCategories.map((cat) => {
+                {categoriesWithAll.map((cat, i) => {
                   return (
                     <ButtonCategory
-                      key={cat.id}
-                      id={cat.id}
+                      key={cat.id || 'all'}
+                      id={String(cat.id || '-1')}
                       name={cat.name.replace('SÉRIES |', '')}
-                      isSelected={selectedCategory === cat.id}
-                      // isFocused={focusedIndex === i}
-                      onClick={() => setSelectedCategory(cat.id)}
+                      isSelected={selectedCategory === (cat.id as any)}
+                      isFocused={isZoneCat && focusedCat === i}
+                      onClick={() => {
+                        setSelectedCategory(cat.id as any);
+                      }}
                     />
                   );
                 })}
@@ -169,8 +219,13 @@ export const PageSeries = () => {
           </div>
           {filteredSeries.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {displayedSeries.map((s) => (
-                <SeriesCard key={s.id} series={s} onPlay={() => setCurrentSerie(s)} />
+              {displayedSeries.map((s, i) => (
+                <SeriesCard
+                  key={s.id}
+                  series={s}
+                  isFocused={isZoneList && focusedIndex === i}
+                  onPlay={() => setCurrentSerie(s)}
+                />
               ))}
 
               {/* Sentinel element para infinite scroll */}
