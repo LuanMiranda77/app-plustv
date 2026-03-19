@@ -176,6 +176,7 @@ export const SeriesDetail = ({
           streamId={currentEpisode.id}
           type="series"
           isAutoSave
+          contentObject={currentEpisode}
         />
       </div>
     </div>
@@ -261,7 +262,6 @@ export const SeriesDetail = ({
                   onPlay={(ep) => handlePlay(ep, activeSeason)}
                   onToggleWatched={onToggleWatched}
                   isActive={episode.id === currentEpisodeId}
-                  index={index}
                 />
               ))}
             </div>

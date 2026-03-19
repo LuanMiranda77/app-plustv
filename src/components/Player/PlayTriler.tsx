@@ -26,8 +26,6 @@ const PlayerTrailer: React.FC<PlayerTrailerProps> = ({
         src={`https://www.youtube.com/embed/${youtubeId}?si=W2aAi_KvrySLBSX1&controls=1&modestbranding=1&rel=1&showinfo=1&autoplay=0&mute=0`}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen
       ></iframe>
     </div>
   );

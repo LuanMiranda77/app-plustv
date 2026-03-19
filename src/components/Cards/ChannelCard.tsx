@@ -81,8 +81,9 @@ export const ChannelCard = ({ id, channel, onPlay }: ChannelCardProps) => {
         </div>
         <h3
           className="
+          text-white text-4xl max-md:text-xl
           w-full h-[80px] max-md:h-[50px] text-left font-semibold 
-          text-white text-2xl max-md:text-sm line-clamp-1 py-2 px-2 break-all
+          flex items-center line-clamp-1 px-2 break-all
           group-focus:ring-2 group-focus:bg-red-600 group-focus:ring-offset-2 group-focus:ring-offset-gray-800
           group-hover:ring-2 group-hover:bg-red-600 group-hover:ring-offset-2 group-hover:ring-offset-gray-800
           "

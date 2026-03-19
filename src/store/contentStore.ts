@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Channel, Movie, Series, ServerConfig, XtreamLiveStream } from '../types';
+import type { Channel, Movie, Series, ServerConfig } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
 import { storage, STORAGE_KEYS } from '../utils/storage';
 import { xtreamApi } from '../utils/xtreamApi';
@@ -209,7 +209,7 @@ export const useContentStore = create<ContentState>((set, get) => {
 
     isCacheValidAsync: async () => {
       // Verificar timestamp no IndexedDB (fonte de verdade)
-      const cached = await indexedDbStorage.get('playlist_cache');
+      const cached:any = await indexedDbStorage.get('playlist_cache');
 
       if (!cached || !cached.timestamp) {
         console.log('❌ Cache no IndexedDB inválido ou inexistente');
@@ -234,7 +234,7 @@ export const useContentStore = create<ContentState>((set, get) => {
 
     loadFromCache: async () => {
       // Tentar carregar do IndexedDB primeiro (dados completos com imagens)
-      let cached = await indexedDbStorage.get('playlist_cache');
+      let cached:any = await indexedDbStorage.get('playlist_cache');
 
       // Se não encontrar no IndexedDB, tenta localStorage
       if (!cached) {

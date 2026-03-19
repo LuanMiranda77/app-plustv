@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Platform } from 'react-native';
-import { isTV, getOptimalVideoSize } from '../utils/deviceDetection';
+
 
 type Props = {
   source: string;
@@ -24,10 +23,7 @@ export default function VideoPlayer({
   bufferConfig = {}
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const optimalSize = getOptimalVideoSize();
-
-  // Para web (incluindo TVs LG webOS)
-  if (Platform.OS === 'web') {
+  // const optimalSize = getOptimalVideoSize();
     useEffect(() => {
       const video = videoRef.current;
       if (!video) return;
@@ -115,8 +111,8 @@ export default function VideoPlayer({
         preload={preload}
         crossOrigin="anonymous"
         style={{ 
-          width: optimalSize.width, 
-          height: optimalSize.height, 
+          // width: optimalSize.width, 
+          // height: optimalSize.height, 
           backgroundColor: 'black',
           maxWidth: '100%',
         }}
@@ -127,66 +123,4 @@ export default function VideoPlayer({
         x-webkit-airplay="allow"
       />
     );
-  }
-
-  // Para mobile, use react-native-video
-  const Video = require('react-native-video').default;
-  return (
-    <Video
-      source={{ uri: source }}
-      poster={poster}
-      controls={controls}
-      paused={!autoPlay}
-      resizeMode="contain"
-      style={{ 
-        width: optimalSize.width, 
-        height: optimalSize.height, 
-        backgroundColor: 'black',
-        maxWidth: '100%',
-      }}
-      // Configurações específicas para melhor suporte HLS no mobile
-      useNativeControls={true}
-      ignoreSilentSwitch="ignore"
-      
-      // Configurações de buffer para melhor performance
-      bufferConfig={{
-        minBufferMs: bufferConfig.minBufferTime || 15000, // 15s mínimo
-        maxBufferMs: bufferConfig.maxBufferLength || 50000, // 50s máximo
-        bufferForPlaybackMs: 2500, // 2.5s para iniciar playback
-        bufferForPlaybackAfterRebufferMs: 5000, // 5s após rebuffer
-        backBufferDurationMs: 120000, // manter 2min de buffer anterior
-      }}
-      
-      // Configurações de rede otimizadas
-      maxBitRate={2000000} // 2Mbps máximo para economizar dados
-      reportBandwidth={true}
-      
-      // Configurações de qualidade adaptativa
-      selectedVideoTrack={{
-        type: 'auto', // seleção automática de qualidade
-      }}
-      
-      // Otimizações de performance
-      playInBackground={false} // não reproduz em background para economizar bateria
-      playWhenInactive={false}
-      preventsDisplaySleepDuringVideoPlayback={true}
-      
-      // Event handlers para monitorar performance
-      onLoad={(data: any) => {
-        console.log('Vídeo carregado:', data);
-      }}
-      onLoadStart={() => {
-        console.log('Iniciando carregamento...');
-      }}
-      onBuffer={(data: any) => {
-        console.log('Buffering:', data.isBuffering);
-      }}
-      onProgress={(data: any) => {
-        // console.log('Progress:', data.currentTime);
-      }}
-      onError={(error: any) => {
-        console.error('Erro no vídeo:', error);
-      }}
-    />
-  );
 }

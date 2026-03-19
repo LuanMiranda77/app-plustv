@@ -70,4 +70,6 @@ export default defineConfig([
     },
   },
 ])
+comando para debug na tv
+ares-inspect --device minha-lg --app com.plustv.iptv
 ```

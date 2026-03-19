@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/preserve-manual-memoization */
 import { useCallback, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { useContentStore } from '../store/contentStore';
+import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import type { Channel, Episode, Movie, ProgressData, Series } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
-import type { ProgressData } from '../types';
 import { KEYS_PROCESS } from '../utils/progressWatched';
 
 interface UseProgressProps {
@@ -11,20 +13,29 @@ interface UseProgressProps {
   videoRef: React.RefObject<HTMLVideoElement> | any;
   saveInterval?: number;
   isAutoSave?: boolean;
+  title?: string;
+  poster?: string;
+  contentObject?: Movie | Episode | Channel | null;
 }
 
 export const useProgress = ({
   type,
   streamId,
   videoRef,
-  saveInterval = 5000,
+  saveInterval = 10000,
   isAutoSave = false,
+  title,
+  poster,
+  contentObject,
 }: UseProgressProps) => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<any | null>(null);
+  const hasAddedToHistory = useRef(false);
   const { activeProfile } = useAuthStore();
+  const { addToHistory } = useWatchHistoryStore();
+  const { movies, series, channels } = useContentStore();
 
   // Chave única por perfil + tipo + stream
-  const Key = `${KEYS_PROCESS[type]}_${activeProfile?.id}_${streamId}`;
+  const Key = `${(KEYS_PROCESS as any)[type]}_${activeProfile?.id}_${streamId}`;
 
   // ── Salvar ────────────────────────────────────────────────────────────────
   const saveProgress = useCallback(
@@ -37,11 +48,63 @@ export const useProgress = ({
       };
       try {
         await indexedDbStorage.set(Key, data);
+
+        // Adicionar ao histórico se passou 1 minuto (60 segundos)
+        // Apenas para filmes e séries, não para live
+        if (progress > 60 && !hasAddedToHistory.current && type !== 'live') {
+          hasAddedToHistory.current = true;
+
+          // Encontrar conteúdo baseado no streamId e tipo
+          let content: any = null;
+          let name = title || `${type} ${streamId}`;
+          let itemPoster = poster || '';
+
+          if (type === 'movie') {
+            content = movies.find((m) => m.id === streamId) || contentObject;
+            if (content && 'name' in content) {
+              name = content.name;
+              itemPoster = content.poster || itemPoster;
+            }
+          } else if (type === 'series') {
+            content = series.find((s) => s.id === streamId) || contentObject;
+            if (content && 'name' in content) {
+              name = content.name;
+              itemPoster = content.poster || itemPoster;
+            }
+          }
+
+          // Adicionar ao histórico apenas se encontrou o conteúdo
+          if (content) {
+            addToHistory({
+              id: streamId,
+              type: type as 'movie' | 'series',
+              name,
+              poster: itemPoster,
+              progress: Math.round((progress / duration) * 100),
+              duration: Math.floor(duration),
+              watched: progress,
+              lastWatched: new Date(),
+              content,
+            });
+            console.log(`📝 Adicionado ao histórico: ${name}`);
+          }
+        }
       } catch (error) {
         console.error('❌ Erro ao salvar progresso:', error);
       }
     },
-    [streamId, activeProfile?.id, type]
+    [
+      streamId,
+      activeProfile?.id,
+      type,
+      title,
+      poster,
+      contentObject,
+      movies,
+      series,
+      channels,
+      addToHistory,
+    ]
   );
 
   // ── Buscar ────────────────────────────────────────────────────────────────
@@ -107,6 +170,11 @@ export const useProgress = ({
     }
   }, []);
 
+  // ── Resetar hasAddedToHistory ao mudar de stream ───────────────────────────
+  useEffect(() => {
+    hasAddedToHistory.current = false;
+  }, [streamId]);
+
   // ── Eventos do vídeo ──────────────────────────────────────────────────────
   useEffect(() => {
     const video = videoRef.current;
@@ -137,4 +205,4 @@ export const useProgress = ({
   }, [streamId, activeProfile?.id]); // re-registra se mudar episódio ou perfil
 
   return { saveNow, restoreProgress, getProgress, markWatched };
-};
+};;

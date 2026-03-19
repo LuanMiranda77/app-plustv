@@ -20,7 +20,7 @@ export const useVideoTracking = ({
   enabled = true,
 }: UseVideoTrackingProps) => {
   const { addToHistory } = useWatchHistoryStore()
-  const updateIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const updateIntervalRef = useRef<any | null>(null)
 
   useEffect(() => {
     if (!enabled || !videoRef.current) return

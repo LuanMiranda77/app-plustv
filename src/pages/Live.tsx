@@ -6,6 +6,7 @@ import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
 import { Input } from '../components/UI/Input';
 import { useContentStore } from '../store/contentStore';
+import useWindowSize from '../hooks/useWindowSize';
 
 export const Live = () => {
   const navigate = useNavigate();
@@ -17,8 +18,9 @@ export const Live = () => {
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+    const { isMobile } = useWindowSize();
 
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = 20;
 
   const filteredChannels = channels.filter((channel) => {
     const matchesSearch =
@@ -84,12 +86,12 @@ export const Live = () => {
       <div className="flex mt-[60px] max-h-[calc(100vh-60px)]">
         {/* Filters */}
         {liveCategories.length > 0 && (
-          <div className="w-3/12 max-w-[300px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">
+          <div className="w-3/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2 overflow-x-auto">
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg max-md:text-xs font-semibold whitespace-nowrap transition-colors ${
+                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-2xl max-md:text-xs font-semibold whitespace-nowrap transition-colors ${
                     selectedCategory === null
                       ? 'bg-red-600 text-white'
                       : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -104,7 +106,7 @@ export const Live = () => {
                       setCurrentStream(null);
                       setSelectedCategory(cat.id);
                     }}
-                    className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-lg max-md:text-xs font-semibold whitespace-nowrap transition-colors ${
+                    className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-2xl max-md:text-xs font-semibold whitespace-nowrap transition-colors ${
                       selectedCategory === cat.id
                         ? 'bg-red-600 text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -130,7 +132,7 @@ export const Live = () => {
             />
           </div>
           {filteredChannels.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            <div className="grid gap-4 grid-cols-1">
               {displayedChannels.map((channel) => (
                 <ChannelCard
                   key={channel.id}
@@ -180,22 +182,22 @@ export const Live = () => {
             </div>
           )}
         </div>
-        {currentStream && (
-          <div className="w-3/12 max-w-[700px] t-[30px]">
+        {!isMobile && (
+          <div className="w-4/12 max-w-[1200px] t-[30px]">
             <div className="flex flex-col items-center justify-center flex-1 border-6 border-gray-950 rounded-lg mx-4">
               <div className="w-full text-2xl max-md:text-sm font-semibold line-clamp-1 bg-netflix-red">
                 Preview
               </div>
               <VideoPlayer
-                title={currentStream.title}
-                source={currentStream.streamUrl}
-                poster={currentStream.poster}
+                title={currentStream?.title}
+                source={currentStream?currentStream.streamUrl:""}
+                poster={currentStream?.poster}
                 autoPlay
                 isControlsVisible={false}
                 onError={(error) => {
                   console.error('Erro no player:', error);
                 }}
-                streamId={currentStream.id}
+                streamId={currentStream?.id}
                 type="live"
               />
             </div>

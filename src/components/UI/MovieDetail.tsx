@@ -23,7 +23,7 @@ export const MovieDetail = ({ movie, onBack, onToggleFavorite }: MovieDetailProp
   const loadProgress = async () => {
     const progress = await getProgress('movie', profileId!, String(movie!.id));
     const updatedMovie = {
-      ...movie,
+      ...movie!,
       watched: progress.watched,
       progress: progress.progress,
       duration: progress.duration,

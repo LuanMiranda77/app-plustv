@@ -2,16 +2,18 @@ import { Play, X } from 'lucide-react'
 import { useWatchHistoryStore, type WatchHistoryItem } from '../../store/watchHistoryStore'
 
 interface ContinueWatchingCardProps {
-  item: WatchHistoryItem
-  onPlay?: () => void
+  item: WatchHistoryItem;
+  onPlay?: () => void;
+  onRecentlyWatched?: (item: WatchHistoryItem[]) => void;
 }
 
-export const ContinueWatchingCard = ({ item, onPlay }: ContinueWatchingCardProps) => {
-  const { removeFromHistory } = useWatchHistoryStore()
+export const ContinueWatchingCard = ({ item, onPlay, onRecentlyWatched }: ContinueWatchingCardProps) => {
+  const { getRecentlyWatched, removeFromHistory } = useWatchHistoryStore();
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation()
-    removeFromHistory(item.id)
+    removeFromHistory(String(item.id))
+    onRecentlyWatched?.(getRecentlyWatched());
   }
 
   const getDisplayName = () => {

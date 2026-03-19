@@ -63,7 +63,8 @@ export const Player = () => {
               console.error('Erro no player:', error);
             }}
             streamId={currentStream.id}
-            type="live"
+            type={(currentStream.type as 'movie' | 'series' | 'live') || 'live'}
+            isAutoSave={currentStream.type !== 'live'} // Não salvar progresso para lives
           />
         </div>
 

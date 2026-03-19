@@ -106,7 +106,7 @@ export const WatchHistory = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {group.items.map((item) => (
+                  {group.items.map((item:any) => (
                     <ContinueWatchingCard
                       key={item.id}
                       item={item}

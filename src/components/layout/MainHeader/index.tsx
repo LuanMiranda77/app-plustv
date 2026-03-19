@@ -1,10 +1,13 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { Film, Heart, Home, RefreshCw, Tv2, TvMinimalPlay } from 'lucide-react';
 import moment from 'moment';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useServerContent } from '../../../hooks/useServerContent';
 import { useAuthStore } from '../../../store/authStore';
 import LogoHeader from '../../Logos/LogoHeader';
+import { useRemoteControl } from '../../../hooks/useRemotoControl';
+import { useFocusZone } from '../../../Context/FocusContext';
 interface Props {
   scrolling: boolean;
 }
@@ -17,15 +20,50 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     { title: 'Séries', icon: TvMinimalPlay, path: '/series' },
     { title: 'Favoritos', icon: Heart, path: '/favorites' },
   ];
+  const rounteInvisible = ['/profiles', '/player', '/'];
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [focusedIndex, setFocusedIndex] = useState(0);
   const { activeProfile } = useAuthStore();
   const { lastUpdate, forceRefresh, isLoading } = useServerContent();
-  const navigate = useNavigate();
-  const rounteInvisible = ['/profiles', '/player', '/'];
+  const { activeZone, setActiveZone } = useFocusZone();
+  const isActive = activeZone === 'menu';
   useEffect(() => {
-    if (window.location.pathname === '/') {
-      navigate('/home');
-    }
-  }, [window.location.pathname]);
+    setFocusedIndex(menus.findIndex((menu) => menu.path === location.pathname));
+  }, [location]);
+
+  const nextButton = () => {
+    if (!isActive) return;
+    setFocusedIndex((i) => {
+      const index = Math.min(i + 1, menus.length - 1);
+      navigate(menus[index].path);
+      return index;
+    });
+  };
+  const backButton = () => {
+    if (!isActive) return;
+    setFocusedIndex((i) => {
+      const index = Math.max(i - 1, 0);
+      navigate(menus[index].path);
+      return index;
+    });
+  };
+  const okButton = (i: number) => {
+    setActiveZone('menu');
+    if (!isActive) return;
+    setFocusedIndex(i);
+    navigate(menus[i].path);
+  };
+
+  useRemoteControl({
+    onRight: () => nextButton(),
+    onLeft: () => backButton(),
+    onOk: () => okButton(focusedIndex),
+    onDown: () => {
+      if (!isActive) return;
+      setActiveZone('content'); // ← passa o foco para o conteúdo
+    },
+  });
 
   return (
     !rounteInvisible.includes(window.location.pathname) && (
@@ -39,15 +77,21 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
             <LogoHeader />
 
             <section className="flex items-center gap-2">
-              {menus.map((menu) => (
+              {menus.map((menu, i) => (
                 <button
                   key={menu.title}
-                  onClick={() => navigate(menu.path)}
-                  autoFocus={window.location.pathname === menu.path}
-                  className="flex items-center gap-1 px-3 py-2 transition-colors rounded-lg focus:bg-gray-800 focus:outline-1 focus:outline-indigo-950 hover:bg-gray-800"
+                  onClick={() => okButton(i)}
+                  // autoFocus={activeMenu === menu.path}
+                  className={`
+                    text-2xl max-md:text-sm
+                    flex items-center gap-1 px-3 py-2 
+                    transition-colors rounded-lg 
+                    ${focusedIndex === i && 'bg-gray-800 outline-none outline-indigo-950'} 
+                    hover:bg-gray-800
+                    `}
                 >
-                  <menu.icon className="w-4 h-4 text-red-600" />
-                  <span className="text-sm text-gray-300">{menu.title}</span>
+                  <menu.icon className={`w-6 h-6 max-md:w-3.5 max-md:h-3.5 text-netflix-red ${i!=4?"mt-1 max-md:mt-0":""}`} />
+                  <span className="text-gray-300">{menu.title}</span>
                 </button>
               ))}
             </section>

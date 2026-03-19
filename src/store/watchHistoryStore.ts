@@ -3,7 +3,7 @@ import type { Channel, Movie, Series } from '../types';
 import { storage, STORAGE_KEYS } from '../utils/storage';
 
 export interface WatchHistoryItem {
-  id: string;
+  id: string | number;
   type: 'movie' | 'series' | 'channel';
   name: string;
   poster?: string;

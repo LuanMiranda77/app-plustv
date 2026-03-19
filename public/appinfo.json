@@ -1,0 +1,22 @@
+{
+  "id": "com.plustv.iptv",
+  "version": "1.0.0",
+  "vendor": "Luan Miranda",
+  "type": "web",
+  "main": "index.html",
+  "title": "PlusTV",
+  "icon": "icons.png",
+  "largeIcon": "icons.png",
+  "bgColor": "#0a0a0a",
+  "allowVideoCapture": false,
+  "allowAudioCapture": false,
+  "allowCrossDomainAccess": true,
+  "handlesRelaunch": false,
+  "cpuAffinity": "cpu0",
+  "webviewPlugin": {
+    "allowLocalStorageAccess": true,
+    "allowIndexedDBAccess": true,
+    "allowFileAccessFromFiles": true,
+    "allowUniversalAccessFromFiles": true
+  }
+}

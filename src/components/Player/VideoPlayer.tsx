@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useHls } from '../../hooks/useHls';
-import { PlayerControls } from './PlayerControls';
 import { useProgress } from '../../hooks/useProgress';
+import type { Channel, Episode, Movie, Series } from '../../types';
+import { PlayerControls } from './PlayerControls';
 
 interface VideoPlayerProps {
   title: string;
@@ -15,6 +16,7 @@ interface VideoPlayerProps {
   saveInterval?: number;
   isAutoSave?: boolean;
   type: 'movie' | 'series' | 'live';
+  contentObject?: Movie | Episode | Channel | null;
 }
 
 export const VideoPlayer = ({
@@ -29,6 +31,7 @@ export const VideoPlayer = ({
   saveInterval,
   isAutoSave = false,
   type,
+  contentObject,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,6 +47,9 @@ export const VideoPlayer = ({
     videoRef,
     saveInterval: saveInterval ?? 5000, // salva a cada 5 segundos
     isAutoSave,
+    title,
+    poster,
+    contentObject,
   });
 
   const { hls, error, isLoading, currentQuality, qualities } = useHls(

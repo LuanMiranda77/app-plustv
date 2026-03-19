@@ -18,20 +18,21 @@ export const Movies = () => {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
 
   const ITEMS_PER_PAGE = 20;
-
   const filteredMovies = movies.filter((movie) => {
     const matchesSearch =
-      movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
+    movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || movie.category === selectedCategory;
-
+    
     if (selectedCategory == null) {
       // const ratringNum = movie.rating && movie.rating != 'N/A' ? Number(movie.rating ?? 0) : 0;
       // return index < 60 && ratringNum > 6;
     }
-
+    
     return matchesSearch && matchesCategory;
   });
+  filteredMovies.push({ name: 'FAVORITOS' } as Movie); // Adiciona um item vazio para evitar erro de array vazio no filtro
+  filteredMovies.push({ name: 'TODOS' } as Movie); // Adiciona um item vazio para evitar erro de array vazio no filtro
 
   // Filmes a exibir (com limit de displayCount)
   const displayedMovies = filteredMovies.slice(0, displayCount);
