@@ -15,6 +15,7 @@ export const SeriesCard = ({ series, onPlay, isFocused }: SeriesCardProps) => {
 
   return (
     <button
+      data-focused={isFocused ? 'true' : 'false'}
       className={`group relative bg-gray-800 
       rounded-lg overflow-hidden focus:scale-105 hover:scale-105 
       transition-all duration-200 

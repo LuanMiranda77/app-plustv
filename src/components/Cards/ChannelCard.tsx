@@ -48,6 +48,7 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
     <div className="relative flex items-center justify-between">
       <button
         id={`cd-${id}`}
+        data-focused={isFocused ? 'true' : 'false'}
         className={`
         group
         relative 

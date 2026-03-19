@@ -15,6 +15,7 @@ export const MovieCard = ({ movie, onPlay, isFocused }: MovieCardProps) => {
 
   return (
     <button
+      data-focused={isFocused ? 'true' : 'false'}
       onClick={onPlay}
       className={`group relative bg-gray-800 rounded-lg overflow-hidden 
       focus:scale-105 hover:scale-105 

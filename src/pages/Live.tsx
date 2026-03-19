@@ -21,6 +21,8 @@ export const Live = () => {
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowSize();
   const { activeZone, setActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
@@ -148,12 +150,43 @@ export const Live = () => {
     setDisplayCount(ITEMS_PER_PAGE);
   }, [searchTerm, selectedCategory]);
 
+  // Auto-scroll quando o foco muda
+  useEffect(() => {
+    if (isZoneCat && categoriesRef.current) {
+      // Scroll para categoria focada
+      const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [focusedCat, isZoneCat]);
+
+  useEffect(() => {
+    if (isZoneList && gridRef.current) {
+      // Scroll para o canal focado
+      const focusedElement = gridRef.current.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [focusedIndex, isZoneList]);
+
+  // Carregar mais canais quando chegar próximo ao final durante navegação por setas
+  useEffect(() => {
+    if (isZoneList && focusedIndex >= displayedChannels.length - 1 && hasMoreChannels) {
+      setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+    }
+  }, [focusedIndex, isZoneList, displayedChannels.length, hasMoreChannels]);
+
   return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
         {/* Filters */}
         {liveCategories.length > 0 && (
-          <div className="w-3/12 max-md:w-4/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">
+          <div
+            ref={categoriesRef}
+            className="w-3/12 max-md:w-4/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4"
+          >
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2 overflow-x-auto">
                 {categoriesWithAll.map((cat, i) => (
@@ -174,7 +207,7 @@ export const Live = () => {
         )}
 
         {/* Grid */}
-        <div className={`flex-1 px-3 py-8 overflow-y-scroll`}>
+        <div ref={gridRef} className={`flex-1 px-3 py-8 overflow-y-scroll`}>
           <div className="flex-1 mb-5">
             <Input
               type="text"
@@ -264,4 +297,4 @@ export const Live = () => {
       </div>
     </div>
   );
-};
+};;

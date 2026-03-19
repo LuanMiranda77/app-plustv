@@ -18,6 +18,8 @@ export const Movies = () => {
   const [displayCount, setDisplayCount] = useState(20); // Mostrar 20 itens por vez
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const { activeZone, setActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
@@ -128,6 +130,34 @@ export const Movies = () => {
     setDisplayCount(ITEMS_PER_PAGE);
   }, [searchTerm, selectedCategory]);
 
+  // Auto-scroll quando o foco muda
+  useEffect(() => {
+    if (isZoneCat && categoriesRef.current) {
+      // Scroll para categoria focada
+      const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [focusedCat, isZoneCat]);
+
+  useEffect(() => {
+    if (isZoneList && gridRef.current) {
+      // Scroll para o filme focado
+      const focusedElement = gridRef.current.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [focusedIndex, isZoneList]);
+
+  // Carregar mais filmes quando chegar próximo ao final durante navegação por setas
+  useEffect(() => {
+    if (isZoneList && focusedIndex >= displayedMovies.length - 1 && hasMoreMovies) {
+      setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+    }
+  }, [focusedIndex, isZoneList, displayedMovies.length, hasMoreMovies]);
+
   return currentMovie ? (
     <MovieDetail
       movie={currentMovie}
@@ -139,7 +169,10 @@ export const Movies = () => {
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
         {/* Filters */}
         {vodCategories.length > 0 && (
-          <div className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
+          <div
+            ref={categoriesRef}
+            className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4"
+          >
             <div className="px-6 py-4">
               <div className="flex flex-col gap-2 overflow-x-auto pb-2">
                 {categoriesWithAll.map((cat, i) => (
@@ -160,7 +193,7 @@ export const Movies = () => {
         )}
 
         {/* Grid */}
-        <div className="flex-1 px-6 py-8 overflow-y-scroll">
+        <div ref={gridRef} className="flex-1 px-6 py-8 overflow-y-scroll">
           <div className="flex-1 mb-5">
             <Input
               type="text"
@@ -204,4 +237,4 @@ export const Movies = () => {
       </div>
     </div>
   );
-};
+};;

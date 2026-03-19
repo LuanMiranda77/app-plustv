@@ -16,6 +16,7 @@ export default function ButtonCategory({
   return (
     <button
       key={id}
+      data-focused={isFocused ? 'true' : 'false'}
       onClick={onClick}
       className={`
         text-left px-4 py-2 rounded-tl-full rounded-bl-full
