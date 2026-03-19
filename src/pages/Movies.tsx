@@ -6,6 +6,7 @@ import MovieDetail from '../components/UI/MovieDetail';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Movie } from '../types';
+import ButtonCategory from '../components/UI/ButtonCategory';
 
 export const Movies = () => {
   const { movies, vodCategories } = useContentStore();
@@ -20,15 +21,15 @@ export const Movies = () => {
   const ITEMS_PER_PAGE = 20;
   const filteredMovies = movies.filter((movie) => {
     const matchesSearch =
-    movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
+      movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || movie.category === selectedCategory;
-    
+
     if (selectedCategory == null) {
       // const ratringNum = movie.rating && movie.rating != 'N/A' ? Number(movie.rating ?? 0) : 0;
       // return index < 60 && ratringNum > 6;
     }
-    
+
     return matchesSearch && matchesCategory;
   });
   filteredMovies.push({ name: 'FAVORITOS' } as Movie); // Adiciona um item vazio para evitar erro de array vazio no filtro
@@ -92,28 +93,22 @@ export const Movies = () => {
           <div className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
             <div className="px-6 py-4">
               <div className="flex flex-col gap-2 overflow-x-auto pb-2">
-                <button
+                <ButtonCategory
+                  id={'-1'}
+                  name={'TODOS'}
+                  isSelected={selectedCategory === null}
+                  // isFocused={focusedIndex === i}
                   onClick={() => setSelectedCategory(null)}
-                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full max-md:text-xs text-lg font-semibold whitespace-nowrap transition-colors ${
-                    selectedCategory === null
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  TODOS
-                </button>
+                />
                 {vodCategories.map((cat) => (
-                  <button
+                  <ButtonCategory
                     key={cat.id}
+                    id={cat.id}
+                    name={cat.name.replace('FILMES |', '')}
+                    isSelected={selectedCategory === cat.id}
+                    // isFocused={focusedIndex === i}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full max-md:text-xs text-lg font-semibold whitespace-nowrap transition-colors ${
-                      selectedCategory === cat.id
-                        ? 'bg-red-600 text-white'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    {cat.name.replace('FILMES |', '')}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
@@ -121,7 +116,7 @@ export const Movies = () => {
         )}
 
         {/* Grid */}
-        <div className="w-9/12 max-md:w-8/12 px-6 py-8 overflow-y-scroll">
+        <div className="flex-1 px-6 py-8 overflow-y-scroll">
           <div className="flex-1 mb-5">
             <Input
               type="text"

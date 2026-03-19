@@ -9,6 +9,7 @@ import { useFavoritesStore } from '../store/favoritesStore';
 import type { Season, Series } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useLocation } from 'react-router-dom';
+import ButtonCategory from '../components/UI/ButtonCategory';
 
 export const PageSeries = () => {
   const { series, seriesCategories } = useContentStore();
@@ -129,32 +130,26 @@ export const PageSeries = () => {
       <div className="flex mt-[60px] max-h-[calc(100vh-60px)]">
         {/* Filters */}
         {seriesCategories.length > 0 && (
-          <div className="w-3/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
+          <div className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
             <div className="max-w-7xl mx-auto px-6 py-4">
               <div className="flex flex-col gap-2 overflow-x-auto pb-2">
-                <button
+                <ButtonCategory
+                  id={'-1'}
+                  name={'TODOS'}
+                  isSelected={selectedCategory === null}
+                  // isFocused={focusedIndex === i}
                   onClick={() => setSelectedCategory(null)}
-                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full max-md:text-xs text-lg font-semibold whitespace-nowrap transition-colors ${
-                    selectedCategory === null
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  TODOS
-                </button>
+                />
                 {seriesCategories.map((cat) => {
                   return (
-                    <button
+                    <ButtonCategory
                       key={cat.id}
+                      id={cat.id}
+                      name={cat.name.replace('SÉRIES |', '')}
+                      isSelected={selectedCategory === cat.id}
+                      // isFocused={focusedIndex === i}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full max-md:text-xs text-lg font-semibold whitespace-nowrap transition-colors ${
-                        selectedCategory === cat.id
-                          ? 'bg-red-600 text-white'
-                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                      }`}
-                    >
-                      {cat.name.replace('SÉRIES |', '')}
-                    </button>
+                    />
                   );
                 })}
               </div>
@@ -163,7 +158,7 @@ export const PageSeries = () => {
         )}
 
         {/* Grid */}
-        <div className="w-9/12 max-w-7xl mx-auto px-6 py-8 overflow-y-scroll">
+        <div className="flex-1 mx-auto px-6 py-8 overflow-y-scroll">
           <div className="flex-1 mb-5">
             <Input
               type="text"

@@ -8,6 +8,7 @@ import { useAuthStore } from '../../../store/authStore';
 import LogoHeader from '../../Logos/LogoHeader';
 import { useRemoteControl } from '../../../hooks/useRemotoControl';
 import { useFocusZone } from '../../../Context/FocusContext';
+import MenuButton from '../../UI/ButtonMenu';
 interface Props {
   scrolling: boolean;
 }
@@ -28,9 +29,6 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const { lastUpdate, forceRefresh, isLoading } = useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'menu';
-  useEffect(() => {
-    setFocusedIndex(menus.findIndex((menu) => menu.path === location.pathname));
-  }, [location]);
 
   const nextButton = () => {
     if (!isActive) return;
@@ -65,6 +63,10 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     },
   });
 
+  useEffect(() => {
+    setFocusedIndex(menus.findIndex((menu) => menu.path === location.pathname));
+  }, [location]);
+
   return (
     !rounteInvisible.includes(window.location.pathname) && (
       <div
@@ -78,21 +80,14 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
 
             <section className="flex items-center gap-2">
               {menus.map((menu, i) => (
-                <button
+                <MenuButton
                   key={menu.title}
+                  title={menu.title}
+                  icon={menu.icon}
+                  isFocused={focusedIndex === i}
                   onClick={() => okButton(i)}
-                  // autoFocus={activeMenu === menu.path}
-                  className={`
-                    text-2xl max-md:text-sm
-                    flex items-center gap-1 px-3 py-2 
-                    transition-colors rounded-lg 
-                    ${focusedIndex === i && 'bg-gray-800 outline-none outline-indigo-950'} 
-                    hover:bg-gray-800
-                    `}
-                >
-                  <menu.icon className={`w-6 h-6 max-md:w-3.5 max-md:h-3.5 text-netflix-red ${i!=4?"mt-1 max-md:mt-0":""}`} />
-                  <span className="text-gray-300">{menu.title}</span>
-                </button>
+                  iconOffset={i !== 4}
+                />
               ))}
             </section>
             <section className=" relative items-center gap-4">

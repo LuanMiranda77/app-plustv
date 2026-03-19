@@ -73,3 +73,33 @@ button {
 *{
   outline: none;
 }
+
+@keyframes fillUp {
+  from { transform: scaleY(0); opacity: 0.3; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes drainDown {
+  from { transform: scaleY(1); opacity: 1; }
+  to   { transform: scaleY(0); opacity: 0; }
+}
+
+.menu-btn-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #1f2937; /* gray-800 */
+  border-radius: 8px;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  transition: none;
+  z-index: 0;
+}
+
+.menu-btn-fill.focused::before {
+  animation: fillUp 0.35s ease-out forwards;
+}
+
+.menu-btn-fill.unfocused::before {
+  animation: drainDown 0.35s ease-in forwards;
+}

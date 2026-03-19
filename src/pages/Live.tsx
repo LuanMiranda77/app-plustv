@@ -5,8 +5,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
 import { Input } from '../components/UI/Input';
-import { useContentStore } from '../store/contentStore';
 import useWindowSize from '../hooks/useWindowSize';
+import { useContentStore } from '../store/contentStore';
+import ButtonCategory from '../components/UI/ButtonCategory';
 
 export const Live = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const Live = () => {
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
-    const { isMobile } = useWindowSize();
+  const { isMobile } = useWindowSize();
 
   const ITEMS_PER_PAGE = 20;
 
@@ -86,34 +87,26 @@ export const Live = () => {
       <div className="flex mt-[60px] max-h-[calc(100vh-60px)]">
         {/* Filters */}
         {liveCategories.length > 0 && (
-          <div className="w-3/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">
+          <div className="w-3/12 max-md:w-4/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4">
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2 overflow-x-auto">
-                <button
+                <ButtonCategory
+                  id={'-1'}
+                  name={'TODOS'}
+                  isSelected={selectedCategory === null}
+                  // isFocused={focusedIndex === i}
                   onClick={() => setSelectedCategory(null)}
-                  className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-2xl max-md:text-xs font-semibold whitespace-nowrap transition-colors ${
-                    selectedCategory === null
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  TODOS
-                </button>
+                />
+
                 {liveCategories.map((cat) => (
-                  <button
+                  <ButtonCategory
                     key={cat.id}
-                    onClick={() => {
-                      setCurrentStream(null);
-                      setSelectedCategory(cat.id);
-                    }}
-                    className={`text-left px-4 py-2 rounded-tl-full rounded-bl-full text-2xl max-md:text-xs font-semibold whitespace-nowrap transition-colors ${
-                      selectedCategory === cat.id
-                        ? 'bg-red-600 text-white'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    {cat.name.replace('CANAIS |', '')}
-                  </button>
+                    id={cat.id}
+                    name={cat.name.replace('CANAIS |', '')}
+                    isSelected={selectedCategory === cat.id}
+                    // isFocused={focusedIndex === i}
+                    onClick={() => setSelectedCategory(cat.id)}
+                  />
                 ))}
               </div>
             </div>
@@ -139,7 +132,10 @@ export const Live = () => {
                   id={channel.id}
                   channel={channel}
                   onPlay={() => {
-                    if (Boolean(currentStream) == false || currentStream.id !== channel.id) {
+                    if (
+                      !isMobile &&
+                      (Boolean(currentStream) == false || currentStream.id !== channel.id)
+                    ) {
                       setCurrentStream({
                         id: channel.id,
                         streamUrl: channel.streamUrl,
@@ -190,7 +186,7 @@ export const Live = () => {
               </div>
               <VideoPlayer
                 title={currentStream?.title}
-                source={currentStream?currentStream.streamUrl:""}
+                source={currentStream ? currentStream.streamUrl : ''}
                 poster={currentStream?.poster}
                 autoPlay
                 isControlsVisible={false}
