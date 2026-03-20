@@ -29,7 +29,7 @@ export default function MainBanner({
 
         <div className="relative z-10">
           <h2 className="text-5xl font-bold text-white mb-4">{title}</h2>
-          <p className="text-gray-300 text-lg mb-6 max-w-2xl">{description}</p>
+          <p className="text-gray-300 text-lg mb-6 max-w-3xl">{description}</p>
           <button
             onClick={() => navigate(navigateTo)}
             className={`

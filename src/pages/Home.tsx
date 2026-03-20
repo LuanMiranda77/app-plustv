@@ -228,7 +228,7 @@ export const Home = () => {
   };
 
   const navigateSerie = (serie: any) => {
-    navigate('/series', {
+    navigate('/player', {
       state: {
         id: serie.id,
         streamUrl: serie.streamUrl,
@@ -288,9 +288,9 @@ export const Home = () => {
 
       {/* Main Banner */}
       <MainBanner
-        title="Comece a Assistir"
-        description="Acesse seus filmes, séries e canais favoritos em qualquer lugar"
-        buttonLabel="Explorar Conteúdo"
+        title="Anuncie sua EMPRESA aqui"
+        description="Tenha sua marca em destaque para milhares de usuários. Entre em contato e saiba como!"
+        buttonLabel="(83) 99638-6694"
         navigateTo="/movie"
         isFocused={activeZone === 'list'}
       />
@@ -346,7 +346,7 @@ export const Home = () => {
                             if (item.type === 'movie') {
                               navigateMovie(item);
                             } else if (item.type === 'series') {
-                              navigateSerie(item);
+                              navigateSerie(item.content);
                             }
                           }}
                           onRecentlyWatched={setRecentlyWatched}

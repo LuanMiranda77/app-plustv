@@ -19,11 +19,13 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     { title: 'TV ao Vivo', icon: Tv2, path: '/live' },
     { title: 'Filmes', icon: Film, path: '/movie' },
     { title: 'Séries', icon: TvMinimalPlay, path: '/series' },
-    { title: 'Favoritos', icon: Heart, path: '/favorites' },
+    { title: 'Favoritos', icon: Heart, path: '/favorites' }
   ];
   const navigate = useNavigate();
   const location = useLocation();
   const [focusedIndex, setFocusedIndex] = useState(0);
+  const [focusedPerfil, setFocusedPerfil] = useState(false);
+  const [focusedConfig, setFocuseConfig] = useState(false);
   const { activeProfile } = useAuthStore();
   const { lastUpdate, forceRefresh, isLoading } = useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
@@ -31,7 +33,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
 
   const nextButton = () => {
     if (!isActive) return;
-    setFocusedIndex((i) => {
+    setFocusedIndex(i => {
       const index = Math.min(i + 1, menus.length - 1);
       navigate(menus[index].path);
       return index;
@@ -39,7 +41,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   };
   const backButton = () => {
     if (!isActive) return;
-    setFocusedIndex((i) => {
+    setFocusedIndex(i => {
       const index = Math.max(i - 1, 0);
       navigate(menus[index].path);
       return index;
@@ -58,11 +60,11 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     onDown: () => {
       if (!isActive) return;
       setActiveZone('content'); // ← passa o foco para o conteúdo
-    },
+    }
   });
 
   useEffect(() => {
-    setFocusedIndex(menus.findIndex((menu) => menu.path === location.pathname));
+    setFocusedIndex(menus.findIndex(menu => menu.path === location.pathname));
   }, [location]);
 
   return (
