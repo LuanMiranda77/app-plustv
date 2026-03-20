@@ -73,6 +73,7 @@ export const VideoPlayer = ({
     if (error) {
       onError?.(error);
     }
+    
   }, [error, onError]);
 
   // Keyboard shortcuts

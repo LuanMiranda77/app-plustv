@@ -12,8 +12,13 @@ import { useFavoritesStore } from '../store/favoritesStore';
 export const Favorites = () => {
   const navigate = useNavigate();
   const { getFavoritesByType } = useFavoritesStore();
-  const { activeZone } = useFocusZone();
-  const [focusedIndex, setFocusedIndex] = useState(0);
+  const { activeZone, setActiveZone } = useFocusZone();
+  const [focusedCat, setFocusedCat] = useState(0);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>('1');
+  const isZoneCat = activeZone === 'content';
+  const isZoneList = activeZone === 'list';
 
   const favoriteChannels = getFavoritesByType('live').map((item) => ({
     ...item,
@@ -29,8 +34,6 @@ export const Favorites = () => {
   }));
   const combinedList = favoriteChannels.concat(favoriteMovies, favoriteSeries);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const favoriteCategories = [
     {
       id: '1',
@@ -57,23 +60,49 @@ export const Favorites = () => {
 
   useRemoteControl({
     onRight: () => {
-      if (activeZone === 'content' && focusedIndex < filteredSeries.length - 1) {
+      if (isZoneCat) {
+        setActiveZone('list');
+        setFocusedIndex(0);
+      }
+      if (isZoneList && focusedIndex < filteredSeries.length - 1) {
         setFocusedIndex(focusedIndex + 1);
       }
     },
     onLeft: () => {
-      if (activeZone === 'content' && focusedIndex > 0) {
+      if (isZoneList && focusedIndex > 0) {
         setFocusedIndex(focusedIndex - 1);
       }
     },
     onDown: () => {
-      if (activeZone === 'content' && focusedIndex < filteredSeries.length - 1) {
-        setFocusedIndex(Math.min(focusedIndex + 5, filteredSeries.length - 1));
+      if (isZoneCat && focusedCat < favoriteCategories.length) {
+        setFocusedCat(Math.min(focusedCat + 1, favoriteCategories.length));
+      }
+      if (isZoneList && focusedIndex < filteredSeries.length - 1) {
+        setFocusedIndex(
+          Math.min(focusedIndex + (selectedCategory == '1' ? 1 : 5), filteredSeries.length - 1)
+        );
       }
     },
     onUp: () => {
-      if (activeZone === 'content' && focusedIndex > 0) {
-        setFocusedIndex(Math.max(focusedIndex - 5, 0));
+      if (isZoneCat && focusedCat > 0) {
+        setFocusedCat(Math.max(focusedCat - 1, 0));
+      }
+      if (isZoneList && focusedIndex > 0) {
+        setFocusedIndex(Math.max(focusedIndex - 1, 0));
+      }
+    },
+    onOk: () => {
+      if (isZoneCat) {
+        setSelectedCategory(filteredSeries[focusedCat]?.id || null);
+      }
+      if (isZoneList) {
+        //  setIsFullScreen(true);
+      }
+    },
+    onBack: () => {
+      if (isZoneList || isZoneCat) {
+        setActiveZone('menu'); // ← volta para categorias
+        return;
       }
     },
   });
@@ -85,7 +114,7 @@ export const Favorites = () => {
         {favoriteCategories.length > 0 && (
           <div className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4">
             <div className="max-w-7xl mx-auto px-6 py-4">
-              <div className="flex flex-col gap-2 overflow-x-auto pb-2">
+              <div className="flex flex-col gap-2 pb-2">
                 {favoriteCategories.map((cat, i) => {
                   return (
                     <ButtonCategory
@@ -93,7 +122,7 @@ export const Favorites = () => {
                       id={cat.id}
                       name={cat.name}
                       isSelected={selectedCategory === cat.id}
-                      isFocused={focusedIndex === i}
+                      isFocused={focusedCat === i}
                       onClick={() => setSelectedCategory(cat.id)}
                     />
                   );
@@ -158,25 +187,6 @@ export const Favorites = () => {
                     />
                   );
                 }
-                return (
-                  <ChannelCard
-                    key={stream.id}
-                    channel={stream as any}
-                    isFocused={activeZone === 'content' && focusedIndex === i}
-                    onPlay={() => {
-                      navigate('/player', {
-                        state: {
-                          id: stream.id,
-                          streamUrl: stream.streamUrl,
-                          title: stream.name,
-                          poster: stream.logo,
-                          type: 'live',
-                          category: stream.category,
-                        },
-                      });
-                    }}
-                  />
-                );
               })}
             </div>
           ) : selectedCategory == '1' ? (

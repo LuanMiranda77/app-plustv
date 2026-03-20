@@ -28,13 +28,20 @@ export const PageSeries = () => {
   const location = useLocation();
   const { activeZone, setActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
-  const [focusedIndex, setFocusedIndex] = useState(0);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [sortedSeries, setSortedSeries] = useState(series);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
 
   const ITEMS_PER_PAGE = 30;
 
   const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...seriesCategories];
+
+  // Ordenar séries apenas uma vez na inicialização
+  useEffect(() => {
+    const sorted = [...series].sort((a, b) => a.name.localeCompare(b.name));
+    setSortedSeries(sorted);
+  }, [series]);
 
   // Hotkeys para navegação
   useRemoteControl({
@@ -125,7 +132,7 @@ export const PageSeries = () => {
     }
   };
 
-  const filteredSeries = series.filter((s) => {
+  const filteredSeries = sortedSeries.filter((s) => {
     const matchesSearch =
       s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.category?.toLowerCase().includes(searchTerm.toLowerCase());

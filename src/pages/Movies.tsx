@@ -24,6 +24,7 @@ export const Movies = () => {
   const { activeZone, setActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [sortedMovies, setSortedMovies] = useState(movies);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
 
@@ -31,7 +32,13 @@ export const Movies = () => {
 
   const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...vodCategories];
 
-  const filteredMovies = movies.filter((movie) => {
+  // Ordenar movies apenas uma vez na inicialização
+  useEffect(() => {
+    const sorted = [...movies].sort((a, b) => a.name.localeCompare(b.name));
+    setSortedMovies(sorted);
+  }, [movies]);
+
+  const filteredMovies = sortedMovies.filter((movie) => {
     const matchesSearch =
       movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -94,7 +101,7 @@ export const Movies = () => {
     },
     onBack: () => {
       if (isZoneList || isZoneCat) {
-        setActiveZone('menu'); 
+        setActiveZone('menu');
         return;
       }
       if (currentMovie) {

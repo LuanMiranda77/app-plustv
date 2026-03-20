@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import { RectangleHorizontalIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
@@ -13,7 +13,6 @@ import useWindowSize from '../hooks/useWindowSize';
 import { useContentStore } from '../store/contentStore';
 
 export const Live = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { channels, liveCategories } = useContentStore();
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,8 +26,9 @@ export const Live = () => {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowSize();
   const { activeZone, setActiveZone } = useFocusZone();
+  const [sortedChannels, setSortedChannels] = useState(channels);
   const [focusedCat, setFocusedCat] = useState(0);
-  const [focusedIndex, setFocusedIndex] = useState(0);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
 
@@ -36,7 +36,13 @@ export const Live = () => {
 
   const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...liveCategories];
 
-  const filteredChannels = channels.filter((channel) => {
+  // Ordenar channels apenas uma vez na inicialização
+  useEffect(() => {
+    const sorted = [...channels].sort((a, b) => a.name.localeCompare(b.name));
+    setSortedChannels(sorted);
+  }, [channels]);
+
+  const filteredChannels = sortedChannels.filter((channel) => {
     const matchesSearch =
       channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       channel.category?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -86,18 +92,25 @@ export const Live = () => {
         setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
       }
       if (isZoneList) {
-        setIsFullScreen(true);
+        if (
+          Boolean(currentStream) == false ||
+          currentStream.id !== displayedChannels[focusedIndex].id
+        ) {
+          setCurrentStream(displayedChannels[focusedIndex]);
+        } else {
+          setIsFullScreen(true);
+        }
       }
     },
     onBack: () => {
-      if (isZoneList || isZoneCat) {
+      if (!isFullScreen && (isZoneList || isZoneCat)) {
         setActiveZone('menu'); // ← volta para categorias
         return;
       }
       if (currentStream) {
         setCurrentStream(null);
-        setIsFullScreen(false);
       }
+      setIsFullScreen(false);
     },
   });
 
@@ -106,15 +119,10 @@ export const Live = () => {
     if (state) {
       setCurrentStream(state);
       setSelectedCategory(state.category || null);
-      console.log(`cd-${state.id}`);
-      console.log(document.getElementById(`cd-${state.id}`));
-      document.getElementById(`cd-${state.id}`)?.focus();
-      document.getElementById(state.id)?.click();
     } else {
       setCurrentStream(null);
     }
   }, [location]);
-
 
   // Infinite scroll - detectar quando chegar ao final
   useEffect(() => {
@@ -228,14 +236,7 @@ export const Live = () => {
                       !isMobile &&
                       (Boolean(currentStream) == false || currentStream.id !== channel.id)
                     ) {
-                      setCurrentStream({
-                        id: channel.id,
-                        streamUrl: channel.streamUrl,
-                        title: channel.name,
-                        poster: channel.logo,
-                        type: 'live',
-                        category: channel.category,
-                      });
+                      setCurrentStream(channel);
                     } else {
                       setIsFullScreen(true);
                     }
@@ -285,17 +286,20 @@ export const Live = () => {
               streamId={currentStream?.id}
               type="live"
             />
-
-            <section className="w-full max-w-7xl mt-4">
-              <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
-                <h4>Funções dos botão</h4>
-              </div>
-              <div className="flex items-center text-2xl">
-                <RectangleHorizontalIcon className="fill-current text-yellow-400" />
-                <span className="ml-2">Favoritar</span>
-              </div>
-            </section>
-            <section></section>
+            {!isFullScreen && (
+              <Fragment>
+                <section className="w-full max-w-7xl mt-4">
+                  <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
+                    <h4>Funções dos botão</h4>
+                  </div>
+                  <div className="flex items-center text-2xl">
+                    <RectangleHorizontalIcon className="fill-current text-yellow-400" />
+                    <span className="ml-2">Favoritar</span>
+                  </div>
+                </section>
+                <section></section>
+              </Fragment>
+            )}
           </div>
         )}
       </div>
