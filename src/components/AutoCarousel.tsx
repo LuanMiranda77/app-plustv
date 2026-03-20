@@ -1,32 +1,40 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import StartRating from './UI/StarRating';
+import ButtonPlay from './UI/ButtonPlay';
+import GenreBadges from './UI/GenreBadges';
+import MetaText from './UI/MetaText';
+import PlotText from './UI/PlotText';
+import Poster from './UI/Poster';
 
 interface AutoCarouselItem {
   id: string;
-  title: string;
+  name: string;
   poster: string;
+  plot?: string;
   genre?: string;
   description?: string;
   rating?: string;
   year?: string;
-  onPlay: () => void;
+  onPlay?: () => void;
   onInfo?: () => void;
 }
 
 interface AutoCarouselProps {
+  className?: string;
   items: AutoCarouselItem[];
   autoPlayInterval?: number; // em ms, padrão 5000
-  onPlay: (item: AutoCarouselItem) => void;
+  onPlay?: (item: AutoCarouselItem) => void;
   onInfo?: (item: AutoCarouselItem) => void;
+  infoRight?: boolean; // se true, mostra o info do lado direito
 }
 
 export const AutoCarousel = ({
   items,
+  className,
   autoPlayInterval = 5000,
   onPlay,
   onInfo,
+  infoRight,
 }: AutoCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
@@ -74,7 +82,7 @@ export const AutoCarousel = ({
 
   return (
     <div
-      className="relative w-full h-screen max-h-[600px] overflow-hidden rounded-lg group"
+      className={`relative w-full h-screen overflow-hidden rounded-lg group ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -105,90 +113,37 @@ export const AutoCarousel = ({
       </div>
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16 z-10">
-        <div className="flex gap-8 items-end max-w-4xl w-full">
-          {/* Poster */}
-          <div
-            className="relative flex-shrink-0 w-40 rounded-2xl overflow-hidden
-                          shadow-2xl shadow-black/80 border border-white/10"
-          >
-            <img
-              src={currentItem.poster}
-              alt={currentItem.title}
-              className="w-full aspect-[2/3] object-cover"
-              onError={() => setImgError(true)}
-            />
-          </div>
-
+      <div
+        className={`absolute inset-0 flex flex-col ${infoRight ? 'items-end' : 'items-start'} justify-end p-8 md:p-16 z-10`}
+      >
+        <div className="flex gap-8 items-end max-w-7xl w-full">
+          {!infoRight && <Poster poster={currentItem.poster} name={currentItem.name} />}
           {/* Info */}
-
-          <div className="max-w-2xl">
+          <div>
             {/* Título */}
-            <h1 className="text-left text-4xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg line-clamp-2">
-              {currentItem.title}
+            <h1 className="text-left text-7xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg line-clamp-2">
+              {currentItem.name}
             </h1>
 
             {/* Meta info */}
             <div className="flex items-center gap-4 mb-2">
-              {currentItem.year && (
-                <span className="text-zinc-400 text-sm">{currentItem.year}</span>
-              )}
-              {currentItem.rating && <StartRating rating={currentItem.rating} />}
-              <div className="flex-1">
-                {/* Gênero badges */}
-                {currentItem.genre && (
-                  <div className="flex gap-2 flex-wrap">
-                    {currentItem.genre
-                      .split(',')
-                      .slice(0, 3)
-                      .map((g) => (
-                        <span
-                          key={g}
-                          className="text-xs px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-sm
-                               border border-white/10 text-zinc-300"
-                        >
-                          {g.trim()}
-                        </span>
-                      ))}
-                  </div>
-                )}
-              </div>
+              <MetaText year={currentItem.year} rating={currentItem.rating} percent={0} />
+              <GenreBadges genre={currentItem.genre ?? ''} />
             </div>
 
-            {/* Descrição */}
-            {currentItem.description && (
-              <p className="text-gray-100 text-sm md:text-lg line-clamp-3 mb-6 drop-shadow-lg text-justify">
-                {currentItem.description}
-              </p>
-            )}
+            <PlotText plot={currentItem.plot ?? ''} maxLength={600} />
 
             {/* Botões */}
             <div className="flex gap-4 items-center">
-              <button
-                onClick={() => {
-                  currentItem.onPlay();
-                  // onPlay(currentItem);
-                }}
-                className="flex items-center gap-2.5 px-8 py-3 rounded-xl font-semibold text-sm
-                           bg-red-600 hover:bg-red-500 text-white transition-all duration-200
-                           shadow-lg shadow-red-900/40 hover:shadow-red-900/60 hover:scale-105
-                           disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
-              >
-                <Play className="w-5 h-5 fill-white" />
-                Assistir
-              </button>
-              {/* <button
-                onClick={() => {
-                  currentItem.onPlay();
-                  // onPlay(currentItem);
-                }}
-                className="flex items-center gap-2 px-8 py-3 rounded-lg font-bold text-black
-                         bg-white hover:bg-gray-200 transition-all duration-200
-                         shadow-lg hover:shadow-xl"
-              >
-                <Play className="w-5 h-5 fill-black" />
-                Assistir
-              </button> */}
+              {currentItem.onPlay && (
+                <ButtonPlay
+                  onClick={() => {
+                    if (currentItem.onPlay) currentItem.onPlay();
+                    // onPlay(currentItem);
+                  }}
+                  isFocused={false}
+                />
+              )}
 
               {/* <button
               className="px-6 py-3 rounded-lg font-bold text-white border-2 border-white
@@ -199,6 +154,7 @@ export const AutoCarousel = ({
             </button> */}
             </div>
           </div>
+          {infoRight && <Poster poster={currentItem.poster} name={currentItem.name} />}
         </div>
       </div>
 

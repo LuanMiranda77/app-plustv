@@ -98,23 +98,11 @@ export const Home = () => {
   // Preparar dados do carousel automático (destaque)
   const heroItems = [
     ...movies.slice(0, 5).map((m) => ({
-      id: m.id,
-      title: m.name,
-      poster: m.poster,
-      description: m.plot || m.category,
-      rating: m.rating,
-      genre: m.genre,
-      year: m.year,
+      ...m,
       onPlay: () => navigateMovie(m),
     })),
     ...series.slice(0, 5).map((s) => ({
-      id: s.id,
-      title: s.name,
-      poster: s.poster,
-      description: s.plot || s.category,
-      rating: s.rating,
-      genre: s.genre,
-      year: s.year,
+      ...s,
       onPlay: () => navigateSerie(s),
     })),
   ];
@@ -124,26 +112,27 @@ export const Home = () => {
       {/* Auto Carousel Hero */}
       {heroItems.length > 0 && !isLoading && (
         <AutoCarousel
+          className="max-h-[700px]"
           items={heroItems}
           autoPlayInterval={5000}
-          onPlay={(item) => {
-            const movie = movies.find((m) => m.id === item.id);
-            const serie = series.find((s) => s.id === item.id);
-            if (movie) {
-              navigateMovie(item);
-            } else if (serie) {
-              navigateSerie(item);
-            }
-          }}
-          onInfo={(item) => {
-            const movie = movies.find((m) => m.id === item.id);
-            const serie = series.find((s) => s.id === item.id);
-            if (movie) {
-              navigateMovie(item);
-            } else if (serie) {
-              navigateSerie(item);
-            }
-          }}
+          // onPlay={(item) => {
+          //   const movie = movies.find((m) => m.id === item.id);
+          //   const serie = series.find((s) => s.id === item.id);
+          //   if (movie) {
+          //     navigateMovie(item);
+          //   } else if (serie) {
+          //     navigateSerie(item);
+          //   }
+          // }}
+          // onInfo={(item) => {
+          //   const movie = movies.find((m) => m.id === item.id);
+          //   const serie = series.find((s) => s.id === item.id);
+          //   if (movie) {
+          //     navigateMovie(item);
+          //   } else if (serie) {
+          //     navigateSerie(item);
+          //   }
+          // }}
         />
       )}
 

@@ -8,13 +8,13 @@ type Props = {
   nextEpisode?: Episode;
 };
 
-export default function PlayButton({ isFocused, disabled, streamId, nextEpisode,  onClick }: Props) {
+export default function ButtonPlay({ isFocused, disabled, streamId, nextEpisode,  onClick }: Props) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={`
-        flex items-center gap-2.5 px-6 py-3 rounded-xl font-semibold text-2xl max-md:text-sm
+        flex items-center gap-2.5 px-8 py-3 rounded-xl font-semibold text-2xl max-md:text-sm
         transition-all duration-200 shadow-lg
         disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100
         ${

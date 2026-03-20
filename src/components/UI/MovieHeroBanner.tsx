@@ -39,7 +39,7 @@ export const MovieHeroBanner = ({
   const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(movie.id));
   const progressPercent = calcProgressPercent(movie.progress ?? 0, movie.duration);
-  const hasProgress = progressPercent > 0 && progressPercent < 100;
+  // const hasProgress = progressPercent > 0 && progressPercent < 100;
 
   // Usar showTrailer dos props se fornecido, senão usar o state local
   const isShowingTrailer = propsShowTrailer !== undefined ? propsShowTrailer : showTrailer;

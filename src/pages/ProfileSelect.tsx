@@ -1,42 +1,57 @@
-
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Button } from '../components/UI/Button'
-import { Input } from '../components/UI/Input'
-import { useAuthStore } from '../store/authStore'
-import type { Profile } from '../types'
-import LogoHeader from '../components/Logos/LogoHeader'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/UI/Button';
+import { Input } from '../components/UI/Input';
+import { useAuthStore } from '../store/authStore';
+import type { Profile } from '../types';
+import LogoHeader from '../components/Logos/LogoHeader';
+import { useContentStore } from '../store/contentStore';
+import AutoCarousel from '../components/AutoCarousel';
 
 export const ProfileSelect = () => {
-  const navigate = useNavigate()
-  const { profiles, addProfile, setActiveProfile } = useAuthStore()
-  const [showAddForm, setShowAddForm] = useState(false)
-  const [newProfile, setNewProfile] = useState({ name: '', avatar: '🎬' })
+  const navigate = useNavigate();
+  const { profiles, addProfile, setActiveProfile } = useAuthStore();
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newProfile, setNewProfile] = useState({ name: '', avatar: '🎬' });
+  const { movies, series, isLoading } = useContentStore();
+  const heroItems = [
+    ...movies.slice(0, 5).map((m) => ({
+      ...m,
+    })),
+    ...series.slice(0, 5).map((s) => ({
+      ...s,
+    })),
+  ];
 
   const handleSelectProfile = (profile: Profile) => {
-    setActiveProfile(profile)
-    navigate('/home')
-  }
+    setActiveProfile(profile);
+    navigate('/home');
+  };
 
   const handleAddProfile = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newProfile.name.trim()) return
+    e.preventDefault();
+    if (!newProfile.name.trim()) return;
 
     const profile: Profile = {
       id: Date.now().toString(),
       name: newProfile.name,
       avatar: newProfile.avatar,
       createdAt: new Date(),
-    }
+    };
 
-    addProfile(profile)
-    setNewProfile({ name: '', avatar: '🎬' })
-    setShowAddForm(false)
-  }
+    addProfile(profile);
+    setNewProfile({ name: '', avatar: '🎬' });
+    setShowAddForm(false);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
-      <div className="mx-auto">
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
+      {heroItems.length > 0 && !isLoading && (
+        <div className="absolute inset-0 z-10">
+          <AutoCarousel items={heroItems} autoPlayInterval={5000} className="absolute" infoRight/>
+        </div>
+      )}
+      <div className="mx-auto z-30 absolute inset-0 left-10 top-10">
         <div className="flex items-center justify-between mb-10">
           <div className="">
             <LogoHeader />
@@ -126,4 +141,4 @@ export const ProfileSelect = () => {
       </div>
     </div>
   );
-}
+};

@@ -2,7 +2,7 @@ import StarRating from './StarRating';
 
 type Props = {
   year?: string;
-  rating?: number;
+  rating?: string | number;
   seasonsCount?: number;
   total?: number;
   percent: number;
