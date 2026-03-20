@@ -13,6 +13,7 @@ interface VideoPlayerProps {
   onError?: (error: string) => void;
   onEnded?: () => void;
   onNextEpisode?: () => void;
+  onBack?: () => void;
   isControlsVisible?: boolean;
   streamId: string | number;
   saveInterval?: number;
@@ -30,6 +31,7 @@ export const VideoPlayer = ({
   onError,
   onEnded,
   onNextEpisode,
+  onBack,
   streamId,
   saveInterval,
   isAutoSave = false,
@@ -166,11 +168,14 @@ export const VideoPlayer = ({
       setRemoteActivityTrigger((t) => t + 1);
       handlePlayPause();
     },
-    // onBack: async () => {
-    //   if (isFullscreen) {
-    //     await handleFullscreen();
-    //   }
-    // },
+    onBack: () => {
+      setRemoteActivityTrigger((t) => t + 1);
+      if (isFullscreen) {
+        handleFullscreen();
+      } else {
+        onBack?.();
+      }
+    },
   });
 
   return (
@@ -181,7 +186,7 @@ export const VideoPlayer = ({
     >
       <video
         ref={videoRef}
-        className="w-full h-full"
+        className="w-full h-full z-[999]"
         poster={poster}
         autoPlay={autoPlay}
         // controls
@@ -196,7 +201,7 @@ export const VideoPlayer = ({
             // Mostrar botão de próximo episódio quando faltar 40 segundos
             if (type === 'series' && duration > 0) {
               const timeRemaining = duration - current;
-              if (timeRemaining <= 40 && timeRemaining > 0) {
+              if (timeRemaining <= 60 && timeRemaining > 0) {
                 setShowNextEpisodeBtn(true);
               }
             }
@@ -223,6 +228,8 @@ export const VideoPlayer = ({
         }}
       />
 
+      {/* Back Button */}
+
       {/* Error display */}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80">
@@ -233,15 +240,15 @@ export const VideoPlayer = ({
         </div>
       )}
 
-      {/* Next Episode Button */}
+      {/* Next Episode Button - Always visible when active */}
       {showNextEpisodeBtn && type === 'series' && onNextEpisode && (
-        <div className="absolute bottom-24 right-8 z-10">
+        <div className="absolute bottom-24 right-8 z-[99999]">
           <button
             onClick={() => {
               setShowNextEpisodeBtn(false);
               onNextEpisode();
             }}
-            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
+            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-lg"
           >
             <span>➤</span>
             <span>Próximo Episódio</span>
@@ -266,6 +273,7 @@ export const VideoPlayer = ({
           currentQuality={currentQuality}
           onQualityChange={handleQualityChange}
           remoteActivityTrigger={remoteActivityTrigger}
+          onBack={onBack}
         />
       )}
     </div>

@@ -65,11 +65,6 @@ export const MovieDetail = ({ movie, onBack, onToggleFavorite }: MovieDetailProp
 
   return currentStream && isPlay ? (
     <div className="flex flex-col min-h-screen bg-black">
-      <ButtonBack
-        className="absolute z-[99999] top-2"
-        title={currentStream.name}
-        onClick={() => setIsPlay(false)}
-      />
       {/* Player */}
       <div className="absolute z-[9999] w-screen h-h-screen flex items-center justify-center flex-1">
         <VideoPlayer
@@ -83,6 +78,7 @@ export const MovieDetail = ({ movie, onBack, onToggleFavorite }: MovieDetailProp
           streamId={currentStream.id}
           type="movie"
           isAutoSave
+          onBack={() => setIsPlay(false)}
         />
       </div>
     </div>

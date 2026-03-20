@@ -158,11 +158,6 @@ export const SeriesDetail = ({
 
   return currentEpisode && isPlay ? (
     <div className="flex flex-col min-h-screen bg-black">
-      <ButtonBack
-        className="absolute z-[99999] top-2"
-        title={currentEpisode.name}
-        onClick={() => setIsPlay(false)}
-      />
       {/* Player */}
       <div className="absolute z-[9999] w-screen h-h-screen flex items-center justify-center flex-1">
         <VideoPlayer
@@ -177,6 +172,7 @@ export const SeriesDetail = ({
           type="series"
           isAutoSave
           contentObject={currentEpisode}
+          onBack={() => setIsPlay(false)}
         />
       </div>
     </div>

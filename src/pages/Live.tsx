@@ -285,6 +285,7 @@ export const Live = () => {
               }}
               streamId={currentStream?.id}
               type="live"
+              onBack={()=>setIsFullScreen(false)}
             />
             {!isFullScreen && (
               <Fragment>

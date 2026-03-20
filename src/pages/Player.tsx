@@ -52,18 +52,6 @@ export const Player = () => {
   return (
     currentStream && (
       <div className="flex flex-col min-h-screen bg-black">
-        {/* Back button */}
-        <ButtonBack
-          className="absolute z-10 top-2"
-          title={currentStream.title}
-          onClick={() => {
-            navigate(`/${!currentStream.type ? 'home' : currentStream.type}`, {
-              state: currentStream,
-            });
-            setCurrentStream(null);
-          }}
-        />
-
         {/* Player */}
         <div className="flex items-center justify-center flex-1">
           <VideoPlayer
@@ -78,6 +66,12 @@ export const Player = () => {
             type={(currentStream.type as 'movie' | 'series' | 'live') || 'live'}
             isAutoSave={currentStream.type !== 'live'} // Não salvar progresso para lives
             isControlsVisible={currentStream.type !== 'live'}
+            onBack={() => {
+              navigate(`/${!currentStream.type ? 'home' : currentStream.type}`, {
+                state: currentStream,
+              });
+              setCurrentStream(null);
+            }}
           />
         </div>
 

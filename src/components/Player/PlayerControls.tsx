@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { Loader, Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Loader, Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 interface PlayerControlsProps {
@@ -17,6 +17,7 @@ interface PlayerControlsProps {
   currentQuality: number;
   onQualityChange?: (index: number) => void;
   remoteActivityTrigger?: number;
+  onBack?: () => void;
 }
 
 export const PlayerControls = ({
@@ -34,6 +35,7 @@ export const PlayerControls = ({
   currentQuality,
   onQualityChange,
   remoteActivityTrigger = 0,
+  onBack,
 }: PlayerControlsProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -103,13 +105,20 @@ export const PlayerControls = ({
       <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {/* Title bar */}
-      {/* <div
-        className={`absolute top-4 left-4 right-4 text-white transition-opacity duration-300 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
+      <div
+        className={`absolute top-4 left-4 flex items-center gap-2 transition-opacity duration-300 
+          ${isVisible ? 'opacity-100' : 'opacity-0'}
+          `}
       >
-        <h2 className="text-xl font-bold">{title}</h2>
-      </div> */}
+        <button
+          onClick={onBack}
+          className="z-20 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white transition-colors duration-200 hover:text-red-500"
+          title="Voltar"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+        <h2 className="text-xl font-semibold">{title}</h2>
+      </div>
 
       {/* Loading spinner */}
       {isLoading && (
@@ -177,7 +186,7 @@ export const PlayerControls = ({
                 step="0.05"
                 value={volume}
                 onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-                className="w-0 group-hover/volume:w-20 transition-all duration-200 cursor-pointer accent-red-600"
+                className="w-20 transition-all duration-200 cursor-pointer accent-red-600"
               />
             </div>
 
