@@ -52,6 +52,7 @@ export const Movies = () => {
     }
   };
 
+  // Hotkeys para navegação
   useRemoteControl({
     onRight: () => {
       if (isZoneCat) {
@@ -92,6 +93,10 @@ export const Movies = () => {
       }
     },
     onBack: () => {
+      if (isZoneList || isZoneCat) {
+        setActiveZone('menu'); 
+        return;
+      }
       if (currentMovie) {
         setCurrentMovie(null);
       }

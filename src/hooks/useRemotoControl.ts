@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 type RemoteKeys = {
   onUp?: () => void;
@@ -12,41 +12,55 @@ type RemoteKeys = {
 };
 
 export function useRemoteControl(handlers: RemoteKeys) {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      console.log(e.keyCode);
-      switch (e.keyCode) {
-        case 38:
-          handlers.onUp?.();
-          break;
-        case 40:
-          handlers.onDown?.();
-          break;
-        case 37:
-          handlers.onLeft?.();
-          break;
-        case 39:
-          handlers.onRight?.();
-          break;
-        case 13:
-        case 44:
-          handlers.onOk?.();
-          break;
-        case 461:
-        case 27:
-          handlers.onBack?.();
-          break;
-        case 415:
-        case 19:
-          handlers.onPlayPause?.();
-          break;
-        case 405:
-          handlers.onPlayPause?.();
-          break;
-      }
-    };
+  const handlersRef = useRef(handlers);
 
+  useEffect(() => {
+    handlersRef.current = handlers;
+  }, [handlers]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const current = handlersRef.current;
+    switch (e.keyCode) {
+      case 38:
+        current.onUp?.();
+        e.preventDefault();
+        break;
+      case 40:
+        current.onDown?.();
+        e.preventDefault();
+        break;
+      case 37:
+        current.onLeft?.();
+        e.preventDefault();
+        break;
+      case 39:
+        current.onRight?.();
+        e.preventDefault();
+        break;
+      case 13:
+      case 44:
+        current.onOk?.();
+        e.preventDefault();
+        break;
+      case 461:
+      case 27:
+        current.onBack?.();
+        e.preventDefault();
+        break;
+      case 415:
+      case 19:
+        current.onPlayPause?.();
+        e.preventDefault();
+        break;
+      case 405:
+        current.onPlayPause?.();
+        e.preventDefault();
+        break;
+    }
+  }, []);
+
+  useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handlers]);
+  }, [handleKeyDown]);
 }

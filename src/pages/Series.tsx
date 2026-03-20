@@ -36,6 +36,7 @@ export const PageSeries = () => {
 
   const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...seriesCategories];
 
+  // Hotkeys para navegação
   useRemoteControl({
     onRight: () => {
       if (isZoneCat) {
@@ -76,6 +77,10 @@ export const PageSeries = () => {
       }
     },
     onBack: () => {
+      if (isZoneList || isZoneCat) {
+        setActiveZone('menu');
+        return;
+      }
       if (currentSerie) {
         setCurrentSerie(null);
       }

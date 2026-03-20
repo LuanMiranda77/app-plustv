@@ -49,6 +49,7 @@ export const Live = () => {
   const displayedChannels = filteredChannels.slice(0, displayCount);
   const hasMoreChannels = displayCount < filteredChannels.length;
 
+  // Hotkeys para navegação
   useRemoteControl({
     onRight: () => {
       if (isZoneCat) {
@@ -69,7 +70,7 @@ export const Live = () => {
         setFocusedCat(Math.min(focusedCat + 1, liveCategories.length));
       }
       if (isZoneList && focusedIndex < displayedChannels.length - 1) {
-        setFocusedIndex(Math.min(focusedIndex + 4, displayedChannels.length - 1));
+        setFocusedIndex(Math.min(focusedIndex + 1, displayedChannels.length - 1));
       }
     },
     onUp: () => {
@@ -77,11 +78,10 @@ export const Live = () => {
         setFocusedCat(Math.max(focusedCat - 1, 0));
       }
       if (isZoneList && focusedIndex > 0) {
-        setFocusedIndex(Math.max(focusedIndex - 4, 0));
+        setFocusedIndex(Math.max(focusedIndex - 1, 0));
       }
     },
     onOk: () => {
-      console.log("sdasfd");
       if (isZoneCat) {
         setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
       }
@@ -90,6 +90,10 @@ export const Live = () => {
       }
     },
     onBack: () => {
+      if (isZoneList || isZoneCat) {
+        setActiveZone('menu'); // ← volta para categorias
+        return;
+      }
       if (currentStream) {
         setCurrentStream(null);
         setIsFullScreen(false);
@@ -110,6 +114,7 @@ export const Live = () => {
       setCurrentStream(null);
     }
   }, [location]);
+
 
   // Infinite scroll - detectar quando chegar ao final
   useEffect(() => {

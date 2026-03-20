@@ -47,7 +47,6 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     });
   };
   const okButton = (i: number) => {
-    setActiveZone('menu');
     if (!isActive) return;
     setFocusedIndex(i);
     navigate(menus[i].path);
@@ -85,7 +84,11 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                   title={menu.title}
                   icon={menu.icon}
                   isFocused={focusedIndex === i}
-                  onClick={() => okButton(i)}
+                  onClick={() => {
+                    setActiveZone('menu');
+                    setFocusedIndex(i);
+                    navigate(menu.path);
+                  }}
                   iconOffset={i !== 4}
                 />
               ))}

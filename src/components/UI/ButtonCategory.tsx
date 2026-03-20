@@ -31,7 +31,7 @@ export default function ButtonCategory({
         }
       `}
     >
-      {name.replace('FILMES |', '')}
+      {name}
     </button>
   );
 }
