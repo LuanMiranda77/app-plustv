@@ -1,20 +1,22 @@
-import { Loader, Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+/* eslint-disable react-hooks/set-state-in-effect */
+import { Loader, Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface PlayerControlsProps {
-  title: string
-  isPlaying: boolean
-  onPlayPause: () => void
-  currentTime: number
-  duration: number
-  onSeek: (time: number) => void
-  volume: number
-  onVolumeChange: (vol: number) => void
-  onFullscreen: () => void
-  isLoading?: boolean
-  qualities: string[]
-  currentQuality: number
-  onQualityChange?: (index: number) => void
+  title: string;
+  isPlaying: boolean;
+  onPlayPause: () => void;
+  currentTime: number;
+  duration: number;
+  onSeek: (time: number) => void;
+  volume: number;
+  onVolumeChange: (vol: number) => void;
+  onFullscreen: () => void;
+  isLoading?: boolean;
+  qualities: string[];
+  currentQuality: number;
+  onQualityChange?: (index: number) => void;
+  remoteActivityTrigger?: number;
 }
 
 export const PlayerControls = ({
@@ -31,41 +33,66 @@ export const PlayerControls = ({
   qualities,
   currentQuality,
   onQualityChange,
+  remoteActivityTrigger = 0,
 }: PlayerControlsProps) => {
-  const [isVisible, setIsVisible] = useState(true)
-  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [isVisible, setIsVisible] = useState(true);
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const scheduleHide = () => {
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
+    // Esconder após 8 segundos de inatividade quando reproduzindo
+    hideTimeoutRef.current = setTimeout(() => {
+      setIsVisible(false);
+    }, 8000);
+  };
 
   useEffect(() => {
-    // Auto-hide controls após inatividade
-    if (isPlaying && isVisible) {
-      hideTimeoutRef.current = setTimeout(() => {
-        setIsVisible(false)
-      }, 3000)
+    // Manter controles visíveis enquanto vídeo está rodando
+    if (isPlaying) {
+      setIsVisible(true);
+      scheduleHide();
+    } else {
+      // Mostrar controles quando pausado
+      setIsVisible(true);
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     }
 
     return () => {
-      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current)
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    };
+  }, [isPlaying]);
+
+  useEffect(() => {
+    // Reaparcer controles quando há atividade do controle remoto
+    if (remoteActivityTrigger > 0) {
+      setIsVisible(true);
+      if (isPlaying) {
+        scheduleHide();
+      }
     }
-  }, [isPlaying, isVisible])
+  }, [remoteActivityTrigger, isPlaying]);
 
   const handleMouseMove = () => {
-    setIsVisible(true)
-    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current)
-  }
+    setIsVisible(true);
+    if (isPlaying) {
+      scheduleHide();
+    }
+  };
 
   const formatTime = (seconds: number) => {
-    if (!isFinite(seconds)) return '0:00'
-    const hrs = Math.floor(seconds / 3600)
-    const mins = Math.floor((seconds % 3600) / 60)
-    const secs = Math.floor(seconds % 60)
+    if (!isFinite(seconds)) return '0:00';
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
 
     if (hrs > 0) {
-      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <div
@@ -102,7 +129,7 @@ export const PlayerControls = ({
           <div className="w-full h-1 bg-gray-700 rounded-full hover:h-2 transition-all">
             <div
               className="h-full bg-red-600 rounded-full transition-all"
-              style={{ width: `${progressPercent>100?100:progressPercent}%` }}
+              style={{ width: `${progressPercent > 100 ? 100 : progressPercent}%` }}
             >
               <div className="w-4 h-4 bg-white rounded-full shadow-lg translate-y-1 -translate-x-2 opacity-0 group-hover/progress:opacity-100 transition-opacity" />
             </div>
@@ -141,11 +168,7 @@ export const PlayerControls = ({
                 className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
                 title="Mutar (M)"
               >
-                {volume === 0 ? (
-                  <VolumeX className="w-6 h-6" />
-                ) : (
-                  <Volume2 className="w-6 h-6" />
-                )}
+                {volume === 0 ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
               </button>
               <input
                 type="range"
@@ -194,5 +217,5 @@ export const PlayerControls = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

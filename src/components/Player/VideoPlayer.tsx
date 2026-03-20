@@ -12,6 +12,7 @@ interface VideoPlayerProps {
   autoPlay?: boolean;
   onError?: (error: string) => void;
   onEnded?: () => void;
+  onNextEpisode?: () => void;
   isControlsVisible?: boolean;
   streamId: string | number;
   saveInterval?: number;
@@ -28,6 +29,7 @@ export const VideoPlayer = ({
   autoPlay = false,
   onError,
   onEnded,
+  onNextEpisode,
   streamId,
   saveInterval,
   isAutoSave = false,
@@ -42,6 +44,8 @@ export const VideoPlayer = ({
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showNextEpisodeBtn, setShowNextEpisodeBtn] = useState(false);
+  const [remoteActivityTrigger, setRemoteActivityTrigger] = useState(0);
   const { saveNow } = useProgress({
     type: type, // ou 'series' dependendo do contexto
     streamId: String(streamId),
@@ -134,20 +138,34 @@ export const VideoPlayer = ({
 
   // Remote Control Handler
   useRemoteControl({
-    onUp: () => setVolume((v) => Math.min(v + 0.1, 1)),
-    onDown: () => setVolume((v) => Math.max(v - 0.1, 0)),
+    onUp: () => {
+      setRemoteActivityTrigger((t) => t + 1);
+      setVolume((v) => Math.min(v + 0.1, 1));
+    },
+    onDown: () => {
+      setRemoteActivityTrigger((t) => t + 1);
+      setVolume((v) => Math.max(v - 0.1, 0));
+    },
     onRight: () => {
+      setRemoteActivityTrigger((t) => t + 1);
       if (videoRef.current) {
         videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 5, duration);
       }
     },
     onLeft: () => {
+      setRemoteActivityTrigger((t) => t + 1);
       if (videoRef.current) {
         videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 5, 0);
       }
     },
-    onOk: handlePlayPause,
-    onPlayPause: handlePlayPause,
+    onOk: () => {
+      setRemoteActivityTrigger((t) => t + 1);
+      handlePlayPause();
+    },
+    onPlayPause: () => {
+      setRemoteActivityTrigger((t) => t + 1);
+      handlePlayPause();
+    },
     // onBack: async () => {
     //   if (isFullscreen) {
     //     await handleFullscreen();
@@ -173,7 +191,15 @@ export const VideoPlayer = ({
         onPause={() => setIsPlaying(false)}
         onTimeUpdate={() => {
           if (videoRef.current) {
-            setCurrentTime(videoRef.current.currentTime);
+            const current = videoRef.current.currentTime;
+            setCurrentTime(current);
+            // Mostrar botão de próximo episódio quando faltar 40 segundos
+            if (type === 'series' && duration > 0) {
+              const timeRemaining = duration - current;
+              if (timeRemaining <= 40 && timeRemaining > 0) {
+                setShowNextEpisodeBtn(true);
+              }
+            }
           }
         }}
         onLoadedMetadata={() => {
@@ -183,7 +209,12 @@ export const VideoPlayer = ({
         }}
         onEnded={() => {
           setIsPlaying(false);
-          onEnded?.();
+          // Auto-avançar para próximo episódio se for série
+          if (type === 'series' && onNextEpisode) {
+            onNextEpisode();
+          } else {
+            onEnded?.();
+          }
         }}
         onVolumeChange={() => {
           if (videoRef.current) {
@@ -199,6 +230,22 @@ export const VideoPlayer = ({
             <p className="text-red-500 text-lg mb-2">⚠️ Erro</p>
             <p className="text-white text-sm">{error}</p>
           </div>
+        </div>
+      )}
+
+      {/* Next Episode Button */}
+      {showNextEpisodeBtn && type === 'series' && onNextEpisode && (
+        <div className="absolute bottom-24 right-8 z-10">
+          <button
+            onClick={() => {
+              setShowNextEpisodeBtn(false);
+              onNextEpisode();
+            }}
+            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
+          >
+            <span>➤</span>
+            <span>Próximo Episódio</span>
+          </button>
         </div>
       )}
 
@@ -218,8 +265,9 @@ export const VideoPlayer = ({
           qualities={qualities}
           currentQuality={currentQuality}
           onQualityChange={handleQualityChange}
+          remoteActivityTrigger={remoteActivityTrigger}
         />
       )}
     </div>
   );
-};;
+};
