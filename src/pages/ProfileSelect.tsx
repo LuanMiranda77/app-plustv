@@ -1,3 +1,4 @@
+import { RectangleHorizontalIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AutoCarousel from '../components/AutoCarousel';
@@ -7,12 +8,15 @@ import { Input } from '../components/UI/Input';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
+import { useFavoritesStore } from '../store/favoritesStore';
+import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Profile } from '../types';
-import { RectangleHorizontal, RectangleHorizontalIcon } from 'lucide-react';
 
 export const ProfileSelect = () => {
   const navigate = useNavigate();
   const { profiles, addProfile, updateProfile, setActiveProfile } = useAuthStore();
+  const { setCurrentProfile: setFavoritesProfile } = useFavoritesStore();
+  const { setCurrentProfile: setHistoryProfile } = useWatchHistoryStore();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProfile, setNewProfile] = useState({ name: '', avatar: '🎬' });
   const [focusedIndex, setFocusedIndex] = useState(0);
@@ -189,8 +193,11 @@ export const ProfileSelect = () => {
 
   const handleSelectProfile = (profile: Profile) => {
     setActiveProfile(profile);
+    // Carregar favoritos e histórico do perfil selecionado
+    setFavoritesProfile(profile.id);
+    setHistoryProfile(profile.id);
     navigate('/home');
-  };
+  };;
 
   const handleAddProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -397,4 +404,4 @@ export const ProfileSelect = () => {
       </div>
     </div>
   );
-};;
+};
