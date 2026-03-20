@@ -1,3 +1,5 @@
+import logoIcon from '/icons.png';
+
 type Props = {
   poster: string;
   name: string;
@@ -13,7 +15,7 @@ export default function Poster({ poster, name, progressPercent = 0 }: Props) {
         src={poster}
         alt={name}
         className="w-full aspect-[2/3] object-cover"
-        onError={(e) => (e.currentTarget.src = '/icons.png')}
+        onError={(e) => (e.currentTarget.src = logoIcon)}
       />
       {hasProgress && (
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-700/80">
