@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { useRemoteControl } from '../../hooks/useRemotoControl';
 import { useAuthStore } from '../../store/authStore';
 import type { Episode, Season, Series } from '../../types';
 import { indexedDbStorage } from '../../utils/indexedDbStorage';
 import { getProgress } from '../../utils/progressWatched';
 import EpisodeCard from '../Cards/EpisodeCard';
 import { VideoPlayer } from '../Player/VideoPlayer';
-import { ButtonBack } from './ButtonBack';
 import { LoadingSpinner } from './LoadingSpinner';
 import SeasonSelector from './SeasonSelector';
 import SeriesHeroBanner from './SeriesHeroBanner';
@@ -61,7 +61,12 @@ export const SeriesDetail = ({
   const [seasons, setSeasons] = useState<Season[]>(series?.seasons || []);
   const [loading, setLoading] = useState(false);
   const [isPlay, setIsPlay] = useState(false);
+  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(0);
+  const maxButtons = 5;
+  const [focusedButton, setFocusedButton] = useState(1); // 0=voltar 1=Assistir, 2=Trailer, 3=Favorito, 4=Episódios
+  const [showTrailer, setShowTrailer] = useState(false);
   const episodesRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
   const { watched, total, percent } = getTotalProgress(seasons);
   const nextEpisode = findNextEpisode(seasons, currentEpisodeId);
   const nextSeasonNumber = nextEpisode ? findNextSeasonForEpisode(seasons, nextEpisode.id) : 1;
@@ -131,14 +136,6 @@ export const SeriesDetail = ({
     load();
   }, [series?.id]);
 
-  // Sincronizar temporada com episódio atual
-  useEffect(() => {
-    if (currentEpisode && seasons.length) {
-      const num = findNextSeasonForEpisode(seasons, currentEpisode.id);
-      setActiveSeason(num);
-    }
-  }, [currentEpisode]);
-
   const handlePlay = (episode: Episode, seasonNumber: number) => {
     // onPlay(episode, activeSeason);
     setIsPlay(true);
@@ -152,8 +149,90 @@ export const SeriesDetail = ({
     handlePlay(nextEpisode, nextSeasonNumber);
   };
 
+  // Remote Control Navigation
+  useRemoteControl({
+    onUp: () => {
+      if (isPlay) return;
+      if (selectedEpisodeIndex === 0 && focusedButton == -1) {
+        // Força o scroll da lista de episódios para o topo
+        pageRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        return setFocusedButton(1);
+      }
+      if (focusedButton !== 0 && focusedButton > 0) {
+        return setFocusedButton(0);
+      }
+      setSelectedEpisodeIndex((prev) => Math.max(0, prev - 1));
+    },
+    onDown: () => {
+      if (isPlay) return;
+      // Navega para baixo, fica no último se chegar ao final
+      setSelectedEpisodeIndex((prev) => Math.min(prev + 1, currentEpisodes.length - 1));
+      setFocusedButton(-1);
+    },
+    onRight: () => {
+      if (isPlay) return;
+      setFocusedButton((prev) => (prev + 1) % maxButtons);
+    },
+    onLeft: () => {
+      if (isPlay) return;
+      // Navegar entre botões ao contrário
+      setFocusedButton((prev) => (prev - 1 + maxButtons) % maxButtons);
+    },
+    onOk: () => {
+      if (isPlay) return;
+      // Executar ação do botão focado
+      if (focusedButton === 0) {
+        // Assistir
+        if (nextEpisode) handlePlayNext();
+      } else if (focusedButton === 1) {
+        // Trailer
+        setShowTrailer(true);
+      } else if (focusedButton === 2) {
+        // Favorito
+        if (onToggleFavorite) onToggleFavorite(series?.id || '');
+      } else if (focusedButton === 3) {
+        // Episódios
+        scrollToEpisodes();
+      }
+    },
+    onBack: () => {
+      if (isPlay) {
+        setIsPlay(false);
+      } else {
+        onBack();
+      }
+    },
+  });
+
+  // Resetar seleção quando temporada muda
+  useEffect(() => {
+    setSelectedEpisodeIndex(0);
+  }, [activeSeason]);
+
+  // Resetar scroll para topo quando focus volta para o primeiro episódio
+  useEffect(() => {
+    if (selectedEpisodeIndex === 0) {
+      const container = document.querySelector('[data-episodes-container]');
+      if (container) {
+        container.scrollTop = 0;
+      }
+    }
+  }, [selectedEpisodeIndex]);
+
+  // Auto-scroll quando episódio selecionado muda
+  useEffect(() => {
+    if (!isPlay) {
+      const selectedElement = document.querySelector(
+        `[data-episode-index="${selectedEpisodeIndex}"]`
+      );
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [selectedEpisodeIndex, isPlay]);
+
   const scrollToEpisodes = () => {
-    episodesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    episodesRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' });
   };
 
   return currentEpisode && isPlay ? (
@@ -173,13 +252,15 @@ export const SeriesDetail = ({
           isAutoSave
           contentObject={currentEpisode}
           onBack={() => setIsPlay(false)}
+          onNextEpisode={handlePlayNext}
         />
       </div>
     </div>
   ) : (
     series && (
       <div
-        className="absolute top-0 max-h-[calc(100vh-60px)] bg-zinc-950 text-white w-full mt-[60px]"
+        ref={pageRef}
+        className="absolute top-0 max-h-[calc(100vh-60px)] bg-zinc-950 text-white w-full mt-[60px] overflow-y-auto"
         style={{ fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}
       >
         <SeriesHeroBanner
@@ -193,6 +274,9 @@ export const SeriesDetail = ({
           onPlayNext={handlePlayNext}
           onToggleFavorite={onToggleFavorite}
           onScrollToEpisodes={scrollToEpisodes}
+          focusedButton={focusedButton}
+          showTrailer={showTrailer}
+          onSetShowTrailer={setShowTrailer}
         />
         {/* ── Episódios ─────────────────────────────────────────────────────────── */}
         <div ref={episodesRef} className="px-6 md:px-14 py-8">
@@ -249,16 +333,17 @@ export const SeriesDetail = ({
               <span className="text-sm">Nenhum episódio encontrado</span>
             </div>
           ) : (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" data-episodes-container>
               {currentEpisodes.map((episode, index) => (
-                <EpisodeCard
-                  key={episode.id}
-                  episode={episode}
-                  seasonNumber={activeSeason}
-                  onPlay={(ep) => handlePlay(ep, activeSeason)}
-                  onToggleWatched={onToggleWatched}
-                  isActive={episode.id === currentEpisodeId}
-                />
+                <div key={episode.id} data-episode-index={index}>
+                  <EpisodeCard
+                    episode={episode}
+                    seasonNumber={activeSeason}
+                    onPlay={(ep) => handlePlay(ep, activeSeason)}
+                    onToggleWatched={onToggleWatched}
+                    isActive={episode.id === currentEpisodeId || index === selectedEpisodeIndex}
+                  />
+                </div>
               ))}
             </div>
           )}

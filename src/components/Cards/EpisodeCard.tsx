@@ -43,7 +43,7 @@ export const EpisodeCard = ({
         border border-transparent
         ${
           isActive
-            ? 'bg-red-950/40 border-red-600/60 shadow-lg shadow-red-900/20'
+            ? 'bg-zinc-800/80 border-zinc-600/40shadow-lg shadow-red-900/20'
             : 'bg-zinc-900/60 hover:bg-zinc-800/80 hover:border-zinc-600/40'
         }
         ${isWatched && !isActive ? 'opacity-60 hover:opacity-90' : ''}
@@ -65,7 +65,9 @@ export const EpisodeCard = ({
         ) : (
           /* fallback escuro com número do episódio */
           <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-800 gap-1">
-            <span className="text-zinc-500 text-xs uppercase tracking-widest">EP</span>
+            <span className="text-zinc-500 text-2xl max-md:text-xs uppercase tracking-widest">
+              EP
+            </span>
             <span
               className="text-white font-bold leading-none"
               style={{ fontSize: '2rem', fontFamily: "'DM Serif Display', Georgia, serif" }}
@@ -76,11 +78,13 @@ export const EpisodeCard = ({
         )}
 
         {/* Overlay play */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
+        <div
+          className={`absolute inset-0 bg-black/0 group-hover:bg-black/40 ${isActive && 'bg-black/40'} transition-colors duration-200 flex items-center justify-center`}
+        >
           <div
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200
+            className={`opacity-0 group-hover:opacity-100 ${isActive && 'opacity-100'} transition-opacity duration-200
                           w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm
-                          flex items-center justify-center border border-white/30"
+                          flex items-center justify-center border border-white/30`}
           >
             <svg className="w-4 h-4 text-white fill-white ml-0.5" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
@@ -116,17 +120,6 @@ export const EpisodeCard = ({
             <span className="text-green-400 text-[10px] font-medium">Assistido</span>
           </div>
         )}
-
-        {/* Badge ao vivo / ativo */}
-        {isActive && (
-          <div
-            className="absolute top-1.5 right-1.5 bg-red-600 rounded-full px-2 py-0.5
-                          flex items-center gap-1 animate-pulse"
-          >
-            <div className="w-1.5 h-1.5 rounded-full bg-white" />
-            <span className="text-white text-[10px] font-bold uppercase tracking-wider">Agora</span>
-          </div>
-        )}
       </div>
 
       {/* ── Info ── */}
@@ -135,25 +128,25 @@ export const EpisodeCard = ({
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-zinc-500 text-xs font-mono tracking-wider">
+              <span className="text-zinc-500 text-2xl max-md:text-xs font-mono tracking-wider">
                 T{String(seasonNumber).padStart(2, '0')}-E{String(episode.number).padStart(2, '0')}
               </span>
-              {episode.rating && (
-                <StartRating rating={Number(episode.rating).toFixed(1)} />
-              )}
+              {episode.rating && <StartRating rating={Number(episode.rating).toFixed(1)} />}
             </div>
             <h4
-              className={`font-semibold leading-snug truncate text-lg
-                ${isActive ? 'text-red-300' : 'text-white'}`}
+              className={`font-semibold leading-snug truncate text-3xl max-md:text-lg text-white`}
               style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
             >
-              {episode.name.replaceAll(`- S${String(seasonNumber).padStart(2, '0')}E${String(episode.number).padStart(2, '0')} -`, '')}
+              {episode.name.replaceAll(
+                `- S${String(seasonNumber).padStart(2, '0')}E${String(episode.number).padStart(2, '0')} -`,
+                ''
+              )}
             </h4>
           </div>
 
           {/* Duração */}
           {episode.duration && (
-            <span className="flex-shrink-0 text-zinc-500 text-xs mt-0.5">
+            <span className="flex-shrink-0 text-zinc-500 text-2xl max-md:text-xs mt-0.5">
               {formatTime(episode.duration)}
             </span>
           )}
@@ -163,14 +156,14 @@ export const EpisodeCard = ({
         {episode.plot && (
           <div className="mt-1.5">
             <p
-              className={`text-zinc-400 text-sm max-md:text-xs leading-relaxed transition-all duration-300 text-justify
+              className={`text-zinc-400 text-2xl max-md:text-xs leading-relaxed transition-all duration-300 text-justify
                 ${expanded ? '' : 'line-clamp-2'}`}
             >
               {episode.plot}
             </p>
             {episode.plot.length > 120 && (
               <button
-                className="text-zinc-500 hover:text-zinc-300 text-xs mt-0.5 transition-colors"
+                className="text-zinc-500 hover:text-zinc-300 text-2xl max-md:text-xs mt-0.5 transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   setExpanded(!expanded);
@@ -185,9 +178,11 @@ export const EpisodeCard = ({
         {/* Rodapé: data de exibição + progresso + ações */}
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-3">
-            {episode.airDate && <span className="text-zinc-600 text-xs">{episode.airDate}</span>}
+            {episode.airDate && (
+              <span className="text-zinc-600 text-2xl max-md:text-xs">{episode.airDate}</span>
+            )}
             {hasProgress && (
-              <span className="text-zinc-500 text-xs">
+              <span className="text-zinc-500 text-2xl max-md:text-xs">
                 {progressPercent}% assistido
                 {episode.duration && episode.progress && (
                   <> · resta {formatTime(episode.duration - episode.progress)}</>
@@ -227,7 +222,7 @@ export const EpisodeCard = ({
 
             {/* Botão play */}
             <button
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-2xl max-md:text-xs font-semibold
                          bg-red-600 hover:bg-red-500 text-white transition-colors duration-200"
               onClick={(e) => {
                 e.stopPropagation();

@@ -1,13 +1,13 @@
 import React from 'react';
-import { FaYoutube } from 'react-icons/fa';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string | undefined | null;
   isFocused?: boolean;
+  icon?: React.ReactNode;
 }
 
-export const ButtonTrailer = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ label = 'Trailer ', className = '', isFocused, ...props }, ref) => {
+export const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ label = 'Trailer ', className = '', isFocused, icon, ...props }, ref) => {
     return (
       <div className={`${className}`}>
         <button
@@ -21,12 +21,10 @@ export const ButtonTrailer = React.forwardRef<HTMLButtonElement, ButtonProps>(
           `}
           {...props}
         >
-          <FaYoutube className="text-netflix-red" size={20} />
+          {icon}
           {label}
         </button>
       </div>
     );
   }
 );
-
-ButtonTrailer.displayName = 'Button';
