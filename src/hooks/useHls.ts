@@ -1,20 +1,20 @@
-import Hls from 'hls.js'
-import { useEffect, useState } from 'react'
+import Hls from 'hls.js';
+import { useEffect, useState } from 'react';
 
 interface UseHlsOptions {
-  autoPlay?: boolean
+  autoPlay?: boolean;
   bufferConfig?: {
-    maxBufferLength?: number
-    maxMaxBufferLength?: number
-  }
+    maxBufferLength?: number;
+    maxMaxBufferLength?: number;
+  };
 }
 
 interface UseHlsReturn {
-  hls: Hls | null
-  error: string | null
-  isLoading: boolean
-  currentQuality: number
-  qualities: string[]
+  hls: Hls | null;
+  error: string | null;
+  isLoading: boolean;
+  currentQuality: number;
+  qualities: string[];
 }
 
 export const useHls = (
@@ -22,28 +22,31 @@ export const useHls = (
   source: string,
   options: UseHlsOptions = {}
 ): UseHlsReturn => {
-  const [hls, setHls] = useState<Hls | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [currentQuality, setCurrentQuality] = useState(-1)
-  const [qualities, setQualities] = useState<string[]>([])
+  const [hls, setHls] = useState<Hls | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentQuality, setCurrentQuality] = useState(-1);
+  const [qualities, setQualities] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!videoRef.current || !source) return
+    if (!videoRef.current || !source) return;
 
-    const video = videoRef.current
+    const video = videoRef.current;
+
+    // Clear previous error when loading new source
+    setError(null);
 
     // Detectar se é HLS
     if (!source.includes('.m3u8') && !source.includes('.mp4')) {
-      setError('Formato de stream não suportado')
-      return
+      setError('Formato de stream não suportado');
+      return;
     }
 
     // Para MP4, usar src direto
     if (source.includes('.mp4')) {
-      video.src = source
-      setIsLoading(false)
-      return
+      video.src = source;
+      setIsLoading(false);
+      return;
     }
 
     // Para HLS
@@ -63,53 +66,53 @@ export const useHls = (
         capLevelToPlayerSize: true,
         liveBackBufferLength: 10,
         enableWorker: true,
-      })
+      });
 
       // Carregar source
-      hlsInstance.loadSource(source)
-      hlsInstance.attachMedia(video)
+      hlsInstance.loadSource(source);
+      hlsInstance.attachMedia(video);
 
       // Event listeners
       hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-        setIsLoading(false)
+        setIsLoading(false);
         // Extrair quality levels
         const levels = hlsInstance.levels.map(
           (level) => `${level.height}p (${Math.round(level.bitrate / 1000)}k)`
-        )
-        setQualities(levels)
-      })
+        );
+        setQualities(levels);
+      });
 
       hlsInstance.on(Hls.Events.LEVEL_SWITCHED, (_event, data) => {
-        setCurrentQuality(data.level)
-      })
+        setCurrentQuality(data.level);
+      });
 
       hlsInstance.on(Hls.Events.ERROR, (_event, data) => {
-        console.error('HLS Error:', data)
+        console.error('HLS Error:', data);
         if (data.fatal) {
           if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-            setError('Erro de rede. Tentando reconectar...')
-            hlsInstance.startLoad()
+            setError('Erro de rede. Tentando reconectar...');
+            hlsInstance.startLoad();
           } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-            setError('Erro de mídia')
-            hlsInstance.recoverMediaError()
+            setError('Erro de mídia');
+            hlsInstance.recoverMediaError();
           }
         }
-      })
+      });
 
-      setHls(hlsInstance)
+      setHls(hlsInstance);
 
       // Cleanup
       return () => {
-        hlsInstance.destroy()
-      }
+        hlsInstance.destroy();
+      };
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // Safari suporta HLS nativo
-      video.src = source
-      setIsLoading(false)
+      video.src = source;
+      setIsLoading(false);
     } else {
-      setError('Seu navegador não suporta HLS')
+      setError('Seu navegador não suporta HLS');
     }
-  }, [source, videoRef])
+  }, [source, videoRef]);
 
-  return { hls, error, isLoading, currentQuality, qualities }
-}
+  return { hls, error, isLoading, currentQuality, qualities };
+};

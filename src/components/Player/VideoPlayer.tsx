@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useHls } from '../../hooks/useHls';
 import { useProgress } from '../../hooks/useProgress';
-import type { Channel, Episode, Movie, Series } from '../../types';
+import { useRemoteControl } from '../../hooks/useRemotoControl';
+import type { Channel, Episode, Movie } from '../../types';
 import { PlayerControls } from './PlayerControls';
 
 interface VideoPlayerProps {
@@ -68,51 +69,6 @@ export const VideoPlayer = ({
     }
   };
 
-  // Handle errors
-  useEffect(() => {
-    if (error) {
-      onError?.(error);
-    }
-    
-  }, [error, onError]);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!videoRef.current) return;
-
-      switch (e.code) {
-        case 'Space':
-          e.preventDefault();
-          handlePlayPause();
-          break;
-        case 'KeyF':
-          handleFullscreen();
-          break;
-        case 'KeyM':
-          handleMute();
-          break;
-        case 'ArrowRight':
-          videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 5, duration);
-          break;
-        case 'ArrowLeft':
-          videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 5, 0);
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          setVolume((v) => Math.min(v + 0.1, 1));
-          break;
-        case 'ArrowDown':
-          e.preventDefault();
-          setVolume((v) => Math.max(v - 0.1, 0));
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [duration]);
-
   const handlePlayPause = () => {
     if (!videoRef.current) return;
 
@@ -168,6 +124,36 @@ export const VideoPlayer = ({
       console.error('Fullscreen error:', err);
     }
   };
+
+  // Handle errors
+  useEffect(() => {
+    if (error) {
+      onError?.(error);
+    }
+  }, [error, onError]);
+
+  // Remote Control Handler
+  useRemoteControl({
+    onUp: () => setVolume((v) => Math.min(v + 0.1, 1)),
+    onDown: () => setVolume((v) => Math.max(v - 0.1, 0)),
+    onRight: () => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 5, duration);
+      }
+    },
+    onLeft: () => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 5, 0);
+      }
+    },
+    onOk: handlePlayPause,
+    onPlayPause: handlePlayPause,
+    // onBack: async () => {
+    //   if (isFullscreen) {
+    //     await handleFullscreen();
+    //   }
+    // },
+  });
 
   return (
     <div
@@ -236,4 +222,4 @@ export const VideoPlayer = ({
       )}
     </div>
   );
-};
+};;
