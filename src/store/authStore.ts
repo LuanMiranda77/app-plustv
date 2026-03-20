@@ -1,30 +1,31 @@
-import { create } from 'zustand'
-import type { Profile, ServerConfig } from '../types'
-import { storage, STORAGE_KEYS } from '../utils/storage'
+import { create } from 'zustand';
+import type { Profile, ServerConfig } from '../types';
+import { storage, STORAGE_KEYS } from '../utils/storage';
 
 interface AuthState {
   // Server config
-  serverConfig: ServerConfig | null
-  isAuthenticated: boolean
-  
+  serverConfig: ServerConfig | null;
+  isAuthenticated: boolean;
+
   // Profiles
-  profiles: Profile[]
-  activeProfile: Profile | null
-  
+  profiles: Profile[];
+  activeProfile: Profile | null;
+
   // Loading
-  isLoading: boolean
-  error: string | null
+  isLoading: boolean;
+  error: string | null;
 
   // Actions
-  setServerConfig: (config: ServerConfig) => void
-  setAuthenticated: (value: boolean) => void
-  addProfile: (profile: Profile) => void
-  setActiveProfile: (profile: Profile) => void
-  removeProfile: (profileId: string) => void
-  loadFromStorage: () => void
-  clearAuth: () => void
-  setError: (error: string | null) => void
-  setLoading: (loading: boolean) => void
+  setServerConfig: (config: ServerConfig) => void;
+  setAuthenticated: (value: boolean) => void;
+  addProfile: (profile: Profile) => void;
+  updateProfile: (profileId: string, profile: Partial<Profile>) => void;
+  setActiveProfile: (profile: Profile) => void;
+  removeProfile: (profileId: string) => void;
+  loadFromStorage: () => void;
+  clearAuth: () => void;
+  setError: (error: string | null) => void;
+  setLoading: (loading: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -36,50 +37,68 @@ export const useAuthStore = create<AuthState>((set) => ({
   error: null,
 
   setServerConfig: (config: ServerConfig) => {
-    storage.set(STORAGE_KEYS.SERVER_CONFIG, config)
-    set({ serverConfig: config, isAuthenticated: true })
+    storage.set(STORAGE_KEYS.SERVER_CONFIG, config);
+    set({ serverConfig: config, isAuthenticated: true });
   },
 
   setAuthenticated: (value: boolean) => {
-    set({ isAuthenticated: value })
+    set({ isAuthenticated: value });
   },
 
   addProfile: (profile: Profile) => {
     set((state) => {
-      const profiles = [...state.profiles, profile]
-      storage.set(STORAGE_KEYS.PROFILES, profiles)
-      return { profiles }
-    })
+      const profiles = [...state.profiles, profile];
+      storage.set(STORAGE_KEYS.PROFILES, profiles);
+      return { profiles };
+    });
+  },
+
+  updateProfile: (profileId: string, updatedData: Partial<Profile>) => {
+    set((state) => {
+      const profiles = state.profiles.map((p) =>
+        p.id === profileId ? { ...p, ...updatedData } : p
+      );
+      storage.set(STORAGE_KEYS.PROFILES, profiles);
+
+      // Atualizar activeProfile se for o perfil sendo editado
+      if (state.activeProfile?.id === profileId) {
+        const updated = { ...state.activeProfile, ...updatedData };
+        storage.set(STORAGE_KEYS.ACTIVE_PROFILE, updated);
+        return { profiles, activeProfile: updated };
+      }
+
+      return { profiles };
+    });
   },
 
   setActiveProfile: (profile: Profile) => {
-    storage.set(STORAGE_KEYS.ACTIVE_PROFILE, profile)
-    set({ activeProfile: profile })
+    storage.set(STORAGE_KEYS.ACTIVE_PROFILE, profile);
+    set({ activeProfile: profile });
   },
 
   removeProfile: (profileId: string) => {
     set((state) => {
-      const profiles = state.profiles.filter((p) => p.id !== profileId)
-      storage.set(STORAGE_KEYS.PROFILES, profiles)
-      return { profiles }
-    })
+      const profiles = state.profiles.filter((p) => p.id !== profileId);
+      storage.set(STORAGE_KEYS.PROFILES, profiles);
+      return { profiles };
+    });
   },
 
   loadFromStorage: () => {
-    const serverConfig = storage.get(STORAGE_KEYS.SERVER_CONFIG)
-    const profiles = storage.get(STORAGE_KEYS.PROFILES) || []
-    const activeProfile = storage.get(STORAGE_KEYS.ACTIVE_PROFILE)
+    const serverConfig = storage.get(STORAGE_KEYS.SERVER_CONFIG);
+    const profiles = storage.get(STORAGE_KEYS.PROFILES) || [];
+    const activeProfile = storage.get(STORAGE_KEYS.ACTIVE_PROFILE);
 
     set({
       serverConfig,
       isAuthenticated: !!serverConfig,
       profiles,
       activeProfile,
-    })
+    });
   },
 
   clearAuth: () => {
-    storage.clear()
+    storage.clear();
     set({
       serverConfig: null,
       isAuthenticated: false,
@@ -87,14 +106,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       activeProfile: null,
       isLoading: false,
       error: null,
-    })
+    });
   },
 
   setError: (error: string | null) => {
-    set({ error })
+    set({ error });
   },
 
   setLoading: (loading: boolean) => {
-    set({ isLoading: loading })
+    set({ isLoading: loading });
   },
-}))
+}));

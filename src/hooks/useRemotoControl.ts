@@ -52,8 +52,8 @@ export function useRemoteControl(handlers: RemoteKeys) {
         current.onPlayPause?.();
         e.preventDefault();
         break;
-      case 405:
-        current.onPlayPause?.();
+      case 403:
+        current.onYellow?.();
         e.preventDefault();
         break;
     }
