@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { MovieCard } from '../components/Cards/MovieCard';
@@ -17,39 +17,41 @@ export const Favorites = () => {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>('1');
+  const [focusedInput, setFocusedInput] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
 
-  const favoriteChannels = getFavoritesByType('live').map((item) => ({
+  const favoriteChannels = getFavoritesByType('live').map(item => ({
     ...item,
-    category_fav: '1',
+    category_fav: '1'
   }));
-  const favoriteMovies = getFavoritesByType('movie').map((item) => ({
+  const favoriteMovies = getFavoritesByType('movie').map(item => ({
     ...item,
-    category_fav: '2',
+    category_fav: '2'
   }));
-  const favoriteSeries = getFavoritesByType('series').map((item) => ({
+  const favoriteSeries = getFavoritesByType('series').map(item => ({
     ...item,
-    category_fav: '3',
+    category_fav: '3'
   }));
   const combinedList = favoriteChannels.concat(favoriteMovies, favoriteSeries);
 
   const favoriteCategories = [
     {
       id: '1',
-      name: 'CANAIS',
+      name: 'CANAIS'
     },
     {
       id: '2',
-      name: 'FILMES',
+      name: 'FILMES'
     },
     {
       id: '3',
-      name: 'SÉRIES',
-    },
+      name: 'SÉRIES'
+    }
   ] as any[];
 
-  const filteredSeries = combinedList.filter((s) => {
+  const filteredSeries = combinedList.filter(s => {
     const matchesSearch =
       s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.category_fav?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -63,17 +65,42 @@ export const Favorites = () => {
       if (isZoneCat) {
         setActiveZone('list');
         setFocusedIndex(0);
+        setFocusedInput(false);
       }
-      if (isZoneList && focusedIndex < filteredSeries.length - 1) {
-        setFocusedIndex(focusedIndex + 1);
+      // Navegar direita dentro da lista (mesma linha)
+      if (isZoneList && selectedCategory !== '1') {
+        const column = focusedIndex % 5; // 5 colunas para filmes/séries
+        const isLastColumn = column === 4;
+        if (!isLastColumn && focusedIndex < filteredSeries.length - 1) {
+          setFocusedIndex(focusedIndex + 1);
+        }
       }
     },
     onLeft: () => {
-      if (isZoneList && focusedIndex > 0) {
-        setFocusedIndex(focusedIndex - 1);
+      if (isZoneList) {
+        // Para canais (1 coluna), volta direto
+        if (selectedCategory === '1') {
+          setActiveZone('content');
+          setFocusedCat(0);
+        } else {
+          // Para filmes/séries (5 colunas)
+          const column = focusedIndex % 5;
+          const isFirstColumn = column === 0;
+          if (isFirstColumn) {
+            setActiveZone('content');
+            setFocusedCat(0);
+          } else {
+            setFocusedIndex(focusedIndex - 1);
+          }
+        }
       }
     },
     onDown: () => {
+      if (focusedInput) {
+        setFocusedInput(false);
+        setFocusedIndex(0);
+        return;
+      }
       if (isZoneCat && focusedCat < favoriteCategories.length) {
         setFocusedCat(Math.min(focusedCat + 1, favoriteCategories.length));
       }
@@ -84,11 +111,33 @@ export const Favorites = () => {
       }
     },
     onUp: () => {
+      if (focusedInput) {
+        inputRef.current?.blur();
+        return;
+      }
       if (isZoneCat && focusedCat > 0) {
         setFocusedCat(Math.max(focusedCat - 1, 0));
       }
-      if (isZoneList && focusedIndex > 0) {
-        setFocusedIndex(Math.max(focusedIndex - 1, 0));
+      if (isZoneList) {
+        if (selectedCategory === '1') {
+          // Para canais (1 coluna)
+          if (focusedIndex === 0) {
+            setFocusedIndex(-1);
+            setFocusedInput(true);
+            setTimeout(() => inputRef.current?.focus(), 0);
+          } else if (focusedIndex > 0) {
+            setFocusedIndex(focusedIndex - 1);
+          }
+        } else {
+          // Para filmes/séries (5 colunas)
+          if (focusedIndex >= 0 && focusedIndex < 5) {
+            setFocusedIndex(-1);
+            setFocusedInput(true);
+            setTimeout(() => inputRef.current?.focus(), 0);
+          } else if (focusedIndex > 0) {
+            setFocusedIndex(Math.max(focusedIndex - 5, 0));
+          }
+        }
       }
     },
     onOk: () => {
@@ -104,7 +153,7 @@ export const Favorites = () => {
         setActiveZone('menu'); // ← volta para categorias
         return;
       }
-    },
+    }
   });
 
   return (
@@ -134,12 +183,13 @@ export const Favorites = () => {
 
         {/* Grid */}
         <div className="flex-1 mx-auto px-6 py-8 overflow-y-scroll">
-          <div className="flex-1 mb-5">
+          <div className={`flex-1 mb-5 ${focusedInput ? 'ring-2 ring-red-600' : ''}`}>
             <Input
+              ref={inputRef}
               type="text"
               placeholder="Buscar séries..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
           {filteredSeries.length > 0 && selectedCategory != '1' ? (
@@ -159,8 +209,8 @@ export const Favorites = () => {
                             title: stream.name,
                             poster: stream.poster,
                             type: 'movie',
-                            category: stream.category,
-                          },
+                            category: stream.category
+                          }
                         });
                       }}
                     />
@@ -180,8 +230,8 @@ export const Favorites = () => {
                             title: stream.name,
                             poster: stream.poster,
                             type: 'series',
-                            category: stream.category,
-                          },
+                            category: stream.category
+                          }
                         });
                       }}
                     />
@@ -205,8 +255,8 @@ export const Favorites = () => {
                           title: stream.name,
                           poster: stream.logo,
                           type: 'live',
-                          category: stream.category,
-                        },
+                          category: stream.category
+                        }
                       });
                     }}
                   />

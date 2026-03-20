@@ -14,9 +14,9 @@ export const xtreamApi = {
       const response = await api.get(`${baseUrl}/player_api.php`, {
         params: {
           username: config.username,
-          password: config.password,
+          password: config.password
         },
-        timeout: 10000,
+        timeout: 10000
       });
 
       if (!response.data || response.status !== 200) {
@@ -46,9 +46,9 @@ export const xtreamApi = {
         params: {
           username: config.username,
           password: config.password,
-          action: 'get_live_categories',
+          action: 'get_live_categories'
         },
-        timeout: 10000,
+        timeout: 10000
       });
       return response.data || [];
     } catch (error) {
@@ -66,9 +66,9 @@ export const xtreamApi = {
           username: config.username,
           password: config.password,
           action: 'get_live_streams',
-          category_id: categoryId,
+          category_id: categoryId
         },
-        timeout: 10000,
+        timeout: 10000
       });
       return response.data || [];
     } catch (error) {
@@ -85,9 +85,9 @@ export const xtreamApi = {
         params: {
           username: config.username,
           password: config.password,
-          action: 'get_vod_categories',
+          action: 'get_vod_categories'
         },
-        timeout: 10000,
+        timeout: 10000
       });
       return response.data || [];
     } catch (error) {
@@ -105,9 +105,9 @@ export const xtreamApi = {
           username: config.username,
           password: config.password,
           action: 'get_vod_streams',
-          category_id: categoryId,
+          category_id: categoryId
         },
-        timeout: 10000,
+        timeout: 10000
       });
       return response.data || [];
     } catch (error) {
@@ -124,9 +124,9 @@ export const xtreamApi = {
         params: {
           username: config.username,
           password: config.password,
-          action: 'get_series_categories',
+          action: 'get_series_categories'
         },
-        timeout: 10000,
+        timeout: 10000
       });
       return response.data || [];
     } catch (error) {
@@ -142,14 +142,14 @@ export const xtreamApi = {
       const params: any = {
         username: config.username,
         password: config.password,
-        action: 'get_series',
+        action: 'get_series'
       };
       if (categoryId) {
         params.category_id = categoryId;
       }
       const response = await api.get(`${baseUrl}/player_api.php`, {
         params,
-        timeout: 10000,
+        timeout: 10000
       });
       return response.data || [];
     } catch (error) {
@@ -197,12 +197,12 @@ export const xtreamApi = {
       const params: any = {
         username: config.username,
         password: config.password,
-        action: 'get_series_info',
+        action: 'get_series_info'
       };
       params.series_id = streamId;
       const response = await api.get(`${baseUrl}/player_api.php`, {
         params,
-        timeout: 10000,
+        timeout: 10000
       });
       return response.data || [];
     } catch (error) {
@@ -217,7 +217,7 @@ export const xtreamApi = {
       const [liveCategories, vodCategories, seriesCategories] = await Promise.all([
         this.getLiveCategories(config),
         this.getVodCategories(config),
-        this.getSeriesCategories(config),
+        this.getSeriesCategories(config)
       ]);
 
       // Buscar streams de cada categoria
@@ -261,7 +261,7 @@ export const xtreamApi = {
         seriesCategories: Array.isArray(seriesCategories) ? seriesCategories : [],
         liveStreams,
         vodStreams,
-        seriesStreams,
+        seriesStreams
       };
     } catch (error) {
       console.error('Erro ao obter conteúdo:', error);
@@ -271,8 +271,28 @@ export const xtreamApi = {
         seriesCategories: [],
         liveStreams: [],
         vodStreams: [],
-        seriesStreams: [],
+        seriesStreams: []
       };
     }
   },
+
+  // Obter programação (EPG) de um canal ao vivo
+  async getLiveEpg(config: ServerConfig, streamId: string | number) {
+    try {
+      const baseUrl = normalizeUrl(config.url);
+      const response = await api.get(`${baseUrl}/player_api.php`, {
+        params: {
+          username: config.username,
+          password: config.password,
+          action: 'get_live_epg',
+          stream_id: streamId
+        },
+        timeout: 10000
+      });
+      return response.data || [];
+    } catch (error) {
+      console.error('Erro ao obter EPG do canal:', error);
+      return [];
+    }
+  }
 };

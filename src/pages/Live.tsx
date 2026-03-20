@@ -10,17 +10,22 @@ import { Input } from '../components/UI/Input';
 import { useFocusZone } from '../Context/FocusContext';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import useWindowSize from '../hooks/useWindowSize';
+import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
+import { xtreamApi } from '../utils/xtreamApi';
 
 export const Live = () => {
   const location = useLocation();
   const { channels, liveCategories } = useContentStore();
+  const { serverConfig } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentStream, setCurrentStream] = useState<any | null>(null);
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [epgList, setEpgList] = useState<any[]>([]);
+  const [isLoadingEpg, setIsLoadingEpg] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
@@ -42,7 +47,7 @@ export const Live = () => {
     setSortedChannels(sorted);
   }, [channels]);
 
-  const filteredChannels = sortedChannels.filter((channel) => {
+  const filteredChannels = sortedChannels.filter(channel => {
     const matchesSearch =
       channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       channel.category?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -55,6 +60,31 @@ export const Live = () => {
   const displayedChannels = filteredChannels.slice(0, displayCount);
   const hasMoreChannels = displayCount < filteredChannels.length;
 
+  // Buscar programação (EPG) quando um canal é selecionado
+  useEffect(() => {
+    if (currentStream?.id && serverConfig) {
+      setIsLoadingEpg(true);
+      xtreamApi
+        .getLiveEpg(serverConfig, currentStream.id)
+        .then(data => {
+          if (Array.isArray(data)) {
+            setEpgList(data);
+          } else if (data && typeof data === 'object' && data.epg_listingsArr) {
+            setEpgList(data.epg_listingsArr || []);
+          }
+        })
+        .catch(err => {
+          console.error('Erro ao buscar EPG:', err);
+          setEpgList([]);
+        })
+        .finally(() => {
+          setIsLoadingEpg(false);
+        });
+    } else {
+      setEpgList([]);
+    }
+  }, [currentStream?.id, serverConfig]);
+
   // Hotkeys para navegação
   useRemoteControl({
     onRight: () => {
@@ -62,13 +92,12 @@ export const Live = () => {
         setActiveZone('list');
         setFocusedIndex(0);
       }
-      if (isZoneList && focusedIndex < displayedChannels.length - 1) {
-        setFocusedIndex(focusedIndex + 1);
-      }
     },
     onLeft: () => {
-      if (isZoneList && focusedIndex > 0) {
-        setFocusedIndex(focusedIndex - 1);
+      if (isZoneList) {
+        // De qualquer posição na lista, volta para categorias
+        setActiveZone('content');
+        setFocusedCat(0);
       }
     },
     onDown: () => {
@@ -111,7 +140,7 @@ export const Live = () => {
         setCurrentStream(null);
       }
       setIsFullScreen(false);
-    },
+    }
   });
 
   useEffect(() => {
@@ -127,12 +156,12 @@ export const Live = () => {
   // Infinite scroll - detectar quando chegar ao final
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         if (entries[0].isIntersecting && hasMoreChannels && !isLoadingMore) {
           setIsLoadingMore(true);
           // Simular delay de carregamento
           setTimeout(() => {
-            setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+            setDisplayCount(prev => prev + ITEMS_PER_PAGE);
             setIsLoadingMore(false);
           }, 300);
         }
@@ -180,7 +209,7 @@ export const Live = () => {
   // Carregar mais canais quando chegar próximo ao final durante navegação por setas
   useEffect(() => {
     if (isZoneList && focusedIndex >= displayedChannels.length - 1 && hasMoreChannels) {
-      setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+      setDisplayCount(prev => prev + ITEMS_PER_PAGE);
     }
   }, [focusedIndex, isZoneList, displayedChannels.length, hasMoreChannels]);
 
@@ -219,7 +248,7 @@ export const Live = () => {
               type="text"
               placeholder="Buscar canais..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               disabled={liveCategories.length === 0 || !selectedCategory}
             />
           </div>
@@ -280,12 +309,12 @@ export const Live = () => {
               poster={currentStream?.poster}
               autoPlay
               isControlsVisible={false}
-              onError={(error) => {
+              onError={error => {
                 console.error('Erro no player:', error);
               }}
               streamId={currentStream?.id}
               type="live"
-              onBack={()=>setIsFullScreen(false)}
+              onBack={() => setIsFullScreen(false)}
             />
             {!isFullScreen && (
               <Fragment>
@@ -298,7 +327,60 @@ export const Live = () => {
                     <span className="ml-2">Favoritar</span>
                   </div>
                 </section>
-                <section></section>
+
+                {/* EPG / Programação */}
+                {epgList.length > 0 && (
+                  <section className="w-full max-w-7xl mt-6">
+                    <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
+                      <h4>📺 Programação do Canal</h4>
+                    </div>
+                    <div className="space-y-2 mt-3 max-h-96 overflow-y-auto">
+                      {isLoadingEpg && (
+                        <div className="flex items-center justify-center py-4">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600" />
+                        </div>
+                      )}
+                      {!isLoadingEpg &&
+                        epgList.slice(0, 8).map((program: any, idx: number) => {
+                          const startTime = program.start_timestamp
+                            ? new Date(program.start_timestamp * 1000).toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })
+                            : '';
+                          const endTime = program.stop_timestamp
+                            ? new Date(program.stop_timestamp * 1000).toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })
+                            : '';
+
+                          return (
+                            <div
+                              key={idx}
+                              className="bg-gray-800/50 p-3 rounded border border-gray-700 hover:bg-gray-700/50 transition"
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className="text-sm font-mono text-red-500 flex-shrink-0 min-w-max">
+                                  {startTime && endTime ? `${startTime} - ${endTime}` : ''}
+                                </div>
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-gray-100 line-clamp-1">
+                                    {program.title || program.name || 'Sem título'}
+                                  </p>
+                                  {program.description && (
+                                    <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                                      {program.description}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </section>
+                )}
               </Fragment>
             )}
           </div>
