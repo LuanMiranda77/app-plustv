@@ -3,11 +3,11 @@ import { Film, Heart, Home, RefreshCw, Tv2, TvMinimalPlay } from 'lucide-react';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useFocusZone } from '../../../Context/FocusContext';
+import { useRemoteControl } from '../../../hooks/useRemotoControl';
 import { useServerContent } from '../../../hooks/useServerContent';
 import { useAuthStore } from '../../../store/authStore';
 import LogoHeader from '../../Logos/LogoHeader';
-import { useRemoteControl } from '../../../hooks/useRemotoControl';
-import { useFocusZone } from '../../../Context/FocusContext';
 import MenuButton from '../../UI/ButtonMenu';
 interface Props {
   scrolling: boolean;
@@ -21,7 +21,6 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     { title: 'Séries', icon: TvMinimalPlay, path: '/series' },
     { title: 'Favoritos', icon: Heart, path: '/favorites' },
   ];
-  const rounteInvisible = ['/profiles', '/player', '/'];
   const navigate = useNavigate();
   const location = useLocation();
   const [focusedIndex, setFocusedIndex] = useState(0);
@@ -67,7 +66,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   }, [location]);
 
   return (
-    !rounteInvisible.includes(window.location.pathname) && (
+    activeProfile && (
       <div
         className={`fixed z-50 w-full border-b border-gray-800 top-0 transition-all duration-300 ${
           scrolling ? 'bg-gray-950/95 backdrop-blur' : 'bg-gray-950/80 backdrop-blur'
