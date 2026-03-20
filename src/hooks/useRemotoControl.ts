@@ -8,11 +8,13 @@ type RemoteKeys = {
   onOk?: () => void;
   onBack?: () => void;
   onPlayPause?: () => void;
+  onYellow?: () => void;
 };
 
 export function useRemoteControl(handlers: RemoteKeys) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      console.log(e.keyCode);
       switch (e.keyCode) {
         case 38:
           handlers.onUp?.();
@@ -27,13 +29,18 @@ export function useRemoteControl(handlers: RemoteKeys) {
           handlers.onRight?.();
           break;
         case 13:
+        case 44:
           handlers.onOk?.();
           break;
         case 461:
+        case 27:
           handlers.onBack?.();
           break;
         case 415:
         case 19:
+          handlers.onPlayPause?.();
+          break;
+        case 405:
           handlers.onPlayPause?.();
           break;
       }

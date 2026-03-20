@@ -77,6 +77,7 @@ export const Player = () => {
             streamId={currentStream.id}
             type={(currentStream.type as 'movie' | 'series' | 'live') || 'live'}
             isAutoSave={currentStream.type !== 'live'} // Não salvar progresso para lives
+            isControlsVisible={currentStream.type !== 'live'}
           />
         </div>
 

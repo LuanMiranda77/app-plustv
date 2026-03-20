@@ -26,7 +26,7 @@ export const Home = () => {
   // const [recentSeries, setRecentSeries] = useState<any[]>([]);
   const hasLoadedData = useRef(false);
   const { activeZone, setActiveZone } = useFocusZone();
-  const isActive = activeZone === 'home';
+  const isActive = activeZone === 'content';
 
   useEffect(() => {
     // Only load data once on mount
@@ -153,7 +153,7 @@ export const Home = () => {
         description="Acesse seus filmes, séries e canais favoritos em qualquer lugar"
         buttonLabel="Explorar Conteúdo"
         navigateTo="/movie"
-        isFocused={activeZone === 'banner'}
+        isFocused={activeZone === 'list'}
       />
 
       {/* Main Content */}

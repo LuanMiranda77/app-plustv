@@ -174,7 +174,7 @@ export const Movies = () => {
             className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4"
           >
             <div className="px-6 py-4">
-              <div className="flex flex-col gap-2 overflow-x-auto pb-2">
+              <div className="flex flex-col gap-2 pb-2">
                 {categoriesWithAll.map((cat, i) => (
                   <ButtonCategory
                     key={cat.id || 'all'}

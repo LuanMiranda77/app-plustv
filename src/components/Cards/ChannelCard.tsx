@@ -52,7 +52,7 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
         className={`
         group
         relative 
-        flex items-start
+        flex 
         w-full 
         overflow-hidden 
         transition-all 
@@ -88,22 +88,22 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
           w-full h-[80px] max-md:h-[50px] text-left font-semibold 
           flex items-center line-clamp-1 px-2 break-all
           transition-all duration-200
-          ${isFocused ? 'bg-red-600 ring-2 ring-red-500 ring-offset-2 ring-offset-gray-800' : 'group-hover:ring-2 group-hover:bg-red-600 group-hover:ring-offset-2 group-hover:ring-offset-gray-800'}
+        
           `}
         >
           {channel.name}
         </h3>
-      </button>
-      <button
-        onClick={toggleFavorite}
-        className={`
+        <button
+          onClick={toggleFavorite}
+          className={`
           max-w-[80px] h-[80px] max-md:max-w-[50px] max-md:h-[50px] 
           px-3 py-1.5 rounded-tr rounded-br transition-colors 
           bg-gray-600/50 hover:bg-gray-600 
           ${isFav ? 'text-netflix-red ' : ' text-gray-300 '}
         `}
-      >
-        <Heart className="w-5 h-5 fill-current" />
+        >
+          <Heart className="w-5 h-5 fill-current" />
+        </button>
       </button>
     </div>
   );

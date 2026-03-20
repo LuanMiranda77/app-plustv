@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
+import { RectangleHorizontalIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
@@ -20,6 +21,7 @@ export const Live = () => {
   const [currentStream, setCurrentStream] = useState<any | null>(null);
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
@@ -79,27 +81,18 @@ export const Live = () => {
       }
     },
     onOk: () => {
+      console.log("sdasfd");
       if (isZoneCat) {
         setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
       }
-      if (isZoneList && displayedChannels[focusedIndex]) {
-        const channel = displayedChannels[focusedIndex];
-        setCurrentStream(channel);
-        navigate('/player', {
-          state: {
-            id: channel.id,
-            streamUrl: channel.streamUrl,
-            title: channel.name,
-            poster: channel.logo,
-            type: 'live',
-            category: channel.category,
-          },
-        });
+      if (isZoneList) {
+        setIsFullScreen(true);
       }
     },
     onBack: () => {
       if (currentStream) {
         setCurrentStream(null);
+        setIsFullScreen(false);
       }
     },
   });
@@ -185,10 +178,10 @@ export const Live = () => {
         {liveCategories.length > 0 && (
           <div
             ref={categoriesRef}
-            className="w-3/12 max-md:w-4/12 max-w-[500px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4"
+            className="w-3/12 max-md:w-4/12 max-w-[400px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4"
           >
             <div className="px-3 py-4 mx-auto max-w-7xl">
-              <div className="flex flex-col gap-2 pb-2 overflow-x-auto">
+              <div className="flex flex-col gap-2 pb-2">
                 {categoriesWithAll.map((cat, i) => (
                   <ButtonCategory
                     key={cat.id || 'all'}
@@ -239,16 +232,7 @@ export const Live = () => {
                         category: channel.category,
                       });
                     } else {
-                      navigate('/player', {
-                        state: {
-                          id: channel.id,
-                          streamUrl: channel.streamUrl,
-                          title: channel.name,
-                          poster: channel.logo,
-                          type: 'live',
-                          category: channel.category,
-                        },
-                      });
+                      setIsFullScreen(true);
                     }
                   }}
                 />
@@ -273,28 +257,43 @@ export const Live = () => {
           )}
         </div>
         {!isMobile && (
-          <div className="w-4/12 max-w-[1200px] t-[30px]">
-            <div className="flex flex-col items-center justify-center flex-1 border-6 border-gray-950 rounded-lg mx-4">
+          <div
+            className={`
+            flex flex-col items-center
+            ${isFullScreen ? 'fixed inset-0 z-50 bg-black' : ' w-5/12 max-w-[1300px] relative mt-[35px] mx-4'}
+           `}
+          >
+            {!isFullScreen && (
               <div className="w-full text-2xl max-md:text-sm font-semibold line-clamp-1 bg-netflix-red">
                 Preview
               </div>
-              <VideoPlayer
-                title={currentStream?.title}
-                source={currentStream ? currentStream.streamUrl : ''}
-                poster={currentStream?.poster}
-                autoPlay
-                isControlsVisible={false}
-                onError={(error) => {
-                  console.error('Erro no player:', error);
-                }}
-                streamId={currentStream?.id}
-                type="live"
-              />
-            </div>
-            <div></div>
+            )}
+            <VideoPlayer
+              title={currentStream?.title}
+              source={currentStream ? currentStream.streamUrl : ''}
+              poster={currentStream?.poster}
+              autoPlay
+              isControlsVisible={false}
+              onError={(error) => {
+                console.error('Erro no player:', error);
+              }}
+              streamId={currentStream?.id}
+              type="live"
+            />
+
+            <section className="w-full max-w-7xl mt-4">
+              <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
+                <h4>Funções dos botão</h4>
+              </div>
+              <div className="flex items-center text-2xl">
+                <RectangleHorizontalIcon className="fill-current text-yellow-400" />
+                <span className="ml-2">Favoritar</span>
+              </div>
+            </section>
+            <section></section>
           </div>
         )}
       </div>
     </div>
   );
-};;
+};
