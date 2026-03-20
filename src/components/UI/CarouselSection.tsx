@@ -1,15 +1,15 @@
 import { Sparkles, TrendingUp } from 'lucide-react';
 import { Carousel } from '../Carousel';
 
-
 type Props = {
   title: string;
   subtitle?: string;
   icon?: React.ElementType;
   items: any[];
-  renderItem: (item: any) => React.ReactNode;
+  renderItem: (item: any, index: number, isFocused: boolean) => React.ReactNode;
   onViewMore: () => void;
   badge?: 'novo' | 'trending';
+  focusedItemIndex?: number;
 };
 
 export default function CarouselSection({
@@ -20,6 +20,7 @@ export default function CarouselSection({
   renderItem,
   onViewMore,
   badge,
+  focusedItemIndex = -1
 }: Props) {
   return (
     <section className="space-y-4">
@@ -54,11 +55,18 @@ export default function CarouselSection({
 
       {items.length > 0 ? (
         <Carousel>
-          {items.map((item) => (
-            <div key={item.id} className={`${title=="Canais ao Vivo"?"w-96":"w-64"} flex-shrink-0`}>
-              {renderItem(item)}
-            </div>
-          ))}
+          {items.map((item, idx) => {
+            const isFocused = focusedItemIndex === idx;
+            return (
+              <div
+                key={item.id}
+                data-focused={isFocused}
+                className={`${title == 'Canais ao Vivo' ? 'w-96' : 'w-64'} flex-shrink-0 ${isFocused ? 'ring-2 ring-red-600 rounded-lg' : ''}`}
+              >
+                {renderItem(item, idx, isFocused)}
+              </div>
+            );
+          })}
         </Carousel>
       ) : (
         <div className="text-center py-8">
