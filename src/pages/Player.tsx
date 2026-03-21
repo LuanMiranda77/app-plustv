@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
+import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 // import { useAuthStore } from '../store/authStore';
 
@@ -43,8 +44,15 @@ export const Player = () => {
     setCurrentStream(null);
   };
 
+  // Interceptar voltar nativo do navegador/TV
+  useBackGuard(!!currentStream, handleGoBack);
+
   useRemoteControl({
-    onBack: () => handleGoBack()
+    onBack: () => {
+      if (currentStream) {
+        window.history.back();
+      }
+    }
   });
 
   return (

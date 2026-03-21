@@ -7,6 +7,7 @@ import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
 import SeriesDetail from '../components/UI/SeriesDetail';
 import { useFocusZone } from '../Context/FocusContext';
+import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
@@ -34,6 +35,9 @@ export const PageSeries = () => {
   const [focusedInput, setFocusedInput] = useState(false);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
+
+  // Interceptar voltar nativo do navegador/TV quando no detalhe da série
+  useBackGuard(!!currentSerie, () => setCurrentSerie(null));
 
   const ITEMS_PER_PAGE = 30;
 
@@ -121,12 +125,12 @@ export const PageSeries = () => {
       }
     },
     onBack: () => {
-      if (isZoneList || isZoneCat) {
-        setActiveZone('menu');
+      if (currentSerie) {
+        window.history.back();
         return;
       }
-      if (currentSerie) {
-        setCurrentSerie(null);
+      if (isZoneList || isZoneCat) {
+        setActiveZone('menu');
       }
     }
   });

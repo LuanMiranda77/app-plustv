@@ -6,6 +6,7 @@ import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
 import MovieDetail from '../components/UI/MovieDetail';
 import { useFocusZone } from '../Context/FocusContext';
+import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
@@ -29,6 +30,9 @@ export const Movies = () => {
   const [focusedInput, setFocusedInput] = useState(false);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
+
+  // Interceptar voltar nativo do navegador/TV quando no detalhe do filme
+  useBackGuard(!!currentMovie, () => setCurrentMovie(null));
 
   const ITEMS_PER_PAGE = 20;
 
@@ -140,12 +144,12 @@ export const Movies = () => {
       }
     },
     onBack: () => {
-      if (isZoneList || isZoneCat) {
-        setActiveZone('menu');
+      if (currentMovie) {
+        window.history.back();
         return;
       }
-      if (currentMovie) {
-        setCurrentMovie(null);
+      if (isZoneList || isZoneCat) {
+        setActiveZone('menu');
       }
     }
   });

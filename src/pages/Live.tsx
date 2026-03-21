@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import { Heart } from 'lucide-react';
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
@@ -10,6 +10,7 @@ import { EpgList } from '../components/UI/EpgList';
 import { Input } from '../components/UI/Input';
 import RemoteHint from '../components/UI/RemoteHint';
 import { useFocusZone } from '../Context/FocusContext';
+import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
@@ -49,27 +50,7 @@ export const Live = () => {
   const isZoneEpg = activeZone === 'epg';
 
   // Interceptar o botão voltar nativo do navegador/TV quando em tela cheia.
-  // Ao entrar em fullscreen, empurramos um estado extra no history.
-  // Quando o back nativo dispara (popstate), apenas saímos do fullscreen
-  // em vez de navegar para a página anterior.
-  const exitFullScreen = useCallback(() => setIsFullScreen(false), []);
-
-  useEffect(() => {
-    if (isFullScreen) {
-      window.history.pushState({ fullscreen: true }, '');
-    }
-  }, [isFullScreen]);
-
-  useEffect(() => {
-    const handlePopState = (e: PopStateEvent) => {
-      if (isFullScreen) {
-        e.preventDefault();
-        exitFullScreen();
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [isFullScreen, exitFullScreen]);
+  useBackGuard(isFullScreen, () => setIsFullScreen(false));
 
   const ITEMS_PER_PAGE = 20;
 
@@ -229,7 +210,6 @@ export const Live = () => {
     },
     onBack: () => {
       if (isFullScreen) {
-        // Consome o state extra empurrado no history
         window.history.back();
         return;
       }
