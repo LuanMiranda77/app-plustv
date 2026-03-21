@@ -2,6 +2,7 @@ import React from 'react'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean
+  isFocused?: boolean
   variant?: 'primary' | 'secondary' | 'danger'
   size?: 'sm' | 'md' | 'lg'
 }
@@ -10,6 +11,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       isLoading = false,
+      isFocused = false,
       variant = 'primary',
       size = 'md',
       disabled,
@@ -24,20 +26,24 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       font-semibold rounded-lg
       transition-all duration-200
       disabled:opacity-50 disabled:cursor-not-allowed
+      outline-none
     `
 
     const variants = {
       primary: `
         bg-red-600 hover:bg-red-700 active:bg-red-800
         text-white shadow-lg shadow-red-600/20
+        ${isFocused ? 'ring ring-white ring-offset ring-offset-transparent scale-105 brightness-110' : ''}
       `,
       secondary: `
         bg-gray-800 hover:bg-gray-700 active:bg-gray-600
         text-white border border-gray-700
+        ${isFocused ? 'ring ring-white ring-offset ring-offset-transparent scale-105 border-white' : ''}
       `,
       danger: `
         bg-red-500/20 hover:bg-red-500/30
         text-red-400 border border-red-500/50
+        ${isFocused ? 'ring ring-red-400 ring-offset ring-offset-transparent scale-105 border-red-400' : ''}
       `,
     }
 
@@ -51,6 +57,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || isLoading}
+        data-focused={isFocused}
         className={`text-2xl max-md:text-sm ${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}
       >
@@ -78,8 +85,30 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {children}
       </button>
-    );
+    )
   }
 )
 
 Button.displayName = 'Button'
+
+
+// ─── Exemplo de uso ───────────────────────────────────────────────────────────
+//
+// const [focusedBtn, setFocusedBtn] = useState('confirm')
+//
+// <Button
+//   variant="primary"
+//   isFocused={focusedBtn === 'confirm'}
+//   onFocus={() => setFocusedBtn('confirm')}
+//   onBlur={() => setFocusedBtn('')}
+// >
+//   Confirmar
+// </Button>
+//
+// // Para TV — controle via D-pad:
+// <Button
+//   variant="secondary"
+//   isFocused={focusedIndex === 0}
+// >
+//   Cancelar
+// </Button>

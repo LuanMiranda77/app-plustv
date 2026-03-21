@@ -10,6 +10,7 @@ import { useAuthStore } from '../../../store/authStore';
 import LogoHeader from '../../Logos/LogoHeader';
 import MenuButton from '../../UI/ButtonMenu';
 import { useServerListStore } from '../../../store/serverListStore';
+import ConfirmDialog from '../../UI/ConfirmDialog';
 interface Props {
   scrolling: boolean;
 }
@@ -27,6 +28,9 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [focusedPerfil, setFocusedPerfil] = useState(false);
   const [focusedConfig, setFocuseConfig] = useState(false);
+  const [focusedRefresh, setFocusedRefresh] = useState(false);
+  const [confirmRefresh, setConfirmRefresh] = useState(false);
+  const [confirmFocusBtn, setConfirmFocusBtn] = useState(0);
   const { activeProfile } = useAuthStore();
   const { lastUpdate, forceRefresh, isLoading } = useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
@@ -34,7 +38,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   // const { servers, loadFromStorage, addServer, setActiveServer } = useServerListStore();
   // const { serverConfig } = useAuthStore();
   // useEffect(() => {
-  //   if (serverConfig==null) return; 
+  //   if (serverConfig==null) return;
   //   loadFromStorage();
   //   if (servers.length <5) {
   //     addServer(serverConfig);
@@ -48,23 +52,30 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   //   }
   // }, [servers, serverConfig]);
 
-  // focusedIndex: 0..4 = menus, 5 = config server, 6 = perfil
-  const FOCUS_CONFIG = menus.length;
-  const FOCUS_PERFIL = menus.length + 1;
+  // focusedIndex: 0..4 = menus, 5 = refresh, 6 = config server, 7 = perfil
+  const FOCUS_REFRESH = menus.length;
+  const FOCUS_CONFIG = menus.length + 1;
+  const FOCUS_PERFIL = menus.length + 2;
   const FOCUS_MAX = FOCUS_PERFIL;
+
+  const clearExtras = () => {
+    setFocusedPerfil(false);
+    setFocuseConfig(false);
+    setFocusedRefresh(false);
+  };
 
   const nextButton = () => {
     if (!isActive) return;
-    setFocusedPerfil(false);
-    setFocuseConfig(false);
+    clearExtras();
     setFocusedIndex(i => {
       const next = Math.min(i + 1, FOCUS_MAX);
       if (next < menus.length) {
         navigate(menus[next].path);
+      } else if (next === FOCUS_REFRESH) {
+        setFocusedRefresh(true);
       } else if (next === FOCUS_CONFIG) {
         setFocuseConfig(true);
       } else if (next === FOCUS_PERFIL) {
-        setFocuseConfig(false);
         setFocusedPerfil(true);
       }
       return next;
@@ -72,12 +83,13 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   };
   const backButton = () => {
     if (!isActive) return;
-    setFocusedPerfil(false);
-    setFocuseConfig(false);
+    clearExtras();
     setFocusedIndex(i => {
       const next = Math.max(i - 1, 0);
       if (next < menus.length) {
         navigate(menus[next].path);
+      } else if (next === FOCUS_REFRESH) {
+        setFocusedRefresh(true);
       } else if (next === FOCUS_CONFIG) {
         setFocuseConfig(true);
       }
@@ -89,6 +101,8 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     if (i < menus.length) {
       setFocusedIndex(i);
       navigate(menus[i].path);
+    } else if (i === FOCUS_REFRESH) {
+      setConfirmRefresh(true);
     } else if (i === FOCUS_CONFIG) {
       navigate('/config-server');
     } else if (i === FOCUS_PERFIL) {
@@ -97,12 +111,45 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   };
 
   useRemoteControl({
-    onRight: () => nextButton(),
-    onLeft: () => backButton(),
-    onOk: () => okButton(focusedIndex),
+    onRight: () => {
+      if (confirmRefresh) {
+        setConfirmFocusBtn(1);
+        return;
+      }
+      nextButton();
+    },
+    onLeft: () => {
+      if (confirmRefresh) {
+        setConfirmFocusBtn(0);
+        return;
+      }
+      backButton();
+    },
+    onOk: () => {
+      if (confirmRefresh) {
+        if (confirmFocusBtn === 0) {
+          setConfirmRefresh(false);
+          setConfirmFocusBtn(0);
+        } else {
+          setConfirmRefresh(false);
+          setConfirmFocusBtn(0);
+          forceRefresh();
+        }
+        return;
+      }
+      okButton(focusedIndex);
+    },
+    onBack: () => {
+      if (confirmRefresh) {
+        setConfirmRefresh(false);
+        setConfirmFocusBtn(0);
+        return;
+      }
+    },
     onDown: () => {
+      if (confirmRefresh) return;
       if (!isActive) return;
-      setActiveZone('content'); // ← passa o foco para o conteúdo
+      setActiveZone('content');
     }
   });
 
@@ -117,74 +164,107 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
 
   return (
     activeProfile && (
-      <div
-        className={`fixed z-50 w-full border-b border-gray-800 top-0 transition-all duration-300 ${
-          scrolling ? 'bg-gray-950/95 backdrop-blur' : 'bg-gray-950/80 backdrop-blur'
-        }`}
-      >
-        <div className="w-full px-6 py-2">
-          <div className="relative flex items-center justify-between">
-            <LogoHeader />
+      <>
+        <div
+          className={`fixed z-50 w-full border-b border-gray-800 top-0 transition-all duration-300 ${
+            scrolling ? 'bg-gray-950/95 backdrop-blur' : 'bg-gray-950/80 backdrop-blur'
+          }`}
+        >
+          <div className="w-full px-6 max-md:px-3 py-2">
+            <div className="relative flex items-center justify-between">
+              <LogoHeader />
 
-            <section className="flex items-center gap-2">
-              {menus.map((menu, i) => (
-                <MenuButton
-                  key={menu.title}
-                  title={menu.title}
-                  icon={menu.icon}
-                  isFocused={focusedIndex === i && !focusedPerfil && !focusedConfig}
-                  onClick={() => {
-                    setActiveZone('menu');
-                    setFocusedIndex(i);
-                    navigate(menu.path);
-                  }}
-                  iconOffset={i !== 4}
-                />
-              ))}
-            </section>
-            <section className=" relative flex items-center gap-3">
-              {lastUpdate && (
+              <section className="flex items-center gap-2">
+                {menus.map((menu, i) => (
+                  <MenuButton
+                    key={menu.title}
+                    title={menu.title}
+                    icon={menu.icon}
+                    isFocused={
+                      focusedIndex === i && !focusedPerfil && !focusedConfig && !focusedRefresh
+                    }
+                    onClick={() => {
+                      setActiveZone('menu');
+                      setFocusedIndex(i);
+                      navigate(menu.path);
+                    }}
+                    iconOffset={i !== 4}
+                  />
+                ))}
+              </section>
+              <section className=" relative flex items-center gap-3">
+                {/* {lastUpdate && (
                 <div className="absolute text-right w-[150px] top-[-15px] max-md:top-[-18px] right-[90px]">
                   <p className="text-gray-400 text-[11px]">
                     <b className="text-gray-300">Atualizado</b>{' '}
                     {moment(lastUpdate).format('DD/MM/YY')}
                   </p>
                 </div>
-              )}
-              <button
-                onClick={() => forceRefresh()}
-                disabled={isLoading}
-                className="p-2 transition-colors rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Atualizar agora"
-              >
-                <RefreshCw className={`w-5 h-5 text-red-600 ${isLoading ? 'animate-spin' : ''}`} />
-              </button>
-              <button
-                className={`p-2 rounded-lg transition-all ${
-                  focusedConfig
-                    ? 'bg-red-600 text-white scale-110 shadow-lg shadow-red-600/50'
-                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white'
-                }`}
-                title="Servidores"
-                onClick={() => navigate('/config-server')}
-              >
-                <Server className="w-5 h-5" />
-              </button>
-              <button
-                className={`p-0.5 rounded-lg text-[25px] max-md:text-xl transition-all ${
-                  focusedPerfil
-                    ? 'ring-2 ring-red-600 scale-110 shadow-lg shadow-red-600/50 bg-red-600'
-                    : 'bg-gray-600'
-                }`}
-                title={activeProfile?.name}
-                onClick={() => navigate('/profiles')}
-              >
-                {activeProfile?.avatar}
-              </button>
-            </section>
+              )} */}
+                <button
+                  onClick={() => {
+                    if (!isLoading) setConfirmRefresh(true);
+                  }}
+                  disabled={isLoading}
+                  className={`p-2 transition-colors 
+                rounded-lg 
+                ${
+                  focusedRefresh
+                    ? 'bg-red-600 scale-110 shadow-lg shadow-red-600/50'
+                    : 'bg-gray-800 hover:bg-gray-700'
+                }
+                disabled:opacity-50 disabled:cursor-not-allowed`}
+                  title="Atualizar agora"
+                >
+                  <RefreshCw
+                    className={`w-6 h-6 max-md:w-4 max-md:h-4 text-red-600 ${isLoading ? 'animate-spin' : ''} ${focusedRefresh ? 'text-white' : ''}`}
+                  />
+                </button>
+                <button
+                  className={`p-2 rounded-lg transition-all ${
+                    focusedConfig
+                      ? 'bg-red-600 text-white scale-110 shadow-lg shadow-red-600/50'
+                      : 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white'
+                  }`}
+                  title="Servidores"
+                  onClick={() => navigate('/config-server')}
+                >
+                  <Server className="w-6 h-6 max-md:w-4 max-md:h-4" />
+                </button>
+                <button
+                  className={`p-0.5 rounded-lg text-[24px] max-md:text-xl transition-all ${
+                    focusedPerfil
+                      ? 'ring-2 ring-red-600 scale-110 shadow-lg shadow-red-600/50 bg-red-600'
+                      : 'bg-gray-600'
+                  }`}
+                  title={activeProfile?.name}
+                  onClick={() => navigate('/profiles')}
+                >
+                  {activeProfile?.avatar}
+                </button>
+              </section>
+            </div>
           </div>
         </div>
-      </div>
+
+        <ConfirmDialog
+          open={confirmRefresh}
+          icon={<RefreshCw className="w-8 h-8 text-red-500" />}
+          title="Atualizar Conteúdo"
+          description="Deseja realmente atualizar todo o conteúdo do servidor? Isso pode levar alguns instantes."
+          confirmLabel="Atualizar"
+          onConfirm={() => {
+            setConfirmRefresh(false);
+            forceRefresh();
+          }}
+          onCancel={() => {
+            setConfirmRefresh(false);
+            setConfirmFocusBtn(0);
+          }}
+          isFocusedCancelar={confirmFocusBtn === 0}
+          isFocusedConfirmar={confirmFocusBtn === 1}
+        />
+      </>
     )
   );
 };

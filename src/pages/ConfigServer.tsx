@@ -9,6 +9,7 @@ import type { ServerConfig } from '../types';
 import { Button } from '../components/UI/Button';
 import { useFocusZone } from '../Context/FocusContext';
 import { ButtonBack } from '../components/UI/ButtonBack';
+import ServerForm from '../components/UI/ServerForm';
 
 const emptyForm: ServerConfig = { name: '', url: '', username: '', password: '' };
 
@@ -258,7 +259,7 @@ export const ConfigServer = () => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <Server className="w-8 h-8 text-red-600" />
-            <h1 className="text-3xl font-bold text-white">Servidores</h1>
+            <h1 className="text-3xl max-md:text-lg font-bold text-white">Servidores</h1>
           </div>
           <div className="flex gap-3">
             <ButtonBack
@@ -288,8 +289,20 @@ export const ConfigServer = () => {
           </div>
         </div>
         {/* Form */}
+        {/* {showForm && (
+          <ServerForm
+            formData={formData}
+            errors={errors}
+            editingId={editingId}
+            formFocusIndex={formFocusIndex}
+            isInputActive={isInputActive}
+            onChange={setFormData}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        )} */}
         {showForm && (
-          <div className="bg-gray-800/80 border border-gray-700 rounded-xl p-6 mb-8">
+          <div className="bg-gray-800/80 border border-gray-700 rounded-xl px-6 mb-8">
             <h2 className="text-xl font-semibold text-white mb-4">
               {editingId ? 'Editar Servidor' : 'Adicionar Servidor'}
             </h2>
@@ -424,15 +437,15 @@ export const ConfigServer = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4 flex-1">
                     <div
-                      className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                      className={`w-12 h-12 max-md:w-8  max-md:h-8 rounded-lg flex items-center justify-center ${
                         server.id === activeServerId ? 'bg-red-600' : 'bg-gray-700'
                       }`}
                     >
-                      <Server className="w-6 h-6 text-white" />
+                      <Server className="w-6 h-6 max-md:w-4  max-md:h-4 text-white" />
                     </div>
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2">
-                        <h3 className="text-white font-semibold text-4xl max-sm:text-lg">
+                        <h3 className="text-white font-semibold text-4xl max-md:text-lg">
                           {server.name || 'Sem nome'}
                         </h3>
                         {server.id === activeServerId && (
@@ -441,8 +454,8 @@ export const ConfigServer = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-400 text-2xl max-sm:text-sm">{server.url}</p>
-                      <p className="text-gray-500 text-2xl max-sm:text-sm mt-1">
+                      <p className="text-gray-400 text-2xl max-md:text-sm">{server.url}</p>
+                      <p className="text-gray-500 text-2xl max-md:text-sm mt-1">
                         Usuário: {server.username} · Criado em{' '}
                         {new Date(server.createdAt).toLocaleDateString('pt-BR')}
                       </p>
