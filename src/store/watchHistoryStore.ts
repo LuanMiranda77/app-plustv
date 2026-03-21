@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Channel, Movie, Series } from '../types';
+import type { Channel, Episode, Movie, Series } from '../types';
 import { storage, STORAGE_KEYS } from '../utils/storage';
 
 export interface WatchHistoryItem {
@@ -12,7 +12,7 @@ export interface WatchHistoryItem {
   duration: number; // total duration in seconds
   watched: number; // seconds watched
   lastWatched: string | Date; // ISO string or Date object
-  content: Movie | Series | Channel;
+  content: Movie | Series | Channel | Episode;
 }
 
 interface WatchHistoryState {

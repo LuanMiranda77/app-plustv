@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
+import { Heart } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { StreamPoster } from '../components/Cards/StreamPoster';
 import ButtonCategory from '../components/UI/ButtonCategory';
@@ -31,13 +32,20 @@ export const Movies = () => {
 
   const ITEMS_PER_PAGE = 20;
 
-  const categoriesWithAll = [{ id: null, name: 'TODOS' }, ...vodCategories];
+  const categoriesWithAll = [
+    { id: '-1', name: 'FAVORITOS' },
+    { id: null, name: 'TODOS' },
+    ...vodCategories
+  ];
 
   const filteredMovies = movies.filter(movie => {
     const matchesSearch =
       movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || movie.category === selectedCategory;
+    const matchesCategory =
+      !selectedCategory ||
+      movie.category === selectedCategory ||
+      (selectedCategory === '-1' && isFavorite(movie.id));
 
     return matchesSearch && matchesCategory;
   });
@@ -92,8 +100,8 @@ export const Movies = () => {
         setFocusedIndex(0);
         return;
       }
-      if (isZoneCat && focusedCat < vodCategories.length) {
-        setFocusedCat(Math.min(focusedCat + 1, vodCategories.length));
+      if (isZoneCat && focusedCat < categoriesWithAll.length - 1) {
+        setFocusedCat(Math.min(focusedCat + 1, categoriesWithAll.length - 1));
       }
       if (isZoneList && focusedIndex < displayedMovies.length - 1) {
         setFocusedIndex(Math.min(focusedIndex + 5, displayedMovies.length - 1));
@@ -225,10 +233,15 @@ export const Movies = () => {
                 {categoriesWithAll.map((cat, i) => (
                   <ButtonCategory
                     key={cat.id || 'all'}
-                    id={String(cat.id || '-1')}
+                    id={String(cat.id || '-2')}
                     name={cat.name.replace('FILMES |', '')}
                     isSelected={selectedCategory === (cat.id as any)}
                     isFocused={isZoneCat && focusedCat === i}
+                    icon={
+                      cat.id === '-1' ? (
+                        <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
+                      ) : undefined
+                    }
                     onClick={() => {
                       setSelectedCategory(cat.id as any);
                     }}

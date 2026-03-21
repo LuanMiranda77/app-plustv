@@ -21,28 +21,28 @@ interface SeriesDetailProps {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const getTotalProgress = (seasons: Season[]) => {
-  const allEps = seasons.flatMap((s) => s.episodes);
+  const allEps = seasons.flatMap(s => s.episodes);
   if (!allEps.length) return { watched: 0, total: 0, percent: 0 };
-  const watched = allEps.filter((e) => e.watched).length;
+  const watched = allEps.filter(e => e.watched).length;
   return {
     watched,
     total: allEps.length,
-    percent: Math.round((watched / allEps.length) * 100),
+    percent: Math.round((watched / allEps.length) * 100)
   };
 };
 
 const findNextEpisode = (seasons: Season[], currentEpisodeId?: string): Episode | null => {
-  const allEps = seasons.flatMap((s) => s.episodes);
+  const allEps = seasons.flatMap(s => s.episodes);
   if (currentEpisodeId) {
-    const idx = allEps.findIndex((e) => e.id === currentEpisodeId);
+    const idx = allEps.findIndex(e => e.id === currentEpisodeId);
     return allEps[idx + 1] ?? null;
   }
-  return allEps.find((e) => !e.watched) ?? allEps[0] ?? null;
+  return allEps.find(e => !e.watched) ?? allEps[0] ?? null;
 };
 
 const findNextSeasonForEpisode = (seasons: Season[], episodeId: string): number => {
   for (const season of seasons) {
-    if (season.episodes.some((e) => e.id === episodeId)) return season.number;
+    if (season.episodes.some(e => e.id === episodeId)) return season.number;
   }
   return 1;
 };
@@ -53,7 +53,7 @@ export const SeriesDetail = ({
   onToggleFavorite,
   onToggleWatched,
   onLoadDetail,
-  currentEpisodeId,
+  currentEpisodeId
 }: SeriesDetailProps) => {
   const { activeProfile } = useAuthStore();
   const profileId = activeProfile?.id;
@@ -71,16 +71,16 @@ export const SeriesDetail = ({
   const nextEpisode = findNextEpisode(seasons, currentEpisodeId);
   const nextSeasonNumber = nextEpisode ? findNextSeasonForEpisode(seasons, nextEpisode.id) : 1;
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
-  const currentEpisodes = seasons.find((s) => s.number === activeSeason)?.episodes ?? [];
+  const currentEpisodes = seasons.find(s => s.number === activeSeason)?.episodes ?? [];
   const loadProgressForEpisodes = (episodes: Episode[]) => {
     return Promise.all(
-      episodes.map(async (episode) => {
+      episodes.map(async episode => {
         const progress = await getProgress('series', profileId!, episode.id);
         return {
           ...episode,
           watched: progress.watched,
           progress: progress.progress,
-          duration: progress.duration,
+          duration: progress.duration
         };
       })
     );
@@ -108,7 +108,7 @@ export const SeriesDetail = ({
           // Salvar no cache
           await indexedDbStorage
             .set(`list_episodes_cache_${series.id}`, loadedSeasons)
-            .catch((e) => console.error('❌ Erro ao salvar cache:', e));
+            .catch(e => console.error('❌ Erro ao salvar cache:', e));
         }
 
         // ── Enriquecer com progresso ───────────────────────────────────
@@ -161,22 +161,22 @@ export const SeriesDetail = ({
       if (focusedButton !== 0 && focusedButton > 0) {
         return setFocusedButton(0);
       }
-      setSelectedEpisodeIndex((prev) => Math.max(0, prev - 1));
+      setSelectedEpisodeIndex(prev => Math.max(0, prev - 1));
     },
     onDown: () => {
       if (isPlay) return;
       // Navega para baixo, fica no último se chegar ao final
-      setSelectedEpisodeIndex((prev) => Math.min(prev + 1, currentEpisodes.length - 1));
+      setSelectedEpisodeIndex(prev => Math.min(prev + 1, currentEpisodes.length - 1));
       setFocusedButton(-1);
     },
     onRight: () => {
       if (isPlay) return;
-      setFocusedButton((prev) => (prev + 1) % maxButtons);
+      setFocusedButton(prev => (prev + 1) % maxButtons);
     },
     onLeft: () => {
       if (isPlay) return;
       // Navegar entre botões ao contrário
-      setFocusedButton((prev) => (prev - 1 + maxButtons) % maxButtons);
+      setFocusedButton(prev => (prev - 1 + maxButtons) % maxButtons);
     },
     onOk: () => {
       if (isPlay) return;
@@ -201,7 +201,7 @@ export const SeriesDetail = ({
       } else {
         onBack();
       }
-    },
+    }
   });
 
   // Resetar seleção quando temporada muda
@@ -244,13 +244,14 @@ export const SeriesDetail = ({
           source={currentEpisode.streamUrl}
           poster={currentEpisode?.thumbnail || ''}
           autoPlay
-          onError={(error) => {
+          onError={error => {
             console.error('Erro no player:', error);
           }}
           streamId={currentEpisode.id}
           type="series"
           isAutoSave
           contentObject={currentEpisode}
+          parentContent={series}
           onBack={() => setIsPlay(false)}
           onNextEpisode={handlePlayNext}
         />
@@ -339,7 +340,7 @@ export const SeriesDetail = ({
                   <EpisodeCard
                     episode={episode}
                     seasonNumber={activeSeason}
-                    onPlay={(ep) => handlePlay(ep, activeSeason)}
+                    onPlay={ep => handlePlay(ep, activeSeason)}
                     onToggleWatched={onToggleWatched}
                     isActive={episode.id === currentEpisodeId || index === selectedEpisodeIndex}
                   />

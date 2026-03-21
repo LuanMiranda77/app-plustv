@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useHls } from '../../hooks/useHls';
 import { useProgress } from '../../hooks/useProgress';
 import { useRemoteControl } from '../../hooks/useRemotoControl';
-import type { Channel, Episode, Movie } from '../../types';
+import type { Channel, Episode, Movie, Series } from '../../types';
 import { PlayerControls } from './PlayerControls';
 
 interface VideoPlayerProps {
@@ -20,6 +20,7 @@ interface VideoPlayerProps {
   isAutoSave?: boolean;
   type: 'movie' | 'series' | 'live';
   contentObject?: Movie | Episode | Channel | null;
+  parentContent?: Series | null;
 }
 
 export const VideoPlayer = ({
@@ -37,6 +38,7 @@ export const VideoPlayer = ({
   isAutoSave = false,
   type,
   contentObject,
+  parentContent
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,6 +59,7 @@ export const VideoPlayer = ({
     title,
     poster,
     contentObject,
+    parentContent
   });
 
   const { hls, error, isLoading, currentQuality, qualities } = useHls(
@@ -141,41 +144,41 @@ export const VideoPlayer = ({
   // Remote Control Handler
   useRemoteControl({
     onUp: () => {
-      setRemoteActivityTrigger((t) => t + 1);
-      setVolume((v) => Math.min(v + 0.1, 1));
+      setRemoteActivityTrigger(t => t + 1);
+      setVolume(v => Math.min(v + 0.1, 1));
     },
     onDown: () => {
-      setRemoteActivityTrigger((t) => t + 1);
-      setVolume((v) => Math.max(v - 0.1, 0));
+      setRemoteActivityTrigger(t => t + 1);
+      setVolume(v => Math.max(v - 0.1, 0));
     },
     onRight: () => {
-      setRemoteActivityTrigger((t) => t + 1);
+      setRemoteActivityTrigger(t => t + 1);
       if (videoRef.current) {
         videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 5, duration);
       }
     },
     onLeft: () => {
-      setRemoteActivityTrigger((t) => t + 1);
+      setRemoteActivityTrigger(t => t + 1);
       if (videoRef.current) {
         videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 5, 0);
       }
     },
     onOk: () => {
-      setRemoteActivityTrigger((t) => t + 1);
+      setRemoteActivityTrigger(t => t + 1);
       handlePlayPause();
     },
     onPlayPause: () => {
-      setRemoteActivityTrigger((t) => t + 1);
+      setRemoteActivityTrigger(t => t + 1);
       handlePlayPause();
     },
     onBack: () => {
-      setRemoteActivityTrigger((t) => t + 1);
+      setRemoteActivityTrigger(t => t + 1);
       if (isFullscreen) {
         handleFullscreen();
       } else {
         onBack?.();
       }
-    },
+    }
   });
 
   return (

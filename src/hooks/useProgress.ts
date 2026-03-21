@@ -16,6 +16,7 @@ interface UseProgressProps {
   title?: string;
   poster?: string;
   contentObject?: Movie | Episode | Channel | null;
+  parentContent?: Series | null;
 }
 
 export const useProgress = ({
@@ -27,6 +28,7 @@ export const useProgress = ({
   title,
   poster,
   contentObject,
+  parentContent
 }: UseProgressProps) => {
   const intervalRef = useRef<any | null>(null);
   const hasAddedToHistory = useRef(false);
@@ -44,7 +46,7 @@ export const useProgress = ({
         progress,
         duration,
         updatedAt: new Date().toISOString(),
-        watched: duration > 0 && progress / duration > 0.9,
+        watched: duration > 0 && progress / duration > 0.9
       };
       try {
         await indexedDbStorage.set(Key, data);
@@ -60,20 +62,45 @@ export const useProgress = ({
           let itemPoster = poster || '';
 
           if (type === 'movie') {
-            content = movies.find((m) => m.id === streamId) || contentObject;
+            content = movies.find(m => m.id === streamId) || contentObject;
             if (content && 'name' in content) {
               name = content.name;
               itemPoster = content.poster || itemPoster;
             }
           } else if (type === 'series') {
-            content = series.find((s) => s.id === streamId) || contentObject;
-            if (content && 'name' in content) {
-              name = content.name;
-              itemPoster = content.poster || itemPoster;
+            // Para séries: top-level = dados da série, content = episódio
+            const parentSeries = parentContent || series.find(s => s.id === streamId);
+            if (parentSeries) {
+              name = parentSeries.name;
+              itemPoster = parentSeries.poster || itemPoster;
+              // content é o episódio (contentObject)
+              content = contentObject || parentSeries;
+            } else {
+              content = contentObject;
+              if (content && 'name' in content) {
+                name = content.name;
+                itemPoster = (content as any).poster || itemPoster;
+              }
             }
+
+            if (content) {
+              addToHistory({
+                id: parentSeries?.id || streamId,
+                type: 'series',
+                name,
+                poster: itemPoster,
+                progress: Math.round((progress / duration) * 100),
+                duration: Math.floor(duration),
+                watched: progress,
+                lastWatched: new Date(),
+                content
+              });
+              console.log(`📝 Adicionado ao histórico: ${name}`);
+            }
+            return;
           }
 
-          // Adicionar ao histórico apenas se encontrou o conteúdo
+          // Adicionar ao histórico apenas se encontrou o conteúdo (movie)
           if (content) {
             addToHistory({
               id: streamId,
@@ -84,7 +111,7 @@ export const useProgress = ({
               duration: Math.floor(duration),
               watched: progress,
               lastWatched: new Date(),
-              content,
+              content
             });
             console.log(`📝 Adicionado ao histórico: ${name}`);
           }
@@ -100,10 +127,11 @@ export const useProgress = ({
       title,
       poster,
       contentObject,
+      parentContent,
       movies,
       series,
       channels,
-      addToHistory,
+      addToHistory
     ]
   );
 
@@ -126,7 +154,7 @@ export const useProgress = ({
         await indexedDbStorage.set(Key, {
           ...current,
           watched,
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         });
       } catch (error) {
         console.error('❌ Erro ao marcar assistido:', error);
@@ -205,4 +233,4 @@ export const useProgress = ({
   }, [streamId, activeProfile?.id]); // re-registra se mudar episódio ou perfil
 
   return { saveNow, restoreProgress, getProgress, markWatched };
-};;
+};

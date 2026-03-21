@@ -20,11 +20,8 @@ export const Home = () => {
   const { serverConfig } = useAuthStore();
   const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
   const { getRecentlyWatched, getRecentChannels, loadFromStorage } = useWatchHistoryStore();
-  // const [scrolling, setScrolling] = useState(false);
   const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
   const [recentChannels, setRecentChannels] = useState<any[]>([]);
-  // const [recentMovies, setRecentMovies] = useState<any[]>([]);
-  // const [recentSeries, setRecentSeries] = useState<any[]>([]);
   const hasLoadedData = useRef(false);
   const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'content';
@@ -60,18 +57,9 @@ export const Home = () => {
     setTimeout(() => {
       setRecentlyWatched(getRecentlyWatched(20));
       setRecentChannels(getRecentChannels(20).map(item => item.content));
-      // setRecentMovies(getRecentMovies());
-      // setRecentSeries(getRecentSeries());
     }, 0);
   }, []);
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setScrolling(window.scrollY > 100);
-  //   };
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => window.removeEventListener('scroll', handleScroll);
-  // }, []);
 
   // Navegação por controle remoto
   useRemoteControl({
@@ -220,10 +208,10 @@ export const Home = () => {
   };
 
   const navigateSerie = (serie: any) => {
-    navigate('/player', {
+    navigate('/series', {
       state: {
         id: serie.id,
-        streamUrl: serie.content.streamUrl,
+        streamUrl: serie.streamUrl,
         title: serie.name,
         poster: serie.poster,
         type: 'series',
@@ -238,7 +226,7 @@ export const Home = () => {
         streamUrl: serie.content.streamUrl,
         title: serie.name,
         poster: serie.poster,
-        type: 'home',
+        type: 'series',
         category: serie.category
       }
     });
@@ -317,11 +305,11 @@ export const Home = () => {
               }
               onPlay={item => {
                 console.log(item);
-                // if (item.type === 'movie') {
-                //   navigateMovie(item);
-                // } else if (item.type === 'series') {
-                //   navigateEpsodio(item);
-                // }
+                if (item.type === 'movie') {
+                  navigateMovie(item);
+                } else if (item.type === 'series') {
+                  navigateEpsodio(item);
+                }
               }}
               onViewHistory={() => navigate('/watch-history')}
               onRecentlyWatched={setRecentlyWatched}

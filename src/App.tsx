@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { ConfigServer } from './pages/ConfigServer';
-import { Favorites } from './pages/Favorites';
 import { Home } from './pages/Home';
 import { Live } from './pages/Live';
 import { Login } from './pages/Login';
@@ -23,7 +22,6 @@ function App() {
       <Route path="/movie" element={<Movies />} />
       <Route path="/series" element={<PageSeries />} />
       <Route path="/live" element={<Live />} />
-      <Route path="/favorites" element={<Favorites />} />
       <Route path="/watch-history" element={<WatchHistory />} />
       <Route path="/player" element={<Player />} />
       <Route path="/config-server" element={<ConfigServer />} />

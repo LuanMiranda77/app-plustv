@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { Film, Heart, Home, RefreshCw, Server, Tv2, TvMinimalPlay } from 'lucide-react';
-import moment from 'moment';
-import React, { use, useEffect, useState } from 'react';
+import { Film, Home, RefreshCw, Server, Tv2, TvMinimalPlay } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../../../Context/FocusContext';
 import { useRemoteControl } from '../../../hooks/useRemotoControl';
@@ -9,8 +8,8 @@ import { useServerContent } from '../../../hooks/useServerContent';
 import { useAuthStore } from '../../../store/authStore';
 import LogoHeader from '../../Logos/LogoHeader';
 import MenuButton from '../../UI/ButtonMenu';
-import { useServerListStore } from '../../../store/serverListStore';
 import ConfirmDialog from '../../UI/ConfirmDialog';
+import moment from 'moment';
 interface Props {
   scrolling: boolean;
 }
@@ -20,8 +19,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     { title: 'Início', icon: Home, path: '/home' },
     { title: 'TV ao Vivo', icon: Tv2, path: '/live' },
     { title: 'Filmes', icon: Film, path: '/movie' },
-    { title: 'Séries', icon: TvMinimalPlay, path: '/series' },
-    { title: 'Favoritos', icon: Heart, path: '/favorites' }
+    { title: 'Séries', icon: TvMinimalPlay, path: '/series' }
   ];
   const navigate = useNavigate();
   const location = useLocation();
@@ -193,14 +191,12 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                 ))}
               </section>
               <section className=" relative flex items-center gap-3">
-                {/* {lastUpdate && (
-                <div className="absolute text-right w-[150px] top-[-15px] max-md:top-[-18px] right-[90px]">
-                  <p className="text-gray-400 text-[11px]">
-                    <b className="text-gray-300">Atualizado</b>{' '}
-                    {moment(lastUpdate).format('DD/MM/YY')}
-                  </p>
-                </div>
-              )} */}
+                {lastUpdate && (
+                  <div className="text-right">
+                    <b className="text-gray-300 text-lg max-md:text-xs">Atualizado em</b>{' '}
+                    <p className="text-gray-400 text-sm max-md:text-[10px]">{moment(lastUpdate).format('DD/MM/YY HH:mm')}</p>
+                  </div>
+                )}
                 <button
                   onClick={() => {
                     if (!isLoading) setConfirmRefresh(true);
