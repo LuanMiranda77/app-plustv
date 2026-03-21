@@ -20,7 +20,7 @@ export const useServerContent = () => {
     isCacheValid,
     isCacheValidAsync,
     loadFromCache,
-    clearCache,
+    clearCache
   } = useContentStore();
 
   useEffect(() => {
@@ -33,8 +33,8 @@ export const useServerContent = () => {
 
     if (serverConfig) {
       // Usar versão async que verifica IndexedDB
-      isCacheValidAsync()
-        .then((isValid) => {
+      isCacheValidAsync(serverConfig)
+        .then(isValid => {
           if (isValid) {
             console.log('✅ Cache do IndexedDB VÁLIDO! Carregando dados...');
             loadFromCache();
@@ -44,7 +44,7 @@ export const useServerContent = () => {
             fetchServerContent(serverConfig);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.error('❌ Erro ao verificar cache:', error);
           // Em caso de erro, buscar do servidor
           fetchServerContent(serverConfig);
@@ -79,6 +79,6 @@ export const useServerContent = () => {
     hasContent: channels.length > 0 || movies.length > 0 || series.length > 0,
     lastUpdate: lastUpdate ? new Date(lastUpdate) : null,
     nextUpdate: getTimeUntilNextUpdate(),
-    forceRefresh,
+    forceRefresh
   };
 };

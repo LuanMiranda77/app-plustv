@@ -32,9 +32,11 @@ interface ContentState {
   loadFromCache: () => void;
   clearCache: () => void;
   isCacheValid: () => boolean; // Verifica se cache é válido (menos de 72h / 3 dias)
-  isCacheValidAsync: () => Promise<boolean>; // Versão async que verifica IndexedDB
+  isCacheValidAsync: (config?: ServerConfig) => Promise<boolean>;
   fetchServerContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>;
 }
+
+const getServerId = (config: ServerConfig) => `${config.url}|${config.username}`;
 
 const saveToCache = (
   channels: Channel[],
@@ -42,9 +44,9 @@ const saveToCache = (
   series: Series[],
   liveCategories: any[],
   vodCategories: any[],
-  seriesCategories: any[]
+  seriesCategories: any[],
+  config?: ServerConfig
 ) => {
-  // Dados COMPLETOS para IndexedDB (com imagens)
   const fullCache = {
     channels,
     movies,
@@ -53,17 +55,18 @@ const saveToCache = (
     vodCategories,
     seriesCategories,
     timestamp: Date.now(),
+    serverId: config ? getServerId(config) : undefined
   };
 
   // Dados MÍNIMOS para localStorage (apenas para validação rápida)
   const minimalCache = {
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 
   console.log('🔄 Salvando cache: completo no IndexedDB + mínimo no localStorage...');
 
   // Salvar no IndexedDB (completo com imagens)
-  indexedDbStorage.set('playlist_cache', fullCache).catch((error) => {
+  indexedDbStorage.set('playlist_cache', fullCache).catch(error => {
     console.error('❌ Erro ao salvar no IndexedDB:', error);
   });
 
@@ -80,7 +83,7 @@ export const useContentStore = create<ContentState>((set, get) => {
       canais: cached.channels?.length || 0,
       filmes: cached.movies?.length || 0,
       series: cached.series?.length || 0,
-      timestamp: new Date(cached.timestamp).toLocaleString(),
+      timestamp: new Date(cached.timestamp).toLocaleString()
     });
   } else {
     console.log('📭 Nenhum cache encontrado na inicialização');
@@ -97,7 +100,7 @@ export const useContentStore = create<ContentState>((set, get) => {
     error: null,
     lastUpdate: cached?.timestamp || null,
 
-    setChannels: (channels) => {
+    setChannels: channels => {
       const state = get();
       saveToCache(
         channels,
@@ -110,7 +113,7 @@ export const useContentStore = create<ContentState>((set, get) => {
       set({ channels });
     },
 
-    setMovies: (movies) => {
+    setMovies: movies => {
       const state = get();
       saveToCache(
         state.channels,
@@ -123,7 +126,7 @@ export const useContentStore = create<ContentState>((set, get) => {
       set({ movies });
     },
 
-    setSeries: (series) => {
+    setSeries: series => {
       const state = get();
       saveToCache(
         state.channels,
@@ -136,7 +139,7 @@ export const useContentStore = create<ContentState>((set, get) => {
       set({ series });
     },
 
-    setLiveCategories: (categories) => {
+    setLiveCategories: categories => {
       const state = get();
       saveToCache(
         state.channels,
@@ -149,7 +152,7 @@ export const useContentStore = create<ContentState>((set, get) => {
       set({ liveCategories: categories });
     },
 
-    setVodCategories: (categories) => {
+    setVodCategories: categories => {
       const state = get();
       saveToCache(
         state.channels,
@@ -162,7 +165,7 @@ export const useContentStore = create<ContentState>((set, get) => {
       set({ vodCategories: categories });
     },
 
-    setSeriesCategories: (categories) => {
+    setSeriesCategories: categories => {
       const state = get();
       saveToCache(
         state.channels,
@@ -175,11 +178,11 @@ export const useContentStore = create<ContentState>((set, get) => {
       set({ seriesCategories: categories });
     },
 
-    setLoading: (loading) => {
+    setLoading: loading => {
       set({ isLoading: loading });
     },
 
-    setError: (error) => {
+    setError: error => {
       set({ error });
     },
 
@@ -207,12 +210,18 @@ export const useContentStore = create<ContentState>((set, get) => {
       return isValid;
     },
 
-    isCacheValidAsync: async () => {
+    isCacheValidAsync: async (config?: ServerConfig) => {
       // Verificar timestamp no IndexedDB (fonte de verdade)
-      const cached:any = await indexedDbStorage.get('playlist_cache');
+      const cached: any = await indexedDbStorage.get('playlist_cache');
 
       if (!cached || !cached.timestamp) {
         console.log('❌ Cache no IndexedDB inválido ou inexistente');
+        return false;
+      }
+
+      // Verificar se cache pertence ao servidor ativo
+      if (config && cached.serverId && cached.serverId !== getServerId(config)) {
+        console.log('❌ Cache pertence a outro servidor, invalidando...');
         return false;
       }
 
@@ -234,7 +243,7 @@ export const useContentStore = create<ContentState>((set, get) => {
 
     loadFromCache: async () => {
       // Tentar carregar do IndexedDB primeiro (dados completos com imagens)
-      let cached:any = await indexedDbStorage.get('playlist_cache');
+      let cached: any = await indexedDbStorage.get('playlist_cache');
 
       // Se não encontrar no IndexedDB, tenta localStorage
       if (!cached) {
@@ -251,7 +260,7 @@ export const useContentStore = create<ContentState>((set, get) => {
           liveCategories: cached.liveCategories || [],
           vodCategories: cached.vodCategories || [],
           seriesCategories: cached.seriesCategories || [],
-          lastUpdate: cached.timestamp || null,
+          lastUpdate: cached.timestamp || null
         });
       }
     },
@@ -266,14 +275,22 @@ export const useContentStore = create<ContentState>((set, get) => {
         liveCategories: [],
         vodCategories: [],
         seriesCategories: [],
-        lastUpdate: null,
+        lastUpdate: null
       });
     },
 
     fetchServerContent: async (config: ServerConfig, forceRefresh = false) => {
       console.log('📡 fetchServerContent iniciado:', config.url);
+
+      // Verificar se cache pertence ao servidor atual
+      const cached: any = await indexedDbStorage.get('playlist_cache');
+      if (cached?.serverId && cached.serverId !== getServerId(config)) {
+        console.log('🔄 Servidor trocado! Limpando cache antigo...');
+        await get().clearCache();
+      }
+
       // Se cache é válido e não está forçando refresh, usar cache
-      if (!forceRefresh && get().isCacheValid()) {
+      if (!forceRefresh && (await get().isCacheValidAsync(config))) {
         console.log('✅ Cache válido, carregando...');
         get().loadFromCache();
         return;
@@ -285,7 +302,7 @@ export const useContentStore = create<ContentState>((set, get) => {
         console.log('📥 Dados recebidos da API:', {
           liveStreams: data.liveStreams?.length,
           vodStreams: data.vodStreams?.length,
-          seriesStreams: data.seriesStreams?.length,
+          seriesStreams: data.seriesStreams?.length
         });
 
         // Converter live streams para Channel
@@ -301,7 +318,7 @@ export const useContentStore = create<ContentState>((set, get) => {
             stream.stream_type || 'live'
           ),
           category: stream.category_id || 'Sem categoria',
-          isFavorite: false,
+          isFavorite: false
         }));
 
         // Converter VOD streams para Movie
@@ -325,7 +342,7 @@ export const useContentStore = create<ContentState>((set, get) => {
           isFavorite: false,
           watched: false,
           progress: 0,
-          duration: stream.duration || 0,
+          duration: stream.duration || 0
         }));
 
         // Converter séries para Series
@@ -341,7 +358,7 @@ export const useContentStore = create<ContentState>((set, get) => {
           youtube_trailer: stream.youtube_trailer || '',
           isFavorite: false,
           seasons: [],
-          loaded: false,
+          loaded: false
           // seasons: [
           //   {
           //     number: 1,
@@ -368,17 +385,17 @@ export const useContentStore = create<ContentState>((set, get) => {
         // Converter categorias
         const liveCategories = data.liveCategories.map((cat: any) => ({
           id: String(cat.category_id),
-          name: cat.category_name,
+          name: cat.category_name
         }));
 
         const vodCategories = data.vodCategories.map((cat: any) => ({
           id: String(cat.category_id),
-          name: cat.category_name,
+          name: cat.category_name
         }));
 
         const seriesCategories = data.seriesCategories.map((cat: any) => ({
           id: String(cat.category_id),
-          name: cat.category_name,
+          name: cat.category_name
         }));
 
         const timestamp = Date.now();
@@ -396,11 +413,12 @@ export const useContentStore = create<ContentState>((set, get) => {
             vodCategories,
             seriesCategories,
             timestamp,
+            serverId: getServerId(config)
           })
           .then(() => {
             console.log('✅ Dados completos salvos no IndexedDB!');
           })
-          .catch((error) => {
+          .catch(error => {
             console.error('❌ Erro ao salvar no IndexedDB:', error);
           });
 
@@ -414,7 +432,7 @@ export const useContentStore = create<ContentState>((set, get) => {
           vodCategories,
           seriesCategories,
           lastUpdate: timestamp,
-          isLoading: false,
+          isLoading: false
         });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Erro ao buscar conteúdo';
@@ -433,12 +451,12 @@ export const useContentStore = create<ContentState>((set, get) => {
             seriesCategories: cached.seriesCategories || [],
             lastUpdate: cached.timestamp || null,
             isLoading: false,
-            error: errorMessage + ' (mostrando dados em cache)',
+            error: errorMessage + ' (mostrando dados em cache)'
           });
         } else {
           set({ error: errorMessage, isLoading: false });
         }
       }
-    },
+    }
   };
 });
