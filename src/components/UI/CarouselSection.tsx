@@ -1,4 +1,4 @@
-import { Sparkles, TrendingUp } from 'lucide-react';
+import { Repeat, Sparkles, TrendingUp } from 'lucide-react';
 import { Carousel } from '../Carousel';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   items: any[];
   renderItem: (item: any, index: number, isFocused: boolean) => React.ReactNode;
   onViewMore: () => void;
-  badge?: 'novo' | 'trending';
+  badge?: 'novo' | 'trending' | 'repeat';
   focusedItemIndex?: number;
 };
 
@@ -30,6 +30,12 @@ export default function CarouselSection({
             {Icon && <Icon className="w-6 h-6 text-red-600 mt-1" />}
             <h2 className="text-2xl font-bold text-white">{title}</h2>
           </div>
+          {badge === 'repeat' && (
+            <span className="flex items-center gap-1 px-3 py-1 bg-yellow-600/20 border border-yellow-600/50 rounded-full text-xs text-yellow-400">
+              <Repeat className="w-3 h-3" />
+              Novamente
+            </span>
+          )}
           {badge === 'novo' && (
             <span className="flex items-center gap-1 px-3 py-1 bg-green-600/20 border border-green-600/50 rounded-full text-xs text-green-400">
               <Sparkles className="w-3 h-3" />

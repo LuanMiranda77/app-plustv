@@ -19,9 +19,10 @@ export const Home = () => {
   const navigate = useNavigate();
   const { serverConfig } = useAuthStore();
   const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
-  const { getRecentlyWatched, loadFromStorage } = useWatchHistoryStore();
+  const { getRecentlyWatched, getRecentChannels, loadFromStorage } = useWatchHistoryStore();
   // const [scrolling, setScrolling] = useState(false);
   const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
+  const [recentChannels, setRecentChannels] = useState<any[]>([]);
   // const [recentMovies, setRecentMovies] = useState<any[]>([]);
   // const [recentSeries, setRecentSeries] = useState<any[]>([]);
   const hasLoadedData = useRef(false);
@@ -58,6 +59,7 @@ export const Home = () => {
     // Get recently watched items after loading history
     setTimeout(() => {
       setRecentlyWatched(getRecentlyWatched(20));
+      setRecentChannels(getRecentChannels(20).map(item => item.content));
       // setRecentMovies(getRecentMovies());
       // setRecentSeries(getRecentSeries());
     }, 0);
@@ -131,16 +133,7 @@ export const Home = () => {
           }
           break;
         case 'live-channels':
-          navigate('/player', {
-            state: {
-              id: item.id,
-              streamUrl: item.streamUrl,
-              title: item.name,
-              poster: item.logo,
-              type: 'live',
-              category: item.category
-            }
-          });
+          navigate('/live', { state: item });
           break;
         case 'trending-movies':
         case 'new-movies':
@@ -157,7 +150,7 @@ export const Home = () => {
     }
   });
 
-  const topChannels = channels.slice(0, 8);
+  const topChannels = recentChannels.length > 0 ? recentChannels : channels.slice(0, 8);
   const newMovies = movies.slice(0, 10);
   const newSeries = series.slice(0, 10);
   const trendingMovies = movies.filter((m, i) => {
@@ -230,10 +223,22 @@ export const Home = () => {
     navigate('/player', {
       state: {
         id: serie.id,
-        streamUrl: serie.streamUrl,
+        streamUrl: serie.content.streamUrl,
         title: serie.name,
         poster: serie.poster,
-        type: 'serie',
+        type: 'series',
+        category: serie.category
+      }
+    });
+  };
+  const navigateEpsodio = (serie: any) => {
+    navigate('/player', {
+      state: {
+        id: serie.id,
+        streamUrl: serie.content.streamUrl,
+        title: serie.name,
+        poster: serie.poster,
+        type: 'home',
         category: serie.category
       }
     });
@@ -311,11 +316,12 @@ export const Home = () => {
                 activeSections[focusedSection]?.type === 'continue-watching' ? focusedItemIndex : -1
               }
               onPlay={item => {
-                if (item.type === 'movie') {
-                  navigateMovie(item);
-                } else if (item.type === 'series') {
-                  navigateSerie(item.content);
-                }
+                console.log(item);
+                // if (item.type === 'movie') {
+                //   navigateMovie(item);
+                // } else if (item.type === 'series') {
+                //   navigateEpsodio(item);
+                // }
               }}
               onViewHistory={() => navigate('/watch-history')}
               onRecentlyWatched={setRecentlyWatched}
@@ -324,8 +330,12 @@ export const Home = () => {
             {/* Live Channels */}
             {topChannels.length > 0 && (
               <CarouselSection
-                title="Canais ao Vivo"
-                subtitle="Seus canais favoritos em tempo real"
+                title={recentChannels.length > 0 ? 'Últimos Canais Assistidos' : 'Canais ao Vivo'}
+                subtitle={
+                  recentChannels.length > 0
+                    ? 'Continue de onde parou'
+                    : 'Seus canais favoritos em tempo real'
+                }
                 icon={Tv2}
                 items={topChannels}
                 focusedItemIndex={
@@ -335,21 +345,32 @@ export const Home = () => {
                   <ChannelPoster
                     channel={channel}
                     isFocused={isFocused}
-                    onPlay={() => {
-                      navigate('/player', {
-                        state: {
-                          id: channel.id,
-                          streamUrl: channel.streamUrl,
-                          title: channel.name,
-                          poster: channel.logo,
-                          type: 'live',
-                          category: channel.category
-                        }
-                      });
-                    }}
+                    onPlay={() => navigate('/player', { state: channel })}
                   />
                 )}
                 onViewMore={() => navigate('/live')}
+              />
+            )}
+
+            {/* Utimate Movies */}
+            {recentlyWatched.length > 0 && (
+              <CarouselSection
+                title="Utimos Filmes Assistidos"
+                subtitle="Se gostou, assista novamente"
+                icon={TrendingUp}
+                items={recentlyWatched.filter(item => item.type === 'movie')}
+                badge="repeat"
+                focusedItemIndex={
+                  activeSections[focusedSection]?.type === 'trending-movies' ? focusedItemIndex : -1
+                }
+                renderItem={(movie, idx, isFocused) => (
+                  <StreamPoster
+                    stream={movie}
+                    isFocused={isFocused}
+                    onPlay={() => navigateMovie(movie)}
+                  />
+                )}
+                onViewMore={() => navigate('/movie')}
               />
             )}
 
@@ -394,6 +415,28 @@ export const Home = () => {
                   />
                 )}
                 onViewMore={() => navigate('/movie')}
+              />
+            )}
+
+            {/* Utimate Series */}
+            {recentlyWatched.length > 0 && (
+              <CarouselSection
+                title="Utimos Séries Assistidos"
+                subtitle="Se gostou, assista novamente"
+                icon={TrendingUp}
+                items={recentlyWatched.filter(item => item.type === 'series')}
+                badge="repeat"
+                focusedItemIndex={
+                  activeSections[focusedSection]?.type === 'trending-movies' ? focusedItemIndex : -1
+                }
+                renderItem={(series, idx, isFocused) => (
+                  <StreamPoster
+                    stream={series}
+                    isFocused={isFocused}
+                    onPlay={() => navigateSerie(series)}
+                  />
+                )}
+                onViewMore={() => navigate('/series')}
               />
             )}
 

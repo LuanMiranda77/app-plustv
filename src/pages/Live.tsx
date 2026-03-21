@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
 import ButtonCategory from '../components/UI/ButtonCategory';
+import { EpgList } from '../components/UI/EpgList';
 import { Input } from '../components/UI/Input';
 import RemoteHint from '../components/UI/RemoteHint';
 import { useFocusZone } from '../Context/FocusContext';
@@ -13,14 +14,15 @@ import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
+import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import { xtreamApi } from '../utils/xtreamApi';
-import { EpgList } from '../components/UI/EpgList';
 
 export const Live = () => {
   const location = useLocation();
   const { channels, liveCategories } = useContentStore();
   const { serverConfig } = useAuthStore();
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const { addChannelToHistory } = useWatchHistoryStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentStream, setCurrentStream] = useState<any | null>(null);
@@ -71,6 +73,19 @@ export const Live = () => {
   // Buscar programação (EPG) quando um canal é selecionado
   useEffect(() => {
     if (currentStream?.id && serverConfig) {
+      // Registrar canal no histórico
+      addChannelToHistory({
+        id: currentStream.id,
+        type: 'channel',
+        name: currentStream.name,
+        logo: currentStream.logo,
+        progress: 0,
+        duration: 0,
+        watched: 0,
+        lastWatched: new Date(),
+        content: currentStream
+      });
+
       setIsLoadingEpg(true);
       xtreamApi
         .getLiveEpg(serverConfig, currentStream.id)

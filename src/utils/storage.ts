@@ -6,6 +6,7 @@ export const STORAGE_KEYS = {
   ACTIVE_PROFILE: 'iptv_active_profile',
   FAVORITES: 'iptv_favorites',
   WATCH_HISTORY: 'iptv_watch_history',
+  CHANNEL_HISTORY: 'iptv_channel_history',
   PLAYLIST_CACHE: 'iptv_playlist_cache',
   SETTINGS: 'iptv_settings'
 } as const;

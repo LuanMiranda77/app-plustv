@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import { VideoPlayer } from '../components/Player/VideoPlayer';
-import { ButtonBack } from '../components/UI/ButtonBack';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 // import { useAuthStore } from '../store/authStore';
 
@@ -33,20 +31,20 @@ export const Player = () => {
         title: state.title || 'Reproduzindo',
         poster: state.poster,
         type: state.type || 'live',
-        category: state.category || '',
+        category: state.category || ''
       });
     }
   }, [location]);
 
   const handleGoBack = () => {
     navigate(`/${!currentStream?.type ? 'home' : currentStream?.type}`, {
-      state: currentStream,
+      state: currentStream
     });
     setCurrentStream(null);
   };
 
   useRemoteControl({
-    onBack: () => handleGoBack(),
+    onBack: () => handleGoBack()
   });
 
   return (
@@ -59,7 +57,7 @@ export const Player = () => {
             source={currentStream.streamUrl}
             poster={currentStream.poster}
             autoPlay
-            onError={(error) => {
+            onError={error => {
               console.error('Erro no player:', error);
             }}
             streamId={currentStream.id}
@@ -68,7 +66,7 @@ export const Player = () => {
             isControlsVisible={currentStream.type !== 'live'}
             onBack={() => {
               navigate(`/${!currentStream.type ? 'home' : currentStream.type}`, {
-                state: currentStream,
+                state: currentStream
               });
               setCurrentStream(null);
             }}
