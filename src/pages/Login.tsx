@@ -7,7 +7,7 @@ import { useAuthStore } from '../store/authStore';
 import { useServerListStore } from '../store/serverListStore';
 import type { ServerConfig } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
-import logoIcon from '/icons.png';
+const logoIcon = './icons.png';
 
 export const Login = () => {
   const navigate = useNavigate();

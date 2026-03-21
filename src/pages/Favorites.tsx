@@ -19,6 +19,7 @@ export const Favorites = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>('1');
   const [focusedInput, setFocusedInput] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
 
@@ -188,7 +189,7 @@ export const Favorites = () => {
         )}
 
         {/* Grid */}
-        <div className="flex-1 mx-auto px-6 py-8 overflow-y-scroll">
+        <div ref={gridRef} className="flex-1 mx-auto px-6 py-8 overflow-y-scroll">
           <div className={`flex-1 mb-5 ${focusedInput ? 'ring-2 ring-red-600' : ''}`}>
             <Input
               ref={inputRef}

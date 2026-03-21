@@ -1,4 +1,4 @@
-import logoIcon from '/icons.png';
+const logoIcon = './icons.png';
 
 const LogoHeader: React.FC = () => {
   return (

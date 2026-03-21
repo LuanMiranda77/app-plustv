@@ -1,6 +1,6 @@
 import { Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import bannerBg from '/icons.png';
+const bannerBg = './icons.png';
 
 type Props = {
   title?: string;
@@ -15,7 +15,7 @@ export default function MainBanner({
   description = 'Acesse seus filmes, séries e canais favoritos em qualquer lugar',
   buttonLabel = 'Explorar Conteúdo',
   navigateTo = '/movie',
-  isFocused = false,
+  isFocused = false
 }: Props) {
   const navigate = useNavigate();
 

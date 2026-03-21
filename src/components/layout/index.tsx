@@ -1,12 +1,14 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import App from '../../App';
+import { Splash } from '../../pages/Splash';
 import { useAuthStore } from '../../store/authStore';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import { useWatchHistoryStore } from '../../store/watchHistoryStore';
 import MainHeader from './MainHeader';
 
 const Layout: React.FC = () => {
+  const [showSplash, setShowSplash] = useState(true);
   const { loadFromStorage, activeProfile } = useAuthStore();
   const { loadFromStorage: loadFavoritesFromStorage, setCurrentProfile: setFavoritesProfile } =
     useFavoritesStore();
@@ -33,12 +35,15 @@ const Layout: React.FC = () => {
     }
   }, [activeProfile?.id, setFavoritesProfile, setHistoryProfile]);
 
+  const handleSplashFinish = useCallback(() => setShowSplash(false), []);
+
   return (
     <Fragment>
+      {showSplash && <Splash onFinish={handleSplashFinish} />}
       {shouldShowHeader && <MainHeader scrolling={false} />}
       <App />
     </Fragment>
   );
-};;
+};
 
 export default Layout;
