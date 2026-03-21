@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
-import { useBackGuard } from './useBackGuard';
-import { useRemoteControl } from './useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
-import useWindowSize from './useWindowSize';
 import { xtreamApi } from '../utils/xtreamApi';
+import { useBackGuard } from './useBackGuard';
+import { useRemoteControl } from './useRemotoControl';
+import useWindowSize from './useWindowSize';
 
 export function useLivePage() {
   const location = useLocation();

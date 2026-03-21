@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFocusZone } from '../Context/FocusContext';
-import { useBackGuard } from './useBackGuard';
-import { useRemoteControl } from './useRemotoControl';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Movie } from '../types';
+import { useBackGuard } from './useBackGuard';
+import { useRemoteControl } from './useRemotoControl';
 
 export function useMoviesPage() {
   const { movies, vodCategories } = useContentStore();

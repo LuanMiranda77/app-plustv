@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
-import { useBackGuard } from './useBackGuard';
-import { useRemoteControl } from './useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Season, Series } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
+import { useBackGuard } from './useBackGuard';
+import { useRemoteControl } from './useRemotoControl';
 
 export function useSeriesPage() {
   const { series, seriesCategories } = useContentStore();

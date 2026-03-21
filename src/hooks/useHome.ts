@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
-import { useRemoteControl } from './useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import { useRemoteControl } from './useRemotoControl';
 
 type SectionType =
   | 'continue-watching'
