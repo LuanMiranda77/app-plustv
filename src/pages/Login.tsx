@@ -267,6 +267,7 @@ export const Login = () => {
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
+                  e.stopPropagation();
                   if (validateField(0)) {
                     setFocusedFieldIndex(1);
                     setTimeout(() => usernameInputRef.current?.focus(), 0);
@@ -291,6 +292,7 @@ export const Login = () => {
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
+                  e.stopPropagation();
                   if (validateField(1)) {
                     setFocusedFieldIndex(2);
                     setTimeout(() => passwordInputRef.current?.focus(), 0);
@@ -315,6 +317,7 @@ export const Login = () => {
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
+                  e.stopPropagation();
                   if (validateField(2)) {
                     setTimeout(() => {
                       setFocusedFieldIndex(3);
@@ -341,6 +344,7 @@ export const Login = () => {
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
+                  e.stopPropagation();
                   if (validateField(3)) {
                     setTimeout(() => {
                       setFocusedFieldIndex(4);
@@ -368,6 +372,7 @@ export const Login = () => {
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
+                  e.stopPropagation();
                   if (validateForm()) {
                     const form = document.getElementById('login-form') as HTMLFormElement;
                     if (form) {

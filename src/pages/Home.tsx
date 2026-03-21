@@ -64,7 +64,8 @@ export const Home = () => {
   useRemoteControl({
     onRight: () => {
       if (!isActive) return;
-      setFocusedItemIndex(prev => prev + 1);
+      const maxIndex = (currentSectionData.length || 1) - 1;
+      setFocusedItemIndex(prev => (prev < maxIndex ? prev + 1 : prev));
     },
     onLeft: () => {
       if (!isActive) return;

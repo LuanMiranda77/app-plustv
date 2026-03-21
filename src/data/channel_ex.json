@@ -70,5 +70,2219 @@
             49
         ],
         "thumbnail": ""
+    },
+    {
+        "num": 5,
+        "name": "UFC TV 05",
+        "stream_type": "live",
+        "stream_id": 313227,
+        "stream_icon": "https://imgscc.top/logos/UFC_TV_01_20260118_151607.png",
+        "epg_channel_id": null,
+        "added": "1680990099",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "49",
+        "category_ids": [
+            49
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 6,
+        "name": "UFC TV 06",
+        "stream_type": "live",
+        "stream_id": 313228,
+        "stream_icon": "https://imgscc.top/logos/UFC_TV_01_20260118_151607.png",
+        "epg_channel_id": null,
+        "added": "1680990204",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "49",
+        "category_ids": [
+            49
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 7,
+        "name": "AXN FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311537,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1680559768",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 8,
+        "name": "HBO 1 FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311535,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/hbo@3x.png",
+        "epg_channel_id": "Hbo.br",
+        "added": "1680559763",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 9,
+        "name": "HBO+ FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311534,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/hboplus@3x.png",
+        "epg_channel_id": "Hboplus.br",
+        "added": "1680559761",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 10,
+        "name": "Telecine Action FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311533,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tc-action@3x.png",
+        "epg_channel_id": "Tcaction.br",
+        "added": "1680559759",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 11,
+        "name": "Telecine Fun HD [L]",
+        "stream_type": "live",
+        "stream_id": 311532,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tc-fun@3x.png",
+        "epg_channel_id": "Tcfun.br",
+        "added": "1680559756",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 12,
+        "name": "Telecine Pipoca FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311531,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tc-pipoca@3x.png",
+        "epg_channel_id": "Tcpipoca.br",
+        "added": "1680559754",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 13,
+        "name": "Telecine Premium FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311530,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tc-premium@3x.png",
+        "epg_channel_id": "Tcpremium.br",
+        "added": "1680559752",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 14,
+        "name": "Telecine Touch FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311529,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tc-touch@3x.png",
+        "epg_channel_id": "Tctouch.br",
+        "added": "1680559749",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 15,
+        "name": "TNT Brasil FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311528,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tnt@3x.png",
+        "epg_channel_id": "Tnt.br",
+        "added": "1680559747",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 16,
+        "name": "HBO Pop FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311526,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/hbo-pop@3x.png",
+        "epg_channel_id": "Hbopop.br",
+        "added": "1680559742",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 17,
+        "name": "Megapix FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311525,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/megapix@3x.png",
+        "epg_channel_id": "Megapix.br",
+        "added": "1680559740",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 18,
+        "name": "Space FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311524,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/space@3x.png",
+        "epg_channel_id": "Space.br",
+        "added": "1680559738",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 19,
+        "name": "TNT Séries FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311523,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tnt-series@3x.png",
+        "epg_channel_id": "canalstart.br",
+        "added": "1680559735",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 20,
+        "name": "Warner Channel FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311522,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/warner-channel@3x.png",
+        "epg_channel_id": "Warner.br",
+        "added": "1680559727",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 21,
+        "name": "Sony Channel HD [L]",
+        "stream_type": "live",
+        "stream_id": 311521,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/sony@3x.png",
+        "epg_channel_id": "Sony.br",
+        "added": "1680559725",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 22,
+        "name": "Telecine Cult FHD [L]",
+        "stream_type": "live",
+        "stream_id": 311520,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/tc-cult@3x.png",
+        "epg_channel_id": "Tccult.br",
+        "added": "1680559722",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "307",
+        "category_ids": [
+            307
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 23,
+        "name": "Globo RJ: Rio de Janeiro HD",
+        "stream_type": "live",
+        "stream_id": 179,
+        "stream_icon": "https://raw.githubusercontent.com/dataminerbr/ChannelsLogos/main/Originals/BR/globo_RJ.png",
+        "epg_channel_id": "Globorj.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "313",
+        "category_ids": [
+            313
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 24,
+        "name": "Globo RJ: Rio de Janeiro FHD",
+        "stream_type": "live",
+        "stream_id": 2071,
+        "stream_icon": "https://raw.githubusercontent.com/dataminerbr/ChannelsLogos/main/Originals/BR/globo_RJ.png",
+        "epg_channel_id": "Globorj.br",
+        "added": "1573139475",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "313",
+        "category_ids": [
+            313
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 25,
+        "name": "1000 X Hora Tv",
+        "stream_type": "live",
+        "stream_id": 20488,
+        "stream_icon": "",
+        "epg_channel_id": null,
+        "added": "1588531726",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "320",
+        "category_ids": [
+            320
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 26,
+        "name": "24 Horas",
+        "stream_type": "live",
+        "stream_id": 25673,
+        "stream_icon": "https://i.imgsccr.com/8DIarZK.png",
+        "epg_channel_id": null,
+        "added": "1594164476",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "344",
+        "category_ids": [
+            344
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 27,
+        "name": "Globo SP: São Paulo HD",
+        "stream_type": "live",
+        "stream_id": 160,
+        "stream_icon": "https://raw.githubusercontent.com/dataminerbr/ChannelsLogos/main/Originals/BR/globo_SP.png",
+        "epg_channel_id": "Globosp.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "313",
+        "category_ids": [
+            313
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 28,
+        "name": "Globo SP: São Paulo FHD",
+        "stream_type": "live",
+        "stream_id": 155,
+        "stream_icon": "https://raw.githubusercontent.com/dataminerbr/ChannelsLogos/main/Originals/BR/globo_SP.png",
+        "epg_channel_id": "Globosp.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "313",
+        "category_ids": [
+            313
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 29,
+        "name": "8NTV",
+        "stream_type": "live",
+        "stream_id": 42558,
+        "stream_icon": "https://i1.wp.com/www.consentidocomun.mx/wp-content/uploads/2019/04/img_9242.jpg",
+        "epg_channel_id": null,
+        "added": "1610666592",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "436",
+        "category_ids": [
+            436
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 30,
+        "name": "A&E FHD H265",
+        "stream_type": "live",
+        "stream_id": 32,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/aee@3x.png",
+        "epg_channel_id": "Ae.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 31,
+        "name": "A&E FHD H265²",
+        "stream_type": "live",
+        "stream_id": 234861,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/aee@3x.png",
+        "epg_channel_id": "Ae.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 32,
+        "name": "A&E FHD²",
+        "stream_type": "live",
+        "stream_id": 234862,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/aee@3x.png",
+        "epg_channel_id": "Ae.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 33,
+        "name": "A&E HD",
+        "stream_type": "live",
+        "stream_id": 332,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/aee@3x.png",
+        "epg_channel_id": "Ae.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 34,
+        "name": "A&E HD²",
+        "stream_type": "live",
+        "stream_id": 234863,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/aee@3x.png",
+        "epg_channel_id": "Ae.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 35,
+        "name": "A&E SD",
+        "stream_type": "live",
+        "stream_id": 210,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/aee@3x.png",
+        "epg_channel_id": "Ae.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 36,
+        "name": "A&E SD²",
+        "stream_type": "live",
+        "stream_id": 234864,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/aee@3x.png",
+        "epg_channel_id": "Ae.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 37,
+        "name": "ADN 40",
+        "stream_type": "live",
+        "stream_id": 42543,
+        "stream_icon": "https://imgscc.top/logos/ADN_40_20260110_000838.png",
+        "epg_channel_id": null,
+        "added": "1610663572",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "436",
+        "category_ids": [
+            436
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 38,
+        "name": "AgroMais FHD²",
+        "stream_type": "live",
+        "stream_id": 234865,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/agroplus@3x.png",
+        "epg_channel_id": "Agromais.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 39,
+        "name": "AgroMais HD²",
+        "stream_type": "live",
+        "stream_id": 234866,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/agroplus@3x.png",
+        "epg_channel_id": "Agromais.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 40,
+        "name": "AgroMais SD²",
+        "stream_type": "live",
+        "stream_id": 234867,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/agroplus@3x.png",
+        "epg_channel_id": "Agromais.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 41,
+        "name": "AMC FHD H265",
+        "stream_type": "live",
+        "stream_id": 175,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/amc@3x.png",
+        "epg_channel_id": "Amc.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 42,
+        "name": "AMC HD",
+        "stream_type": "live",
+        "stream_id": 330,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/amc@3x.png",
+        "epg_channel_id": "Amc.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 43,
+        "name": "AMC SD",
+        "stream_type": "live",
+        "stream_id": 367,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/amc@3x.png",
+        "epg_channel_id": "Amc.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 44,
+        "name": "AMC SD²",
+        "stream_type": "live",
+        "stream_id": 234868,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/amc@3x.png",
+        "epg_channel_id": "Amc.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 45,
+        "name": "Animal Planet FHD H265",
+        "stream_type": "live",
+        "stream_id": 33,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/animal-planet@3x.png",
+        "epg_channel_id": "Animalplanet.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "53",
+        "category_ids": [
+            53
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 46,
+        "name": "Animal Planet FHD H265²",
+        "stream_type": "live",
+        "stream_id": 234869,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/animal-planet@3x.png",
+        "epg_channel_id": "Animalplanet.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "53",
+        "category_ids": [
+            53
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 47,
+        "name": "Animal Planet FHD²",
+        "stream_type": "live",
+        "stream_id": 234870,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/animal-planet@3x.png",
+        "epg_channel_id": "Animalplanet.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "53",
+        "category_ids": [
+            53
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 48,
+        "name": "Animal Planet HD",
+        "stream_type": "live",
+        "stream_id": 349,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/animal-planet@3x.png",
+        "epg_channel_id": "Animalplanet.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "53",
+        "category_ids": [
+            53
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 49,
+        "name": "Animal Planet HD²",
+        "stream_type": "live",
+        "stream_id": 234871,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/animal-planet@3x.png",
+        "epg_channel_id": "Animalplanet.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "53",
+        "category_ids": [
+            53
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 50,
+        "name": "Animal Planet SD",
+        "stream_type": "live",
+        "stream_id": 195,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/animal-planet@3x.png",
+        "epg_channel_id": "Animalplanet.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "53",
+        "category_ids": [
+            53
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 51,
+        "name": "Animal Planet SD²",
+        "stream_type": "live",
+        "stream_id": 234872,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/animal-planet@3x.png",
+        "epg_channel_id": "Animalplanet.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "53",
+        "category_ids": [
+            53
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 52,
+        "name": "ARG | A24",
+        "stream_type": "live",
+        "stream_id": 197936,
+        "stream_icon": "https://imgscc.top/logos/ARG__A24_20260110_000942.png",
+        "epg_channel_id": null,
+        "added": "1628880532",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 53,
+        "name": "ARG | AMERICA",
+        "stream_type": "live",
+        "stream_id": 197937,
+        "stream_icon": "https://imgscc.top/logos/ARG__AMERICA_20260110_000949.png",
+        "epg_channel_id": null,
+        "added": "1628880548",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 54,
+        "name": "ARG | AXN HD",
+        "stream_type": "live",
+        "stream_id": 197939,
+        "stream_icon": "https://imgscc.top/logos/ARG__AXN_HD_20260110_001014.png",
+        "epg_channel_id": null,
+        "added": "1628880571",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 55,
+        "name": "ARG | C5N",
+        "stream_type": "live",
+        "stream_id": 197940,
+        "stream_icon": "https://www.imgscc.top/logos/c5n250.png",
+        "epg_channel_id": null,
+        "added": "1628880583",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 56,
+        "name": "ARG | CANAL 10 RIO NEGRO",
+        "stream_type": "live",
+        "stream_id": 197941,
+        "stream_icon": "https://www.imgscc.top/logos/canal10250.png",
+        "epg_channel_id": null,
+        "added": "1628880595",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 57,
+        "name": "ARG | CANAL 26",
+        "stream_type": "live",
+        "stream_id": 197943,
+        "stream_icon": "https://imgscc.top/logos/ARG__CANAL_26_20260110_001019.png",
+        "epg_channel_id": null,
+        "added": "1628880615",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 58,
+        "name": "ARG | CANAL 9 HD",
+        "stream_type": "live",
+        "stream_id": 197945,
+        "stream_icon": "https://imgscc.top/logos/ARG__CANAL_9_HD_20260110_001025.png",
+        "epg_channel_id": null,
+        "added": "1628880637",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 59,
+        "name": "ARG | CINE ARGENTINO",
+        "stream_type": "live",
+        "stream_id": 197948,
+        "stream_icon": "https://imgscc.top/logos/cineargentino250.png",
+        "epg_channel_id": null,
+        "added": "1628880667",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 60,
+        "name": "ARG | CIUDAD MAGACZINE",
+        "stream_type": "live",
+        "stream_id": 197949,
+        "stream_icon": "https://www.imgscc.top/logos/ciudadmagazine250.png",
+        "epg_channel_id": null,
+        "added": "1628880680",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 61,
+        "name": "ARG | CRONICA",
+        "stream_type": "live",
+        "stream_id": 197955,
+        "stream_icon": "https://imgscc.top/logos/ARG__CRONICA_20260110_001030.png",
+        "epg_channel_id": null,
+        "added": "1628885620",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 62,
+        "name": "ARG | DIRECTV SPORTS",
+        "stream_type": "live",
+        "stream_id": 197957,
+        "stream_icon": "https://imgscc.top/logos/ARG__DIRECTV_SPORTS_20260110_001038.png",
+        "epg_channel_id": null,
+        "added": "1628885684",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 63,
+        "name": "ARG | EL NUEVE",
+        "stream_type": "live",
+        "stream_id": 197958,
+        "stream_icon": "https://imgscc.top/logos/ARG__EL_NUEVE_20260110_001044.png",
+        "epg_channel_id": null,
+        "added": "1628885708",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 64,
+        "name": "ARG | EL TRECE",
+        "stream_type": "live",
+        "stream_id": 197959,
+        "stream_icon": "https://imgscc.top/logos/ARG__EL_TRECE_20260110_001053.png",
+        "epg_channel_id": null,
+        "added": "1628885734",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 65,
+        "name": "ARG | ESPN 1",
+        "stream_type": "live",
+        "stream_id": 313127,
+        "stream_icon": "https://imgscc.top/logos/ARG__ESPN_20260110_001058.png",
+        "epg_channel_id": null,
+        "added": "1628885871",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 66,
+        "name": "ARG | ESPN 2",
+        "stream_type": "live",
+        "stream_id": 197963,
+        "stream_icon": "http://www.imgscc.top/logos/espn2250.png",
+        "epg_channel_id": null,
+        "added": "1628885978",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 67,
+        "name": "ARG | ESPN 3",
+        "stream_type": "live",
+        "stream_id": 197964,
+        "stream_icon": "https://imgscc.top/logos/ARG__ESPN_3_20260110_001109.png",
+        "epg_channel_id": null,
+        "added": "1628886042",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 68,
+        "name": "ARG | FOX SPORTS 2",
+        "stream_type": "live",
+        "stream_id": 197966,
+        "stream_icon": "https://imgscc.top/logos/ARG__FOX_SPORTS_2_20260110_001119.png",
+        "epg_channel_id": null,
+        "added": "1628886408",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 69,
+        "name": "ARG | FOX SPORTS 3",
+        "stream_type": "live",
+        "stream_id": 197967,
+        "stream_icon": "https://imgscc.top/logos/ARG__FOX_SPORTS_3_20260110_001124.png",
+        "epg_channel_id": null,
+        "added": "1628886460",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 70,
+        "name": "ARG | FOX SPORTS PREMIUN",
+        "stream_type": "live",
+        "stream_id": 197968,
+        "stream_icon": "https://imgscc.top/logos/ARG__FOX_SPORTS_PREMIUN_20260110_001130.png",
+        "epg_channel_id": null,
+        "added": "1628886569",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 71,
+        "name": "ARG | GARAGE",
+        "stream_type": "live",
+        "stream_id": 197969,
+        "stream_icon": "https://imgscc.top/logos/ARG__GARAGE_20260110_001137.png",
+        "epg_channel_id": null,
+        "added": "1628886601",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 72,
+        "name": "ARG | HBO 2 HD",
+        "stream_type": "live",
+        "stream_id": 197970,
+        "stream_icon": "https://imgscc.top/logos/ARG__HBO_2_HD_20260110_001143.png",
+        "epg_channel_id": null,
+        "added": "1628886662",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 73,
+        "name": "ARG | HBO HD",
+        "stream_type": "live",
+        "stream_id": 197971,
+        "stream_icon": "https://imgscc.top/logos/ARG__HBO_HD_20260110_001155.png",
+        "epg_channel_id": null,
+        "added": "1628886722",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 74,
+        "name": "ARG | HBO MUNDI INGLES",
+        "stream_type": "live",
+        "stream_id": 197972,
+        "stream_icon": "https://imgscc.top/logos/ARG__HBO_MUNDI_INGLES_20260110_001214.png",
+        "epg_channel_id": null,
+        "added": "1628886760",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 75,
+        "name": "ARG | HBO PLUS HD",
+        "stream_type": "live",
+        "stream_id": 197973,
+        "stream_icon": "https://imgscc.top/logos/ARG__HBO_PLUS_HD_20260110_001219.png",
+        "epg_channel_id": null,
+        "added": "1628889467",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 76,
+        "name": "ARG | HBO POP",
+        "stream_type": "live",
+        "stream_id": 197974,
+        "stream_icon": "https://imgscc.top/logos/ARG__HBO_POP_20260110_001223.png",
+        "epg_channel_id": null,
+        "added": "1628889540",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 77,
+        "name": "ARG | HBO SIGNATURE",
+        "stream_type": "live",
+        "stream_id": 197975,
+        "stream_icon": "https://imgscc.top/logos/ARG__HBO_SIGNATURE_20260110_001228.png",
+        "epg_channel_id": null,
+        "added": "1628889593",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 78,
+        "name": "ARG | MAS CHIC",
+        "stream_type": "live",
+        "stream_id": 197978,
+        "stream_icon": "https://imgscc.top/logos/ARG__MAS_CHIC_20260110_001236.png",
+        "epg_channel_id": null,
+        "added": "1628889720",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 79,
+        "name": "ARG | PAKA  PAKA",
+        "stream_type": "live",
+        "stream_id": 197981,
+        "stream_icon": "https://imgscc.top/logos/ARG__PAKA__PAKA_20260110_001242.png",
+        "epg_channel_id": null,
+        "added": "1628890574",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 80,
+        "name": "ARG | STAR ACTION",
+        "stream_type": "live",
+        "stream_id": 197984,
+        "stream_icon": "https://imgscc.top/logos/ARG__STAR_ACTION_20260110_001250.png",
+        "epg_channel_id": null,
+        "added": "1628890659",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 81,
+        "name": "ARG | STAR CHANNEL FOX HD",
+        "stream_type": "live",
+        "stream_id": 197985,
+        "stream_icon": "https://imgscc.top/logos/ARG__STAR_CHANNEL_FOX_HD_20260110_001302.png",
+        "epg_channel_id": null,
+        "added": "1628890738",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 82,
+        "name": "ARG | STAR COMEDY FOX HD",
+        "stream_type": "live",
+        "stream_id": 197986,
+        "stream_icon": "https://imgscc.top/logos/ARG__STAR_COMEDY_FOX_HD_20260110_001328.png",
+        "epg_channel_id": null,
+        "added": "1628890952",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 83,
+        "name": "ARG | STAR FUN B",
+        "stream_type": "live",
+        "stream_id": 197987,
+        "stream_icon": "https://imgscc.top/logos/ARG__STAR_FUN_B_20260110_001418.png",
+        "epg_channel_id": null,
+        "added": "1628890981",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 84,
+        "name": "ARG | STAR SERIES",
+        "stream_type": "live",
+        "stream_id": 197988,
+        "stream_icon": "https://imgscc.top/logos/starseries250.png",
+        "epg_channel_id": null,
+        "added": "1628891012",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 85,
+        "name": "ARG | STUDIO UNIVERSAL HD",
+        "stream_type": "live",
+        "stream_id": 197989,
+        "stream_icon": "http://www.imgscc.top/logos/studiouniversal.png",
+        "epg_channel_id": null,
+        "added": "1628891060",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 86,
+        "name": "ARG | TELEFE",
+        "stream_type": "live",
+        "stream_id": 197990,
+        "stream_icon": "http://www.tmsimg.com/assets/s100066_ll_h3_ab.png",
+        "epg_channel_id": "TELFEAH",
+        "added": "1628891084",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 87,
+        "name": "ARG | TELEFE B",
+        "stream_type": "live",
+        "stream_id": 197991,
+        "stream_icon": "http://www.tmsimg.com/assets/s100066_ll_h3_ab.png",
+        "epg_channel_id": "TEFEIE",
+        "added": "1628891118",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 88,
+        "name": "ARG | TN NOTICIAS",
+        "stream_type": "live",
+        "stream_id": 197994,
+        "stream_icon": "https://imgscc.top/logos/ARG__TN_NOTICIAS_20260110_001423.png",
+        "epg_channel_id": null,
+        "added": "1628891190",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 89,
+        "name": "ARG | TNT SPORTS",
+        "stream_type": "live",
+        "stream_id": 197995,
+        "stream_icon": "https://imgscc.top/logos/ARG__TNT_SPORTS_20260110_001429.png",
+        "epg_channel_id": null,
+        "added": "1628891444",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 90,
+        "name": "ARG | TV PUBLICA",
+        "stream_type": "live",
+        "stream_id": 197997,
+        "stream_icon": "https://imgscc.top/logos/tvpublica250.png",
+        "epg_channel_id": null,
+        "added": "1628894404",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 91,
+        "name": "ARG | TV PUBLICA TDF",
+        "stream_type": "live",
+        "stream_id": 197998,
+        "stream_icon": "https://imgscc.top/logos/tvpublica250.png",
+        "epg_channel_id": null,
+        "added": "1628894435",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 92,
+        "name": "ARG | TYC SPORTS",
+        "stream_type": "live",
+        "stream_id": 197999,
+        "stream_icon": "https://imgscc.top/logos/ARG__TYC_SPORTS_20260110_001434.png",
+        "epg_channel_id": null,
+        "added": "1628894466",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 93,
+        "name": "ARG | UNIVERSAL TV HD",
+        "stream_type": "live",
+        "stream_id": 198000,
+        "stream_icon": "http://www.tmsimg.com/assets/s53218_ll_h3_ab.png",
+        "epg_channel_id": "UNTVCOH",
+        "added": "1628894520",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 94,
+        "name": "ARG | VOLVER",
+        "stream_type": "live",
+        "stream_id": 198001,
+        "stream_icon": "https://imgscc.top/logos/ARG__VOLVER_20260110_001456.png",
+        "epg_channel_id": null,
+        "added": "1628894581",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "467",
+        "category_ids": [
+            467
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 95,
+        "name": "Arte 1 FHD H265",
+        "stream_type": "live",
+        "stream_id": 78,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/arte1@3x.png",
+        "epg_channel_id": "Arte1.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "59",
+        "category_ids": [
+            59
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 96,
+        "name": "Arte 1 HD",
+        "stream_type": "live",
+        "stream_id": 333,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/arte1@3x.png",
+        "epg_channel_id": "Arte1.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "59",
+        "category_ids": [
+            59
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 97,
+        "name": "Arte 1 SD",
+        "stream_type": "live",
+        "stream_id": 2198,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/arte1@3x.png",
+        "epg_channel_id": "Arte1.br",
+        "added": "1573178415",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "59",
+        "category_ids": [
+            59
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 98,
+        "name": "Arte 1 FHD H265²",
+        "stream_type": "live",
+        "stream_id": 234873,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/arte1@3x.png",
+        "epg_channel_id": "Arte1.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "59",
+        "category_ids": [
+            59
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 99,
+        "name": "Arte 1 FHD²",
+        "stream_type": "live",
+        "stream_id": 234874,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/arte1@3x.png",
+        "epg_channel_id": "Arte1.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "59",
+        "category_ids": [
+            59
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 100,
+        "name": "Arte 1 HD²",
+        "stream_type": "live",
+        "stream_id": 234875,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/arte1@3x.png",
+        "epg_channel_id": "Arte1.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "59",
+        "category_ids": [
+            59
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 101,
+        "name": "Arte 1 SD²",
+        "stream_type": "live",
+        "stream_id": 234876,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/arte1@3x.png",
+        "epg_channel_id": "Arte1.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "59",
+        "category_ids": [
+            59
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 102,
+        "name": "AXN FHD H265",
+        "stream_type": "live",
+        "stream_id": 34,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 103,
+        "name": "AXN FHD H265²",
+        "stream_type": "live",
+        "stream_id": 234877,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 104,
+        "name": "AXN FHD²",
+        "stream_type": "live",
+        "stream_id": 234878,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 105,
+        "name": "AXN HD",
+        "stream_type": "live",
+        "stream_id": 329,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 106,
+        "name": "AXN HD²",
+        "stream_type": "live",
+        "stream_id": 234879,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 107,
+        "name": "AXN SD",
+        "stream_type": "live",
+        "stream_id": 211,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 108,
+        "name": "AXN SD²",
+        "stream_type": "live",
+        "stream_id": 234880,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/axn@3x.png",
+        "epg_channel_id": "Axn.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "50",
+        "category_ids": [
+            50
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 109,
+        "name": "AZ Cinema HD",
+        "stream_type": "live",
+        "stream_id": 42530,
+        "stream_icon": "https://i.ibb.co/9shCDfh/cl-az-cinema-m.png",
+        "epg_channel_id": null,
+        "added": "1610661682",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "436",
+        "category_ids": [
+            436
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 110,
+        "name": "AZ Click SD",
+        "stream_type": "live",
+        "stream_id": 42531,
+        "stream_icon": "https://i.ibb.co/gzHmRjv/ALFOMBRA-E13-EU101116-2-Drupal-Main-Image.png",
+        "epg_channel_id": null,
+        "added": "1610661801",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "436",
+        "category_ids": [
+            436
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 111,
+        "name": "AZ Corazon FHD",
+        "stream_type": "live",
+        "stream_id": 42532,
+        "stream_icon": "https://i.ibb.co/rsTGj4N/co-az-corazon-m.png",
+        "epg_channel_id": null,
+        "added": "1610661902",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "436",
+        "category_ids": [
+            436
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 112,
+        "name": "AZ Mundo FHD",
+        "stream_type": "live",
+        "stream_id": 42533,
+        "stream_icon": "https://i.ibb.co/0rqdmc5/co-az-mundo-hd-m.png",
+        "epg_channel_id": null,
+        "added": "1610662027",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "436",
+        "category_ids": [
+            436
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 113,
+        "name": "BAND SD",
+        "stream_type": "live",
+        "stream_id": 189,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandsp.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 114,
+        "name": "BAND HD",
+        "stream_type": "live",
+        "stream_id": 264,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandsp.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 115,
+        "name": "BAND SP FHD²",
+        "stream_type": "live",
+        "stream_id": 234889,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandsp.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 116,
+        "name": "BAND FHD H265",
+        "stream_type": "live",
+        "stream_id": 35,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandsp.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 117,
+        "name": "BAND CAMPINAS SD²",
+        "stream_type": "live",
+        "stream_id": 234884,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandsp.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 118,
+        "name": "BAND CAMPINAS FHD²",
+        "stream_type": "live",
+        "stream_id": 234883,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandsp.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 119,
+        "name": "BAND RS SD",
+        "stream_type": "live",
+        "stream_id": 25664,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandrs.br",
+        "added": "1594139038",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 120,
+        "name": "BAND RS HD H265",
+        "stream_type": "live",
+        "stream_id": 25665,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band@3x.png",
+        "epg_channel_id": "Bandrs.br",
+        "added": "1594139120",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "518",
+        "category_ids": [
+            518
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 121,
+        "name": "BandNews SD",
+        "stream_type": "live",
+        "stream_id": 2201,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band-news@3x.png",
+        "epg_channel_id": "Bandnews.br",
+        "added": "1573181747",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 122,
+        "name": "BandNews SD²",
+        "stream_type": "live",
+        "stream_id": 234888,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band-news@3x.png",
+        "epg_channel_id": "Bandnews.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 123,
+        "name": "BandNews HD",
+        "stream_type": "live",
+        "stream_id": 335,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band-news@3x.png",
+        "epg_channel_id": "Bandnews.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 124,
+        "name": "BandNews HD²",
+        "stream_type": "live",
+        "stream_id": 234887,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band-news@3x.png",
+        "epg_channel_id": "Bandnews.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 125,
+        "name": "BandNews FHD H265",
+        "stream_type": "live",
+        "stream_id": 36,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band-news@3x.png",
+        "epg_channel_id": "Bandnews.br",
+        "added": "1571512867",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 126,
+        "name": "BandNews FHD H265²",
+        "stream_type": "live",
+        "stream_id": 234885,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band-news@3x.png",
+        "epg_channel_id": "Bandnews.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
+    },
+    {
+        "num": 127,
+        "name": "BandNews FHD²",
+        "stream_type": "live",
+        "stream_id": 234886,
+        "stream_icon": "https://mondrian.claro.com.br/channels/inverse/band-news@3x.png",
+        "epg_channel_id": "Bandnews.br",
+        "added": "1644356286",
+        "custom_sid": "",
+        "tv_archive": 0,
+        "direct_source": "",
+        "tv_archive_duration": 0,
+        "category_id": "55",
+        "category_ids": [
+            55
+        ],
+        "thumbnail": ""
     }
 ]

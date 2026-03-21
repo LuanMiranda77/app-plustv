@@ -29,13 +29,10 @@ export function useRemoteControl(handlers: RemoteKeys, disabled = false) {
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const current = handlersRef.current;
 
-    // When disabled, only allow Back (ESC/461) and OK (Enter/13) to escape
+    // When disabled, only allow Back (ESC/461) to escape
     if (disabledRef.current) {
       if (e.keyCode === 461 || e.keyCode === 27) {
         current.onBack?.();
-        e.preventDefault();
-      } else if (e.keyCode === 13 || e.keyCode === 44) {
-        current.onOk?.();
         e.preventDefault();
       }
       return;

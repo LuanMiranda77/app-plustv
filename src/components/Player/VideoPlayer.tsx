@@ -141,45 +141,49 @@ export const VideoPlayer = ({
     }
   }, [error, onError]);
 
-  // Remote Control Handler
-  useRemoteControl({
-    onUp: () => {
-      setRemoteActivityTrigger(t => t + 1);
-      setVolume(v => Math.min(v + 0.1, 1));
-    },
-    onDown: () => {
-      setRemoteActivityTrigger(t => t + 1);
-      setVolume(v => Math.max(v - 0.1, 0));
-    },
-    onRight: () => {
-      setRemoteActivityTrigger(t => t + 1);
-      if (videoRef.current) {
-        videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 5, duration);
+  // Remote Control Handler — disabled for live streams to avoid
+  // accidental pause when navigating zones/categories on the Live page.
+  useRemoteControl(
+    {
+      onUp: () => {
+        setRemoteActivityTrigger(t => t + 1);
+        setVolume(v => Math.min(v + 0.1, 1));
+      },
+      onDown: () => {
+        setRemoteActivityTrigger(t => t + 1);
+        setVolume(v => Math.max(v - 0.1, 0));
+      },
+      onRight: () => {
+        setRemoteActivityTrigger(t => t + 1);
+        if (videoRef.current) {
+          videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 5, duration);
+        }
+      },
+      onLeft: () => {
+        setRemoteActivityTrigger(t => t + 1);
+        if (videoRef.current) {
+          videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 5, 0);
+        }
+      },
+      onOk: () => {
+        setRemoteActivityTrigger(t => t + 1);
+        handlePlayPause();
+      },
+      onPlayPause: () => {
+        setRemoteActivityTrigger(t => t + 1);
+        handlePlayPause();
+      },
+      onBack: () => {
+        setRemoteActivityTrigger(t => t + 1);
+        if (isFullscreen) {
+          handleFullscreen();
+        } else {
+          onBack?.();
+        }
       }
     },
-    onLeft: () => {
-      setRemoteActivityTrigger(t => t + 1);
-      if (videoRef.current) {
-        videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 5, 0);
-      }
-    },
-    onOk: () => {
-      setRemoteActivityTrigger(t => t + 1);
-      handlePlayPause();
-    },
-    onPlayPause: () => {
-      setRemoteActivityTrigger(t => t + 1);
-      handlePlayPause();
-    },
-    onBack: () => {
-      setRemoteActivityTrigger(t => t + 1);
-      if (isFullscreen) {
-        handleFullscreen();
-      } else {
-        onBack?.();
-      }
-    }
-  });
+    type === 'live'
+  );
 
   return (
     <div

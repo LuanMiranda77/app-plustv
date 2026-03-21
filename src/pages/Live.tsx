@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import { Heart } from 'lucide-react';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
@@ -47,6 +47,29 @@ export const Live = () => {
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
   const isZoneEpg = activeZone === 'epg';
+
+  // Interceptar o botão voltar nativo do navegador/TV quando em tela cheia.
+  // Ao entrar em fullscreen, empurramos um estado extra no history.
+  // Quando o back nativo dispara (popstate), apenas saímos do fullscreen
+  // em vez de navegar para a página anterior.
+  const exitFullScreen = useCallback(() => setIsFullScreen(false), []);
+
+  useEffect(() => {
+    if (isFullScreen) {
+      window.history.pushState({ fullscreen: true }, '');
+    }
+  }, [isFullScreen]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (isFullScreen) {
+        e.preventDefault();
+        exitFullScreen();
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isFullScreen, exitFullScreen]);
 
   const ITEMS_PER_PAGE = 20;
 
@@ -205,18 +228,22 @@ export const Live = () => {
       }
     },
     onBack: () => {
+      if (isFullScreen) {
+        // Consome o state extra empurrado no history
+        window.history.back();
+        return;
+      }
       if (isZoneEpg) {
         setActiveZone('list');
         return;
       }
-      if (!isFullScreen && (isZoneList || isZoneCat)) {
+      if (isZoneList || isZoneCat) {
         setActiveZone('menu');
         return;
       }
       if (currentStream) {
         setCurrentStream(null);
       }
-      setIsFullScreen(false);
     }
   });
 

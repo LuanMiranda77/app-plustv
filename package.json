@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "build-tv": "tsc -b && vite build && ares-package dist/ && ares-install --device minha-lg --remove com.plustv.iptv ; ares-install --device minha-lg com.plustv.iptv_1.0.0_all.ipk && ares-launch --device minha-lg com.plustv.iptv",
     "lint": "eslint .",

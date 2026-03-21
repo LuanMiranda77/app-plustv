@@ -133,5 +133,2703 @@
         "category_ids": [
             427
         ]
+    },
+    {
+        "num": 6,
+        "name": "O Testamento: O Segredo de Anita Harley",
+        "title": "O Testamento: O Segredo de Anita Harley",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7835,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bf6r91iS1Qj8myrOpMzJQH6Jz2t.jpg",
+        "plot": "Anita Harley é a principal acionista das Casas Pernambucanas, uma das redes de varejo mais tradicionais do país. Esta série traz os bastidores das disputas em torno de sua herança em um dos casos mais complexos e intrigantes do judiciário brasileiro.",
+        "cast": "Camila Appel",
+        "director": "Camila Appel, Ricardo Calil, Dudu Levy",
+        "genre": "Documentário",
+        "release_date": "2026-02-23",
+        "releaseDate": "2026-02-23",
+        "last_modified": "1773088463",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/ulGk4NGlwZaCfpiFIDM49a94Z54.jpg"
+        ],
+        "youtube_trailer": "Q-sQiGhRBWg",
+        "episode_run_time": "60",
+        "category_id": "428",
+        "category_ids": [
+            428
+        ]
+    },
+    {
+        "num": 7,
+        "name": "O Assassino do TikTok",
+        "title": "O Assassino do TikTok",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7834,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/giINp6zBiLd78VVlSHM1AUaDKf3.jpg",
+        "plot": "Este documentário segue a busca pela verdade de uma família sobre o sucedido a uma familiar de 42 anos que desapareceu em Espanha depois de conhecer um popular TikToker.",
+        "cast": null,
+        "director": "Héctor Muniente",
+        "genre": "Documentário, Crime",
+        "release_date": "2026-03-06",
+        "releaseDate": "2026-03-06",
+        "last_modified": "1773088462",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/qTbaaF0zthCuFxFPowr7XdnJl5r.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 8,
+        "name": "Namorado por Assinatura",
+        "title": "Namorado por Assinatura",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7833,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/iz9UJqXRDjBkrwpfdngJwzv5ub1.jpg",
+        "plot": "Seo Mi-rae está esgotada de tanto trabalhar. O amor nem passa pela cabeça dela, mas um serviço de namoro virtual desperta seus sentimentos.",
+        "cast": "Jisoo, 서인국, 공민정, Cho Han Chul",
+        "director": "김정식, 김아영",
+        "genre": "Comédia, Sci-Fi & Fantasy, Drama",
+        "release_date": "2026-03-06",
+        "releaseDate": "2026-03-06",
+        "last_modified": "1773088462",
+        "rating": "9",
+        "rating_5based": 4.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/sjOTFlGapgXFjwV3LmD9eHZEp3d.jpg"
+        ],
+        "youtube_trailer": "_szMnrgqYvk",
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 9,
+        "name": "Jovem Sherlock",
+        "title": "Jovem Sherlock",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7832,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bwqY58EnQNoIfDqWoITWBzcdguN.jpg",
+        "plot": "Nesse mistério repleto de ação, testemunhe a história de origem de Sherlock Holmes em uma releitura irreverente dos primórdios do icônico personagem.",
+        "cast": "Hero Fiennes Tiffin, Dónal Finn, Zine Tseng, Joseph Fiennes, Natascha McElhone",
+        "director": "Matthew Parkhill, Guy Ritchie, Max Keene",
+        "genre": "Action & Adventure, Mistério",
+        "release_date": "2026-03-04",
+        "releaseDate": "2026-03-04",
+        "last_modified": "1773088461",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/8mmDLb108DoFZlE8sfc64TRqLvm.jpg"
+        ],
+        "youtube_trailer": "aqoj3IrChTA",
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 10,
+        "name": "Garota de Fora: Recomeço",
+        "title": "Garota de Fora: Recomeço",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7831,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8qDVPYqADxkCbyrcf9EwP52bABl.jpg",
+        "plot": "Em um novo universo, a misteriosa Nanno finge ser uma aluna nova para expor a crueldade, virando o poder, a culpa e o desejo contra quem abusa de tudo isso.",
+        "cast": "เบ็คกี้ อาร์มสตรอง",
+        "director": "",
+        "genre": "Drama, Mistério",
+        "release_date": "2026-03-04",
+        "releaseDate": "2026-03-04",
+        "last_modified": "1773088460",
+        "rating": "10",
+        "rating_5based": 5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/pJert4hRVNzagvtFr3vTYnpgBMH.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "43",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 11,
+        "name": "Busca de Jade",
+        "title": "Busca de Jade",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7830,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8gRGnJvWzDZmQLcWmKj0cHOvPS.jpg",
+        "plot": "Fan Changyu, filha de um açougueiro, e Xie Zheng, um nobre caído, se encontram durante uma tempestade de neve. A órfã Changyu deseja se tornar a chefe da família, enquanto Xie Zheng precisa se disfarçar para vingar uma rixa de sangue de dezessete anos atrás. Com seus próprios motivos, eles encenam um casamento por conveniência que floresce em um amor verdadeiro. No entanto, por um cruel golpe do destino, a guerra os separa. Ela entra no campo de batalha com sua faca de açougueiro, procurando por sua família, seu marido e justiça, enquanto ele, agora restaurado ao seu antigo status como um poderoso nobre, protege seu país, seu amor e a verdade. Reunidos no campo de batalha, os dois se unem para descobrir a verdade, sem medo da morte e sem se intimidar pela autoridade. Finalmente, eles retornam para casa, permanecendo fiéis à sua visão original.",
+        "cast": "田曦薇, 张凌赫, 任豪, 孔雪儿, 邓凯",
+        "director": "曾庆杰, 李保亮",
+        "genre": "Drama",
+        "release_date": "2026-03-06",
+        "releaseDate": "2026-03-06",
+        "last_modified": "1774120462",
+        "rating": "5",
+        "rating_5based": 2.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/yiUZ8Ck86FF3obLztVvSQqeBi0Y.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 12,
+        "name": "Dorohedoro",
+        "title": "Dorohedoro",
+        "year": "2020",
+        "stream_type": "series",
+        "series_id": 7829,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/mmpGV6laOLyNeo21aOFM9oB9HYw.jpg",
+        "plot": "Com amnésia, Caiman conta com a ajuda da amiga Nikaido para tentar matar o feiticeiro que o deixou com cabeça de lagarto.",
+        "cast": "近藤玲奈, Wataru Takagi, Yu Kobayashi, Yoshimasa Hosoya, Kenyu Horiuchi",
+        "director": "林祐一郎",
+        "genre": "Animação, Comédia, Action & Adventure",
+        "release_date": "2020-01-13",
+        "releaseDate": "2020-01-13",
+        "last_modified": "1773088460",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/vvAZwI5Kd4n3PI7ZrXjYpBEgpp0.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "24",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 13,
+        "name": "DOC",
+        "title": "DOC",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7828,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/ixdOTWtG3JUqVtBFbYEv6bGZssa.jpg",
+        "plot": "Um médico brilhante perde doze anos de memórias após um ataque e precisa reconstruir seu passado, arriscar suas chances no amor e enfrentar um escândalo envolvendo um novo remédio.",
+        "cast": "Juan Pablo Medina, Gabriela de la Garza, Stephanie Cayo, Iván Sánchez, Erick Chapa",
+        "director": "",
+        "genre": "Drama",
+        "release_date": "2026-03-04",
+        "releaseDate": "2026-03-04",
+        "last_modified": "1773088459",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/iY96OP57eKDmsIRkUWwQnPZxLUu.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 14,
+        "name": "Congresso Bitcoin",
+        "title": "Congresso Bitcoin",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7827,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/vMqQX10ZjwGTKF2sb3ncwOBQfe4.jpg",
+        "plot": "Uma análise sobre a evolução do dinheiro, as mudanças no sistema financeiro e o papel do Bitcoin nesse cenário.",
+        "cast": "Rual Sena, Felipe Sant'Anna, Eduardo Feldberg (Primo Pobre), Josiane Haesen, Rafael Castaneda",
+        "director": "André Bellini",
+        "genre": "Documentário",
+        "release_date": "2026-03-03",
+        "releaseDate": "2026-03-03",
+        "last_modified": "1773088458",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/eHiLZzZWN5isS2ELWr8M6pH7m5E.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "43",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 15,
+        "name": "Casais em Terapia",
+        "title": "Casais em Terapia",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7826,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8XoQxsUHsliR5AhcCJS9L0rXh83.jpg",
+        "plot": "A série acompanha sete casais do Reino Unido que saem de suas zonas de conforto e se submetem a uma terapia intensiva para tentar salvar seus relacionamentos.",
+        "cast": null,
+        "director": "",
+        "genre": "Reality",
+        "release_date": "2026-03-04",
+        "releaseDate": "2026-03-04",
+        "last_modified": "1773088458",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/mY1XhTMKEbl8LhZrQpa3zoFiMcw.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 16,
+        "name": "Cabanas: Histórias Especiais",
+        "title": "Cabanas: Histórias Especiais",
+        "year": "2021",
+        "stream_type": "series",
+        "series_id": 7825,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/o7vDbH2xFowIHGAPgAwzLcmGBDj.jpg",
+        "plot": "Proprietários de cabanas compartilham um olhar sobre a arquitetura e o design por trás de suas belas casas.",
+        "cast": "Pam Huling",
+        "director": "",
+        "genre": "Documentário, Reality",
+        "release_date": "2021-07-15",
+        "releaseDate": "2021-07-15",
+        "last_modified": "1773088457",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/gCZy3yE54VuHq2cd5Ge8Ho3EYWQ.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "8",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 17,
+        "name": "Alto Luxo, Baixo Custo",
+        "title": "Alto Luxo, Baixo Custo",
+        "year": "2022",
+        "stream_type": "series",
+        "series_id": 7824,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/flGhDP8RUiVwFu5frXZ5BtdhH0C.jpg",
+        "plot": "Os designers Michel Smith Boyd e Anthony Elle usam truques de orçamento inteligentes e inovadores para ajudar os proprietários a criar casas luxuosas sem gastar muito.",
+        "cast": "Michel Smith Boyd, Anthony Elle, Kai Williamson, Laura Green",
+        "director": "Rey Miranda",
+        "genre": "Reality",
+        "release_date": "2022-12-01",
+        "releaseDate": "2022-12-01",
+        "last_modified": "1773088457",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/8DtCYKxeLOx1t2gpOFh7wW6pLC7.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 18,
+        "name": "A Caçada",
+        "title": "A Caçada",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7823,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/e3nZuZDC7bi8R58ZNEB1GZZNnk9.jpg",
+        "plot": "Quando amigos em uma viagem para caçar entram em um confronto mortal com outros caçadores, eles concordam em manter segredo. Mas conforme ficam paranoicos e um grupo implacável busca vingança, os amigos devem confrontar a própria moralidade, suas famílias e instintos selvagens.",
+        "cast": "Benoît Magimel, Mélanie Laurent, Damien Bonnard, Manuel Guillot, Cédric Appietto",
+        "director": "Clément Benoist, Yvelise Thibaut, Pascale Jeanniard",
+        "genre": "Drama, Mistério",
+        "release_date": "2026-03-04",
+        "releaseDate": "2026-03-04",
+        "last_modified": "1774118860",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/nA6AyvaP8syIMRJHAELRZLoFaF4.jpg"
+        ],
+        "youtube_trailer": "GtDf0b0w4WE",
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 19,
+        "name": "Tudo leva a Merdenburgo",
+        "title": "Tudo leva a Merdenburgo",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7818,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/9XXKr1vEgodDhfEW5slzcwwUIuS.jpg",
+        "plot": "Depois de voltar para a cidade natal, o rapper Toni descobre que tem um filho adolescente. Agora, ele precisará equilibrar a família e os sonhos.",
+        "cast": "Anton Schneider, Dimitrij Schaad, Jella Haase, Jördis Triebel, Sophia Münster",
+        "director": "",
+        "genre": "Comédia",
+        "release_date": "2026-02-26",
+        "releaseDate": "2026-02-26",
+        "last_modified": "1772600219",
+        "rating": "5",
+        "rating_5based": 2.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/rTTEaQ54i6zUSDGnVyuNbvu86wf.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 20,
+        "name": "Royal Pains",
+        "title": "Royal Pains",
+        "year": "2009",
+        "stream_type": "series",
+        "series_id": 7817,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/4WW26JPHeG5mgrFkgjvv3Qmgcwg.jpg",
+        "plot": "Depois de ter sido considerado culpado pela morte de um paciente, um jovem e desesperado paramédico decide sair de férias para o point dos ricos e famosos, os Hamptons. Essas férias lhe dão a chance de recomeçar sua carreira quando ele salva a vida de um banhista.Desse momento em diante, seus serviços o transformam no médico da moda e celebridade local. Mas enquanto sua popularidade aumenta, coisas estranhas começam a acontecer nos Hamptons: mulheres e filhas dos poderosos locais começam a apresentar \"doenças\" as mais variadas e passam cada vez mais tempo \"em consulta\" com o celebrado médico.",
+        "cast": "Mark Feuerstein, Paulo Costanzo, Reshma Shetty, Brooke D'Orsay, Ben Shenkman",
+        "director": "",
+        "genre": "Comédia, Drama",
+        "release_date": "2009-06-04",
+        "releaseDate": "2009-06-04",
+        "last_modified": "1772600218",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/syfmYmITnWPJU3hhaP0ckny5hMN.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "42",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 21,
+        "name": "Receita da Boa",
+        "title": "Receita da Boa",
+        "year": "2020",
+        "stream_type": "series",
+        "series_id": 7816,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/jyQ2DISRo2KjzJB8pQEGG4PCRlz.jpg",
+        "plot": "Chefs competem para ver quem consegue deixar apresentadores e convidados especiais rindo à toa com seus sofisticados pratos feitos com cannabis.",
+        "cast": "Leather Storrs, Kelis",
+        "director": "",
+        "genre": "Reality",
+        "release_date": "2020-04-20",
+        "releaseDate": "2020-04-20",
+        "last_modified": "1772600218",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/oRc5RoOcCExVuBfE7f0xaJmDlgW.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "37",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 22,
+        "name": "O Beijo da Sereia",
+        "title": "O Beijo da Sereia",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7815,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/6mq5ifuLUubmEW1fghDB8Octhvy.jpg",
+        "plot": "Cha Wooseok, um investigador de elite da Unidade de Investigação de Fraudes de Seguros (SIU) conhecido por seus instintos afiados e percepção excepcional. Ele investiga um esquema de fraude de seguros ligado a uma série de mortes misteriosas — apenas para acabar envolvido com Han Seol-ah, uma deslumbrante e provocante leiloeira de arte e principal suspeita dos crimes.",
+        "cast": "박민영, Wi Ha-jun, 김정현, 한준우, 공성하",
+        "director": "소재현, 김철규",
+        "genre": "Drama, Crime, Mistério",
+        "release_date": "2026-03-02",
+        "releaseDate": "2026-03-02",
+        "last_modified": "1774120462",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/hCEl9Tb27chAWYXYau05pCSKEL.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 23,
+        "name": "Marshals: Uma História de Yellowstone",
+        "title": "Marshals: Uma História de Yellowstone",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7814,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/kqzWUZKQYomcJhXA5mDcaZFTWiG.jpg",
+        "plot": "Com o Rancho Yellowstone no passado, Kayce Dutton junta-se aos Marshals, combinando suas habilidades como cowboy e SEAL para levar justiça a Montana. Ele e seus companheiros servem como a última linha de defesa na guerra contra a violência na região.",
+        "cast": "Luke Grimes, Logan Marshall-Green, Arielle Kebbel, Ash Santos, Tatanka Means",
+        "director": "",
+        "genre": "Drama, Faroeste",
+        "release_date": "2026-03-01",
+        "releaseDate": "2026-03-01",
+        "last_modified": "1773087929",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/yGJGwt7DdIWTUXuahLfhcH1gi7G.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "497",
+        "category_ids": [
+            497
+        ]
+    },
+    {
+        "num": 24,
+        "name": "Malu Mulher",
+        "title": "Malu Mulher",
+        "year": "1979",
+        "stream_type": "series",
+        "series_id": 7813,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/zlFQwJcUtRYbDcer1sscXNsQ2EI.jpg",
+        "plot": "Sozinha pela primeira vez depois de tantos anos de vida conjugal, Malu tenta tomar conta do próprio destino e sustentar a casa e a filha. As relações entre homem e mulher, as dificuldades da vida conjugal e profissional, a educação dos filhos e o conflito de gerações foram alguns temas abordados.",
+        "cast": "Regina Duarte, Dennis Carvalho, Narjara Turetta, Antônio Petrin, Sônia Guedes",
+        "director": "",
+        "genre": "Drama",
+        "release_date": "1979-05-24",
+        "releaseDate": "1979-05-24",
+        "last_modified": "1772600216",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/f5fI4ACPMucY2gyhHKez9QNoAn1.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "45",
+        "category_id": "428",
+        "category_ids": [
+            428
+        ]
+    },
+    {
+        "num": 25,
+        "name": "Love Life",
+        "title": "Love Life",
+        "year": "2020",
+        "stream_type": "series",
+        "series_id": 7812,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yIlbPxb7KC4k112v8vattKwLsN7.jpg",
+        "plot": "Uma série antológica sobre a jornada do primeiro amor até o último, e como pessoas que nos envolvemos no meio do caminho nos transformam em quem nós somos quando finalmente encontramos a pessoa definitiva.",
+        "cast": "William Jackson Harper, Jessica Williams, Chris Powell, Punkie Johnson, Keith David",
+        "director": "Sean Pollock, Brian T. Pacek, Sam Boyd",
+        "genre": "Comédia, Drama",
+        "release_date": "2020-05-27",
+        "releaseDate": "2020-05-27",
+        "last_modified": "1772600216",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/4FcM7aI4IbROqlMEcp70fSl57W5.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "30",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 26,
+        "name": "Largados e Pelados: Espanha",
+        "title": "Largados e Pelados: Espanha",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7811,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/umOkg4x56a1aO057A8tFiwf0qAS.jpg",
+        "plot": "Cinco duplas desconhecidas enfrentam 21 dias isolados na selva colombiana, desafiando a natureza em condições extremas – e sem roupas.",
+        "cast": null,
+        "director": "Melisa Moya",
+        "genre": "Reality",
+        "release_date": "2025-01-12",
+        "releaseDate": "2025-01-12",
+        "last_modified": "1774120462",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/a2iGqNXHRT4P2iw2f9HwtIb4QJ9.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "45",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 27,
+        "name": "Folha Mágica",
+        "title": "Folha Mágica",
+        "year": "2013",
+        "stream_type": "series",
+        "series_id": 7810,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/tDRGjzP2rvNAdBUpbY47w9ag9TP.jpg",
+        "plot": "As aventuras da Pequena Raposa Azul Frig",
+        "cast": "Christopher Downs, Brooke Wolloff, Zac McDowell, Jodi Downs, Addie Zintel",
+        "director": "Drew Hodges",
+        "genre": "Kids, Animação",
+        "release_date": "2013-04-19",
+        "releaseDate": "2013-04-19",
+        "last_modified": "1772600215",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/iGqDxkX7NY6gx0Ts4reV8zQOAm.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 28,
+        "name": "Estranho Poder",
+        "title": "Estranho Poder",
+        "year": "2023",
+        "stream_type": "series",
+        "series_id": 7808,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gRiOhzNMMsd536trFr9hsdGGONm.jpg",
+        "plot": "Enrique de Martino, um empresário misterioso e bem-sucedido, guarda um segredo obscuro. Em contraste, Beatriz Almazán é uma mulher generosa e dedicada à família. Seus caminhos se cruzam e o amor entre eles surge, desafiando os planos de Enrique.",
+        "cast": "Fernando Colunga, Marlene Favela, Sofía Castro, Jessica Coch, Jaume Mateu",
+        "director": "",
+        "genre": "Drama",
+        "release_date": "2023-11-13",
+        "releaseDate": "2023-11-13",
+        "last_modified": "1774120462",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/sVCxblgBovmCptuv4cR0XNH5JX6.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "45",
+        "category_id": "428",
+        "category_ids": [
+            428
+        ]
+    },
+    {
+        "num": 29,
+        "name": "Dope",
+        "title": "Dope",
+        "year": "2017",
+        "stream_type": "series",
+        "series_id": 7807,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/lsqqr89sCIrmOhJceEHTCgPmKJ4.jpg",
+        "plot": "Filmada na perspectiva de traficantes, usuários e policiais, esta série oferece uma visão realista e abrangente sobre a guerra contra as drogas.",
+        "cast": null,
+        "director": "Rob VanAlkemade",
+        "genre": "Documentário, Crime, War & Politics",
+        "release_date": "2017-12-22",
+        "releaseDate": "2017-12-22",
+        "last_modified": "1772600213",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/ziifqvSnGGYXocFCjlkGR58fY2P.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "48",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 30,
+        "name": "Como Você Pôde!?",
+        "title": "Como Você Pôde!?",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7806,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/sgVBl9UD2s8GZDBia65WFkIViso.jpg",
+        "plot": "Wang Cuihua, uma jovem recém-formada em um escritório, é subitamente transportada para o mundo de um romance, onde conhece Xiahou Dan, um poderoso rei que esconde sua verdadeira identidade. Ambos forasteiros nesse mundo, unem forças para sobreviver a um destino cruel, enfrentando intrigas políticas, profecias ancestrais e escolhas de vida ou morte. Enquanto lutam para mudar seu destino, um laço poderoso se forma, um laço que poderá remodelar o futuro do reino.",
+        "cast": "王楚然, 丞磊, 唐晓天, 胡意旋, Dong Siyi",
+        "director": "王莉, 刘海波",
+        "genre": "Drama, Mistério, Comédia",
+        "release_date": "2026-02-06",
+        "releaseDate": "2026-02-06",
+        "last_modified": "1772600212",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/nz6Pg1RKfTrcw6ddPXCvqZM2M5p.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "492",
+        "category_ids": [
+            492
+        ]
+    },
+    {
+        "num": 31,
+        "name": "Captive: Histórias sobre Reféns",
+        "title": "Captive: Histórias sobre Reféns",
+        "year": "2016",
+        "stream_type": "series",
+        "series_id": 7805,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/9x27AnEbcQ64IBtMNFSfgy7S4GP.jpg",
+        "plot": "Esta série documental reconstrói as negociações com sequestradores mais complexas e perigosas da história, seguindo relatos de suas vítimas.",
+        "cast": null,
+        "director": "Doug Liman",
+        "genre": "Documentário, Crime",
+        "release_date": "2016-12-09",
+        "releaseDate": "2016-12-09",
+        "last_modified": "1772600212",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/8nOs6xMGh04Fnbf0jwzw4XUiFQD.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 32,
+        "name": "BAKI-DOU: O Samurai Invencível",
+        "title": "BAKI-DOU: O Samurai Invencível",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7804,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gIuCoLJSD09qx16FUn2OckjL6CA.jpg",
+        "plot": "Baki e os lutadores mais fortes da arena subterrânea encaram uma ameaça de proporções históricas: Musashi Miyamoto, o maior samurai do Japão, que foi ressuscitado.",
+        "cast": "Nobunaga Shimazaki, Naoya Uchida, Akio Otsuka, Takuya Eguchi, Kenta Miyake",
+        "director": "",
+        "genre": "Animação, Action & Adventure",
+        "release_date": "2026-02-26",
+        "releaseDate": "2026-02-26",
+        "last_modified": "1772600211",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/1M8uW8o6fdDaa3zqmBD2UUKu0VZ.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 33,
+        "name": "As Aventuras de Gortimer Gibbon na Rua Normal",
+        "title": "As Aventuras de Gortimer Gibbon na Rua Normal",
+        "year": "2014",
+        "stream_type": "series",
+        "series_id": 7803,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/zdFlhCL8r1zT6FBrx2kFzgtBo3W.jpg",
+        "plot": "As Aventuras de Gortimer Gibbon na Rua Normal acompanha Gortimer e seus dois melhores amigos, Ranger e Mel, em façanhas mágicas despertadas pelo desejo de aventura deles. O trio ajuda o menino mais azarado da Rua Normal, procura uma flor que só nasce uma vez a cada geração, troca de identidade quando a máquina de carteiras estudantis quebra, e lida com a perda de um ente querido.",
+        "cast": "Sloane Morgan Siegel, Drew Justice, Coco Grayson, David Bloom, Chandler Kinney",
+        "director": "Joe Nussbaum, Jonathan Judge-Russo, Eduardo Enrique Mayén",
+        "genre": "Família, Kids",
+        "release_date": "2014-02-06",
+        "releaseDate": "2014-02-06",
+        "last_modified": "1772600210",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/tmUC8gjuJ2GSXAvq5ZrMOgN8xSv.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 34,
+        "name": "Akame ga Kill!",
+        "title": "Akame ga Kill!",
+        "year": "2014",
+        "stream_type": "series",
+        "series_id": 7802,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/hDzm2VXxdeK5kztUN3RWTkBsBZg.jpg",
+        "plot": "Num mundo de fantasia, o guerreiro Tatsumi parte para a capital procurando uma maneira de ganhar dinheiro para ajudar sua vila, mas descobre um mundo de corrupção inimaginável, se espalhando através do Primeiro Ministro, que controla a orelha do Imperador criança. Depois de quase se tornar vítima dessa corrupção, Tatsumi é recrutado pela Night Raid, um grupo de assassinos dedicado a eliminar a corrupção que infesta a capital, matando impiedosamente os responsáveis.",
+        "cast": "Soma Saito, Sora Amamiya, 田村ゆかり, 浅川悠, Anri Katsu",
+        "director": "小林智樹",
+        "genre": "Animação, Drama, Action & Adventure",
+        "release_date": "2014-07-07",
+        "releaseDate": "2014-07-07",
+        "last_modified": "1772600210",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/3XAGgklKkJhv5M9m5NkfhBYb7l8.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "24",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 35,
+        "name": "Agent P Under C",
+        "title": "Agent P Under C",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7801,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/sCwhaa1h1Q85548mcJrSNtkUpdU.jpg",
+        "plot": "Perry, o Ornitorrinco, volta a se tornar o Agente P para uma missão secreta contra adversários animais da agência de espionagem rival A.N.A.T.H.E.M.A.",
+        "cast": "Jeff 'Swampy' Marsh, Tyler Alexander Mann, Dee Bradley Baker",
+        "director": "",
+        "genre": "Action & Adventure, Família, Animação",
+        "release_date": "2026-01-16",
+        "releaseDate": "2026-01-16",
+        "last_modified": "1772600209",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/uCix2YVJ1Euj1xePRlz05D2khgt.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "464",
+        "category_ids": [
+            464
+        ]
+    },
+    {
+        "num": 36,
+        "name": "Abstrato: A Arte do Design",
+        "title": "Abstrato: A Arte do Design",
+        "year": "2017",
+        "stream_type": "series",
+        "series_id": 7800,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/mBpWUNGlB66cP6ght7NyT3jXmWN.jpg",
+        "plot": "Descubra como pensam os designers mais inovadores em diferentes áreas e saiba como seu trabalho influencia todos os aspectos da nossa vida.",
+        "cast": null,
+        "director": "Morgan Neville",
+        "genre": "Documentário",
+        "release_date": "2017-02-10",
+        "releaseDate": "2017-02-10",
+        "last_modified": "1772600209",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/uY0D6sVLjqCgLJW0ytc5EKyJvoX.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "45",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 37,
+        "name": "Agentes do Mistério",
+        "title": "Agentes do Mistério",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7798,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/ik25s7tAWoZZiXeIRfAw4AzRCSF.jpg",
+        "plot": "Seis \"agentes do mistério\" com excelente química usam a criatividade para investigar incidentes bizarros que não têm explicação científica.",
+        "cast": "이용진, 존 박, 이혜리, 김도훈, 카리나",
+        "director": "",
+        "genre": "Reality",
+        "release_date": "2024-06-18",
+        "releaseDate": "2024-06-18",
+        "last_modified": "1772598682",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/zdEjwA5cJkZyNDJuTXrYLDVb8Sb.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 38,
+        "name": "Strip Law",
+        "title": "Strip Law",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7796,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/b9vgEJB9pHpILr5mUYcAxuTavCh.jpg",
+        "plot": "Um advogado certinho e uma mágica nada discreta de Las Vegas se unem para dar um toque especial aos casos mais idiotas da cidade nesta comédia de animação para adultos.",
+        "cast": "Adam Scott, Janelle James, Keith David, Stephen Root, Shannon Gisela",
+        "director": "Ben Kalina",
+        "genre": "Animação, Comédia, Drama",
+        "release_date": "2026-02-20",
+        "releaseDate": "2026-02-20",
+        "last_modified": "1771627347",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/jH1vBLHxp7E2AZGdhvjnxA96mJh.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 39,
+        "name": "Star Search",
+        "title": "Star Search",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7795,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/rchRdbpf4Of7A4rGl4UD4tv1J1O.jpg",
+        "plot": "A famosa série de competição está de volta, com talentos ainda maiores, apostas mais altas e votação em tempo real nos EUA.",
+        "cast": "Anthony Anderson, Jelly Roll, Sarah Michelle Gellar, Chrissy Teigen",
+        "director": "",
+        "genre": "Reality",
+        "release_date": "2026-01-20",
+        "releaseDate": "2026-01-20",
+        "last_modified": "1772598681",
+        "rating": "10",
+        "rating_5based": 5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/g7UMVHvj0RRiosQNrNvMSkINs5e.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 40,
+        "name": "Nós Somos a Onda",
+        "title": "Nós Somos a Onda",
+        "year": "2019",
+        "stream_type": "series",
+        "series_id": 7794,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/oEiDzAiGAmShP4SadW9S5mJTBPB.jpg",
+        "plot": "Um misterioso colega lidera quatro adolescentes idealistas contra uma onda crescente de fervor nacionalista, mas o movimento sai do controle.",
+        "cast": "Luise Befort, Ludwig Simon, Michelle Barthel, Mohamed Issa, Daniel Friedl",
+        "director": "Dennis Gansel",
+        "genre": "Drama",
+        "release_date": "2019-11-01",
+        "releaseDate": "2019-11-01",
+        "last_modified": "1771627346",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/AfoFTPEw16EcPyuBH4oaXMkjzNb.jpg"
+        ],
+        "youtube_trailer": "E3RySHPttGs",
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 41,
+        "name": "Memória de um Assassino",
+        "title": "Memória de um Assassino",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7793,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/o0SLE22LD54VGrAnkoC7GGwVkLN.jpg",
+        "plot": "Angelo vive uma vida dupla como assassino e pai de família, que funcionou bem até que ele sofreu de início precoce da doença de Alzheimer. Agora seus mundos colidem, colocando sua família em perigo.",
+        "cast": "Patrick Dempsey, Richard Harmon, Odeya Rush, Peter Gadiot, Daniel David Stewart",
+        "director": "Martin Campbell, Erik Van Looy",
+        "genre": "Crime, Drama",
+        "release_date": "2026-01-25",
+        "releaseDate": "2026-01-25",
+        "last_modified": "1773087929",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/llrSuUkFiR6EjDnh79dq8HEeziF.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 42,
+        "name": "Fora de Controle",
+        "title": "Fora de Controle",
+        "year": "2012",
+        "stream_type": "series",
+        "series_id": 7792,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/54c7VczaCFKC3L39ZicaPrwEm78.jpg",
+        "plot": "O instigante universo das investigações policiais na cidade do Rio de Janeiro. Em cada episódio, um crime é investigado e resolvido, mostrando como o funcionamento da cidade interliga todos os tipos de moradores e visitantes.",
+        "cast": "Milhem Cortaz, Rafaela Mandelli, Cláudio Gabriel, Alice Assef, José Dumont",
+        "director": "Johnny Araújo, Daniel Rezende",
+        "genre": "Crime, Mistério",
+        "release_date": "2012-05-08",
+        "releaseDate": "2012-05-08",
+        "last_modified": "1771627345",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/jtGc8sMdSL09SHUOpeY8eaayxqn.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "52",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 43,
+        "name": "Eu Gordon Ramsay",
+        "title": "Eu Gordon Ramsay",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7791,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/m21MtVrIThTTRjvdq4jRasAYbcI.jpg",
+        "plot": "Acompanhe o renomado chef Gordon Ramsay nos bastidores enquanto ele lida com a vida familiar, um império global e seu maior lançamento até agora neste documentário apetitoso.",
+        "cast": "Gordon Ramsay",
+        "director": "",
+        "genre": "Documentário",
+        "release_date": "2026-02-18",
+        "releaseDate": "2026-02-18",
+        "last_modified": "1771627345",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/guF2YM18TvKM3j2k2K1BQncew0y.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "60",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 44,
+        "name": "Banksters",
+        "title": "Banksters",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7790,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/m6wWJFDOHGTDfwucvFGpE1OfcYm.jpg",
+        "plot": "Quando o jovem Yusuf é preso por uma série de assaltos a bancos, sua irmã tenta devolver o dinheiro e descobrir quem o traiu.",
+        "cast": "Eren M. Güvercin, Merlin Von Garnier, Michelangelo Fortuzzi, Maria Dragus, Zoe Fürmann",
+        "director": "",
+        "genre": "Crime, Drama",
+        "release_date": "2026-02-20",
+        "releaseDate": "2026-02-20",
+        "last_modified": "1772600211",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/3pyADtNpIbhfdAxPXNYtW7pTMuJ.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 45,
+        "name": "Dinoarmaduras",
+        "title": "Dinoarmaduras",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7789,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/qSJG6dmowA6qgvndaRolVM02jLr.jpg",
+        "plot": "Dinossauros blindados com poderes mecânicos e seus pilotos treinados se unem para defender a Terra contra invasores alienígenas determinados a destruí-la.",
+        "cast": "Michael Dorn, Derrick Kwak, Jacob Makabi, Jailen Bates, Avianna Mynhier",
+        "director": "",
+        "genre": "Kids, Action & Adventure, Sci-Fi & Fantasy",
+        "release_date": "2025-10-13",
+        "releaseDate": "2025-10-13",
+        "last_modified": "1774120462",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/hNXEnTA4a0WeqhoahaBhJRB2G06.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "22",
+        "category_id": "464",
+        "category_ids": [
+            464
+        ]
+    },
+    {
+        "num": 46,
+        "name": "56 Dias",
+        "title": "56 Dias",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7788,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bJgbL2qHhKEnDUsVVPYJ6GJfvtW.jpg",
+        "plot": "Quando um corpo não identificado é encontrado num luxuoso apartamento ligado a Oliver Kennedy e sua namorada, Ciara Wyse, os detetives Lee Reardon e Karl Connolly reconstroem o romance mortal do casal ao longo dos últimos 56 dias.",
+        "cast": "Dove Cameron, Avan Jogia, Dorian Missick, Karla Souza",
+        "director": "James Wan",
+        "genre": "Crime, Drama, Mistério",
+        "release_date": "2026-02-18",
+        "releaseDate": "2026-02-18",
+        "last_modified": "1771627343",
+        "rating": "4",
+        "rating_5based": 2,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/77TCOiGEmHYLndIw4jsf6uUra4X.jpg"
+        ],
+        "youtube_trailer": "JXrhSrL9foI",
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 47,
+        "name": "Rumble Garanndoll",
+        "title": "Rumble Garanndoll",
+        "year": "2021",
+        "stream_type": "series",
+        "series_id": 7787,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/vhAjlkMNe5bEafBNOYe6xO6un7t.jpg",
+        "plot": "No ano de 2019, pouco antes de haver a mudança para a era Reiwa no Japão, uma fenda estranha se abriu no céu, revelando ser um portal para o “Shinkoku Nippon”, um mundo alternativo onde o Japão ainda vive na era Showa.\n\nSem qualquer explicação, Shinkoku Nippon começa uma invasão ao Japão, atacando com armas feitas de gases e criaturas humanoides gigantes conhecidas como Garan. Em pouco tempo os invasores dominando quase todo o país, fazendo assim com que o Japão do nosso mundo nunca entre na era Reiwa.",
+        "cast": "Seiichiro Yamashita, Fairouz Ai, 鈴木愛奈, Shiori Izawa, 福地教光",
+        "director": "安藤正臣, 仁昌寺義人",
+        "genre": "Animação, Action & Adventure, Sci-Fi & Fantasy",
+        "release_date": "2021-10-11",
+        "releaseDate": "2021-10-11",
+        "last_modified": "1771627342",
+        "rating": "4",
+        "rating_5based": 2,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/dfCgeNUdRHZTfdwvaoIgVwV3zdx.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "24",
+        "category_id": "491",
+        "category_ids": [
+            491
+        ]
+    },
+    {
+        "num": 48,
+        "name": "Rivalidade Ardente",
+        "title": "Rivalidade Ardente",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7786,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/jBnh3nFkZWee9DszG5PCABTXRii.jpg",
+        "plot": "Duas estrelas do hóquei no gelo vivem um romance secreto que dura anos enquanto perseguem a glória e lutam com seus sentimentos.",
+        "cast": "Hudson Williams, Connor Storrie, François Arnaud, Robbie G.K., Christina Chang",
+        "director": "Jacob Tierney, Rob Cotterill, Jenny Mac",
+        "genre": "Drama",
+        "release_date": "2025-11-28",
+        "releaseDate": "2025-11-28",
+        "last_modified": "1771627342",
+        "rating": "9",
+        "rating_5based": 4.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/QbRbCULZVBcrN2uydpmIOQLV5O.jpg"
+        ],
+        "youtube_trailer": "Ous2P5QW6no",
+        "episode_run_time": "0",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 49,
+        "name": "O Museu da Inocência",
+        "title": "O Museu da Inocência",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7785,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/tJWwa8i6HXjJlnYiEkLPkaixewX.jpg",
+        "plot": "Istambul, 1970. O amor proibido de um homem por uma vendedora se transforma em uma jornada de desejo e obsessão pela vida toda. Baseada no famoso livro de Orhan Pamuk.",
+        "cast": "Selahattin Paşalı, Eylül Lize Kandemir, Oya Unustası, Tilbe Saran, Bülent Emin Yarar",
+        "director": "Zeynep Günay Tan",
+        "genre": "Drama",
+        "release_date": "2026-02-13",
+        "releaseDate": "2026-02-13",
+        "last_modified": "1771627341",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/kpEjZVusnBo9JcSTnfZtQlgbxu3.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 50,
+        "name": "História de Amor: John F. Kennedy Jr. e Carolyn Bessette",
+        "title": "História de Amor: John F. Kennedy Jr. e Carolyn Bessette",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7784,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/7JDMnvSUF1E7JLFl0wxSmecgsn8.jpg",
+        "plot": "A jornada complexa e comovente de um casal cujo amor particular virou uma obsessão nacional.",
+        "cast": "Sarah Pidgeon, Paul Anthony Kelly, Grace Gummer, Naomi Watts",
+        "director": "Scott Robertson",
+        "genre": "Drama",
+        "release_date": "2026-02-12",
+        "releaseDate": "2026-02-12",
+        "last_modified": "1772598681",
+        "rating": "9",
+        "rating_5based": 4.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/9Lj5yabQfLsjThImNmwgta5zO3M.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "464",
+        "category_ids": [
+            464
+        ]
+    },
+    {
+        "num": 51,
+        "name": "Especial Papado",
+        "title": "Especial Papado",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7783,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/w9z9PYTZkCYcBydv0WTRxF3ebMN.jpg",
+        "plot": "O Papa, como chefe supremo da Igreja Católica, tem grande relevância no mundo, com ações que influenciam não apenas a esfera religiosa, mas também os âmbitos político e social. Nesta série especial, acompanhe os mistérios e singularidades da vida e dos arredores dos sucessores de São Pedro.",
+        "cast": null,
+        "director": "Filipe Valerim, Renato Dias",
+        "genre": "Documentário",
+        "release_date": "2025-04-21",
+        "releaseDate": "2025-04-21",
+        "last_modified": "1771627340",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/vpIQvO70VjjKgP5NfxvX375UZGz.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "37",
+        "category_id": "473",
+        "category_ids": [
+            473
+        ]
+    },
+    {
+        "num": 52,
+        "name": "De Belfast ao Paraíso",
+        "title": "De Belfast ao Paraíso",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7782,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/z8oNlIMorG4pnt6xZSHZhTGyKCl.jpg",
+        "plot": "Três mulheres embarcam em uma jornada caótica para tentar solucionar a morte misteriosa de uma amiga de infância e, de quebra, proteger um segredo sombrio.",
+        "cast": "Roisin Gallagher, Sinéad Keenan, Caoilfhionn Dunne, Darragh Hand",
+        "director": "Michael Lennox",
+        "genre": "Mistério, Comédia, Drama",
+        "release_date": "2026-02-12",
+        "releaseDate": "2026-02-12",
+        "last_modified": "1771627339",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/lkmGrZXASDPwXyWf4p8GG83dw5N.jpg"
+        ],
+        "youtube_trailer": "zMOLzE1ETKo",
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 53,
+        "name": "De Ator a Cantor",
+        "title": "De Ator a Cantor",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7781,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/iS8oxzP6GM59D4KmdvwjxSRAJQ4.jpg",
+        "plot": "Com 20 anos de carreira, o ator Cho Jung-seok assume o desafio de estrear como cantor em apenas 100 dias, mobilizando toda a sua rede de apoio!",
+        "cast": "조정석",
+        "director": "양정우, Lee Jung-won",
+        "genre": "Reality",
+        "release_date": "2024-08-30",
+        "releaseDate": "2024-08-30",
+        "last_modified": "1771627339",
+        "rating": "9",
+        "rating_5based": 4.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/cXsfimi0Qz4YHaEcwypsoGsM1Al.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "492",
+        "category_ids": [
+            492
+        ]
+    },
+    {
+        "num": 54,
+        "name": "Big Blue: O Grande Oceano",
+        "title": "Big Blue: O Grande Oceano",
+        "year": "2021",
+        "stream_type": "series",
+        "series_id": 7780,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/si7lEf4yMaVw3IwRUnjvyq4mdXd.jpg",
+        "plot": "Os irmãos aventureiros subaquáticos Lettie e Lemo lideram uma excêntrica tripulação de submarino, explorando e protegendo um vasto planeta coberto por oceanos, na esperança de desvendar os misteriosos segredos de seu universo submarino.",
+        "cast": "Kevin Duhaney, Jeremy Harris, Tianna MacDuff-Gibson, Tal Shulman, Bahia Watson",
+        "director": "Riccardo Durante",
+        "genre": "Animação, Família",
+        "release_date": "2021-12-04",
+        "releaseDate": "2021-12-04",
+        "last_modified": "1771627338",
+        "rating": "10",
+        "rating_5based": 5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/3dKyQL6ntyxQYhgXrgEISFpyQ2D.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "12",
+        "category_id": "464",
+        "category_ids": [
+            464
+        ]
+    },
+    {
+        "num": 55,
+        "name": "Assassinos Indianos: O Monstro de Bangalore",
+        "title": "Assassinos Indianos: O Monstro de Bangalore",
+        "year": "2022",
+        "stream_type": "series",
+        "series_id": 7779,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/n6uk2wUZl9DCLQ2NQXQcm6xjRBb.jpg",
+        "plot": "Uma força policial despreparada enfrenta uma caçada pelo cruel assassino de mulheres que aterroriza todo o estado.",
+        "cast": null,
+        "director": "",
+        "genre": "Documentário, Crime",
+        "release_date": "2022-12-16",
+        "releaseDate": "2022-12-16",
+        "last_modified": "1771627337",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/b7e2wnA1Fe8omvEyVhpT3BuYUAs.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "45",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 56,
+        "name": "A Rainha do Flow",
+        "title": "A Rainha do Flow",
+        "year": "2018",
+        "stream_type": "series",
+        "series_id": 7778,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/fuVuDYrs8sxvEolnYr0wCSvtyTi.jpg",
+        "plot": "Dezessete anos após ser presa injustamente, uma compositora talentosa busca justiça contra os homens que causaram sua queda e mataram sua família.",
+        "cast": "Carolina Ramírez, Juan Manuel Restrepo, Carlos Torres, Mariana Gómez, Alisson Joan",
+        "director": "",
+        "genre": "Drama, Crime",
+        "release_date": "2018-06-12",
+        "releaseDate": "2018-06-12",
+        "last_modified": "1771627337",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/pnyT1foDmmXTsho2DfxN2ePI8ix.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "53",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 57,
+        "name": "A Arte de Sarah",
+        "title": "A Arte de Sarah",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7777,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/rh2rnwJo9V3OWL5awQWBuUUBkau.jpg",
+        "plot": "Um corpo é encontrado na cidade. Uma marca de luxo está em ascensão. O detetive do caso analisa cada detalhe da história inconsistente de uma mulher. O que, de fato, aconteceu?",
+        "cast": "신혜선, 이준혁, 박보경, 정다빈, 김재원",
+        "director": "",
+        "genre": "Crime, Mistério, Drama",
+        "release_date": "2026-02-13",
+        "releaseDate": "2026-02-13",
+        "last_modified": "1771627335",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/qy8gJEwspR7L5WZn4e8ItwK8m23.jpg"
+        ],
+        "youtube_trailer": "fZg6w9ulLYw",
+        "episode_run_time": "45",
+        "category_id": "492",
+        "category_ids": [
+            492
+        ]
+    },
+    {
+        "num": 58,
+        "name": "Quem Contratou o Assassino?",
+        "title": "Quem Contratou o Assassino?",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7774,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/p4P4zWqvvmY54AbwY2AkKTs2ZCw.jpg",
+        "plot": "Esta série documental investiga crimes onde detetives sabem quem atirou, mas tentam descobrir quem \"puxou as cordas\" (o mandante). A trama envolve histórias de figuras misteriosas contratando assassinos, incluindo casos com tramas complexas de vingança e segredos.",
+        "cast": null,
+        "director": "",
+        "genre": "Crime, Documentário",
+        "release_date": "2025-11-04",
+        "releaseDate": "2025-11-04",
+        "last_modified": "1770838132",
+        "rating": "10",
+        "rating_5based": 5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/apBeqJE69J0zueyZz7wfs3AFUD6.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 59,
+        "name": "Filhos do Chumbo",
+        "title": "Filhos do Chumbo",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7773,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/glstTGbg2kCs18nzzl1fey9TJwQ.jpg",
+        "plot": "Quando uma médica descobre que crianças que vivem perto de uma fundição sofrem de intoxicação por chumbo, ela arrisca a carreira e a própria segurança para salvá-las.",
+        "cast": "Joanna Kulig, Agata Kulesza, Kinga Preis, Michał Żurawski, Marian Dziędziel",
+        "director": "",
+        "genre": "Drama",
+        "release_date": "2026-02-11",
+        "releaseDate": "2026-02-11",
+        "last_modified": "1770838131",
+        "rating": "10",
+        "rating_5based": 5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/2w1P7YsI1AXisnPB0J4dzeCF75E.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 60,
+        "name": "Tsunami: A Fúria da Natureza",
+        "title": "Tsunami: A Fúria da Natureza",
+        "year": "2006",
+        "stream_type": "series",
+        "series_id": 7772,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bUi0XrazxmJFdmTe0lv4P1H1ntM.jpg",
+        "plot": "Em dezembro de 2004, a costa da Tailândia é destruída por ondas gigantes, afetando a vidas de seus habitantes e dos turistas. Veja a triste combinação de perdas humanas, luta pela sobrevivência e esperança dos que enfrentaram uma das maiores tragédias naturais da história.",
+        "cast": "Tim Roth, Toni Collette, Chiwetel Ejiofor, Sophie Okonedo, Hugh Bonneville",
+        "director": "Bharat Nalluri, Rowena Ladbury",
+        "genre": "Drama",
+        "release_date": "2006-12-10",
+        "releaseDate": "2006-12-10",
+        "last_modified": "1770838131",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/mJgllSG8DUtGtHr95ry04FIC8va.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "90",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 61,
+        "name": "Scrubs",
+        "title": "Scrubs",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7771,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/uKOMcI4v920qcNcWEPhM5zz6UcG.jpg",
+        "plot": "",
+        "cast": "Zach Braff, Donald Faison, Sarah Chalke",
+        "director": "",
+        "genre": "Comédia",
+        "release_date": "2026-02-25",
+        "releaseDate": "2026-02-25",
+        "last_modified": "1770838130",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/1taISnJydkBQqU3OEMUOjjlpseO.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 62,
+        "name": "Motorvalley",
+        "title": "Motorvalley",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7770,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/5hXrKfQmzglWMIkFUA2K0MeSjNl.jpg",
+        "plot": "Desesperada para assumir o império da família, uma herdeira contrata uma pilota arrojada e um treinador de passado atribulado para competir no Gran Turismo.",
+        "cast": "Luca Argentero, Giulia Michelini, Caterina Forza",
+        "director": "Matteo Rovere",
+        "genre": "Drama, Action & Adventure",
+        "release_date": "2026-02-10",
+        "releaseDate": "2026-02-10",
+        "last_modified": "1770838129",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/zyMMXRpCZoMLYIret8seCZyIlr6.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 63,
+        "name": "Magia Record: Puella Magi Madoka Magica Side Story",
+        "title": "Magia Record: Puella Magi Madoka Magica Side Story",
+        "year": "2020",
+        "stream_type": "series",
+        "series_id": 7769,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/syBNkb4sSD1cqMJEnlwwcQGt4Qu.jpg",
+        "plot": "Em troca da realização de um desejo, as Garotas Mágicas lutam entre si, sem que o resto do mundo saiba. Mas Iroha Tamaki não consegue lembrar o desejo que fez. \"O que foi que eu desejei quando virei uma garota mágica?\" Há um vazio em sua vida. Algo de importante foi perdido. Mas ela continua a lutar todos os dias, mesmo sem saber o porquê. Até que um rumor começa a se espalhar entre as Garotas. \"As Garotas que vão pra Kamihama encontram a salvação.\" Kamihama, a cidade onde as Garotas Mágicas se reúnem. É lá que começa a história de Iroha Tamaki, em busca de um desejo perdido.",
+        "cast": "麻倉もも, Sora Amamiya, 夏川椎菜, 小倉唯, Ayane Sakura",
+        "director": "宮本幸裕, 吉澤翠, 穴井洋輔",
+        "genre": "Animação, Mistério, Sci-Fi & Fantasy",
+        "release_date": "2020-01-05",
+        "releaseDate": "2020-01-05",
+        "last_modified": "1770838129",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/bYxnvBgl1mY2Qu26Zmg4zINrhgo.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "24",
+        "category_id": "491",
+        "category_ids": [
+            491
+        ]
+    },
+    {
+        "num": 64,
+        "name": "Yo Gabba Gabbalândia!",
+        "title": "Yo Gabba Gabbalândia!",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7768,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/njIwNNmYWJRIzIyyZThQunPx4e2.jpg",
+        "plot": "Entre em uma terra fantástica de diversão e imaginação com Kammy Kam e seus amigos! Através da música e da magia, eles aprendem sobre seu mundo e desvendam suas maravilhas.",
+        "cast": "Kamryn Smith, Erin Pearce, Emma Penrose, Adam Deibert, Amos Watene",
+        "director": "",
+        "genre": "Kids, Família",
+        "release_date": "2024-08-08",
+        "releaseDate": "2024-08-08",
+        "last_modified": "1770827195",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/dpgiAnV08bxWtugZfTwuKnuLEB7.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "465",
+        "category_ids": [
+            465
+        ]
+    },
+    {
+        "num": 65,
+        "name": "Sweetpea",
+        "title": "Sweetpea",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7767,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/feoDYCy0AUD031gLqBmA9gC4pw1.jpg",
+        "plot": "A história bombástica de Rhiannon Lewis, uma moça tímida e invisível que é levada ao extremo quando seu pai morre e sua agressora dos tempos de escola volta para a cidade.",
+        "cast": "Ella Purnell, Nicôle Lecky, Jon Pointing, Calam Lynch, Jeremy Swift",
+        "director": "Ella Jones",
+        "genre": "Comédia, Drama",
+        "release_date": "2024-10-10",
+        "releaseDate": "2024-10-10",
+        "last_modified": "1770827194",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/xE8SLBIwNQ1kkCz45XDaPYzv0wz.jpg"
+        ],
+        "youtube_trailer": "f6pmPQukjbA",
+        "episode_run_time": "44",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 66,
+        "name": "Unfamiliar",
+        "title": "Unfamiliar",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7763,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/fX0Kvvo6hj9feqS3JyFpVmscz2Y.jpg",
+        "plot": "Quando o passado bate à porta de um casal de ex-espiões, o maior desafio não são as perseguições, os tiroteios e as brigas... é contar a verdade um ao outro.",
+        "cast": "Felix Kramer, Susanne Wolff, Samuel Finzi, Natalia Belitski, Andreas Pietschmann",
+        "director": "",
+        "genre": "Action & Adventure, Drama, Crime",
+        "release_date": "2026-02-05",
+        "releaseDate": "2026-02-05",
+        "last_modified": "1770578000",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/qDq3dG4ElRohih5fUGNQRLHuBaC.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 67,
+        "name": "The World Ends With You The Animation",
+        "title": "The World Ends With You The Animation",
+        "year": "2021",
+        "stream_type": "series",
+        "series_id": 7762,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/apHvxqMVuxIGDOL9lLOyA9q2a3z.jpg",
+        "plot": "Baseado no jogo de sucesso da Square Enix, Neku morreu, mas não se lembra do que aconteceu. Ele entra no Jogo dos Shinigamis no Underground, uma competição para que os mortos sejam ressuscitados... e os perdedores serão apagados da existência.",
+        "cast": "Koki Uchiyama, 鉢嶺杏奈, Ayana Taketatsu, 木村昴, Ryohei Kimura",
+        "director": "野村哲也, 市川量也",
+        "genre": "Animação, Drama, Mistério",
+        "release_date": "2021-04-10",
+        "releaseDate": "2021-04-10",
+        "last_modified": "1770578000",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/mjyRFPrJ8SPF77STsbkR0X0rE6C.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "24",
+        "category_id": "491",
+        "category_ids": [
+            491
+        ]
+    },
+    {
+        "num": 68,
+        "name": "Silly Sundays",
+        "title": "Silly Sundays",
+        "year": "2023",
+        "stream_type": "series",
+        "series_id": 7761,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/ajl5DlWQNcz72R6PMfcaZgApb54.jpg",
+        "plot": "Nesta divertida série de comédia, Sonia, Hugo e Mel criam memórias cheias de emoção com a mamãe, o papai e a vovó naqueles dias felizes passados com a família e os amigos.",
+        "cast": null,
+        "director": "",
+        "genre": "Kids, Animação, Comédia",
+        "release_date": "2023-07-02",
+        "releaseDate": "2023-07-02",
+        "last_modified": "1770577999",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/2Wa7PTLXWn4ZsZE6dKRQOyZizL4.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "8",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 69,
+        "name": "Сальвадор",
+        "title": "Сальвадор",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7760,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/vNQIS7zGZGfX5fzcF8JwkPkWHUB.jpg",
+        "plot": "Em uma noite de confrontos violentos entre torcidas, um motorista de ambulância descobre que a filha está envolvida. A situação foge do controle, e ele busca respostas.",
+        "cast": "Luis Tosar, Fariba Sheikhan, Candela Arestegui, Claudia Salas, Juan Carlos Vellido",
+        "director": "",
+        "genre": "Drama, Mistério",
+        "release_date": "2026-02-06",
+        "releaseDate": "2026-02-06",
+        "last_modified": "1770577998",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/bgHYAglUAPNEMFTBm0NcrDNPpmZ.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 70,
+        "name": "Rainhas da Grana",
+        "title": "Rainhas da Grana",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7759,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/j03RtWsauZNNFdSrHbJoxdX5HYO.jpg",
+        "plot": "No limite do desespero, cinco amigas decidem que a única saída é formar uma gangue, conseguir armas e começar a assaltar bancos.",
+        "cast": "Rebecca Marder, Naidra Ayadi, Zoé Marchal, Pascale Arbillot, Jonathan Cohen",
+        "director": "Olivier Rosemberg, Yannick Fauchier, Diane Capo",
+        "genre": "Comédia, Action & Adventure, Drama",
+        "release_date": "2026-02-05",
+        "releaseDate": "2026-02-05",
+        "last_modified": "1770577998",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/djAGltv1bVw625yYku4CyA42gq0.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "52",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 71,
+        "name": "Ministério da Verdade",
+        "title": "Ministério da Verdade",
+        "year": "2023",
+        "stream_type": "series",
+        "series_id": 7758,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/y7O22T3QXtEAv8ZA7YLX9CrgQ8O.jpg",
+        "plot": "Em um mundo autoritário dominado por narrativas e carente de jornalismo sério, um homem enfrenta o sistema para transmitir a verdade por trás das notícias. Com bom humor, e pitadas de sarcasmo, iremos mostrar o que a grande mídia esconde de você.",
+        "cast": "Ricardo Ventura",
+        "director": "Renato Dias Pais",
+        "genre": "Talk",
+        "release_date": "2023-09-27",
+        "releaseDate": "2023-09-27",
+        "last_modified": "1770577997",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/lRuxEQoFkCVetAIVpgWE8p6xW15.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "28",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 72,
+        "name": "Heróis em Foco: Batalhão de Ações com Cães (BAC)",
+        "title": "Heróis em Foco: Batalhão de Ações com Cães (BAC)",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7757,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/AkEybhvfl4kCzjPAR27aKMXT6rj.jpg",
+        "plot": "Nesta série documental, a jornalista Nathalia Alvitos acompanha a rotina de treinamento dos combatentes do Batalhão de Operações com Cães da Polícia Militar do Rio de Janeiro (BAC). Ao longo dos episódios, os policiais mostram como adquirem a aptidão física e psicológica necessária para o dia a dia e como preparam seus cães para o trabalho.",
+        "cast": "Nathalia Alvitos",
+        "director": "",
+        "genre": "Documentário",
+        "release_date": "2025-09-18",
+        "releaseDate": "2025-09-18",
+        "last_modified": "1770577997",
+        "rating": "9",
+        "rating_5based": 4.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/gMQWZhoXRXDm6CCOfIf0c78p1sT.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "15",
+        "category_id": "473",
+        "category_ids": [
+            473
+        ]
+    },
+    {
+        "num": 73,
+        "name": "Eu meu Pai e um Bebê",
+        "title": "Eu meu Pai e um Bebê",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7756,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/4HzeVlIIpEPSkTyqtkHTLUHTjPp.jpg",
+        "plot": "Depois de um caso, a festeira Gemma engravida e precisa ajudar seu pai Malcolm durante a dissolução de seu casamento.",
+        "cast": null,
+        "director": "",
+        "genre": "Comédia",
+        "release_date": "2024-08-15",
+        "releaseDate": "2024-08-15",
+        "last_modified": "1770577996",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/aDZ2cZ9tv57eAGrcyheWN2ZnWm2.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "25",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 74,
+        "name": "Devil in Disguise: John Wayne Gacy",
+        "title": "Devil in Disguise: John Wayne Gacy",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7755,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/vsXSxLYsAq0VsjWIMRpQGorjLjh.jpg",
+        "plot": "Quando um adolescente desaparece, o principal suspeito é John Wayne Gacy. À medida que os agentes seguem, interrogam e acabam por prender Gacy, torna-se claro que muitos jovens e rapazes desapareceram às suas mãos.",
+        "cast": "Michael Chernus, Gabriel Luna, James Badge Dale, Michael Angarano, Chris Sullivan",
+        "director": "",
+        "genre": "Crime, Drama",
+        "release_date": "2025-10-16",
+        "releaseDate": "2025-10-16",
+        "last_modified": "1771621314",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/kG2mHHu136bviY53DDpnsyVNKuA.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "57",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 75,
+        "name": "Vivendo sem Laços",
+        "title": "Vivendo sem Laços",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7749,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/nOndRgTrDDj4a582suRULBalBN8.jpg",
+        "plot": "A história gira em torno do conflito entre o Clã Humano e o Clã dos Demônios pela mística Fonte Divina Yuli.\n\nUma jovem de espírito livre, Xiao Yao, acidentalmente adentra o Vale dos Dez Mil Demônios, desencadeando uma série de turbulências que a envolvem em uma sequência de casos misteriosos ao lado de Hong Ye, o Rei dos Demônios.\n\nTendo testemunhado as profundezas do desejo e da ambição, Hong Ye descobre que Xiao Yao possui um coração puro, intocado pela ganância mundana. Juntos, os dois desvendam a verdade oculta por trás da disputa em torno da Fonte Divina Yuli.",
+        "cast": "谭松韵, 侯明昊, 汪铎",
+        "director": "徐纪周, 徐纪周, 杨宇飞",
+        "genre": "Drama",
+        "release_date": "2025-12-27",
+        "releaseDate": "2025-12-27",
+        "last_modified": "1770161024",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/d4rqmgI01cIUQ3e1qqZgNsFfeGB.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 76,
+        "name": "Vanished",
+        "title": "Vanished",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7748,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/KVyfJoW4nO1CATxHrD7oR8rRJH.jpg",
+        "plot": "As férias românticas de Alice Monroe na França se tornam um mistério perigoso quando seu namorado Tom Parker desaparece de um trem para Arles, forçando-a a descobrir verdades ocultas sobre seu passado.",
+        "cast": "Kaley Cuoco, Sam Claflin, Karin Viard, Matthias Schweighöfer, Simon Abkarian",
+        "director": "Laura Petoin",
+        "genre": "Drama, Mistério",
+        "release_date": "2026-02-01",
+        "releaseDate": "2026-02-01",
+        "last_modified": "1771621314",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/qI2pX6IWQojvh2kaLv6M233Iwqb.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 77,
+        "name": "The Rainmaker",
+        "title": "The Rainmaker",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7747,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/q8l0lj20amBFi0SBs8NI9yJpaHq.jpg",
+        "plot": "O jovem advogado Rudy Baylor está enfrentando um dos escritórios de advocacia mais poderosos do país.",
+        "cast": "Milo Callaghan, Lana Parrilla, Madison Iseman, P.J. Byrne, Dan Fogler",
+        "director": "",
+        "genre": "Drama, Mistério",
+        "release_date": "2025-08-15",
+        "releaseDate": "2025-08-15",
+        "last_modified": "1773087930",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/8ZJYKoCmRCdaMDArewEwg3Uy8Bg.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "43",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 78,
+        "name": "ROLL OVER AND DIE",
+        "title": "ROLL OVER AND DIE",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7746,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/nH6Ch1q5rwdRs56bYTA9wuOhfbL.jpg",
+        "plot": "Flum Apricot nunca foi destinada a ser uma heroína. Apesar de ter atributos zerados e um poder que não consegue nem mesmo usar, ela foi chamada para fazer parte do grupo dos heróis. No entanto, Flum chega ao fundo do poço quando Jean Inteige, um mago renomado que faz parte do grupo, decide que a garota é inútil e faz com que ela seja vendida como escrava. Jogada aos monstros para a diversão de seu mestre, Flum toma a decisão desesperada de usar uma arma amaldiçoada, o que desperta algo nela.",
+        "cast": "Ayaka Nanase, Miku Ito, Kikuko Inoue",
+        "director": "鎌仲史陽, 須賀重行",
+        "genre": "Animação, Drama, Action & Adventure",
+        "release_date": "2026-01-09",
+        "releaseDate": "2026-01-09",
+        "last_modified": "1772598681",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/uLC9tdRSPcKsgvRLth38WEbm8pa.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 79,
+        "name": "Magnum",
+        "title": "Magnum",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7745,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/zf6P1MoickMplupklydA2zfCguO.jpg",
+        "plot": "O aspirante a ator de Hollywood Simon Williams está lutando para decolar. Durante um encontro casual com Trevor Slattery, um ator cujos maiores papéis podem já ter ficado no passado, Simon descobre que o lendário diretor Von Kovak está fazendo um remake do filme do super-herói \"Magnum\". Esses dois atores, em extremos opostos de suas carreiras, buscam obstinadamente papéis transformadores nesse filme, enquanto o público dá uma espiadinha nos bastidores da indústria do entretenimento.",
+        "cast": "Yahya Abdul-Mateen II, Arian Moayed, X Mayo, Ben Kingsley",
+        "director": "Destin Daniel Cretton, Irais Cardenas, Kenny Laubbacher",
+        "genre": "Comédia, Drama",
+        "release_date": "2026-01-27",
+        "releaseDate": "2026-01-27",
+        "last_modified": "1770161021",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/los8S8iCRn5Q7irl0LNAp6C6Gmz.jpg"
+        ],
+        "youtube_trailer": "jljXyJfiRDQ",
+        "episode_run_time": "0",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 80,
+        "name": "Humanidade: A História de Todos Nós",
+        "title": "Humanidade: A História de Todos Nós",
+        "year": "2012",
+        "stream_type": "series",
+        "series_id": 7744,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/TCPOBcBfPsPiX9waIE8bRmYstu.jpg",
+        "plot": "Desde a criação do nosso planeta, há bilhões de anos, até o surgimento da humanidade, Humanidade: A História de Todos Nós mergulha além da superfície do nosso universo e alcança o cerne da nossa existência. O documentário conduz você por uma aventura definitiva para revelar a ascensão do mais improvável dos heróis: o ser humano.",
+        "cast": "Josh Brolin, Richard Machowicz, Jim Meigs, Mehmet Oz",
+        "director": "Dan Clifton, Hugh Ballantyne, Hugh Ballantyne",
+        "genre": "Documentário",
+        "release_date": "2012-11-18",
+        "releaseDate": "2012-11-18",
+        "last_modified": "1770161021",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/3Y79t6CR3ghENsYpEcBYK6sHV8K.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "60",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 81,
+        "name": "Helluva Boss",
+        "title": "Helluva Boss",
+        "year": "2020",
+        "stream_type": "series",
+        "series_id": 7743,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/dgtuBsG2F4cGiumtHBKDru7PW9j.jpg",
+        "plot": "Esta comédia animada para adultos acompanha as desventuras, peripécias e relacionamentos dos Incríveis Matadores Profissionais, ou IMP, para abreviar. Um bando de demônios assassinos do Inferno que ganha a vida matando pessoas na Terra.",
+        "cast": "Brandon Rogers, Richard Steven Horvitz, Vivian Nixon, Erica Lindbeck, Bryce Pinkham",
+        "director": "Vivienne Medrano, Vivienne Medrano",
+        "genre": "Animação, Comédia, Drama",
+        "release_date": "2020-10-31",
+        "releaseDate": "2020-10-31",
+        "last_modified": "1770161020",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/20OP4f0xDbPttORm9OyIbNu3cNN.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "15",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 82,
+        "name": "Ela Caminha Sozinha",
+        "title": "Ela Caminha Sozinha",
+        "year": "2023",
+        "stream_type": "series",
+        "series_id": 7742,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/dTTyl7mWOTv7eGTNF5AtwKukkEQ.jpg",
+        "plot": "A professora Carla enfrenta traumas do passado ao investigar se Ricardo, seu colega de trabalho e melhor amigo, está sendo acusado falsamente por Daniela, uma estudante difícil.",
+        "cast": "Paulina Dávila, Christopher Von Uckermann, Inaki Casas, Ricardo Abarca, Jesús Villegas",
+        "director": "Inés María Barrionuevo, Analeine Cal y Mayor",
+        "genre": "Drama",
+        "release_date": "2023-09-29",
+        "releaseDate": "2023-09-29",
+        "last_modified": "1770161020",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/iSNGNz1kZh1NKzbZ0czXthLO8Sf.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "428",
+        "category_ids": [
+            428
+        ]
+    },
+    {
+        "num": 83,
+        "name": "Dona Beja",
+        "title": "Dona Beja",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7741,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/eN3jw7AEOwNtTQTsGVHlEPvs6OC.jpg",
+        "plot": "Depois que um ouvidor cruel muda o rumo do seu futuro, Beja transforma a dor em poder de sedução e desafia todas as convenções do Brasil imperial.",
+        "cast": "Grazi Massafera, David Junior, André Luiz Miranda, Pedro Fasanaro, Bianca Bin",
+        "director": "Adriana Silva, Ceci Alves",
+        "genre": "Drama, Soap",
+        "release_date": "2026-02-02",
+        "releaseDate": "2026-02-02",
+        "last_modified": "1774062102",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/lqjaaYhHobZcTyIORyq9zzVUtvB.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 84,
+        "name": "Dança no Gelo: Rumo ao Ouro",
+        "title": "Dança no Gelo: Rumo ao Ouro",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7740,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/irrdulKrIPIjUwpZMwdtoo80CLW.jpg",
+        "plot": "Conheça o intenso mundo da patinação artística, em que os melhores casais dançam pelo ouro e pela glória na preparação para os Jogos Olímpicos de Inverno de 2026.",
+        "cast": null,
+        "director": "",
+        "genre": "Documentário",
+        "release_date": "2026-02-01",
+        "releaseDate": "2026-02-01",
+        "last_modified": "1770161019",
+        "rating": "10",
+        "rating_5based": 5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/dxUgU3TZiwDi1Y67gwHlK20QBtQ.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 85,
+        "name": "Amor Sombrio",
+        "title": "Amor Sombrio",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7738,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/u2aA8PZoVt95AMmWAAfZY1PQ5y4.jpg",
+        "plot": "A série é dirigida por Deng Ke (\"Prisioneiros da beleza\") e estrelada por Song Yi (\"Siga Seu Coração\", \"The Disguiser\", \"Alegria da Vida\"), Cheng Lei (\"Fangs of Fortune\", \"My Journey to You\"), Bi Wenjun (\"The Best Thing\", \"Calor em Uma Noite Fria\") e Shi Ce (\"A Soldier‘s Story\"). O drama conta a história da general da dinastia Tai Jin, Li Shuang, que por acaso resgata um homem que perdeu completamente a memória e lhe dá o nome de Jin An. Dedicado e leal, Jin An passa a acompanhar Li Shuang, e aos poucos nasce um sentimento entre os dois. No entanto, Jin An começa a recuperar suas lembranças e descobre que é, na verdade, um príncipe do reino inimigo. Aqueles que um dia juraram envelhecer juntos se veem, contra a vontade, em lados opostos do campo de batalha. Cansados da guerra, eles decidem unir forças para resolver a crise e proteger os ideais de justiça em que acreditam.",
+        "cast": "宋轶, 丞磊, 毕雯珺, Shi Ce, 官鴻",
+        "director": "Gao Cong Kai, Ke Deng, Ke Deng",
+        "genre": "Drama",
+        "release_date": "2025-08-24",
+        "releaseDate": "2025-08-24",
+        "last_modified": "1770161018",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/j5JnT97TKs9OCXzjt5a0fgOIjvz.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 86,
+        "name": "A Vida dos Santos",
+        "title": "A Vida dos Santos",
+        "year": "2004",
+        "stream_type": "series",
+        "series_id": 7737,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/exfCO28d5tiKO5luGVOfUuiorvH.jpg",
+        "plot": "Minissérie que conta a história de um imigrante italiano que volta ao seu país de origem para resolver questões familiares. Dirigido por Jerry Ciccoritti.",
+        "cast": "Sophia Loren, Sabrina Ferilli, Fab Filippo, Jessica Paré, Nick Mancuso",
+        "director": "Jerry Ciccoritti",
+        "genre": "Drama",
+        "release_date": "2004-09-20",
+        "releaseDate": "2004-09-20",
+        "last_modified": "1770161017",
+        "rating": "5",
+        "rating_5based": 2.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/2ZV4g6rfzgNKwpFLb9PE4WaFrx8.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "90",
+        "category_id": "433",
+        "category_ids": [
+            433
+        ]
+    },
+    {
+        "num": 87,
+        "name": "A Jornada da Lenda",
+        "title": "A Jornada da Lenda",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7736,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/6w63DQzFY7S5dg9e0L57S9LfLSn.jpg",
+        "plot": "Cansado de sua rotina exaustiva, Xiao Ming Ming busca escapar da realidade lendo uma história online de fantasia com artes marciais. Porém, de repente, ele se vê teletransportado para dentro dessa narrativa assumindo o papel do protagonista Xiao Qiu Shui. De início, Ming Ming se sente confuso pelo ocorrido e tenta encontrar uma saída para voltar à vida real, mas acaba sendo forçado a continuar a jornada de Qiu Shui. Sem ver outra escolha, Ming Ming começa a se esforçar para se tornar o herói da história na esperança de voltar para casa — mas, talvez, ele consiga aprender lições valiosas para usar na vida real.",
+        "cast": "成毅, 古力娜扎, 徐振轩, 李凯馨, 刘梦芮",
+        "director": "Ren Haitao, 林峰, 李丙南",
+        "genre": "Drama",
+        "release_date": "2025-09-11",
+        "releaseDate": "2025-09-11",
+        "last_modified": "1770161016",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/7dH63uoQDQu6pfYJLNKQYLXJ38m.jpg"
+        ],
+        "youtube_trailer": "p-1mTuvB9As",
+        "episode_run_time": "0",
+        "category_id": "492",
+        "category_ids": [
+            492
+        ]
+    },
+    {
+        "num": 88,
+        "name": "A Irmã do Meio",
+        "title": "A Irmã do Meio",
+        "year": "2016",
+        "stream_type": "series",
+        "series_id": 7735,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bLbwlZzhiA1jWjoCvjpowLipq0J.jpg",
+        "plot": "Harley tem 13 anos e é a filha do meio. Ter seis irmãos não é exatamente fácil, mas Harley consegue encontrar maneiras muito originais de manter sua família unida e se destacar entre vários irmãos e irmãs.",
+        "cast": "Jenna Ortega, Isaak Presley, Ariana Greenblatt, Kayla Maisonet, Nicolas Bechtel",
+        "director": "",
+        "genre": "Comédia, Família",
+        "release_date": "2016-02-14",
+        "releaseDate": "2016-02-14",
+        "last_modified": "1770161015",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/4yFC6KpX7bq45qNulUgP57wWP3r.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "23",
+        "category_id": "464",
+        "category_ids": [
+            464
+        ]
+    },
+    {
+        "num": 89,
+        "name": "Rumo ao Maravilhoso",
+        "title": "Rumo ao Maravilhoso",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7730,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/2oPmUs5rLIRQYqDWv0p0gL8hS9i.jpg",
+        "plot": "Li Wenxiu, uma jovem Han de Altai, sonha em se tornar escritora em uma grande cidade. Ela enfrenta desafios e retorna para casa, trabalhando na loja de sua mãe. Ao conhecer o rapaz cazaque Batay, ela descobre a beleza local.",
+        "cast": "马伊琍, 周依然, 于适, 蒋奇明, 闫佩伦",
+        "director": "Teng Congcong, Teng Congcong",
+        "genre": "Drama, Família",
+        "release_date": "2024-05-07",
+        "releaseDate": "2024-05-07",
+        "last_modified": "1769725896",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/8NkpXI9Zqb5xM9ZcrbBmp2x1oWS.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "45",
+        "category_id": "492",
+        "category_ids": [
+            492
+        ]
+    },
+    {
+        "num": 90,
+        "name": "Patinando no Amor",
+        "title": "Patinando no Amor",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7729,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/hJIKzGBqsx35XDNOJah7IqERXlN.jpg",
+        "plot": "Uma ex-dançarina no gelo volta a competir ao lado de um novo parceiro, embora ainda pense no antigo, seu primeiro amor.",
+        "cast": "Madelyn Keys, Alice Malakhov, Alexandra Beaton, Harmon Walsh, Cale Ambrozic",
+        "director": "",
+        "genre": "Drama",
+        "release_date": "2026-01-22",
+        "releaseDate": "2026-01-22",
+        "last_modified": "1769725895",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/3aeYYriPQN7886in9bIGKnbC5eQ.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "492",
+        "category_ids": [
+            492
+        ]
+    },
+    {
+        "num": 91,
+        "name": "O Roubo",
+        "title": "O Roubo",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7728,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/u14hwoke37jQtBwJUV2mPLfpDcB.jpg",
+        "plot": "Um dia normal na Lochmill Capital vira de cabeça para baixo quando ladrões armados invadem o local e forçam Zara e seu melhor amigo Luke a cumprir suas exigências. O detetive Rhys corre contra o tempo para descobrir quem roubou £ 4 bilhões da previdência social e por quê.",
+        "cast": "Sophie Turner, Archie Madekwe, Jacob Fortune-Lloyd, Andrew Howard, Jonathan Slinger",
+        "director": "Sam Miller, Hettie Macdonald",
+        "genre": "Drama, Crime, Mistério",
+        "release_date": "2026-01-21",
+        "releaseDate": "2026-01-21",
+        "last_modified": "1769725895",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/tSFndbpoEctuYviiSRJHjyC31V9.jpg"
+        ],
+        "youtube_trailer": "ptK8xI_akRc",
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 92,
+        "name": "Lei & Ordem Toronto: Intenção Criminal",
+        "title": "Lei & Ordem Toronto: Intenção Criminal",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7727,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/n2NxrkG3KpZ6FwALqi5uiZF8zXC.jpg",
+        "plot": "Um esquadrão de elite de detetives investiga crimes e corrupção de alto perfil na região metropolitana de Toronto.",
+        "cast": "Aden Young, Kathleen Munroe, K.C. Collins, Karen Robinson",
+        "director": "Holly Dale",
+        "genre": "Crime, Drama",
+        "release_date": "2024-02-22",
+        "releaseDate": "2024-02-22",
+        "last_modified": "1773087929",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/lmmQ2nwN3Hn0CfJIncObeOD4lLT.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "43",
+        "category_id": "428",
+        "category_ids": [
+            428
+        ]
+    },
+    {
+        "num": 93,
+        "name": "Free Bert",
+        "title": "Free Bert",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7726,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/7VSlvC0KXRaiyHp2mD3mS09XRgN.jpg",
+        "plot": "Tentando se misturar às famílias esnobes da escola das filhas, um pai caótico e sua família igualmente sem filtros acabam causando grandes confusões.",
+        "cast": "Bert Kreischer, Arden Myrin, Ava Ryan, Lilou Lang",
+        "director": "",
+        "genre": "Comédia",
+        "release_date": "2026-01-22",
+        "releaseDate": "2026-01-22",
+        "last_modified": "1769725894",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/utwGNSLV2mjicTPmYPwOCFfdxs1.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 94,
+        "name": "Febre do Ouro: Caçadores de Riquezas",
+        "title": "Febre do Ouro: Caçadores de Riquezas",
+        "year": "2024",
+        "stream_type": "series",
+        "series_id": 7725,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8JXkjzipfFnBouprDeiVq26Cxwn.jpg",
+        "plot": "Estima-se que US$ 3 trilhões em ouro ainda não foram descobertos na América, e Dave Turin quer mostrar como encontrá-lo. Das Dakotas à Geórgia e de Montana à Califórnia, a Mãe Natureza descobriu novo ouro para ser explorado - se você souber onde procurar!",
+        "cast": "Dave Turin",
+        "director": "",
+        "genre": "Reality, Documentário",
+        "release_date": "2024-03-15",
+        "releaseDate": "2024-03-15",
+        "last_modified": "1769725893",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/A6nDcSiHLqB9StQdIZWaOEoHUm7.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "44",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 95,
+        "name": "Canadá Shore",
+        "title": "Canadá Shore",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7724,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/3YpomoZuBl43rjKxc3xDwl5a2oJ.jpg",
+        "plot": "Dez jovens canadenses ousados invadem uma cidade de festas à beira de um lago na Colúmbia Britânica para seu primeiro verão de bebedeira, pegação e decisões ruins, enquanto obedecem à chefe icônica: a única e inigualável Snooki.",
+        "cast": "Bauer Swystun, Christopher Brown, Emmett Watson, Emmy Sharpe, Ethan Maynard",
+        "director": "",
+        "genre": "Reality",
+        "release_date": "2026-01-22",
+        "releaseDate": "2026-01-22",
+        "last_modified": "1774120462",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/y3w4AklFI465vOR4YNTmjYGr8N1.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "497",
+        "category_ids": [
+            497
+        ]
+    },
+    {
+        "num": 96,
+        "name": "You and I Are Polar Opposites",
+        "title": "You and I Are Polar Opposites",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7720,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/xsqaVf4dtMYM9kcEgmtdDiTlkQl.jpg",
+        "plot": "Suzuki é uma colegial apaixonada, mas o rapaz que ela ama não é nadinha parecido com ela! Enquanto ela é alegre, extrovertida e está sempre tentando se enturmar, seu colega de classe Yusuke Tani é estoico, quieto e parece não se importar com o que as pessoas pensam dele. Será que Suzuki conseguirá superar suas ansiedades e convidá-lo para um encontro, ou descobrirá que os opostos realmente não se atraem?",
+        "cast": "Sayumi Suzushiro, Shogo Sakata, 谷口夢奈, 平林瑚夏, 岩田アンジ",
+        "director": "長友孝和",
+        "genre": "Animação, Comédia",
+        "release_date": "2026-01-11",
+        "releaseDate": "2026-01-11",
+        "last_modified": "1772598682",
+        "rating": "9",
+        "rating_5based": 4.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/5p423VlhPXf7681XyZCL4khIJLl.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "24",
+        "category_id": "491",
+        "category_ids": [
+            491
+        ]
+    },
+    {
+        "num": 97,
+        "name": "Wylde Pak",
+        "title": "Wylde Pak",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7719,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/sf21lifAVhwMPl4gxe8wixFTwfM.jpg",
+        "plot": "Lily e Jack são meio-irmãos que passam o verão juntos e precisam aprender a lidar com a nova dinâmica familiar enquanto ajudam nos negócios caóticos de banho e tosa da família Wylde Pak.",
+        "cast": null,
+        "director": "Paul Watling, Kyle Marshall",
+        "genre": "Animação, Comédia, Família",
+        "release_date": "2025-06-06",
+        "releaseDate": "2025-06-06",
+        "last_modified": "1768966261",
+        "rating": "9",
+        "rating_5based": 4.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/dfB0hPku5IRvwAoTKQef1zs1JHZ.jpg"
+        ],
+        "youtube_trailer": "31T3FH7snCc",
+        "episode_run_time": "11",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 98,
+        "name": "Vozes do Rio Pinheiros",
+        "title": "Vozes do Rio Pinheiros",
+        "year": "2022",
+        "stream_type": "series",
+        "series_id": 7718,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/Ai4LYFsQIOsrl7IGRFvwn1q5uWX.jpg",
+        "plot": "Esta série vai mostrar como o Pinheiros vem se recuperando. O sonho de paulistanos com uma cidade mais verde e o trabalho árduo de equipes comprometidas com o bem-estar e a saúde ambiental da população para que seja possível usufruir de um rio que não estampe apenas reportagens sobre os problemas da metrópole, mas que, seja um exemplo de recuperação, transformando a vida da cidade de São Paulo.",
+        "cast": null,
+        "director": "",
+        "genre": "Documentário",
+        "release_date": "2022-12-31",
+        "releaseDate": "2022-12-31",
+        "last_modified": "1768966260",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 99,
+        "name": "Unmasked",
+        "title": "Unmasked",
+        "year": "2018",
+        "stream_type": "series",
+        "series_id": 7717,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8G1dtKgx33A0NY1WhOSfwpFFMv1.jpg",
+        "plot": "",
+        "cast": null,
+        "director": "",
+        "genre": "Drama, Crime",
+        "release_date": "2018-10-14",
+        "releaseDate": "2018-10-14",
+        "last_modified": "1768966260",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/tJe08P6GF0FJ6TTXduz3BB2D6yE.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "429",
+        "category_ids": [
+            429
+        ]
+    },
+    {
+        "num": 100,
+        "name": "To Your Eternity",
+        "title": "To Your Eternity",
+        "year": "2021",
+        "stream_type": "series",
+        "series_id": 7716,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bohMYRVSIG68md0zQobyWbV4S8e.jpg",
+        "plot": "No começo, \"aquilo\" era uma orbe, lançada na Terra. \"Aquilo\" conseguia fazer duas coisas: tomar a forma de algo que \"o\" estimulasse; e voltar da morte. \"Aquilo\" se transformou de orbe em rocha, de rocha em lobo, e de lobo em garoto - vagando pelo mundo como um recém-nascido que nada sabe. Como garoto, \"aquilo\" virou Fushi. Ao ter contato com a bondade humana, Fushi não apenas aprende a sobreviver, mas também sobrevive como \"pessoa\". Sua jornada é ameaçada pelo inexplicável e destrutivo Nokker, e pelas crueis despedidas das pessoas amadas.",
+        "cast": "Reiji Kawashima, Kenjiro Tsuda, Tomori Kusunoki, Megumi Han, Yumiri Hanamori",
+        "director": "横手颯太, 佐山聖子",
+        "genre": "Animação, Action & Adventure, Sci-Fi & Fantasy",
+        "release_date": "2021-04-12",
+        "releaseDate": "2021-04-12",
+        "last_modified": "1773087930",
+        "rating": "8",
+        "rating_5based": 4,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/qmeC99iX9YPbxi3Dwsw5VvxIbCC.jpg"
+        ],
+        "youtube_trailer": "jaNo9cX-9lg",
+        "episode_run_time": "25",
+        "category_id": "491",
+        "category_ids": [
+            491
+        ]
+    },
+    {
+        "num": 101,
+        "name": "The Tech Bro Murders",
+        "title": "The Tech Bro Murders",
+        "year": "2025",
+        "stream_type": "series",
+        "series_id": 7715,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/h7ehsWCIsx318qVFGP2s3VkzoGJ.jpg",
+        "plot": "",
+        "cast": "Sandra Brown",
+        "director": "",
+        "genre": "Documentário, Crime",
+        "release_date": "2025-09-09",
+        "releaseDate": "2025-09-09",
+        "last_modified": "1768966259",
+        "rating": "0",
+        "rating_5based": 0,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/5HSqIvNb7WGArNrAS9mLM9N2WKu.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "463",
+        "category_ids": [
+            463
+        ]
+    },
+    {
+        "num": 102,
+        "name": "Terra de Pecados",
+        "title": "Terra de Pecados",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7714,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/awhE322eVF4EAsTq8bNzTscRXB9.jpg",
+        "plot": "Depois que um adolescente desaparece, uma policial com vínculos pessoais ao caso embarca em uma investigação tensa, que revela alianças e antigos conflitos familiares.",
+        "cast": "Krista Kosonen, Mohammed Nour Oklah, Peter Gantman, Lisa Lindgren, Ceasar Matijasevic",
+        "director": "Peter Grönlund",
+        "genre": "Drama, Crime, Mistério",
+        "release_date": "2026-01-02",
+        "releaseDate": "2026-01-02",
+        "last_modified": "1768966258",
+        "rating": "6",
+        "rating_5based": 3,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/rlTfXiGnDhj8CMm7FK6KW8XFAKA.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 103,
+        "name": "Taskaree: Rede de Contrabando",
+        "title": "Taskaree: Rede de Contrabando",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7713,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/ly6jaxMxzha70e0mQIFRJpPxXJG.jpg",
+        "plot": "Um agente alfandegário e sua equipe enfrentam um famoso contrabandista que lidera uma gangue poderosa. Mas obstáculos inesperados ameaçam essa missão.",
+        "cast": "Emraan Hashmi, Sharad Kelkar, Anurag Sinha, Zoya Afroz, Nandish Singh",
+        "director": "Sameer Siddiqui, Neeraj Pandey, Raghav Jairath",
+        "genre": "Crime, Mistério, Drama",
+        "release_date": "2026-01-14",
+        "releaseDate": "2026-01-14",
+        "last_modified": "1768966257",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/5WOikKpCZ5H0zEzVDeE6eJwA8BH.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "427",
+        "category_ids": [
+            427
+        ]
+    },
+    {
+        "num": 104,
+        "name": "Star Trek: Academia da Frota Estelar",
+        "title": "Star Trek: Academia da Frota Estelar",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7712,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/g0cMwV9JQ2uFR7TSgiofViDtfTx.jpg",
+        "plot": "Apresenta um grupo de cadetes que se unem para perseguir um sonho comum de esperança e otimismo. Sob o olhar atento de seus instrutores, eles descobrem o que é preciso para se tornarem oficiais da Frota Estelar.",
+        "cast": "Holly Hunter, Sandro Rosta, Karim Diane, Kerrice Brooks, George Hawkins",
+        "director": "Olatunde Osunsanmi",
+        "genre": "Sci-Fi & Fantasy, Action & Adventure",
+        "release_date": "2026-01-15",
+        "releaseDate": "2026-01-15",
+        "last_modified": "1774120462",
+        "rating": "5",
+        "rating_5based": 2.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/6350bZGwGGf0tloA2h2WjmlPWGM.jpg"
+        ],
+        "youtube_trailer": "W3wwRspWEEg",
+        "episode_run_time": "0",
+        "category_id": "497",
+        "category_ids": [
+            497
+        ]
+    },
+    {
+        "num": 105,
+        "name": "SHIBOYUGI: Jogos Mortais para Colocar Comida na Mesa",
+        "title": "SHIBOYUGI: Jogos Mortais para Colocar Comida na Mesa",
+        "year": "2026",
+        "stream_type": "series",
+        "series_id": 7711,
+        "cover": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/oGuTKxRifOcbDb1VgEtRA6SEc6J.jpg",
+        "plot": "Yuki acorda e se vê em uma mansão desconhecida, vestindo um uniforme de empregada e deitada em uma cama luxuosa. Logo, ela encontra mais cinco garotas, todas vestidas igual a ela. Aquele lugar é a Casa dos Fantasmas, e a única forma de sobreviver é passar pelas armadilhas que os aguardam — jogos mortais cheios de zarabatanas, serras circulares, salas trancadas e armas. É uma situação desesperadora e aterrorizante para todas ali… bom, para todas, exceto Yuki. Afinal, aos dezessete anos, isso já é a profissão dela. Estranho? Ela concorda. Mas algumas pessoas são assim — ganham a vida participando de jogos de morte.",
+        "cast": "Chiyuki Miura",
+        "director": "上野壮大",
+        "genre": "Animação, Action & Adventure",
+        "release_date": "2026-01-07",
+        "releaseDate": "2026-01-07",
+        "last_modified": "1770577995",
+        "rating": "7",
+        "rating_5based": 3.5,
+        "backdrop_path": [
+            "https://image.tmdb.org/t/p/w1280/rcwfBh8gPBL4sKUEPqu0lEKreha.jpg"
+        ],
+        "youtube_trailer": null,
+        "episode_run_time": "0",
+        "category_id": "491",
+        "category_ids": [
+            491
+        ]
     }
 ]
