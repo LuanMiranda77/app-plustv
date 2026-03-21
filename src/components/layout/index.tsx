@@ -17,7 +17,7 @@ const Layout: React.FC = () => {
   const location = useLocation();
 
   // Rotas onde MainHeader não deve aparecer
-  const hiddenHeaderRoutes = ['/profiles', '/player'];
+  const hiddenHeaderRoutes = ['/', '/profiles', '/player'];
   const shouldShowHeader = !hiddenHeaderRoutes.includes(location.pathname);
 
   // Carregar dados ao iniciar

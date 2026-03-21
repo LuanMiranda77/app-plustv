@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/immutability */
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface CarouselProps {
   children: React.ReactNode[];
@@ -11,6 +12,24 @@ export const Carousel = ({ children, itemsVisible = 6, gap = 16 }: CarouselProps
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
+  // Auto-scroll horizontal para o item focado dentro do container
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const focused = container.querySelector('[data-focused="true"]') as HTMLElement | null;
+    if (!focused) return;
+    const wrapper = focused.closest('.flex-shrink-0') as HTMLElement | null;
+    const target = wrapper || focused;
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    if (targetRect.right > containerRect.right) {
+      container.scrollBy({ left: targetRect.right - containerRect.right + 40, behavior: 'smooth' });
+    } else if (targetRect.left < containerRect.left) {
+      container.scrollBy({ left: targetRect.left - containerRect.left - 40, behavior: 'smooth' });
+    }
+    setTimeout(updateScrollButtons, 400);
+  }, [children]);
 
   const updateScrollButtons = () => {
     if (!scrollContainerRef.current) return;
