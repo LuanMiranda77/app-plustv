@@ -1,20 +1,19 @@
-import { Clock, Film, Play, Sparkles, TrendingUp, Tv2, TvMinimalPlay } from 'lucide-react';
+import { Film, Sparkles, TrendingUp, Tv2, TvMinimalPlay } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AutoCarousel from '../components/AutoCarousel';
-import { ChannelCard } from '../components/Cards/ChannelCard';
-import { ContinueWatchingCard } from '../components/Cards/ContinueWatchingCard';
-import { MovieCard } from '../components/Cards/MovieCard';
+import { ChannelPoster } from '../components/Cards/ChannelPoster';
 import { SeriesCard } from '../components/Cards/SeriesCard';
-import { Carousel } from '../components/Carousel';
+import { StreamPoster } from '../components/Cards/StreamPoster';
+import AdvertisementCarousel from '../components/UI/AdvertisementCarousel';
+import CarouselSection from '../components/UI/CarouselSection';
+import ContinueWatchingSection from '../components/UI/ContinueWatchingSection';
 import { LoadingSpinner } from '../components/UI/LoadingSpinner';
+import { useFocusZone } from '../Context/FocusContext';
+import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
-import CarouselSection from '../components/UI/CarouselSection';
-import AdvertisementCarousel from '../components/UI/AdvertisementCarousel';
-import { useFocusZone } from '../Context/FocusContext';
-import { useRemoteControl } from '../hooks/useRemotoControl';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -306,51 +305,24 @@ export const Home = () => {
         {!isLoading && (
           <>
             {/* Continue Watching */}
-            {recentlyWatched.length > 0 && (
-              <section className="space-y-4">
-                <div className="flex items-center justify-between border-b border-gray-800 pb-1">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-6 h-6 text-red-600" />
-                    <h2 className="text-2xl font-bold text-white">Continue Assistindo</h2>
-                  </div>
-                  <button
-                    onClick={() => navigate('/watch-history')}
-                    className="text-red-600 hover:text-red-500 font-semibold text-sm transition-colors flex items-center gap-1"
-                  >
-                    Ver histórico <span className="text-lg">→</span>
-                  </button>
-                </div>
-                <p className="text-gray-400 text-sm">Onde você parou</p>
-
-                <Carousel>
-                  {recentlyWatched.map((item, idx) => {
-                    const isFocused =
-                      focusedSection ===
-                        activeSections.findIndex(s => s.id === 'continue-watching') &&
-                      focusedItemIndex === idx;
-                    return (
-                      <div key={item.id} data-focused={isFocused} className={`w-80 flex-shrink-0`}>
-                        <ContinueWatchingCard
-                          item={item}
-                          isFocused={isFocused}
-                          onPlay={() => {
-                            if (item.type === 'movie') {
-                              navigateMovie(item);
-                            } else if (item.type === 'series') {
-                              navigateSerie(item.content);
-                            }
-                          }}
-                          onRecentlyWatched={setRecentlyWatched}
-                        />
-                      </div>
-                    );
-                  })}
-                </Carousel>
-              </section>
-            )}
+            <ContinueWatchingSection
+              items={recentlyWatched}
+              focusedItemIndex={
+                activeSections[focusedSection]?.type === 'continue-watching' ? focusedItemIndex : -1
+              }
+              onPlay={item => {
+                if (item.type === 'movie') {
+                  navigateMovie(item);
+                } else if (item.type === 'series') {
+                  navigateSerie(item.content);
+                }
+              }}
+              onViewHistory={() => navigate('/watch-history')}
+              onRecentlyWatched={setRecentlyWatched}
+            />
 
             {/* Live Channels */}
-            {/* {topChannels.length > 0 && (
+            {topChannels.length > 0 && (
               <CarouselSection
                 title="Canais ao Vivo"
                 subtitle="Seus canais favoritos em tempo real"
@@ -360,7 +332,7 @@ export const Home = () => {
                   activeSections[focusedSection]?.type === 'live-channels' ? focusedItemIndex : -1
                 }
                 renderItem={(channel, idx, isFocused) => (
-                  <ChannelCard
+                  <ChannelPoster
                     channel={channel}
                     isFocused={isFocused}
                     onPlay={() => {
@@ -379,7 +351,7 @@ export const Home = () => {
                 )}
                 onViewMore={() => navigate('/live')}
               />
-            )} */}
+            )}
 
             {/* Trending Movies */}
             {trendingMovies.length > 0 && (
@@ -393,8 +365,8 @@ export const Home = () => {
                   activeSections[focusedSection]?.type === 'trending-movies' ? focusedItemIndex : -1
                 }
                 renderItem={(movie, idx, isFocused) => (
-                  <MovieCard
-                    movie={movie}
+                  <StreamPoster
+                    stream={movie}
                     isFocused={isFocused}
                     onPlay={() => navigateMovie(movie)}
                   />
@@ -415,8 +387,8 @@ export const Home = () => {
                   activeSections[focusedSection]?.type === 'new-movies' ? focusedItemIndex : -1
                 }
                 renderItem={(movie, idx, isFocused) => (
-                  <MovieCard
-                    movie={movie}
+                  <StreamPoster
+                    stream={movie}
                     isFocused={isFocused}
                     onPlay={() => navigateMovie(movie)}
                   />

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SeriesCard } from '../components/Cards/SeriesCard';
+import { StreamPoster } from '../components/Cards/StreamPoster';
 import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
 import SeriesDetail from '../components/UI/SeriesDetail';
@@ -43,7 +43,7 @@ export const PageSeries = () => {
     onRight: () => {
       if (isZoneCat) {
         setActiveZone('list');
-        setFocusedIndex(0);
+        setFocusedIndex(focusedIndex === -1 ? 0 : focusedIndex);
         setFocusedInput(false);
       }
       // Navegar direita dentro da lista (mesma linha)
@@ -62,7 +62,8 @@ export const PageSeries = () => {
         // Se está na primeira coluna, volta para categorias
         if (isFirstColumn) {
           setActiveZone('content');
-          setFocusedCat(0);
+          setFocusedCat(focusedCat);
+          setFocusedIndex(-1);
         } else {
           // Senão, navega para esquerda
           setFocusedIndex(focusedIndex - 1);
@@ -90,6 +91,7 @@ export const PageSeries = () => {
         return;
       }
       if (isZoneCat && focusedCat === 0) {
+        categoriesRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
         setActiveZone('menu');
       } else if (isZoneCat && focusedCat > 0) {
         setFocusedCat(Math.max(focusedCat - 1, 0));
@@ -107,6 +109,7 @@ export const PageSeries = () => {
     onOk: () => {
       if (isZoneCat) {
         setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
+        setFocusedIndex(0);
       }
       if (isZoneList && displayedSeries[focusedIndex]) {
         setCurrentSerie(displayedSeries[focusedIndex]);
@@ -209,10 +212,13 @@ export const PageSeries = () => {
   // Auto-scroll quando o foco muda
   useEffect(() => {
     if (isZoneCat && categoriesRef.current) {
-      // Scroll para categoria focada
-      const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
-      if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      if (focusedCat === 0) {
+        categoriesRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
+        if (focusedElement instanceof HTMLElement) {
+          focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
       }
     }
   }, [focusedCat, isZoneCat]);
@@ -295,9 +301,9 @@ export const PageSeries = () => {
           {filteredSeries.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {displayedSeries.map((s, i) => (
-                <SeriesCard
+                <StreamPoster
                   key={s.id}
-                  series={s}
+                  stream={s}
                   isFocused={isZoneList && focusedIndex === i}
                   onPlay={() => setCurrentSerie(s)}
                 />

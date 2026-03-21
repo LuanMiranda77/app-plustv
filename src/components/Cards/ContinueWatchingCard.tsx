@@ -51,7 +51,7 @@ export const ContinueWatchingCard = ({
         <img
           src={item.poster || item.logo || 'https://via.placeholder.com/400x225?text=No+Image'}
           alt={item.name}
-          className={`w-full h-full object-cover group-hover:brightness-75 ${isFocused ? 'brightness-75' : ''} transition-brightness`}
+          className={`w-full h-full object-cover group-hover:brightness-75 ${isFocused ? 'brightness-75 border-2 border-red-600' : ''} transition-brightness`}
         />
 
         {/* Progress Bar */}
@@ -65,7 +65,7 @@ export const ContinueWatchingCard = ({
 
       {/* Overlay */}
       <div
-        className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 ${isFocused ? 'ring-2 opacity-100' : ''} transition-opacity flex flex-col justify-between p-3`}
+        className={`absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 ${isFocused ? 'ring-2 opacity-100' : ''} transition-opacity flex flex-col justify-between p-3`}
       >
         <div className="flex justify-end">
           <button

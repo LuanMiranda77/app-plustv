@@ -56,11 +56,12 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
         w-full 
         overflow-hidden 
         transition-all 
-        duration-200 bg-gray-800 
-        rounded-tl rounded-bl
+        duration-200 
+        rounded-lg
         items-center
-        ${isFocused ? 'scale-105 shadow-lg shadow-red-600/50' : ''}
-        hover:scale-105
+        gap-3
+        ${isFocused ? 'scale-[1.02] bg-gray-700 shadow-lg shadow-red-600/40 ring-2 ring-red-600' : 'bg-gray-800/80'}
+        hover:scale-[1.02] hover:bg-gray-700 hover:shadow-lg hover:shadow-red-600/30
       `}
         onClick={() => {
           handleFullscreen();
@@ -68,41 +69,51 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
         }}
       >
         {/* Logo/Thumbnail */}
-        <div className="bg-gray-600/50 hover:bg-gray-600 aspect-video flex items-center justify-center z-40">
+        <div className="bg-gray-700/50 flex-shrink-0 flex items-center justify-center rounded-l-lg">
           <img
             src={channel.logo ?? '/placeholder.png'}
             alt={channel.name}
-            loading="lazy" // carrega só quando visível
-            decoding="async" // não bloqueia render
-            className="max-w-[80px] h-[80px] max-md:max-w-[50px] max-md:h-[50px]  object-contain group-hover:brightness-75 transition-brightness p-1"
+            loading="lazy"
+            decoding="async"
+            className="w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px] object-contain p-2"
             onError={(e: any) => {
-              // fallback se imagem quebrar
               e.currentTarget.style.display = 'none';
-              e.currentTarget.nextElementSibling.style.display = 'flex';
+              if (e.currentTarget.nextElementSibling)
+                e.currentTarget.nextElementSibling.style.display = 'flex';
             }}
           />
+          <div className="hidden w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px] items-center justify-center text-gray-500 text-3xl">
+            📺
+          </div>
         </div>
-        <h3
-          className={`
-          text-white text-4xl max-md:text-lg
-          w-full h-[80px] max-md:h-[50px] text-left font-semibold 
-          flex items-center line-clamp-1 px-2 break-all
-          transition-all duration-200
-        
-          `}
-        >
-          {channel.name}
-        </h3>
+
+        {/* Channel info */}
+        <div className="flex-1 flex flex-col justify-center py-3 pr-2 text-left min-w-0">
+          <h3 className="text-white text-2xl max-md:text-base font-semibold line-clamp-1 break-all">
+            {channel.name}
+          </h3>
+          {channel.category && (
+            <span className="text-gray-400 text-sm max-md:text-xs line-clamp-1 mt-1">
+              {channel.category}
+            </span>
+          )}
+        </div>
+
+        {/* Favorite button */}
         <button
-          onClick={toggleFavorite}
+          onClick={e => {
+            e.stopPropagation();
+            toggleFavorite();
+          }}
           className={`
-          max-w-[80px] h-[80px] max-md:max-w-[50px] max-md:h-[50px] 
-          px-3 py-1.5 rounded-tr rounded-br transition-colors 
-          bg-gray-600/50 hover:bg-gray-600 
-          ${isFav ? 'text-netflix-red ' : ' text-gray-300 '}
+          flex-shrink-0 w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px]
+          flex items-center justify-center
+          rounded-r-lg transition-colors 
+          bg-gray-700/30 hover:bg-gray-600 
+          ${isFav ? 'text-red-500' : 'text-gray-400'}
         `}
         >
-          <Heart className="w-5 h-5 fill-current" />
+          <Heart className={`w-6 h-6 ${isFav ? 'fill-current' : ''}`} />
         </button>
       </button>
     </div>

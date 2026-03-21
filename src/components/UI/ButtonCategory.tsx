@@ -24,7 +24,7 @@ export default function ButtonCategory({
         transition-all duration-200
         ${
           isSelected
-            ? 'bg-red-600 text-white'
+            ? `bg-red-600 text-white ${isFocused &&'scale-105'}`
             : isFocused
               ? 'bg-gray-500 text-white scale-105'
               : 'bg-gray-800 text-gray-300 hover:bg-gray-700'

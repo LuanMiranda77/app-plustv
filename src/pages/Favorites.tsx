@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
-import { MovieCard } from '../components/Cards/MovieCard';
-import { SeriesCard } from '../components/Cards/SeriesCard';
+import { StreamPoster } from '../components/Cards/StreamPoster';
 import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
 import { useFocusZone } from '../Context/FocusContext';
@@ -65,7 +64,7 @@ export const Favorites = () => {
     onRight: () => {
       if (isZoneCat) {
         setActiveZone('list');
-        setFocusedIndex(0);
+        setFocusedIndex(focusedIndex === -1 ? 0 : focusedIndex);
         setFocusedInput(false);
       }
       // Navegar direita dentro da lista (mesma linha)
@@ -82,14 +81,14 @@ export const Favorites = () => {
         // Para canais (1 coluna), volta direto
         if (selectedCategory === '1') {
           setActiveZone('content');
-          setFocusedCat(0);
+          setFocusedCat(focusedCat);
         } else {
           // Para filmes/séries (5 colunas)
           const column = focusedIndex % 5;
           const isFirstColumn = column === 0;
           if (isFirstColumn) {
             setActiveZone('content');
-            setFocusedCat(0);
+            setFocusedCat(focusedCat);
           } else {
             setFocusedIndex(focusedIndex - 1);
           }
@@ -120,6 +119,7 @@ export const Favorites = () => {
       }
       if (isZoneCat && focusedCat === 0) {
         setActiveZone('menu');
+        return;
       } else if (isZoneCat && focusedCat > 0) {
         setFocusedCat(Math.max(focusedCat - 1, 0));
       }
@@ -150,6 +150,7 @@ export const Favorites = () => {
     onOk: () => {
       if (isZoneCat) {
         setSelectedCategory(filteredSeries[focusedCat]?.id || null);
+        setFocusedIndex(0);
       }
       if (isZoneList) {
         //  setIsFullScreen(true);
@@ -204,9 +205,9 @@ export const Favorites = () => {
               {filteredSeries.map((stream, i) => {
                 if (stream.category_fav === '2') {
                   return (
-                    <MovieCard
+                    <StreamPoster
                       key={stream.id}
-                      movie={stream as any}
+                      stream={stream as any}
                       isFocused={activeZone === 'content' && focusedIndex === i}
                       onPlay={() => {
                         navigate('/player', {
@@ -225,9 +226,9 @@ export const Favorites = () => {
                 }
                 if (stream.category_fav === '3') {
                   return (
-                    <SeriesCard
+                    <StreamPoster
                       key={stream.id}
-                      series={stream as any}
+                      stream={stream as any}
                       isFocused={activeZone === 'content' && focusedIndex === i}
                       onPlay={() => {
                         navigate('/series', {

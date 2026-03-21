@@ -63,7 +63,7 @@ export const Carousel = ({ children, itemsVisible = 6, gap = 16 }: CarouselProps
         ref={scrollContainerRef}
         onScroll={handleScroll}
         onLoad={updateScrollButtons}
-        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth p-2"
       >
         {children.map((child, index) => (
           <div key={index} className="flex-shrink-0">

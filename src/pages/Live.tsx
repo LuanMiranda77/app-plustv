@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
-import { RectangleHorizontalIcon } from 'lucide-react';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { ChannelCard } from '../components/Cards/ChannelCard';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
 import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
+import RemoteHint from '../components/UI/RemoteHint';
 import { useFocusZone } from '../Context/FocusContext';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import useWindowSize from '../hooks/useWindowSize';
@@ -14,7 +14,7 @@ import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { xtreamApi } from '../utils/xtreamApi';
-import RemoteHint from '../components/UI/RemoteHint';
+import { EpgList } from '../components/UI/EpgList';
 
 export const Live = () => {
   const location = useLocation();
@@ -100,7 +100,7 @@ export const Live = () => {
     onRight: () => {
       if (isZoneCat) {
         setActiveZone('list');
-        setFocusedIndex(0);
+        setFocusedIndex(focusedIndex === -1 ? 0 : focusedIndex);
       }
       if (isZoneList && epgList.length > 0 && currentStream) {
         setActiveZone('epg');
@@ -113,7 +113,7 @@ export const Live = () => {
       }
       if (isZoneList) {
         setActiveZone('content');
-        setFocusedCat(0);
+        setFocusedCat(focusedCat);
       }
     },
     onDown: () => {
@@ -133,6 +133,7 @@ export const Live = () => {
     },
     onUp: () => {
       if (isZoneCat && focusedCat == 0) {
+        categoriesRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
         setActiveZone('menu');
       }
       if (isZoneCat && focusedCat > 0) {
@@ -157,6 +158,7 @@ export const Live = () => {
     onOk: () => {
       if (isZoneCat) {
         setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
+        setFocusedIndex(0);
       }
       if (isZoneList) {
         if (
@@ -240,10 +242,13 @@ export const Live = () => {
   // Auto-scroll quando o foco muda
   useEffect(() => {
     if (isZoneCat && categoriesRef.current) {
-      // Scroll para categoria focada
-      const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
-      if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      if (focusedCat === 0) {
+        categoriesRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
+        if (focusedElement instanceof HTMLElement) {
+          focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
       }
     }
   }, [focusedCat, isZoneCat]);
@@ -304,7 +309,7 @@ export const Live = () => {
         )}
 
         {/* Grid */}
-        <div ref={gridRef} className={`flex-1 px-3 py-8 overflow-y-scroll`}>
+        <div ref={gridRef} className={`flex-1 px-4 py-8 overflow-y-scroll overflow-x-none `}>
           <div className="flex-1 mb-5">
             <Input
               ref={inputRef}
@@ -365,7 +370,7 @@ export const Live = () => {
           >
             {!isFullScreen && (
               <div className="w-full text-2xl max-md:text-sm font-semibold line-clamp-1 bg-netflix-red">
-                Preview
+                Canal - {currentStream ? currentStream.name : 'Nenhum canal selecionado'}
               </div>
             )}
             <VideoPlayer
@@ -391,77 +396,12 @@ export const Live = () => {
                     <RemoteHint color="yellow" label="Favoritar canal" />
                   </div>
                 </section>
-
-                {/* EPG / Programação */}
-                {epgList.length > 0 && (
-                  <section className="w-full max-w-7xl mt-6">
-                    <div
-                      className={`border-b text-2xl font-semibold line-clamp-1 pb-2 ${isZoneEpg ? 'border-red-600 text-red-500' : 'border-gray-800'}`}
-                    >
-                      <h4>
-                        📺 Programação do Canal{' '}
-                        {isZoneEpg && (
-                          <span className="text-sm text-gray-400 font-normal">
-                            ← → para navegar
-                          </span>
-                        )}
-                      </h4>
-                    </div>
-                    <div
-                      ref={epgRef}
-                      className="space-y-2 mt-3 max-h-[calc(100vh-900px)] overflow-y-auto"
-                    >
-                      {isLoadingEpg && (
-                        <div className="flex items-center justify-center py-4">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600" />
-                        </div>
-                      )}
-                      {!isLoadingEpg &&
-                        epgList.map((program: any, idx: number) => {
-                          const startTime = program.start_timestamp
-                            ? new Date(program.start_timestamp * 1000).toLocaleTimeString('pt-BR', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })
-                            : '';
-                          const endTime = program.stop_timestamp
-                            ? new Date(program.stop_timestamp * 1000).toLocaleTimeString('pt-BR', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })
-                            : '';
-
-                          return (
-                            <div
-                              key={idx}
-                              data-focused={isZoneEpg && focusedEpgIndex === idx}
-                              className={`p-3 rounded border transition ${
-                                isZoneEpg && focusedEpgIndex === idx
-                                  ? 'bg-red-600/20 border-red-600 ring-1 ring-red-600'
-                                  : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700/50'
-                              }`}
-                            >
-                              <div className="flex items-start gap-3">
-                                <div className="text-2xl max-md:text-sm font-mono text-red-500 flex-shrink-0 min-w-max">
-                                  {startTime && endTime ? `${startTime} - ${endTime}` : ''} ➜
-                                </div>
-                                <div className="flex-1">
-                                  <p className="text-left text-2xl max-md:text-sm font-medium text-gray-100 line-clamp-1">
-                                    {atob(program.title || '') ||
-                                      atob(program.NAME || '') ||
-                                      'Sem título'}
-                                  </p>
-                                  <p className="text-xs text-gray-400 mt-1 line-clamp-2">
-                                    {atob(program.description || '')}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                    </div>
-                  </section>
-                )}
+                <EpgList
+                  epgList={epgList}
+                  isZoneEpg={isZoneEpg}
+                  focusedEpgIndex={focusedEpgIndex}
+                  isLoadingEpg={isLoadingEpg}
+                />
               </Fragment>
             )}
           </div>

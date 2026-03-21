@@ -4,30 +4,30 @@ import type { Movie, Series } from '../../types';
 import StartRating from '../UI/StarRating';
 
 interface MovieCardProps {
-  movie: Movie | Series;
+  stream: Movie | Series;
   onPlay?: () => void;
   isFocused?: boolean;
 }
 
-export const MovieCard = ({ movie, onPlay, isFocused }: MovieCardProps) => {
+export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
   const { isFavorite } = useFavoritesStore();
-  const isFav = isFavorite(movie.id);
+  const isFav = isFavorite(stream.id);
 
   return (
     <button
       data-focused={isFocused ? 'true' : 'false'}
       onClick={onPlay}
       className={`group relative bg-gray-800 rounded-lg overflow-hidden 
-      focus:scale-105 hover:scale-105 
+      focus:scale-110 hover:scale-110 
       transition-all duration-200 
-      ${isFocused ? 'scale-105 outline-red-600 outline-2 shadow-lg shadow-red-600/50' : 'outline-2 outline-transparent'}`}
+      ${isFocused ? 'scale-110 border-red-600 border-2' : 'border-2 border-transparent'}`}
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
-        {movie.poster ? (
+        {stream.poster ? (
           <img
-            src={movie.poster}
-            alt={movie.name}
+            src={stream.poster}
+            alt={stream.name}
             loading="lazy" // carrega só quando visível
             decoding="async" // não bloqueia render
             className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
@@ -49,7 +49,7 @@ export const MovieCard = ({ movie, onPlay, isFocused }: MovieCardProps) => {
           ${isFocused ? 'opacity-100' : ''}
         `}
       >
-        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{movie.name}</h3>
+        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{stream.name}</h3>
 
         {/* <div className="flex gap-2">
           <button
@@ -70,10 +70,10 @@ export const MovieCard = ({ movie, onPlay, isFocused }: MovieCardProps) => {
       </div>
 
       {/* Badge */}
-      {movie.rating && (
+      {stream.rating && (
         <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-0.5  rounded-bl opacity-80">
           <StartRating
-            rating={movie.rating == 'N/A' ? '0.0' : Number(movie.rating).toFixed(1)}
+            rating={stream.rating == 'N/A' ? '0.0' : Number(stream.rating).toFixed(1)}
             color="white"
           />
         </div>
@@ -84,9 +84,9 @@ export const MovieCard = ({ movie, onPlay, isFocused }: MovieCardProps) => {
         </div>
       )}
       {/* year lacament */}
-      {movie.year && (
+      {stream.year && (
         <div className="absolute bottom-0 right-0 bg-red-600 text-white text-xs px-1 py-0.5 rounded-tl opacity-80">
-          {movie.year == 'N/A' ? '0000' : movie.year}
+          {stream.year == 'N/A' ? '0000' : stream.year}
         </div>
       )}
     </button>
