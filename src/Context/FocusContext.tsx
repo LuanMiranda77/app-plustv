@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState } from 'react';
 
-type FocusZone = 'menu' | 'cat' | 'content' | 'list' | 'detail';
+type FocusZone = 'menu' | 'cat' | 'content' | 'list' | 'detail' | 'epg';
 
 type FocusContextType = {
   activeZone: FocusZone;

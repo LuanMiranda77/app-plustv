@@ -16,7 +16,7 @@ export const Login = () => {
     name: '',
     url: '',
     username: '',
-    password: '',
+    password: ''
   });
 
   const [validationErrors, setValidationErrors] = useState<Partial<ServerConfig>>({});
@@ -33,7 +33,7 @@ export const Login = () => {
     name: nameInputRef,
     username: usernameInputRef,
     password: passwordInputRef,
-    url: urlInputRef,
+    url: urlInputRef
   };
 
   // Focar botão submit quando necessário
@@ -85,7 +85,7 @@ export const Login = () => {
       }
     }
 
-    setValidationErrors((prev) => ({ ...prev, ...errors }));
+    setValidationErrors(prev => ({ ...prev, ...errors }));
     return Object.keys(errors).length === 0;
   };
 
@@ -100,7 +100,7 @@ export const Login = () => {
         }
       }
 
-      setFocusedFieldIndex((prev) => {
+      setFocusedFieldIndex(prev => {
         const next = prev + 1;
         if (next <= fields.length) {
           if (next < fields.length) {
@@ -115,7 +115,7 @@ export const Login = () => {
       });
     },
     onUp: () => {
-      setFocusedFieldIndex((prev) => {
+      setFocusedFieldIndex(prev => {
         const next = prev - 1;
         if (next >= 0) {
           if (next < fields.length) {
@@ -142,7 +142,7 @@ export const Login = () => {
         // Campo de input - validar antes de ir para próximo
         if (validateField(focusedFieldIndex)) {
           // Campo válido, ir para próximo
-          setFocusedFieldIndex((prev) => {
+          setFocusedFieldIndex(prev => {
             const next = prev + 1;
             if (next <= fields.length) {
               if (next < fields.length) {
@@ -162,17 +162,17 @@ export const Login = () => {
       // Reset ou voltar
       setFocusedFieldIndex(0);
       nameInputRef.current?.focus();
-    },
+    }
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
     // Limpar erro ao começar a digitar
     if (validationErrors[name as keyof ServerConfig]) {
-      setValidationErrors((prev) => ({
+      setValidationErrors(prev => ({
         ...prev,
-        [name]: undefined,
+        [name]: undefined
       }));
     }
   };
@@ -243,7 +243,7 @@ export const Login = () => {
               autoComplete="off"
               className={focusedFieldIndex === 0 ? 'ring-2 ring-red-600' : ''}
               onFocus={() => setFocusedFieldIndex(0)}
-              onKeyDown={(e) => {
+              onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   if (validateField(0)) {
@@ -267,7 +267,7 @@ export const Login = () => {
               autoComplete="off"
               className={focusedFieldIndex === 1 ? 'ring-2 ring-red-600' : ''}
               onFocus={() => setFocusedFieldIndex(1)}
-              onKeyDown={(e) => {
+              onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   if (validateField(1)) {
@@ -291,7 +291,7 @@ export const Login = () => {
               autoComplete="off"
               className={focusedFieldIndex === 2 ? 'ring-2 ring-red-600' : ''}
               onFocus={() => setFocusedFieldIndex(2)}
-              onKeyDown={(e) => {
+              onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   if (validateField(2)) {
@@ -317,7 +317,7 @@ export const Login = () => {
               autoComplete="off"
               className={focusedFieldIndex === 3 ? 'ring-2 ring-red-600' : ''}
               onFocus={() => setFocusedFieldIndex(3)}
-              onKeyDown={(e) => {
+              onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   if (validateField(3)) {
@@ -344,7 +344,7 @@ export const Login = () => {
               size="lg"
               className={`w-full mt-6 transition-all ${focusedFieldIndex === 4 ? 'ring-2 ring-red-600' : ''}`}
               onFocus={() => setFocusedFieldIndex(4)}
-              onKeyDown={(e) => {
+              onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   if (validateForm()) {
@@ -371,8 +371,16 @@ export const Login = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-sm text-center text-gray-500">
-          <p>Todos os dados são salvos localmente no seu dispositivo</p>
+        <div className="mt-8 text-center space-y-3">
+          <button
+            onClick={() => navigate('/config-server')}
+            className="text-red-600 hover:text-red-500 font-semibold text-sm transition-colors"
+          >
+            ⚙️ Gerenciar Servidores
+          </button>
+          <p className="text-sm text-gray-500">
+            Todos os dados são salvos localmente no seu dispositivo
+          </p>
         </div>
       </div>
     </div>

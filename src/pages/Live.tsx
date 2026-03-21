@@ -13,6 +13,7 @@ import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { xtreamApi } from '../utils/xtreamApi';
+import RemoteHint from '../components/UI/RemoteHint';
 
 export const Live = () => {
   const location = useLocation();
@@ -34,8 +35,13 @@ export const Live = () => {
   const [sortedChannels, setSortedChannels] = useState(channels);
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [focusedEpgIndex, setFocusedEpgIndex] = useState(0);
+  const [focusedInput, setFocusedInput] = useState(false);
+  const epgRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
+  const isZoneEpg = activeZone === 'epg';
 
   const ITEMS_PER_PAGE = 20;
 
@@ -71,6 +77,8 @@ export const Live = () => {
             setEpgList(data);
           } else if (data && typeof data === 'object' && data.epg_listingsArr) {
             setEpgList(data.epg_listingsArr || []);
+          } else if (data && typeof data === 'object' && data.epg_listings) {
+            setEpgList(data.epg_listings || []);
           }
         })
         .catch(err => {
@@ -92,10 +100,16 @@ export const Live = () => {
         setActiveZone('list');
         setFocusedIndex(0);
       }
+      if (isZoneList && epgList.length > 0 && currentStream) {
+        setActiveZone('epg');
+        setFocusedEpgIndex(0);
+      }
     },
     onLeft: () => {
+      if (isZoneEpg) {
+        setActiveZone('list');
+      }
       if (isZoneList) {
-        // De qualquer posição na lista, volta para categorias
         setActiveZone('content');
         setFocusedCat(0);
       }
@@ -104,16 +118,38 @@ export const Live = () => {
       if (isZoneCat && focusedCat < liveCategories.length) {
         setFocusedCat(Math.min(focusedCat + 1, liveCategories.length));
       }
-      if (isZoneList && focusedIndex < displayedChannels.length - 1) {
+      if (isZoneList && focusedInput) {
+        setFocusedInput(false);
+        inputRef.current?.blur();
+        setFocusedIndex(0);
+      } else if (isZoneList && focusedIndex < displayedChannels.length - 1) {
         setFocusedIndex(Math.min(focusedIndex + 1, displayedChannels.length - 1));
+      }
+      if (isZoneEpg && focusedEpgIndex < epgList.length - 1) {
+        setFocusedEpgIndex(Math.min(focusedEpgIndex + 1, epgList.length - 1));
       }
     },
     onUp: () => {
+      if (isZoneCat && focusedCat == 0) {
+        setActiveZone('menu');
+      }
       if (isZoneCat && focusedCat > 0) {
         setFocusedCat(Math.max(focusedCat - 1, 0));
       }
-      if (isZoneList && focusedIndex > 0) {
+      if (isZoneList && focusedInput) {
+        setFocusedInput(false);
+        inputRef.current?.blur();
+        setActiveZone('menu');
+      } else if (isZoneList && focusedIndex === 0) {
+        setFocusedInput(true);
+        setFocusedIndex(-1);
+        setTimeout(() => inputRef.current?.focus(), 0);
+        gridRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (isZoneList && focusedIndex > 0) {
         setFocusedIndex(Math.max(focusedIndex - 1, 0));
+      }
+      if (isZoneEpg && focusedEpgIndex > 0) {
+        setFocusedEpgIndex(Math.max(focusedEpgIndex - 1, 0));
       }
     },
     onOk: () => {
@@ -132,8 +168,12 @@ export const Live = () => {
       }
     },
     onBack: () => {
+      if (isZoneEpg) {
+        setActiveZone('list');
+        return;
+      }
       if (!isFullScreen && (isZoneList || isZoneCat)) {
-        setActiveZone('menu'); // ← volta para categorias
+        setActiveZone('menu');
         return;
       }
       if (currentStream) {
@@ -213,6 +253,16 @@ export const Live = () => {
     }
   }, [focusedIndex, isZoneList, displayedChannels.length, hasMoreChannels]);
 
+  // Auto-scroll EPG focado
+  useEffect(() => {
+    if (isZoneEpg && epgRef.current) {
+      const focusedElement = epgRef.current.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [focusedEpgIndex, isZoneEpg]);
+
   return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
@@ -245,11 +295,14 @@ export const Live = () => {
         <div ref={gridRef} className={`flex-1 px-3 py-8 overflow-y-scroll`}>
           <div className="flex-1 mb-5">
             <Input
+              ref={inputRef}
               type="text"
               placeholder="Buscar canais..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              disabled={liveCategories.length === 0 || !selectedCategory}
+              className={focusedInput ? 'ring-2 ring-red-600' : ''}
+              onFocus={() => setFocusedInput(true)}
+              onBlur={() => setFocusedInput(false)}
             />
           </div>
           {filteredChannels.length > 0 ? (
@@ -295,7 +348,7 @@ export const Live = () => {
           <div
             className={`
             flex flex-col items-center
-            ${isFullScreen ? 'fixed inset-0 z-50 bg-black' : ' w-5/12 max-w-[1300px] relative mt-[35px] mx-4'}
+            ${isFullScreen ? 'fixed inset-0 z-50 bg-black' : ' w-5/12 max-w-[1000px] relative mt-[35px] mx-4'}
            `}
           >
             {!isFullScreen && (
@@ -318,30 +371,41 @@ export const Live = () => {
             />
             {!isFullScreen && (
               <Fragment>
-                <section className="w-full max-w-7xl mt-4">
+                <section className="flex flex-col gap-4 w-full max-w-7xl mt-4">
                   <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
                     <h4>Funções dos botão</h4>
                   </div>
                   <div className="flex items-center text-2xl">
-                    <RectangleHorizontalIcon className="fill-current text-yellow-400" />
-                    <span className="ml-2">Favoritar</span>
+                    <RemoteHint color="yellow" label="Favoritar canal" />
                   </div>
                 </section>
 
                 {/* EPG / Programação */}
                 {epgList.length > 0 && (
                   <section className="w-full max-w-7xl mt-6">
-                    <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
-                      <h4>📺 Programação do Canal</h4>
+                    <div
+                      className={`border-b text-2xl font-semibold line-clamp-1 pb-2 ${isZoneEpg ? 'border-red-600 text-red-500' : 'border-gray-800'}`}
+                    >
+                      <h4>
+                        📺 Programação do Canal{' '}
+                        {isZoneEpg && (
+                          <span className="text-sm text-gray-400 font-normal">
+                            ← → para navegar
+                          </span>
+                        )}
+                      </h4>
                     </div>
-                    <div className="space-y-2 mt-3 max-h-96 overflow-y-auto">
+                    <div
+                      ref={epgRef}
+                      className="space-y-2 mt-3 max-h-[calc(100vh-900px)] overflow-y-auto"
+                    >
                       {isLoadingEpg && (
                         <div className="flex items-center justify-center py-4">
                           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600" />
                         </div>
                       )}
                       {!isLoadingEpg &&
-                        epgList.slice(0, 8).map((program: any, idx: number) => {
+                        epgList.map((program: any, idx: number) => {
                           const startTime = program.start_timestamp
                             ? new Date(program.start_timestamp * 1000).toLocaleTimeString('pt-BR', {
                                 hour: '2-digit',
@@ -358,21 +422,26 @@ export const Live = () => {
                           return (
                             <div
                               key={idx}
-                              className="bg-gray-800/50 p-3 rounded border border-gray-700 hover:bg-gray-700/50 transition"
+                              data-focused={isZoneEpg && focusedEpgIndex === idx}
+                              className={`p-3 rounded border transition ${
+                                isZoneEpg && focusedEpgIndex === idx
+                                  ? 'bg-red-600/20 border-red-600 ring-1 ring-red-600'
+                                  : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700/50'
+                              }`}
                             >
                               <div className="flex items-start gap-3">
-                                <div className="text-sm font-mono text-red-500 flex-shrink-0 min-w-max">
-                                  {startTime && endTime ? `${startTime} - ${endTime}` : ''}
+                                <div className="text-2xl max-md:text-sm font-mono text-red-500 flex-shrink-0 min-w-max">
+                                  {startTime && endTime ? `${startTime} - ${endTime}` : ''} ➜
                                 </div>
                                 <div className="flex-1">
-                                  <p className="text-sm font-medium text-gray-100 line-clamp-1">
-                                    {program.title || program.name || 'Sem título'}
+                                  <p className="text-left text-2xl max-md:text-sm font-medium text-gray-100 line-clamp-1">
+                                    {atob(program.title || '') ||
+                                      atob(program.NAME || '') ||
+                                      'Sem título'}
                                   </p>
-                                  {program.description && (
-                                    <p className="text-xs text-gray-400 mt-1 line-clamp-2">
-                                      {program.description}
-                                    </p>
-                                  )}
+                                  <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                                    {atob(program.description || '')}
+                                  </p>
                                 </div>
                               </div>
                             </div>

@@ -112,10 +112,14 @@ export const Favorites = () => {
     },
     onUp: () => {
       if (focusedInput) {
+        setFocusedInput(false);
         inputRef.current?.blur();
+        setActiveZone('menu');
         return;
       }
-      if (isZoneCat && focusedCat > 0) {
+      if (isZoneCat && focusedCat === 0) {
+        setActiveZone('menu');
+      } else if (isZoneCat && focusedCat > 0) {
         setFocusedCat(Math.max(focusedCat - 1, 0));
       }
       if (isZoneList) {
@@ -125,6 +129,7 @@ export const Favorites = () => {
             setFocusedIndex(-1);
             setFocusedInput(true);
             setTimeout(() => inputRef.current?.focus(), 0);
+            gridRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
           } else if (focusedIndex > 0) {
             setFocusedIndex(focusedIndex - 1);
           }
@@ -134,6 +139,7 @@ export const Favorites = () => {
             setFocusedIndex(-1);
             setFocusedInput(true);
             setTimeout(() => inputRef.current?.focus(), 0);
+            gridRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
           } else if (focusedIndex > 0) {
             setFocusedIndex(Math.max(focusedIndex - 5, 0));
           }

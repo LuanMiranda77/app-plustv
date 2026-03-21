@@ -284,7 +284,8 @@ export const xtreamApi = {
         params: {
           username: config.username,
           password: config.password,
-          action: 'get_live_epg',
+          //  action: 'get_simple_data_table', //completo
+          action: 'get_short_epg',
           stream_id: streamId
         },
         timeout: 10000

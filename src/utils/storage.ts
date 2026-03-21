@@ -1,12 +1,13 @@
 // Chaves do localStorage
 export const STORAGE_KEYS = {
   SERVER_CONFIG: 'iptv_server_config',
+  SERVER_LIST: 'iptv_server_list',
   PROFILES: 'iptv_profiles',
   ACTIVE_PROFILE: 'iptv_active_profile',
   FAVORITES: 'iptv_favorites',
   WATCH_HISTORY: 'iptv_watch_history',
   PLAYLIST_CACHE: 'iptv_playlist_cache',
-  SETTINGS: 'iptv_settings',
+  SETTINGS: 'iptv_settings'
 } as const;
 
 // Funções auxiliares de storage
@@ -59,5 +60,5 @@ export const storage = {
     } catch (error) {
       console.error('Erro ao limpar localStorage:', error);
     }
-  },
+  }
 };

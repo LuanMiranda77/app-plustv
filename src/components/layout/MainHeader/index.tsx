@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { Film, Heart, Home, RefreshCw, Tv2, TvMinimalPlay } from 'lucide-react';
+import { Film, Heart, Home, RefreshCw, Server, Tv2, TvMinimalPlay } from 'lucide-react';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -31,26 +31,52 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'menu';
 
+  // focusedIndex: 0..4 = menus, 5 = config server, 6 = perfil
+  const FOCUS_CONFIG = menus.length;
+  const FOCUS_PERFIL = menus.length + 1;
+  const FOCUS_MAX = FOCUS_PERFIL;
+
   const nextButton = () => {
     if (!isActive) return;
+    setFocusedPerfil(false);
+    setFocuseConfig(false);
     setFocusedIndex(i => {
-      const index = Math.min(i + 1, menus.length - 1);
-      navigate(menus[index].path);
-      return index;
+      const next = Math.min(i + 1, FOCUS_MAX);
+      if (next < menus.length) {
+        navigate(menus[next].path);
+      } else if (next === FOCUS_CONFIG) {
+        setFocuseConfig(true);
+      } else if (next === FOCUS_PERFIL) {
+        setFocuseConfig(false);
+        setFocusedPerfil(true);
+      }
+      return next;
     });
   };
   const backButton = () => {
     if (!isActive) return;
+    setFocusedPerfil(false);
+    setFocuseConfig(false);
     setFocusedIndex(i => {
-      const index = Math.max(i - 1, 0);
-      navigate(menus[index].path);
-      return index;
+      const next = Math.max(i - 1, 0);
+      if (next < menus.length) {
+        navigate(menus[next].path);
+      } else if (next === FOCUS_CONFIG) {
+        setFocuseConfig(true);
+      }
+      return next;
     });
   };
   const okButton = (i: number) => {
     if (!isActive) return;
-    setFocusedIndex(i);
-    navigate(menus[i].path);
+    if (i < menus.length) {
+      setFocusedIndex(i);
+      navigate(menus[i].path);
+    } else if (i === FOCUS_CONFIG) {
+      navigate('/config-server');
+    } else if (i === FOCUS_PERFIL) {
+      navigate('/profiles');
+    }
   };
 
   useRemoteControl({
@@ -64,7 +90,12 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   });
 
   useEffect(() => {
-    setFocusedIndex(menus.findIndex(menu => menu.path === location.pathname));
+    const idx = menus.findIndex(menu => menu.path === location.pathname);
+    if (idx >= 0) {
+      setFocusedIndex(idx);
+      setFocusedPerfil(false);
+      setFocuseConfig(false);
+    }
   }, [location]);
 
   return (
@@ -84,7 +115,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                   key={menu.title}
                   title={menu.title}
                   icon={menu.icon}
-                  isFocused={focusedIndex === i}
+                  isFocused={focusedIndex === i && !focusedPerfil && !focusedConfig}
                   onClick={() => {
                     setActiveZone('menu');
                     setFocusedIndex(i);
@@ -94,9 +125,9 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                 />
               ))}
             </section>
-            <section className=" relative items-center gap-4">
+            <section className=" relative flex items-center gap-3">
               {lastUpdate && (
-                <div className="absolute text-right w-[150px] top-[-15px] max-md:top-[-18px] right-0">
+                <div className="absolute text-right w-[150px] top-[-15px] max-md:top-[-18px] right-[90px]">
                   <p className="text-gray-400 text-[11px]">
                     <b className="text-gray-300">Atualizado</b>{' '}
                     {moment(lastUpdate).format('DD/MM/YY')}
@@ -114,7 +145,22 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                 </div>
               )}
               <button
-                className="bg-gray-600 p-0.5 rounded-lg text-[25px] max-md:text-xl"
+                className={`p-2 rounded-lg transition-all ${
+                  focusedConfig
+                    ? 'bg-red-600 text-white scale-110 shadow-lg shadow-red-600/50'
+                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white'
+                }`}
+                title="Servidores"
+                onClick={() => navigate('/config-server')}
+              >
+                <Server className="w-5 h-5" />
+              </button>
+              <button
+                className={`p-0.5 rounded-lg text-[25px] max-md:text-xl transition-all ${
+                  focusedPerfil
+                    ? 'ring-2 ring-red-600 scale-110 shadow-lg shadow-red-600/50 bg-red-600'
+                    : 'bg-gray-600'
+                }`}
                 title={activeProfile?.name}
                 onClick={() => navigate('/profiles')}
               >

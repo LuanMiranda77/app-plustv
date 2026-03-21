@@ -11,6 +11,8 @@ import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Profile } from '../types';
+import RemoteHint from '../components/UI/RemoteHint';
+import useWindowSize from '../hooks/useWindowSize';
 
 export const ProfileSelect = () => {
   const navigate = useNavigate();
@@ -36,12 +38,12 @@ export const ProfileSelect = () => {
   // Total de itens: perfis + botão de adicionar (se disponível)
   const totalItems = profiles.length + (profiles.length < 5 ? 1 : 0);
   const heroItems = [
-    ...movies.slice(0, 5).map((m) => ({
-      ...m,
+    ...movies.slice(0, 5).map(m => ({
+      ...m
     })),
-    ...series.slice(0, 5).map((s) => ({
-      ...s,
-    })),
+    ...series.slice(0, 5).map(s => ({
+      ...s
+    }))
   ];
 
   // Handlers para navegação por controle remoto/teclado
@@ -64,7 +66,7 @@ export const ProfileSelect = () => {
           setBtnFocusIndex(AVATAR_COUNT + 2); // Criar/Salvar
         }
       } else {
-        setFocusedIndex((prev) => (prev + 1) % totalItems);
+        setFocusedIndex(prev => (prev + 1) % totalItems);
       }
     },
     onLeft: () => {
@@ -86,7 +88,7 @@ export const ProfileSelect = () => {
           setBtnFocusIndex(AVATAR_COUNT + 1); // Cancelar
         }
       } else {
-        setFocusedIndex((prev) => (prev - 1 + totalItems) % totalItems);
+        setFocusedIndex(prev => (prev - 1 + totalItems) % totalItems);
       }
     },
     onDown: () => {
@@ -106,7 +108,7 @@ export const ProfileSelect = () => {
           setBtnFocusIndex(AVATAR_COUNT + 1);
         }
       } else {
-        setFocusedIndex((prev) => (prev + 1) % totalItems);
+        setFocusedIndex(prev => (prev + 1) % totalItems);
       }
     },
     onUp: () => {
@@ -128,7 +130,7 @@ export const ProfileSelect = () => {
           setBtnFocusIndex(AVATAR_COUNT);
         }
       } else {
-        setFocusedIndex((prev) => (prev - 1 + totalItems) % totalItems);
+        setFocusedIndex(prev => (prev - 1 + totalItems) % totalItems);
       }
     },
     onOk: () => {
@@ -188,7 +190,7 @@ export const ProfileSelect = () => {
       setNewProfile({ name: '', avatar: '🎬' });
       setEditingProfile(null);
       setShowAddForm(false);
-    },
+    }
   });
 
   const handleSelectProfile = (profile: Profile) => {
@@ -197,7 +199,7 @@ export const ProfileSelect = () => {
     setFavoritesProfile(profile.id);
     setHistoryProfile(profile.id);
     navigate('/home');
-  };;
+  };
 
   const handleAddProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,7 +209,7 @@ export const ProfileSelect = () => {
       // Modo edição
       updateProfile(editingProfile.id, {
         name: newProfile.name,
-        avatar: newProfile.avatar,
+        avatar: newProfile.avatar
       });
       setNewProfile({ name: '', avatar: '🎬' });
       setEditingProfile(null);
@@ -220,7 +222,7 @@ export const ProfileSelect = () => {
         id: Date.now().toString(),
         name: newProfile.name,
         avatar: newProfile.avatar,
-        createdAt: new Date(),
+        createdAt: new Date()
       };
 
       addProfile(profile);
@@ -229,9 +231,11 @@ export const ProfileSelect = () => {
     }
   };
 
+  const { isMobile } = useWindowSize();
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
-      {heroItems.length > 0 && !isLoading && (
+      {heroItems.length > 0 && !isLoading && !isMobile && (
         <div className="absolute inset-0 z-10">
           <AutoCarousel items={heroItems} autoPlayInterval={5000} className="absolute" infoRight />
         </div>
@@ -245,14 +249,7 @@ export const ProfileSelect = () => {
         </div>
 
         {/* Instruções de Controle - Apenas TV */}
-        <div className="mb-6 p-3 bg-yellow-600/20 border border-yellow-600/50 rounded-lg max-w-md hidden md:block">
-          <p className="text-yellow-400 text-xl flex items-center gap-2">
-            <RectangleHorizontalIcon className="text-lg fill-amber-400" />
-            <span>
-              <strong>Botão Amarelo:</strong> Editar perfil
-            </span>
-          </p>
-        </div>
+        <RemoteHint color="yellow" label="Editar perfil" />
 
         {/* Profiles Grid */}
         <div className="grid grid-cols-1 max-md:grid-cols-4 gap-4">
@@ -268,7 +265,7 @@ export const ProfileSelect = () => {
             >
               {/* Botão Editar (para celular e desktop) */}
               <button
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   setEditingProfile({ id: profile.id, name: profile.name, avatar: profile.avatar });
                   setNewProfile({ name: profile.name, avatar: profile.avatar });
@@ -354,11 +351,11 @@ export const ProfileSelect = () => {
                   type="text"
                   placeholder="Nome do perfil"
                   value={newProfile.name}
-                  onChange={(e) => setNewProfile({ ...newProfile, name: e.target.value })}
+                  onChange={e => setNewProfile({ ...newProfile, name: e.target.value })}
                   className={`transition-all ${
                     btnfocusIndex === AVATAR_COUNT ? 'ring-2 ring-red-600 border-red-600' : ''
                   }`}
-                  onKeyDown={(e) => {
+                  onKeyDown={e => {
                     if (
                       e.keyCode === 13 &&
                       e.currentTarget.value.trim().length > 0 &&
