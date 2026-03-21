@@ -1,221 +1,47 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { Heart } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
 import { StreamPoster } from '../components/Cards/StreamPoster';
 import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
 import MovieDetail from '../components/UI/MovieDetail';
-import { useFocusZone } from '../Context/FocusContext';
-import { useBackGuard } from '../hooks/useBackGuard';
-import { useRemoteControl } from '../hooks/useRemotoControl';
-import { useContentStore } from '../store/contentStore';
-import { useFavoritesStore } from '../store/favoritesStore';
-import type { Movie } from '../types';
+import { useMoviesPage } from '../hooks/useMoviesPage';
 
 export const Movies = () => {
-  const { movies, vodCategories } = useContentStore();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
-  const [displayCount, setDisplayCount] = useState(20); // Mostrar 20 itens por vez
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
-  const { activeZone, setActiveZone } = useFocusZone();
-  const [focusedCat, setFocusedCat] = useState(0);
-  const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [focusedInput, setFocusedInput] = useState(false);
-  const isZoneCat = activeZone === 'content';
-  const isZoneList = activeZone === 'list';
+  const {
+    // Busca e filtros
+    searchTerm,
+    setSearchTerm,
+    selectedCategory,
+    setSelectedCategory,
 
-  // Interceptar voltar nativo do navegador/TV quando no detalhe do filme
-  useBackGuard(!!currentMovie, () => setCurrentMovie(null));
+    // Filme atual
+    currentMovie,
+    setCurrentMovie,
 
-  const ITEMS_PER_PAGE = 20;
+    // Favoritos
+    isFavorite,
+    toggleFavorite,
 
-  const categoriesWithAll = [
-    { id: '-1', name: 'FAVORITOS' },
-    { id: null, name: 'TODOS' },
-    ...vodCategories
-  ];
+    // Refs
+    loadMoreRef,
+    gridRef,
+    categoriesRef,
+    inputRef,
 
-  const filteredMovies = movies.filter(movie => {
-    const matchesSearch =
-      movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      !selectedCategory ||
-      movie.category === selectedCategory ||
-      (selectedCategory === '-1' && isFavorite(movie.id));
+    // Foco
+    isZoneCat,
+    isZoneList,
+    focusedCat,
+    focusedIndex,
+    focusedInput,
+    setFocusedInput,
 
-    return matchesSearch && matchesCategory;
-  });
-
-  // Filmes a exibir (com limit de displayCount)
-  const displayedMovies = filteredMovies.slice(0, displayCount);
-  const hasMoreMovies = displayCount < filteredMovies.length;
-
-  const toggleFavorite = (movie: Movie) => {
-    if (isFavorite(movie.id)) {
-      removeFavorite(movie.id);
-    } else {
-      addFavorite(movie, 'movie');
-    }
-  };
-
-  // Hotkeys para navegação
-  useRemoteControl({
-    onRight: () => {
-      if (isZoneCat) {
-        setActiveZone('list');
-        setFocusedIndex(focusedIndex === -1 ? 0 : focusedIndex);
-        setFocusedInput(false);
-      }
-      // Navegar direita dentro da lista (mesma linha)
-      if (isZoneList) {
-        const column = focusedIndex % 5; // 5 colunas
-        const isLastColumn = column === 4;
-        if (!isLastColumn && focusedIndex < displayedMovies.length - 1) {
-          setFocusedIndex(focusedIndex + 1);
-        }
-      }
-    },
-    onLeft: () => {
-      if (isZoneList) {
-        const column = focusedIndex % 5; // 5 colunas
-        const isFirstColumn = column === 0;
-        // Se está na primeira coluna, volta para categorias
-        if (isFirstColumn) {
-          setActiveZone('content');
-          setFocusedCat(focusedCat);
-          setFocusedIndex(-1);
-        } else {
-          // Senão, navega para esquerda
-          setFocusedIndex(focusedIndex - 1);
-        }
-      }
-    },
-    onDown: () => {
-      if (focusedInput) {
-        setFocusedInput(false);
-        setFocusedIndex(0);
-        return;
-      }
-      if (isZoneCat && focusedCat < categoriesWithAll.length - 1) {
-        setFocusedCat(Math.min(focusedCat + 1, categoriesWithAll.length - 1));
-      }
-      if (isZoneList && focusedIndex < displayedMovies.length - 1) {
-        setFocusedIndex(Math.min(focusedIndex + 5, displayedMovies.length - 1));
-      }
-    },
-    onUp: () => {
-      if (focusedInput) {
-        setFocusedInput(false);
-        inputRef.current?.blur();
-        setActiveZone('menu');
-        return;
-      }
-      if (isZoneCat && focusedCat === 0) {
-        categoriesRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-        setActiveZone('menu');
-      } else if (isZoneCat && focusedCat > 0) {
-        setFocusedCat(Math.max(focusedCat - 1, 0));
-      }
-      if (isZoneList && focusedIndex >= 0 && focusedIndex < 5) {
-        // Se está nos primeiros 5 itens (primeira linha), vai para o input
-        setFocusedIndex(-1);
-        setFocusedInput(true);
-        setTimeout(() => inputRef.current?.focus(), 0);
-        gridRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (isZoneList && focusedIndex > 0) {
-        setFocusedIndex(Math.max(focusedIndex - 5, 0));
-      }
-    },
-    onOk: () => {
-      if (isZoneCat) {
-        setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
-        setFocusedIndex(0);
-      }
-      if (isZoneList && displayedMovies[focusedIndex]) {
-        setCurrentMovie(displayedMovies[focusedIndex]);
-      }
-    },
-    onBack: () => {
-      if (currentMovie) {
-        window.history.back();
-        return;
-      }
-      if (isZoneList || isZoneCat) {
-        setActiveZone('menu');
-      }
-    }
-  });
-
-  // Infinite scroll - detectar quando chegar ao final
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMoreMovies && !isLoadingMore) {
-          setIsLoadingMore(true);
-          // Simular delay de carregamento
-          setTimeout(() => {
-            setDisplayCount(prev => prev + ITEMS_PER_PAGE);
-            setIsLoadingMore(false);
-          }, 300);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [hasMoreMovies, isLoadingMore]);
-
-  // Resetar displayCount ao mudar filtros
-  useEffect(() => {
-    setDisplayCount(ITEMS_PER_PAGE);
-  }, [searchTerm, selectedCategory]);
-
-  // Auto-scroll quando o foco muda
-  useEffect(() => {
-    if (isZoneCat && categoriesRef.current) {
-      if (focusedCat === 0) {
-        categoriesRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
-        if (focusedElement instanceof HTMLElement) {
-          focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      }
-    }
-  }, [focusedCat, isZoneCat]);
-
-  useEffect(() => {
-    if (isZoneList && gridRef.current) {
-      // Scroll para o filme focado
-      const focusedElement = gridRef.current.querySelector('[data-focused="true"]');
-      if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-  }, [focusedIndex, isZoneList]);
-
-  // Carregar mais filmes quando chegar próximo ao final durante navegação por setas
-  useEffect(() => {
-    if (isZoneList && focusedIndex >= displayedMovies.length - 1 && hasMoreMovies) {
-      setDisplayCount(prev => prev + ITEMS_PER_PAGE);
-    }
-  }, [focusedIndex, isZoneList, displayedMovies.length, hasMoreMovies]);
+    // Dados
+    categoriesWithAll,
+    filteredMovies,
+    displayedMovies,
+    hasMoreMovies,
+    isLoadingMore,
+  } = useMoviesPage();
 
   return currentMovie ? (
     <MovieDetail
@@ -226,8 +52,9 @@ export const Movies = () => {
   ) : (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
-        {/* Filters */}
-        {vodCategories.length > 0 && (
+
+        {/* ── Categorias ───────────────────────────────────────────────────── */}
+        {categoriesWithAll.length > 0 && (
           <div
             ref={categoriesRef}
             className="w-3/12 max-md:w-4/12 border-b border-gray-800 bg-gray-900/50 sticky top-20 overflow-y-scroll pt-4"
@@ -246,9 +73,7 @@ export const Movies = () => {
                         <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
                       ) : undefined
                     }
-                    onClick={() => {
-                      setSelectedCategory(cat.id as any);
-                    }}
+                    onClick={() => setSelectedCategory(cat.id as any)}
                   />
                 ))}
               </div>
@@ -256,8 +81,10 @@ export const Movies = () => {
           </div>
         )}
 
-        {/* Grid */}
+        {/* ── Grid de filmes ───────────────────────────────────────────────── */}
         <div ref={gridRef} className="flex-1 px-6 py-8 overflow-y-scroll">
+
+          {/* Busca */}
           <div className={`flex-1 mb-5 ${focusedInput ? 'ring-0 ring-red-600' : ''}`}>
             <Input
               ref={inputRef}
@@ -265,23 +92,23 @@ export const Movies = () => {
               placeholder="Buscar filmes..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              disabled={movies.length === 0}
+              onFocus={() => setFocusedInput(true)}
+              onBlur={() => setFocusedInput(false)}
             />
           </div>
+
           {filteredMovies.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {displayedMovies.map((movie, i) => {
-                return (
-                  <StreamPoster
-                    key={movie.id}
-                    stream={movie}
-                    onPlay={() => setCurrentMovie(movie)}
-                    isFocused={focusedIndex === i}
-                  />
-                );
-              })}
+              {displayedMovies.map((movie, i) => (
+                <StreamPoster
+                  key={movie.id}
+                  stream={movie}
+                  isFocused={isZoneList && focusedIndex === i}
+                  onPlay={() => setCurrentMovie(movie)}
+                />
+              ))}
 
-              {/* Sentinel element para infinite scroll */}
+              {/* Sentinel — infinite scroll */}
               <div ref={loadMoreRef} className="col-span-full py-4">
                 {hasMoreMovies && isLoadingMore && (
                   <div className="flex justify-center">
@@ -301,5 +128,5 @@ export const Movies = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

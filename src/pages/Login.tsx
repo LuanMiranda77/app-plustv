@@ -261,6 +261,7 @@ export const Login = () => {
               onChange={handleInputChange}
               error={validationErrors.name}
               disabled={isLoading}
+              autoFocus
               autoComplete="off"
               className={focusedFieldIndex === 0 ? 'ring-2 ring-red-600' : ''}
               onFocus={() => setFocusedFieldIndex(0)}

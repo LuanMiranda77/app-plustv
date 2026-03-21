@@ -29,6 +29,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const [focusedRefresh, setFocusedRefresh] = useState(false);
   const [confirmRefresh, setConfirmRefresh] = useState(false);
   const [confirmFocusBtn, setConfirmFocusBtn] = useState(0);
+  const [selectMenu, setSelectMenu] = useState(-1);
   const { activeProfile } = useAuthStore();
   const { lastUpdate, forceRefresh, isLoading } = useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
@@ -123,6 +124,12 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
       }
       backButton();
     },
+    onDown: () => {
+      if (confirmRefresh) return;
+      if (!isActive) return;
+      setActiveZone('content');
+      setSelectMenu(focusedIndex);
+    },
     onOk: () => {
       if (confirmRefresh) {
         if (confirmFocusBtn === 0) {
@@ -143,11 +150,6 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
         setConfirmFocusBtn(0);
         return;
       }
-    },
-    onDown: () => {
-      if (confirmRefresh) return;
-      if (!isActive) return;
-      setActiveZone('content');
     }
   });
 
@@ -159,6 +161,10 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
       setFocuseConfig(false);
     }
   }, [location]);
+
+  useEffect(() => {
+   if (isActive) setSelectMenu(-1);
+  }, [isActive]);
 
   return (
     activeProfile && (
@@ -181,6 +187,9 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                     isFocused={
                       focusedIndex === i && !focusedPerfil && !focusedConfig && !focusedRefresh
                     }
+                    selectMenu={
+                      selectMenu === i && !focusedPerfil && !focusedConfig && !focusedRefresh
+                    }
                     onClick={() => {
                       setActiveZone('menu');
                       setFocusedIndex(i);
@@ -194,7 +203,9 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                 {lastUpdate && (
                   <div className="text-right">
                     <b className="text-gray-300 text-lg max-md:text-xs">Atualizado em</b>{' '}
-                    <p className="text-gray-400 text-sm max-md:text-[10px]">{moment(lastUpdate).format('DD/MM/YY HH:mm')}</p>
+                    <p className="text-gray-400 text-sm max-md:text-[10px]">
+                      {moment(lastUpdate).format('DD/MM/YY HH:mm')}
+                    </p>
                   </div>
                 )}
                 <button

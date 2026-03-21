@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
@@ -39,6 +40,7 @@ export function useLivePage() {
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
   const isZoneEpg = activeZone === 'epg';
+    const [setlectLiveIndex, setSetlectLiveIndex] = useState(-1);
 
   useBackGuard(isFullScreen, () => setIsFullScreen(false));
 

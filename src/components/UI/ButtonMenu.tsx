@@ -4,6 +4,7 @@ type Props = {
   isFocused: boolean;
   onClick: () => void;
   iconOffset?: boolean;
+  selectMenu?: boolean;
 };
 
 export default function MenuButton({
@@ -12,6 +13,7 @@ export default function MenuButton({
   isFocused,
   onClick,
   iconOffset = true,
+  selectMenu = false
 }: Props) {
   return (
     <button
@@ -22,8 +24,8 @@ export default function MenuButton({
         flex items-center gap-1 px-3 py-2 
         rounded-lg transition-all duration-300 ease-in-out
         menu-btn-fill
-        ${isFocused ? 'focused' : 'unfocused'}
-        ${isFocused ? 'scale-105 shadow-lg shadow-red-600/20' : 'border-transparent scale-100'}
+        ${isFocused && !selectMenu ? 'focused' : 'unfocused'}
+        ${selectMenu ? 'bg-red-600/20 scale-100' : isFocused ? 'scale-105 shadow-lg shadow-red-600/20' : 'border-transparent scale-100'}
         hover:bg-gray-800
       `}
     >
