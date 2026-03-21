@@ -1,15 +1,15 @@
-import { Check, Edit2, Plus, Server, Trash2, X } from 'lucide-react';
+import { Check, Edit2, Plus, Server, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/UI/Button';
+import { ButtonBack } from '../components/UI/ButtonBack';
+import FormServer from '../components/UI/FormServer';
 import RemoteHint from '../components/UI/RemoteHint';
+import { useFocusZone } from '../Context/FocusContext';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useAuthStore } from '../store/authStore';
 import { useServerListStore, type ServerEntry } from '../store/serverListStore';
 import type { ServerConfig } from '../types';
-import { Button } from '../components/UI/Button';
-import { useFocusZone } from '../Context/FocusContext';
-import { ButtonBack } from '../components/UI/ButtonBack';
-import ServerForm from '../components/UI/ServerForm';
 
 const emptyForm: ServerConfig = { name: '', url: '', username: '', password: '' };
 
@@ -37,7 +37,6 @@ export const ConfigServer = () => {
   const [formFocusIndex, setFormFocusIndex] = useState(0);
   const { activeZone, setActiveZone } = useFocusZone();
   const serverRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleBack = () => {
     navigate(-1);
@@ -53,12 +52,6 @@ export const ConfigServer = () => {
   }, [focusedIndex]);
 
   const isInputActive = showForm && formFocusIndex <= 3;
-
-  useEffect(() => {
-    if (isInputActive) {
-      inputRefs.current[formFocusIndex]?.focus();
-    }
-  }, [formFocusIndex, isInputActive]);
 
   const inHeader = focusedBack || focusedNew;
 
@@ -289,8 +282,8 @@ export const ConfigServer = () => {
           </div>
         </div>
         {/* Form */}
-        {/* {showForm && (
-          <ServerForm
+        {showForm && (
+          <FormServer
             formData={formData}
             errors={errors}
             editingId={editingId}
@@ -300,107 +293,6 @@ export const ConfigServer = () => {
             onSave={handleSave}
             onCancel={handleCancel}
           />
-        )} */}
-        {showForm && (
-          <div className="bg-gray-800/80 border border-gray-700 rounded-xl px-6 mb-8">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              {editingId ? 'Editar Servidor' : 'Adicionar Servidor'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-400 text-2xl max-sm:text-sm mb-1">Nome</label>
-                <input
-                  ref={el => {
-                    inputRefs.current[0] = el;
-                  }}
-                  type="text"
-                  value={formData.name}
-                  onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Ex: Meu Servidor"
-                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
-                    formFocusIndex === 0 && !isInputActive
-                      ? 'border-red-500 ring-2 ring-red-500'
-                      : 'border-gray-600'
-                  }`}
-                />
-                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-              </div>
-              <div>
-                <label className="block text-gray-400 text-2xl max-sm:mb-1">URL do Servidor</label>
-                <input
-                  ref={el => {
-                    inputRefs.current[1] = el;
-                  }}
-                  type="text"
-                  value={formData.url}
-                  onChange={e => setFormData({ ...formData, url: e.target.value })}
-                  placeholder="http://servidor.com:8080"
-                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
-                    formFocusIndex === 1 && !isInputActive
-                      ? 'border-red-500 ring-2 ring-red-500'
-                      : 'border-gray-600'
-                  }`}
-                />
-                {errors.url && <p className="text-red-400 text-xs mt-1">{errors.url}</p>}
-              </div>
-              <div>
-                <label className="block text-gray-400 text-2xl max-sm:text-sm mb-1">Usuário</label>
-                <input
-                  ref={el => {
-                    inputRefs.current[2] = el;
-                  }}
-                  type="text"
-                  value={formData.username}
-                  onChange={e => setFormData({ ...formData, username: e.target.value })}
-                  placeholder="Usuário"
-                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
-                    formFocusIndex === 2 && !isInputActive
-                      ? 'border-red-500 ring-2 ring-red-500'
-                      : 'border-gray-600'
-                  }`}
-                />
-                {errors.username && <p className="text-red-400 text-xs mt-1">{errors.username}</p>}
-              </div>
-              <div>
-                <label className="block text-gray-400 text-2xl max-sm:text-sm mb-1">Senha</label>
-                <input
-                  ref={el => {
-                    inputRefs.current[3] = el;
-                  }}
-                  type="password"
-                  value={formData.password}
-                  onChange={e => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="Senha"
-                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
-                    formFocusIndex === 3 && !isInputActive
-                      ? 'border-red-500 ring-2 ring-red-500'
-                      : 'border-gray-600'
-                  }`}
-                />
-                {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
-              </div>
-            </div>
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={handleCancel}
-                className={`flex items-center gap-2 px-5 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ${
-                  formFocusIndex === 4 ? 'ring-2 ring-red-500 scale-105' : ''
-                }`}
-              >
-                <X className="w-4 h-4" />
-                Cancelar
-              </button>
-              <button
-                onClick={handleSave}
-                className={`flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors ${
-                  formFocusIndex === 5 ? 'ring-2 ring-red-500 scale-105' : ''
-                }`}
-              >
-                <Check className="w-4 h-4" />
-                {editingId ? 'Salvar Alterações' : 'Adicionar'}
-              </button>
-            </div>
-          </div>
         )}
 
         {/* Remote Hints */}

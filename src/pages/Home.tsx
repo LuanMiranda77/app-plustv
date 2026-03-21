@@ -60,7 +60,6 @@ export const Home = () => {
     }, 0);
   }, []);
 
-
   // Navegação por controle remoto
   useRemoteControl({
     onRight: () => {
@@ -123,9 +122,15 @@ export const Home = () => {
         case 'live-channels':
           navigate('/live', { state: item });
           break;
+        case 'last-movies':
+          navigateMovie(item);
+          break;
         case 'trending-movies':
         case 'new-movies':
           navigateMovie(item);
+          break;
+        case 'last-series':
+          navigateSerie(item);
           break;
         case 'trending-series':
         case 'new-series':
@@ -165,6 +170,12 @@ export const Home = () => {
       visible: topChannels.length > 0
     },
     {
+      id: 'last-movies',
+      type: 'last-movies',
+      data: recentlyWatched.filter(item => item.type === 'movie'),
+      visible: recentlyWatched.filter(item => item.type === 'movie').length > 0
+    },
+    {
       id: 'trending-movies',
       type: 'trending-movies',
       data: trendingMovies,
@@ -175,6 +186,12 @@ export const Home = () => {
       type: 'new-movies',
       data: newMovies,
       visible: newMovies.length > 0
+    },
+    {
+      id: 'last-series',
+      type: 'last-series',
+      data: recentlyWatched.filter(item => item.type === 'series'),
+      visible: recentlyWatched.filter(item => item.type === 'series').length > 0
     },
     {
       id: 'trending-series',
@@ -349,7 +366,7 @@ export const Home = () => {
                 items={recentlyWatched.filter(item => item.type === 'movie')}
                 badge="repeat"
                 focusedItemIndex={
-                  activeSections[focusedSection]?.type === 'trending-movies' ? focusedItemIndex : -1
+                  activeSections[focusedSection]?.type === 'last-movies' ? focusedItemIndex : -1
                 }
                 renderItem={(movie, idx, isFocused) => (
                   <StreamPoster
@@ -415,7 +432,7 @@ export const Home = () => {
                 items={recentlyWatched.filter(item => item.type === 'series')}
                 badge="repeat"
                 focusedItemIndex={
-                  activeSections[focusedSection]?.type === 'trending-movies' ? focusedItemIndex : -1
+                  activeSections[focusedSection]?.type === 'last-series' ? focusedItemIndex : -1
                 }
                 renderItem={(series, idx, isFocused) => (
                   <StreamPoster

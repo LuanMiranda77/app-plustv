@@ -239,7 +239,7 @@ export const Login = () => {
       <div className="relative w-full max-w-md">
         {/* Header */}
         <div className="flex flex-col items-center mb-10 text-center">
-          <img className="w-[100px] h-[100px]" src={logoIcon} alt="logo" />
+          <img className="w-25 h-25" src={logoIcon} alt="logo" />
           <div className="mt-1">
             <h1 className="text-5xl font-bold text-netflix-red">
               Plus<b className="text-[#ff751f]">TV</b>
