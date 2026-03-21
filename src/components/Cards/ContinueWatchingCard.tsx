@@ -5,38 +5,44 @@ interface ContinueWatchingCardProps {
   item: WatchHistoryItem;
   onPlay?: () => void;
   onRecentlyWatched?: (item: WatchHistoryItem[]) => void;
+  isFocused?:boolean;
 }
 
-export const ContinueWatchingCard = ({ item, onPlay, onRecentlyWatched }: ContinueWatchingCardProps) => {
+export const ContinueWatchingCard = ({
+  item,
+  onPlay,
+  onRecentlyWatched,
+  isFocused
+}: ContinueWatchingCardProps) => {
   const { getRecentlyWatched, removeFromHistory } = useWatchHistoryStore();
 
   const handleRemove = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    removeFromHistory(String(item.id))
+    e.stopPropagation();
+    removeFromHistory(String(item.id));
     onRecentlyWatched?.(getRecentlyWatched());
-  }
+  };
 
   const getDisplayName = () => {
     if (item.type === 'series') {
-      return `${item.name} • Contínue assistindo`
+      return `${item.name} • Contínue assistindo`;
     }
-    return item.name
-  }
+    return item.name;
+  };
 
   const getTimeRemaining = () => {
-    const remaining = item.duration - item.watched
-    if (remaining <= 0) return 'Concluído'
+    const remaining = item.duration - item.watched;
+    if (remaining <= 0) return 'Concluído';
 
-    const minutes = Math.round(remaining / 60)
-    if (minutes < 60) return `${minutes}m restante`
-    
-    const hours = Math.floor(minutes / 60)
-    const mins = minutes % 60
-    return `${hours}h ${mins}m restante`
-  }
+    const minutes = Math.round(remaining / 60);
+    if (minutes < 60) return `${minutes}m restante`;
+
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m restante`;
+  };
 
   return (
-    <div 
+    <div
       onClick={onPlay}
       className="group relative bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200"
     >
@@ -45,7 +51,7 @@ export const ContinueWatchingCard = ({ item, onPlay, onRecentlyWatched }: Contin
         <img
           src={item.poster || item.logo || 'https://via.placeholder.com/400x225?text=No+Image'}
           alt={item.name}
-          className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
+          className={`w-full h-full object-cover group-hover:brightness-75 ${isFocused ? 'brightness-75' : ''} transition-brightness`}
         />
 
         {/* Progress Bar */}
@@ -58,7 +64,9 @@ export const ContinueWatchingCard = ({ item, onPlay, onRecentlyWatched }: Contin
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+      <div
+        className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 ${isFocused ? 'ring-2 opacity-100' : ''} transition-opacity flex flex-col justify-between p-3`}
+      >
         <div className="flex justify-end">
           <button
             onClick={handleRemove}
@@ -70,9 +78,7 @@ export const ContinueWatchingCard = ({ item, onPlay, onRecentlyWatched }: Contin
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-white font-semibold text-sm line-clamp-2">
-            {getDisplayName()}
-          </h3>
+          <h3 className="text-white font-semibold text-sm line-clamp-2">{getDisplayName()}</h3>
 
           <div className="flex items-center justify-between">
             <span className="text-gray-200 text-xs">{getTimeRemaining()}</span>
@@ -94,5 +100,5 @@ export const ContinueWatchingCard = ({ item, onPlay, onRecentlyWatched }: Contin
         </span>
       </div>
     </div>
-  )
-}
+  );
+};

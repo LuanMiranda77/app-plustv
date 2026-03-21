@@ -329,13 +329,10 @@ export const Home = () => {
                         activeSections.findIndex(s => s.id === 'continue-watching') &&
                       focusedItemIndex === idx;
                     return (
-                      <div
-                        key={item.id}
-                        data-focused={isFocused}
-                        className={`w-80 flex-shrink-0 ${isFocused ? 'ring-2 ring-red-600 rounded-lg' : ''}`}
-                      >
+                      <div key={item.id} data-focused={isFocused} className={`w-80 flex-shrink-0`}>
                         <ContinueWatchingCard
                           item={item}
+                          isFocused={isFocused}
                           onPlay={() => {
                             if (item.type === 'movie') {
                               navigateMovie(item);
@@ -362,9 +359,10 @@ export const Home = () => {
                 focusedItemIndex={
                   activeSections[focusedSection]?.type === 'live-channels' ? focusedItemIndex : -1
                 }
-                renderItem={(channel, idx) => (
+                renderItem={(channel, idx, isFocused) => (
                   <ChannelCard
                     channel={channel}
+                    isFocused={isFocused}
                     onPlay={() => {
                       navigate('/player', {
                         state: {
@@ -394,8 +392,12 @@ export const Home = () => {
                 focusedItemIndex={
                   activeSections[focusedSection]?.type === 'trending-movies' ? focusedItemIndex : -1
                 }
-                renderItem={(movie, idx) => (
-                  <MovieCard movie={movie} onPlay={() => navigateMovie(movie)} />
+                renderItem={(movie, idx, isFocused) => (
+                  <MovieCard
+                    movie={movie}
+                    isFocused={isFocused}
+                    onPlay={() => navigateMovie(movie)}
+                  />
                 )}
                 onViewMore={() => navigate('/movie')}
               />
@@ -412,8 +414,12 @@ export const Home = () => {
                 focusedItemIndex={
                   activeSections[focusedSection]?.type === 'new-movies' ? focusedItemIndex : -1
                 }
-                renderItem={(movie, idx) => (
-                  <MovieCard movie={movie} onPlay={() => navigateMovie(movie)} />
+                renderItem={(movie, idx, isFocused) => (
+                  <MovieCard
+                    movie={movie}
+                    isFocused={isFocused}
+                    onPlay={() => navigateMovie(movie)}
+                  />
                 )}
                 onViewMore={() => navigate('/movie')}
               />
@@ -430,7 +436,9 @@ export const Home = () => {
                 focusedItemIndex={
                   activeSections[focusedSection]?.type === 'trending-series' ? focusedItemIndex : -1
                 }
-                renderItem={(s, idx) => <SeriesCard series={s} onPlay={() => navigateSerie(s)} />}
+                renderItem={(s, idx, isFocused) => (
+                  <SeriesCard series={s} isFocused={isFocused} onPlay={() => navigateSerie(s)} />
+                )}
                 onViewMore={() => navigate('/series')}
               />
             )}
@@ -446,7 +454,9 @@ export const Home = () => {
                 focusedItemIndex={
                   activeSections[focusedSection]?.type === 'new-series' ? focusedItemIndex : -1
                 }
-                renderItem={(s, idx) => <SeriesCard series={s} onPlay={() => navigateSerie(s)} />}
+                renderItem={(s, idx, isFocused) => (
+                  <SeriesCard series={s} isFocused={isFocused} onPlay={() => navigateSerie(s)} />
+                )}
                 onViewMore={() => navigate('/series')}
               />
             )}
