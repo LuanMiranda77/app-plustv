@@ -12,7 +12,7 @@ const logoIcon = './icons.png';
 export const Login = () => {
   const navigate = useNavigate();
   const { setServerConfig, setLoading, setError, isLoading, error } = useAuthStore();
-  const { servers, loadFromStorage, addServer, setActiveServer } = useServerListStore();
+  const { loadFromStorage, addServer, setActiveServer } = useServerListStore();
 
   const [formData, setFormData] = useState<ServerConfig>({
     name: '',

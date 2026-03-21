@@ -35,7 +35,7 @@ export const ConfigServer = () => {
   const [focusedBack, setFocusedBack] = useState(false);
   const [focusedNew, setFocusedNew] = useState(false);
   const [formFocusIndex, setFormFocusIndex] = useState(0);
-  const { activeZone, setActiveZone } = useFocusZone();
+  const { setActiveZone } = useFocusZone();
   const serverRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const handleBack = () => {
