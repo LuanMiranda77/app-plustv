@@ -4,6 +4,7 @@ import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useAuthStore } from '../store/authStore';
+import { useServerListStore } from '../store/serverListStore';
 import type { ServerConfig } from '../types';
 import { xtreamApi } from '../utils/xtreamApi';
 import logoIcon from '/icons.png';
@@ -11,6 +12,7 @@ import logoIcon from '/icons.png';
 export const Login = () => {
   const navigate = useNavigate();
   const { setServerConfig, setLoading, setError, isLoading, error } = useAuthStore();
+  const { servers, loadFromStorage, addServer, setActiveServer } = useServerListStore();
 
   const [formData, setFormData] = useState<ServerConfig>({
     name: '',
@@ -197,6 +199,25 @@ export const Login = () => {
 
       // Salvar config e autenticar
       setServerConfig(formData);
+
+      // Adicionar à lista de servidores se ainda não existir
+      loadFromStorage();
+      const existing = useServerListStore
+        .getState()
+        .servers.find(s => s.url === formData.url && s.username === formData.username);
+      if (!existing) {
+        addServer(formData);
+        // Marcar como ativo
+        const updated = useServerListStore.getState().servers;
+        const newServer = updated.find(
+          s => s.url === formData.url && s.username === formData.username
+        );
+        if (newServer) {
+          setActiveServer(newServer.id);
+        }
+      } else {
+        setActiveServer(existing.id);
+      }
 
       setLoading(false);
       navigate('/profiles');

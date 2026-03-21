@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { Film, Heart, Home, RefreshCw, Server, Tv2, TvMinimalPlay } from 'lucide-react';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../../../Context/FocusContext';
 import { useRemoteControl } from '../../../hooks/useRemotoControl';
@@ -9,6 +9,7 @@ import { useServerContent } from '../../../hooks/useServerContent';
 import { useAuthStore } from '../../../store/authStore';
 import LogoHeader from '../../Logos/LogoHeader';
 import MenuButton from '../../UI/ButtonMenu';
+import { useServerListStore } from '../../../store/serverListStore';
 interface Props {
   scrolling: boolean;
 }
@@ -30,6 +31,22 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const { lastUpdate, forceRefresh, isLoading } = useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'menu';
+  // const { servers, loadFromStorage, addServer, setActiveServer } = useServerListStore();
+  // const { serverConfig } = useAuthStore();
+  // useEffect(() => {
+  //   if (serverConfig==null) return; 
+  //   loadFromStorage();
+  //   if (servers.length <5) {
+  //     addServer(serverConfig);
+  //     const updated = useServerListStore.getState().servers;
+  //     const newServer = updated.find(
+  //       s => s.url === serverConfig.url && s.username === serverConfig.username
+  //     );
+  //     if (newServer) {
+  //       setActiveServer(newServer.id);
+  //     }
+  //   }
+  // }, [servers, serverConfig]);
 
   // focusedIndex: 0..4 = menus, 5 = config server, 6 = perfil
   const FOCUS_CONFIG = menus.length;

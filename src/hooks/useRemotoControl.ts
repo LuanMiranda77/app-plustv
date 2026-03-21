@@ -9,6 +9,9 @@ type RemoteKeys = {
   onBack?: () => void;
   onPlayPause?: () => void;
   onYellow?: () => void;
+  onRed?: () => void;
+  onGreen?: () => void;
+  onBlue?: () => void;
 };
 
 export function useRemoteControl(handlers: RemoteKeys) {
@@ -52,8 +55,20 @@ export function useRemoteControl(handlers: RemoteKeys) {
         current.onPlayPause?.();
         e.preventDefault();
         break;
-      case 403:
+      case 405:
         current.onYellow?.();
+        e.preventDefault();
+        break;
+      case 403:
+        current.onRed?.();
+        e.preventDefault();
+        break;
+      case 404:
+        current.onGreen?.();
+        e.preventDefault();
+        break;
+      case 406:
+        current.onBlue?.();
         e.preventDefault();
         break;
     }

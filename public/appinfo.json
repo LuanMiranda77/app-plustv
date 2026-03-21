@@ -18,5 +18,10 @@
     "allowIndexedDBAccess": true,
     "allowFileAccessFromFiles": true,
     "allowUniversalAccessFromFiles": true
+  },
+  "keyFilterTable": {
+    "RCUPlus": {
+      "colorKeys": ["RED", "GREEN", "YELLOW", "BLUE"]
+    }
   }
 }

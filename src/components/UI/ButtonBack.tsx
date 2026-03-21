@@ -14,8 +14,8 @@ export const ButtonBack = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <button
           ref={ref}
           disabled={disabled}
-          className={`flex items-center gap-2 p-2 text-white transition-colors rounded 
-            ${isFocused ? 'scale-105 text-red-600 bg-white/10' : ''}
+          className={`flex items-center gap-2 px-4 py-2 transition-colors rounded 
+            ${isFocused ? 'scale-105 bg-white/10 text-netflix-red' : 'text-white'}
           hover:text-red-600 hover:bg-white/10`}
           {...props}
         >
