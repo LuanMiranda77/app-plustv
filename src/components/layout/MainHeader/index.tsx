@@ -149,18 +149,16 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                     <b className="text-gray-300">Atualizado</b>{' '}
                     {moment(lastUpdate).format('DD/MM/YY')}
                   </p>
-                  <button
-                    onClick={() => forceRefresh()}
-                    disabled={isLoading}
-                    className="hidden p-2 transition-colors rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Atualizar agora"
-                  >
-                    <RefreshCw
-                      className={`w-5 h-5 text-red-600 ${isLoading ? 'animate-spin' : ''}`}
-                    />
-                  </button>
                 </div>
               )}
+              <button
+                onClick={() => forceRefresh()}
+                disabled={isLoading}
+                className="p-2 transition-colors rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Atualizar agora"
+              >
+                <RefreshCw className={`w-5 h-5 text-red-600 ${isLoading ? 'animate-spin' : ''}`} />
+              </button>
               <button
                 className={`p-2 rounded-lg transition-all ${
                   focusedConfig

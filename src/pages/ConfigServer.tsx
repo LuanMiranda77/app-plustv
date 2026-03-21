@@ -33,9 +33,10 @@ export const ConfigServer = () => {
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [focusedBack, setFocusedBack] = useState(false);
   const [focusedNew, setFocusedNew] = useState(false);
+  const [formFocusIndex, setFormFocusIndex] = useState(0);
   const { activeZone, setActiveZone } = useFocusZone();
   const serverRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const isZoneCat = activeZone === 'content';
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleBack = () => {
     navigate(-1);
@@ -50,6 +51,14 @@ export const ConfigServer = () => {
     serverRefs.current[focusedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [focusedIndex]);
 
+  const isInputActive = showForm && formFocusIndex <= 3;
+
+  useEffect(() => {
+    if (isInputActive) {
+      inputRefs.current[formFocusIndex]?.focus();
+    }
+  }, [formFocusIndex, isInputActive]);
+
   const inHeader = focusedBack || focusedNew;
 
   const clearHeader = () => {
@@ -57,87 +66,124 @@ export const ConfigServer = () => {
     setFocusedNew(false);
   };
 
-  useRemoteControl({
-    onUp: () => {
-      if (showForm) return;
-      if (inHeader) return;
-      if (focusedIndex === 0) {
-        setFocusedBack(true);
-        setFocusedNew(false);
-      } else {
-        setFocusedIndex(prev => prev - 1);
-      }
-    },
-    onDown: () => {
-      if (showForm) return;
-      if (inHeader) {
-        clearHeader();
-        setFocusedIndex(0);
-        return;
-      }
-      if (servers.length > 0) {
-        setFocusedIndex(prev => Math.min(servers.length - 1, prev + 1));
-      }
-    },
-    onLeft: () => {
-      if (inHeader && focusedNew && !showForm) {
-        setFocusedNew(false);
-        setFocusedBack(true);
-      }
-    },
-    onRight: () => {
-      if (inHeader && focusedBack && !showForm) {
-        setFocusedBack(false);
-        setFocusedNew(true);
-      }
-    },
-    onOk: () => {
-      if (showForm) return;
-      if (focusedBack) {
-        handleBack();
-        return;
-      }
-      if (focusedNew && servers.length < 5) {
-        setFormData(emptyForm);
-        setEditingId(null);
-        setShowForm(true);
-        clearHeader();
-        return;
-      }
-      if (servers.length > 0) {
-        handleSelect(servers[focusedIndex]);
-      }
-    },
-    onGreen: () => {
-      if (!showForm && !inHeader && servers.length > 0) {
-        handleSelect(servers[focusedIndex]);
-      }
-    },
-    onYellow: () => {
-      if (!showForm && !inHeader && servers.length > 0) {
-        handleEdit(servers[focusedIndex]);
-      }
-    },
-    onRed: () => {
-      if (!showForm && !inHeader && servers.length > 0) {
-        const server = servers[focusedIndex];
-        if (confirmDeleteId === server.id) {
-          handleDelete(server.id);
+  // Form linear: [0:Nome] → [1:URL] → [2:Usuário] → [3:Senha] → [4:Cancelar] → [5:Salvar]
+
+  useRemoteControl(
+    {
+      onUp: () => {
+        if (showForm) {
+          if (formFocusIndex > 0) setFormFocusIndex(prev => prev - 1);
+          return;
+        }
+        if (inHeader) return;
+        if (focusedIndex === 0) {
+          setFocusedBack(true);
+          setFocusedNew(false);
         } else {
-          setConfirmDeleteId(server.id);
+          setFocusedIndex(prev => prev - 1);
+        }
+      },
+      onDown: () => {
+        if (showForm) {
+          if (formFocusIndex < 5) setFormFocusIndex(prev => prev + 1);
+          return;
+        }
+        if (inHeader) {
+          clearHeader();
+          setFocusedIndex(0);
+          return;
+        }
+        if (servers.length > 0) {
+          setFocusedIndex(prev => Math.min(servers.length - 1, prev + 1));
+        }
+      },
+      onLeft: () => {
+        if (showForm) return;
+        if (inHeader && focusedNew) {
+          setFocusedNew(false);
+          setFocusedBack(true);
+        }
+      },
+      onRight: () => {
+        if (showForm) return;
+        if (inHeader && focusedBack) {
+          setFocusedBack(false);
+          setFocusedNew(true);
+        }
+      },
+      onOk: () => {
+        if (showForm) {
+          // Enter on input (0-3) → advance to next
+          if (formFocusIndex <= 3) {
+            if (formFocusIndex < 3) {
+              setFormFocusIndex(prev => prev + 1);
+            } else {
+              // Last input (Senha) → go to Salvar
+              setFormFocusIndex(5);
+            }
+          } else if (formFocusIndex === 4) {
+            handleCancel();
+            setFormFocusIndex(0);
+          } else if (formFocusIndex === 5) {
+            handleSave();
+            setFormFocusIndex(0);
+          }
+          return;
+        }
+        if (focusedBack) {
+          handleBack();
+          return;
+        }
+        if (focusedNew && servers.length < 5) {
+          setFormData(emptyForm);
+          setEditingId(null);
+          setShowForm(true);
+          clearHeader();
+          setFormFocusIndex(0);
+          return;
+        }
+        if (servers.length > 0) {
+          handleSelect(servers[focusedIndex]);
+        }
+      },
+      onGreen: () => {
+        if (!showForm && !inHeader && servers.length > 0) {
+          handleSelect(servers[focusedIndex]);
+        }
+      },
+      onYellow: () => {
+        if (!showForm && !inHeader && servers.length > 0) {
+          handleEdit(servers[focusedIndex]);
+        }
+      },
+      onRed: () => {
+        if (!showForm && !inHeader && servers.length > 0) {
+          const server = servers[focusedIndex];
+          if (confirmDeleteId === server.id) {
+            handleDelete(server.id);
+          } else {
+            setConfirmDeleteId(server.id);
+          }
+        }
+      },
+      onBack: () => {
+        if (showForm) {
+          if (isInputActive) {
+            (document.activeElement as HTMLElement)?.blur();
+            setFormFocusIndex(4);
+          } else {
+            handleCancel();
+            setFormFocusIndex(0);
+          }
+        } else if (confirmDeleteId) {
+          setConfirmDeleteId(null);
+        } else {
+          handleBack();
         }
       }
     },
-    onBack: () => {
-      if (showForm) {
-        handleCancel();
-      } else if (confirmDeleteId) {
-        setConfirmDeleteId(null);
-      } else {
-        handleBack();
-      }
-    }
-  });
+    isInputActive
+  );
 
   const validate = (): boolean => {
     const e: Partial<ServerConfig> = {};
@@ -177,6 +223,7 @@ export const ConfigServer = () => {
     });
     setEditingId(server.id);
     setShowForm(true);
+    setFormFocusIndex(0);
     setErrors({});
   };
 
@@ -201,6 +248,7 @@ export const ConfigServer = () => {
     setEditingId(null);
     setFormData(emptyForm);
     setErrors({});
+    setFormFocusIndex(0);
   };
 
   return (
@@ -215,7 +263,7 @@ export const ConfigServer = () => {
           <div className="flex gap-3">
             <ButtonBack
               onClick={handleBack}
-            //   className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              //   className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
               isFocused={focusedBack}
             >
               Voltar
@@ -247,46 +295,74 @@ export const ConfigServer = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-400 text-sm mb-1">Nome</label>
+                <label className="block text-gray-400 text-2xl max-sm:text-sm mb-1">Nome</label>
                 <input
+                  ref={el => {
+                    inputRefs.current[0] = el;
+                  }}
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Ex: Meu Servidor"
-                  className="w-full bg-gray-900 border border-gray-600 text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors"
+                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
+                    formFocusIndex === 0 && !isInputActive
+                      ? 'border-red-500 ring-2 ring-red-500'
+                      : 'border-gray-600'
+                  }`}
                 />
                 {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
               </div>
               <div>
-                <label className="block text-gray-400 text-sm mb-1">URL do Servidor</label>
+                <label className="block text-gray-400 text-2xl max-sm:mb-1">URL do Servidor</label>
                 <input
+                  ref={el => {
+                    inputRefs.current[1] = el;
+                  }}
                   type="text"
                   value={formData.url}
                   onChange={e => setFormData({ ...formData, url: e.target.value })}
                   placeholder="http://servidor.com:8080"
-                  className="w-full bg-gray-900 border border-gray-600 text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors"
+                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
+                    formFocusIndex === 1 && !isInputActive
+                      ? 'border-red-500 ring-2 ring-red-500'
+                      : 'border-gray-600'
+                  }`}
                 />
                 {errors.url && <p className="text-red-400 text-xs mt-1">{errors.url}</p>}
               </div>
               <div>
-                <label className="block text-gray-400 text-sm mb-1">Usuário</label>
+                <label className="block text-gray-400 text-2xl max-sm:text-sm mb-1">Usuário</label>
                 <input
+                  ref={el => {
+                    inputRefs.current[2] = el;
+                  }}
                   type="text"
                   value={formData.username}
                   onChange={e => setFormData({ ...formData, username: e.target.value })}
                   placeholder="Usuário"
-                  className="w-full bg-gray-900 border border-gray-600 text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors"
+                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
+                    formFocusIndex === 2 && !isInputActive
+                      ? 'border-red-500 ring-2 ring-red-500'
+                      : 'border-gray-600'
+                  }`}
                 />
                 {errors.username && <p className="text-red-400 text-xs mt-1">{errors.username}</p>}
               </div>
               <div>
-                <label className="block text-gray-400 text-sm mb-1">Senha</label>
+                <label className="block text-gray-400 text-2xl max-sm:text-sm mb-1">Senha</label>
                 <input
+                  ref={el => {
+                    inputRefs.current[3] = el;
+                  }}
                   type="password"
                   value={formData.password}
                   onChange={e => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Senha"
-                  className="w-full bg-gray-900 border border-gray-600 text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors"
+                  className={`w-full bg-gray-900 border text-white px-4 py-2.5 rounded-lg focus:border-red-600 focus:outline-none transition-colors ${
+                    formFocusIndex === 3 && !isInputActive
+                      ? 'border-red-500 ring-2 ring-red-500'
+                      : 'border-gray-600'
+                  }`}
                 />
                 {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
               </div>
@@ -294,14 +370,18 @@ export const ConfigServer = () => {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 px-5 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
+                className={`flex items-center gap-2 px-5 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ${
+                  formFocusIndex === 4 ? 'ring-2 ring-red-500 scale-105' : ''
+                }`}
               >
                 <X className="w-4 h-4" />
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                className={`flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors ${
+                  formFocusIndex === 5 ? 'ring-2 ring-red-500 scale-105' : ''
+                }`}
               >
                 <Check className="w-4 h-4" />
                 {editingId ? 'Salvar Alterações' : 'Adicionar'}

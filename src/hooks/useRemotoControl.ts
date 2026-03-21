@@ -14,15 +14,33 @@ type RemoteKeys = {
   onBlue?: () => void;
 };
 
-export function useRemoteControl(handlers: RemoteKeys) {
+export function useRemoteControl(handlers: RemoteKeys, disabled = false) {
   const handlersRef = useRef(handlers);
+  const disabledRef = useRef(disabled);
 
   useEffect(() => {
     handlersRef.current = handlers;
   }, [handlers]);
 
+  useEffect(() => {
+    disabledRef.current = disabled;
+  }, [disabled]);
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const current = handlersRef.current;
+
+    // When disabled, only allow Back (ESC/461) and OK (Enter/13) to escape
+    if (disabledRef.current) {
+      if (e.keyCode === 461 || e.keyCode === 27) {
+        current.onBack?.();
+        e.preventDefault();
+      } else if (e.keyCode === 13 || e.keyCode === 44) {
+        current.onOk?.();
+        e.preventDefault();
+      }
+      return;
+    }
+
     switch (e.keyCode) {
       case 38:
         current.onUp?.();
