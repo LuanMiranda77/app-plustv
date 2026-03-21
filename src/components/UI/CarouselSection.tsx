@@ -61,7 +61,7 @@ export default function CarouselSection({
               <div
                 key={item.id}
                 data-focused={isFocused}
-                className={`${title == 'Canais ao Vivo' ? 'w-96' : 'w-64'} flex-shrink-0 ${isFocused ? 'ring-2 ring-red-600 rounded-lg' : ''}`}
+                className={`${title == 'Canais ao Vivo' ? 'w-125' : 'w-64'} flex-shrink-0`}
               >
                 {renderItem(item, idx, isFocused)}
               </div>

@@ -1,38 +1,38 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 interface CarouselProps {
-  children: React.ReactNode[]
-  itemsVisible?: number
-  gap?: number
+  children: React.ReactNode[];
+  itemsVisible?: number;
+  gap?: number;
 }
 
 export const Carousel = ({ children, itemsVisible = 6, gap = 16 }: CarouselProps) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(true)
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   const updateScrollButtons = () => {
-    if (!scrollContainerRef.current) return
+    if (!scrollContainerRef.current) return;
 
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current
-    setCanScrollLeft(scrollLeft > 0)
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10)
-  }
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    setCanScrollLeft(scrollLeft > 0);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+  };
 
   const scroll = (direction: 'left' | 'right') => {
-    if (!scrollContainerRef.current) return
+    if (!scrollContainerRef.current) return;
 
-    const container = scrollContainerRef.current
-    const scrollAmount = direction === 'left' ? -400 : 400
-    container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+    const container = scrollContainerRef.current;
+    const scrollAmount = direction === 'left' ? -400 : 400;
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 
-    setTimeout(updateScrollButtons, 500)
-  }
+    setTimeout(updateScrollButtons, 500);
+  };
 
   const handleScroll = () => {
-    updateScrollButtons()
-  }
+    updateScrollButtons();
+  };
 
   return (
     <div className="relative group">
@@ -63,7 +63,7 @@ export const Carousel = ({ children, itemsVisible = 6, gap = 16 }: CarouselProps
         ref={scrollContainerRef}
         onScroll={handleScroll}
         onLoad={updateScrollButtons}
-        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth p-2"
+        className="flex gap-4 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth px-2 py-4"
       >
         {children.map((child, index) => (
           <div key={index} className="flex-shrink-0">
@@ -75,12 +75,9 @@ export const Carousel = ({ children, itemsVisible = 6, gap = 16 }: CarouselProps
       {/* Mobile Scroll Indicator */}
       <div className="flex lg:hidden justify-center mt-4 gap-2">
         {children.map((_, index) => (
-          <div
-            key={index}
-            className="h-1 rounded-full bg-gray-700 transition-colors"
-          />
+          <div key={index} className="h-1 rounded-full bg-gray-700 transition-colors" />
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
