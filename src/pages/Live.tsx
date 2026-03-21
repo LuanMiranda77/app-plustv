@@ -39,12 +39,12 @@ export const Live = () => {
     displayedChannels,
     hasMoreChannels,
     isLoadingMore,
+    setlectLiveIndex
   } = useLivePage();
 
   return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
-
         {/* ── Categorias ───────────────────────────────────────────────────── */}
         {categoriesWithAll.length > 0 && (
           <div
@@ -75,7 +75,6 @@ export const Live = () => {
 
         {/* ── Grid de canais ───────────────────────────────────────────────── */}
         <div ref={gridRef} className="flex-1 px-4 py-8 overflow-y-scroll overflow-x-none">
-
           {/* Busca */}
           <div className="flex-1 mb-5">
             <Input
@@ -97,12 +96,13 @@ export const Live = () => {
                   key={channel.id}
                   id={channel.id}
                   channel={channel}
-                  isFocused={isZoneList && focusedIndex === i}
+                  isFocused={focusedIndex === i}
+                  setlected={isZoneList && setlectLiveIndex === i}
                   onPlay={() => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
-                      setCurrentStream(channel)
+                      setCurrentStream(channel);
                     } else {
-                      setIsFullScreen(true)
+                      setIsFullScreen(true);
                     }
                   }}
                 />
@@ -132,9 +132,10 @@ export const Live = () => {
           <div
             className={`
               flex flex-col items-center
-              ${isFullScreen
-                ? 'fixed inset-0 z-50 bg-black'
-                : 'w-5/12 max-w-[1000px] relative mt-[35px] mx-4'
+              ${
+                isFullScreen
+                  ? 'fixed inset-0 z-50 bg-black'
+                  : 'w-5/12 max-w-[1000px] relative mt-[35px] mx-4'
               }
             `}
           >
@@ -180,5 +181,5 @@ export const Live = () => {
         )}
       </div>
     </div>
-  )
+  );
 }

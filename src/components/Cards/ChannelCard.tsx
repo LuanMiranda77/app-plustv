@@ -9,9 +9,10 @@ interface ChannelCardProps {
   channel: Channel;
   onPlay?: () => void;
   isFocused?: boolean;
+  setlected?: boolean;
 }
 
-export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps) => {
+export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: ChannelCardProps) => {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(channel.id));
 
@@ -43,6 +44,7 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
       console.error('Fullscreen error:', err);
     }
   };
+  const focus = 'scale-[1.04] bg-gray-700 shadow-lg shadow-red-600/40 ring-2 ring-red-600';
 
   return (
     <div className="relative flex items-center justify-between">
@@ -60,7 +62,7 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
         rounded-lg
         items-center
         gap-3
-        ${isFocused ? 'scale-[1.02] bg-gray-700 shadow-lg shadow-red-600/40 ring-2 ring-red-600' : 'bg-gray-800/80'}
+        ${setlected ? ` bg-red-800 ${isFocused && focus}` : isFocused ? focus : 'bg-gray-800/80'}
         hover:scale-[1.02] hover:bg-gray-700 hover:shadow-lg hover:shadow-red-600/30
       `}
         onClick={() => {
@@ -82,7 +84,13 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
                 e.currentTarget.nextElementSibling.style.display = 'flex';
             }}
           />
-          <div className="hidden w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px] items-center justify-center text-gray-500 text-3xl">
+          <div
+            className="
+            hidden 
+            w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px] 
+            items-center justify-center text-gray-500 text-3xl
+          "
+          >
             📺
           </div>
         </div>
@@ -92,11 +100,6 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused }: ChannelCardProps
           <h3 className="text-white text-2xl max-md:text-base font-semibold line-clamp-1 break-all">
             {channel.name}
           </h3>
-          {channel.category && (
-            <span className="text-gray-400 text-sm max-md:text-xs line-clamp-1 mt-1">
-              {channel.category}
-            </span>
-          )}
         </div>
 
         {/* Favorite button */}

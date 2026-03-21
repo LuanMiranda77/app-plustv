@@ -40,7 +40,7 @@ export function useLivePage() {
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
   const isZoneEpg = activeZone === 'epg';
-    const [setlectLiveIndex, setSetlectLiveIndex] = useState(-1);
+  const [setlectLiveIndex, setSetlectLiveIndex] = useState(-1);
 
   useBackGuard(isFullScreen, () => setIsFullScreen(false));
 
@@ -121,6 +121,7 @@ export function useLivePage() {
       if (isZoneList) {
         setActiveZone('content');
         setFocusedCat(focusedCat);
+        setSetlectLiveIndex(-1);
       }
     },
     onDown: () => {
@@ -173,6 +174,7 @@ export function useLivePage() {
           currentStream.id !== displayedChannels[focusedIndex].id
         ) {
           setCurrentStream(displayedChannels[focusedIndex]);
+          setSetlectLiveIndex(focusedIndex);
         } else {
           setIsFullScreen(true);
         }
@@ -298,6 +300,8 @@ export function useLivePage() {
     setEpgList,
     isLoadingEpg,
     setIsLoadingEpg,
+    setlectLiveIndex, 
+    setSetlectLiveIndex,
     isFavorite,
     addFavorite,
     removeFavorite,
