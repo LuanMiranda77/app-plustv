@@ -12,6 +12,7 @@ import { useRemoteControl } from '../hooks/useRemotoControl';
 import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
+import { useFavoritesStore } from '../store/favoritesStore';
 import { xtreamApi } from '../utils/xtreamApi';
 import RemoteHint from '../components/UI/RemoteHint';
 
@@ -19,6 +20,7 @@ export const Live = () => {
   const location = useLocation();
   const { channels, liveCategories } = useContentStore();
   const { serverConfig } = useAuthStore();
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentStream, setCurrentStream] = useState<any | null>(null);
@@ -164,6 +166,16 @@ export const Live = () => {
           setCurrentStream(displayedChannels[focusedIndex]);
         } else {
           setIsFullScreen(true);
+        }
+      }
+    },
+    onYellow: () => {
+      if (isZoneList && focusedIndex >= 0 && displayedChannels[focusedIndex]) {
+        const ch = displayedChannels[focusedIndex];
+        if (isFavorite(String(ch.id))) {
+          removeFavorite(String(ch.id));
+        } else {
+          addFavorite(ch, 'live');
         }
       }
     },

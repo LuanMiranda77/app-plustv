@@ -44,7 +44,6 @@ export const Splash = ({ onFinish }: SplashProps) => {
         ref={videoRef}
         src={introapp}
         poster={poster}
-        muted
         playsInline
         className="w-full h-full object-contain"
       />

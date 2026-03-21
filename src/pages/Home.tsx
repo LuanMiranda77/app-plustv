@@ -350,7 +350,7 @@ export const Home = () => {
             )}
 
             {/* Live Channels */}
-            {topChannels.length > 0 && (
+            {/* {topChannels.length > 0 && (
               <CarouselSection
                 title="Canais ao Vivo"
                 subtitle="Seus canais favoritos em tempo real"
@@ -379,7 +379,7 @@ export const Home = () => {
                 )}
                 onViewMore={() => navigate('/live')}
               />
-            )}
+            )} */}
 
             {/* Trending Movies */}
             {trendingMovies.length > 0 && (
