@@ -12,7 +12,7 @@ import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import CarouselSection from '../components/UI/CarouselSection';
-import MainBanner from '../components/UI/MainBanner';
+import AdvertisementCarousel from '../components/UI/AdvertisementCarousel';
 import { useFocusZone } from '../Context/FocusContext';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 
@@ -286,14 +286,8 @@ export const Home = () => {
         </div>
       )}
 
-      {/* Main Banner */}
-      <MainBanner
-        title="Anuncie sua EMPRESA aqui"
-        description="Tenha sua marca em destaque para milhares de usuários. Entre em contato e saiba como!"
-        buttonLabel="(83) 99638-6694"
-        navigateTo="/movie"
-        isFocused={activeZone === 'list'}
-      />
+      {/* Advertisement Carousel */}
+      <AdvertisementCarousel />
 
       {/* Main Content */}
       <div className="w-9/12 mx-auto px-6 space-y-16 pb-16">
