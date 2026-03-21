@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { DEV_MODE } from '../config/devMode';
 import type { Channel, Movie, Series, ServerConfig } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
 import { storage, STORAGE_KEYS } from '../utils/storage';
@@ -281,6 +282,114 @@ export const useContentStore = create<ContentState>((set, get) => {
 
     fetchServerContent: async (config: ServerConfig, forceRefresh = false) => {
       console.log('📡 fetchServerContent iniciado:', config.url);
+
+      // ── DEV_MODE: carregar dados mock sem acesso ao servidor ──
+      if (DEV_MODE) {
+        console.log('🛠️ DEV_MODE ativo — carregando dados mock...');
+        set({ isLoading: true, error: null });
+        try {
+          const [
+            { default: channelsMock },
+            { default: moviesMock },
+            { default: seriesMock },
+            { categoriasMoveisMock, categoraiesSeriesMock, categoriesLiveMock }
+          ] = await Promise.all([
+            import('../data/channel_ex.json'),
+            import('../data/movie_ex.json'),
+            import('../data/series_ex.json'),
+            import('../data/mockData')
+          ]);
+
+          const channels: Channel[] = channelsMock.map((stream: any) => ({
+            id: Number(stream.stream_id),
+            name: stream.name,
+            logo: stream.stream_icon || '',
+            streamUrl: xtreamApi.buildStreamUrl(
+              config.url,
+              config.username,
+              config.password,
+              stream.stream_id,
+              'live'
+            ),
+            category: stream.category_id || 'Sem categoria',
+            isFavorite: false
+          }));
+
+          const movies: Movie[] = moviesMock.map((stream: any) => ({
+            id: String(stream.stream_id),
+            name: stream.name,
+            poster: stream.stream_icon || '',
+            streamUrl: xtreamApi.buildStreamUrl(
+              config.url,
+              config.username,
+              config.password,
+              stream.stream_id,
+              'movie'
+            ),
+            category: stream.category_id || 'Sem categoria',
+            rating: stream.rating != null ? String(stream.rating) : 'N/A',
+            year: stream.year || 'N/A',
+            youtube_trailer: stream.youtube_trailer || '',
+            genre: stream.genre || '',
+            plot: stream.plot || '',
+            isFavorite: false,
+            watched: false,
+            progress: 0,
+            duration: stream.duration || 0
+          }));
+
+          const series: Series[] = seriesMock.map((stream: any) => ({
+            id: String(stream.series_id),
+            name: stream.name,
+            poster: stream.cover || '',
+            category: stream.category_id || 'Sem categoria',
+            rating: stream.rating != null ? String(stream.rating) : 'N/A',
+            plot: stream.plot || '',
+            genre: stream.genre || '',
+            year: stream.year || '',
+            youtube_trailer: stream.youtube_trailer || '',
+            isFavorite: false,
+            seasons: [],
+            loaded: false
+          }));
+
+          const liveCategories = categoriesLiveMock.map((cat: any) => ({
+            id: String(cat.category_id),
+            name: cat.category_name
+          }));
+          const vodCategories = categoriasMoveisMock.map((cat: any) => ({
+            id: String(cat.category_id),
+            name: cat.category_name
+          }));
+          const seriesCategories = categoraiesSeriesMock.map((cat: any) => ({
+            id: String(cat.category_id),
+            name: cat.category_name
+          }));
+
+          console.log('✅ Mock carregado:', {
+            canais: channels.length,
+            filmes: movies.length,
+            series: series.length
+          });
+
+          set({
+            channels,
+            movies,
+            series,
+            liveCategories,
+            vodCategories,
+            seriesCategories,
+            lastUpdate: Date.now(),
+            isLoading: false
+          });
+        } catch (err) {
+          console.error('❌ Erro ao carregar mock:', err);
+          set({ error: 'Erro ao carregar dados mock', isLoading: false });
+        }
+        return;
+      }
+
+      // ── Fluxo normal (servidor real) ──
 
       // Verificar se cache pertence ao servidor atual
       const cached: any = await indexedDbStorage.get('playlist_cache');
