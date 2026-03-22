@@ -50,25 +50,6 @@ export const SeriesCard = ({ series, onPlay, isFocused }: SeriesCardProps) => {
         `}
       >
         <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{series.name}</h3>
-
-        <div className="text-gray-300 text-xs mb-2">{series.seasons?.length || 0} temporada(s)</div>
-
-        <div className="flex gap-2">
-          {/* <button
-            onClick={onPlay}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-1.5 rounded text-xs font-semibold transition-colors"
-          >
-            Assistir
-          </button> */}
-          {/* <button
-            onClick={toggleFavorite}
-            className={`px-3 py-1.5 rounded transition-colors ${
-              isFav ? 'bg-red-600 text-white' : 'bg-gray-600/50 text-gray-300 hover:bg-gray-600'
-            }`}
-          >
-            <Heart className="w-4 h-4 fill-current" />
-          </button> */}
-        </div>
       </div>
 
       {/* Badge */}

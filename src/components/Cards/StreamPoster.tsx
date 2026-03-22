@@ -18,9 +18,9 @@ export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
       data-focused={isFocused ? 'true' : 'false'}
       onClick={onPlay}
       className={`group relative bg-gray-800 rounded-lg overflow-hidden 
-      focus:scale-110 hover:scale-110 
+      focus:scale-103 hover:scale-103
       transition-all duration-200 
-      ${isFocused ? 'scale-110 border-red-600 border-2' : 'border-2 border-transparent'}`}
+      ${isFocused ? 'scale-103 border-red-600 border-2' : 'border-2 border-transparent'}`}
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
@@ -49,7 +49,7 @@ export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
           ${isFocused ? 'opacity-100' : ''}
         `}
       >
-        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-2">{stream.name}</h3>
+        <h3 className="text-white font-semibold text-2xl max-md:text-sm line-clamp-2 mb-2">{stream.name}</h3>
 
         {/* <div className="flex gap-2">
           <button

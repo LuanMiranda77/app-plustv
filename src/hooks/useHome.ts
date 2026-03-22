@@ -144,6 +144,9 @@ export function useHome() {
       poster: serie.poster,
       type: 'series',
       location: 'details-serie',
+      episodeId: serie.content.episode.id, // ← identificar posição na lista
+      episodeNumber: serie.content.episode.number,
+      seasonNumber: serie.content.episode.season_number,
       parentContent: serie
     };
     navigate('/player', { state: state });

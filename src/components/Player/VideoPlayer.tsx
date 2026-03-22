@@ -24,6 +24,8 @@ interface VideoPlayerProps {
   type: 'movie' | 'series' | 'live';
   contentObject?: Movie | Episode | Channel | null;
   parentContent?: Series | null;
+  nextEpisode?: Episode | null;
+  currentSeason?: number;
 }
 
 export const VideoPlayer = ({
@@ -41,7 +43,9 @@ export const VideoPlayer = ({
   isAutoSave = false,
   type,
   contentObject,
-  parentContent
+  parentContent,
+  nextEpisode,
+  currentSeason = 1,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,12 +53,13 @@ export const VideoPlayer = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showNextEpisodeBtn, setShowNextEpisodeBtn] = useState(false);
   const [remoteActivityTrigger, setRemoteActivityTrigger] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+
+  const timeRemaining = duration > 0 ? Math.floor(duration - currentTime) : 0;
 
   const { saveNow } = useProgress({
     type,
@@ -65,7 +70,7 @@ export const VideoPlayer = ({
     title,
     poster,
     contentObject,
-    parentContent
+    parentContent,
   });
 
   const { hls, error, isLoading, currentQuality, qualities } = useHls(
@@ -73,7 +78,6 @@ export const VideoPlayer = ({
     source
   );
 
-  // Mostrar loading quando: HLS carregando OU buffering OU ainda não iniciou
   const showLoader = (isLoading || isBuffering || !hasStarted) && !error;
 
   const handleQualityChange = (index: number) => {
@@ -95,7 +99,6 @@ export const VideoPlayer = ({
     if (!videoRef.current) return;
     setVolume(newVolume);
     videoRef.current.volume = newVolume;
-    if (newVolume > 0) setIsMuted(false);
   };
 
   const handleSeek = (time: number) => {
@@ -124,7 +127,7 @@ export const VideoPlayer = ({
     if (error) onError?.(error);
   }, [error, onError]);
 
-  // Reset estados ao trocar source
+  // Reset ao trocar source (novo episódio)
   useEffect(() => {
     setHasStarted(false);
     setIsBuffering(false);
@@ -170,7 +173,7 @@ export const VideoPlayer = ({
         } else {
           onBack?.();
         }
-      }
+      },
     },
     type === 'live'
   );
@@ -204,9 +207,10 @@ export const VideoPlayer = ({
           if (videoRef.current) {
             const current = videoRef.current.currentTime;
             setCurrentTime(current);
-            if (type === 'series' && duration > 0) {
-              const timeRemaining = duration - current;
-              if (timeRemaining <= 60 && timeRemaining > 0) {
+            // Mostrar botão quando faltar 60 segundos
+            if (type === 'series' && duration > 0 && onNextEpisode) {
+              const remaining = duration - current;
+              if (remaining <= 60 && remaining > 0) {
                 setShowNextEpisodeBtn(true);
               }
             }
@@ -219,6 +223,8 @@ export const VideoPlayer = ({
         }}
         onEnded={() => {
           setIsPlaying(false);
+          setShowNextEpisodeBtn(false);
+          // Avançar automaticamente ao terminar
           if (type === 'series' && onNextEpisode) {
             onNextEpisode();
           } else {
@@ -230,30 +236,20 @@ export const VideoPlayer = ({
         }}
       />
 
-      {/* ── Loading Overlay ───────────────────────────────────────────────── */}
+      {/* ── Loading ───────────────────────────────────────────────────────── */}
       {showLoader && <PlayerLoader title={title} poster={poster} />}
 
-      {/* ── Error Overlay ─────────────────────────────────────────────────── */}
+      {/* ── Erro ──────────────────────────────────────────────────────────── */}
       {error && <PlayerError error={error} />}
 
       {/* ── Próximo Episódio ──────────────────────────────────────────────── */}
       {showNextEpisodeBtn && type === 'series' && onNextEpisode && (
         <div className="absolute bottom-24 right-8 z-[99999]">
-          {/* <button
-            onClick={() => {
-              setShowNextEpisodeBtn(false);
-              onNextEpisode();
-            }}
-            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold
-                       rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-lg"
-          >
-            <span>➤</span>
-            <span>Próximo Episódio</span>
-          </button> */}
           <NextEpisodeButton
             episodeName={nextEpisode?.name}
             episodeNumber={nextEpisode?.number}
             seasonNumber={currentSeason}
+            timeRemaining={timeRemaining}
             autoPlayDelay={10}
             onNext={() => {
               setShowNextEpisodeBtn(false);

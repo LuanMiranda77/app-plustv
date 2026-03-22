@@ -92,20 +92,24 @@ export function useSeriesDetail() {
       .map(([seasonNum, episodes]) => ({
         number: Number(seasonNum),
         progress: 0,
-        episodes: episodes.map(ep => ({
-          id: String(ep.id),
-          name: ep.title || `Episódio ${ep.episode_num}`,
-          number: ep.episode_num,
-          streamUrl: `${serverConfig!.url}/series/${serverConfig!.username}/${serverConfig!.password}/${ep.id}.${ep.container_extension}`,
-          watched: false,
-          progress: 0,
-          thumbnail: ep.info?.movie_image || '',
-          plot: ep.info?.plot || '',
-          duration: ep.info?.duration_secs || undefined,
-          displayDuration: ep.info?.duration || undefined,
-          rating: ep.info?.rating || '',
-          airDate: ep.air_date || ''
-        }))
+        episodes: episodes.map(
+          ep =>
+            ({
+              id: String(ep.id),
+              name: ep.title || `Episódio ${ep.episode_num}`,
+              number: ep.episode_num,
+              season_number: Number(seasonNum),
+              streamUrl: `${serverConfig!.url}/series/${serverConfig!.username}/${serverConfig!.password}/${ep.id}.${ep.container_extension}`,
+              watched: false,
+              progress: 0,
+              thumbnail: ep.info?.movie_image || '',
+              plot: ep.info?.plot || '',
+              duration: ep.info?.duration_secs || undefined,
+              displayDuration: ep.info?.duration || undefined,
+              rating: ep.info?.rating || '',
+              airDate: ep.air_date || ''
+            }) as Episode
+        )
       }))
       .sort((a, b) => a.number - b.number);
     return seasons;
@@ -171,6 +175,9 @@ export function useSeriesDetail() {
       type: 'series',
       category: series?.category,
       location: 'detail-series',
+      episodeId: episode.id, // ← identificar posição na lista
+      episodeNumber: episode.number,
+      seasonNumber: seasonNumber,
       parentContent: series
     };
 
@@ -234,7 +241,6 @@ export function useSeriesDetail() {
     episodesRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' });
     setSelectedEpisodeIndex(0);
   };
-
 
   // Interceptar voltar nativo do navegador/TV
   useBackGuard(!!series, showTrailer ? () => setShowTrailer(false) : handleBack);

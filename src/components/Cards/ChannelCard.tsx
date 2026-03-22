@@ -44,7 +44,7 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: Chann
       console.error('Fullscreen error:', err);
     }
   };
-  const focus = 'scale-[1.04] bg-gray-700 shadow-lg shadow-red-600/40 ring-2 ring-red-600';
+  const focus = 'scale-[1.01] bg-gray-700 shadow-lg shadow-red-600/40 ring-2 ring-red-600';
 
   return (
     <div className="relative flex items-center justify-between">
@@ -63,7 +63,7 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: Chann
         items-center
         gap-3
         ${setlected ? ` bg-red-800 ${isFocused && focus}` : isFocused ? focus : 'bg-gray-800/80'}
-        hover:scale-[1.02] hover:bg-gray-700 hover:shadow-lg hover:shadow-red-600/30
+        hover:scale-[1.01] hover:bg-gray-700 hover:shadow-lg hover:shadow-red-600/30
       `}
         onClick={() => {
           handleFullscreen();

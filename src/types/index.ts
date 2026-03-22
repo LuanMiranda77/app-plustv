@@ -74,6 +74,7 @@ export interface Episode {
   id: string;
   name: string;
   number: number;
+  season_number: number;
   streamUrl: string;
   rating?: string;
   thumbnail?: string;

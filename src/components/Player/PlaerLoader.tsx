@@ -30,21 +30,10 @@ const PlayerLoader: React.FC<PlayerLoaderProps> = ({ title, poster }) => {
         <div className="text-center px-8">
           <p className="text-zinc-400 text-sm uppercase tracking-widest mb-1">Carregando...</p>
           <p
-            className="text-white font-semibold text-lg line-clamp-2 max-w-sm"
-            style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
+            className="text-white font-semibold text-2xl max-md:text-lg line-clamp-2 max-w-sm"
           >
             {title}
           </p>
-        </div>
-
-        {/* Barra de progresso animada */}
-        <div className="w-48 h-0.5 bg-white/10 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-red-600 rounded-full animate-[loading_1.5s_ease-in-out_infinite]"
-            style={{
-              animation: 'loadingBar 1.5s ease-in-out infinite'
-            }}
-          />
         </div>
       </div>
 

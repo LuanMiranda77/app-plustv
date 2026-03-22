@@ -7,8 +7,6 @@ import { useRemoteControl } from '../hooks/useRemotoControl';
 import type { Episode, Season, Series } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
 
-// import { useAuthStore } from '../store/authStore';
-
 export interface PlayerStream {
   id: string | number;
   streamUrl: string;
@@ -18,30 +16,29 @@ export interface PlayerStream {
   category?: string;
   location?: string | null;
   parentContent?: Series | null;
+  episodeId?: string;
+  episodeNumber?: number;
+  seasonNumber?: number;
 }
 
 export const Player = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [season, setSeason] = useState<Season[]>([]);
-  // const [showUrlInput, setShowUrlInput] = useState(false);
-  // const [copiedUrl, setCopiedUrl] = useState(false);
-  // const { serverConfig } = useAuthStore();
+  const [seasons, setSeasons] = useState<Season[]>([]);
   const [currentStream, setCurrentStream] = useState<PlayerStream | null>(null);
+  const [currentEpisodeId, setCurrentEpisodeId] = useState<string | null>(null);
+  const [currentSeasonNumber, setCurrentSeasonNumber] = useState<number>(1);
 
-  const loadEpsodesForSeries = async (seriesId: string | number) => {
+  // ── Carregar episódios do cache ───────────────────────────────────────────
+  const loadEpisodesForSeries = async (seriesId: string | number) => {
     const cached = await indexedDbStorage.get(`list_episodes_cache_${seriesId}`);
-    let loadedSeasons: Season[];
-
     if (cached && Array.isArray(cached)) {
       console.log('📺 Episódios carregados do cache - player:', seriesId);
-      loadedSeasons = cached as Season[];
-      setSeason(loadedSeasons);
+      setSeasons(cached as Season[]);
     }
   };
 
-  // Pegar streamUrl do state ou como query param
+  // ── Inicializar stream ────────────────────────────────────────────────────
   useEffect(() => {
     const state = location.state as any;
     if (state?.streamUrl && currentStream === null) {
@@ -51,80 +48,92 @@ export const Player = () => {
         title: state.title || 'Reproduzindo',
         type: state.type || 'live',
         location: state.location || null,
-        parentContent: state.parentContent || null
+        parentContent: state.parentContent || null,
+        episodeId: state.episodeId || null,
+        episodeNumber: state.episodeNumber || null,
+        seasonNumber: state.seasonNumber || 1
       });
       if (state.type === 'series' && state.parentContent) {
-        loadEpsodesForSeries(state.parentContent.id);
+        loadEpisodesForSeries(state.parentContent.id);
+        setCurrentEpisodeId(state.episodeId || null);
+        setCurrentSeasonNumber(state.seasonNumber || 1);
       }
     }
   }, [location]);
 
+  // ── Lista flat de todos os episódios em ordem ─────────────────────────────
+  const allEpisodes: (Episode & { _season: number })[] = seasons
+    .sort((a, b) => a.number - b.number)
+    .flatMap(season => season.episodes.map(ep => ({ ...ep, _season: season.number })));
+
+  const currentEpisodeIndex = allEpisodes.findIndex(ep => ep.id === currentEpisodeId);
+  const nextEpisode = allEpisodes[currentEpisodeIndex + 1] ?? null;
+  const nextSeasonNumber = nextEpisode?._season ?? currentSeasonNumber;
+
+  // ── Próximo episódio ──────────────────────────────────────────────────────
+  const handleNextEpisode = () => {
+    if (!nextEpisode || !currentStream?.parentContent) {
+      // Acabou tudo — voltar para a série
+      console.log('🎬 Fim da série — voltando para /series');
+      navigate('/series', { state: currentStream?.parentContent });
+      return;
+    }
+
+    console.log(`▶️ Próximo: T${nextSeasonNumber}:E${nextEpisode.number} — ${nextEpisode.name}`);
+
+    setCurrentStream(prev => ({
+      ...prev!,
+      id: nextEpisode.id,
+      streamUrl: nextEpisode.streamUrl,
+      title: `${currentStream.parentContent?.name} — T${nextSeasonNumber}:E${String(nextEpisode.number).padStart(2, '0')}${nextEpisode.name ? ` · ${nextEpisode.name}` : ''}`,
+      poster: nextEpisode.thumbnail || prev!.poster,
+      episodeId: nextEpisode.id,
+      episodeNumber: nextEpisode.number,
+      seasonNumber: nextSeasonNumber
+    }));
+
+    setCurrentEpisodeId(nextEpisode.id);
+    setCurrentSeasonNumber(nextSeasonNumber);
+  };
+
+  // ── Voltar ────────────────────────────────────────────────────────────────
   const handleGoBack = () => {
-    navigate(`/${currentStream?.location ? currentStream?.location : currentStream?.type}`, {
+    navigate(`/${currentStream?.location ?? currentStream?.type}`, {
       state: currentStream?.parentContent ?? currentStream
     });
     setCurrentStream(null);
   };
 
-  // Interceptar voltar nativo do navegador/TV
   useBackGuard(!!currentStream, handleGoBack);
 
   useRemoteControl({
     onBack: () => {
-      if (currentStream) {
-        window.history.back();
-      }
+      if (currentStream) window.history.back();
     }
   });
 
   return (
     currentStream && (
       <div className="flex flex-col min-h-screen bg-black">
-        {/* Player */}
         <div className="flex items-center justify-center flex-1">
           <VideoPlayer
+            key={String(currentStream.id)} // ← re-mount a cada episódio
             title={currentStream.title}
             source={currentStream.streamUrl}
             poster={currentStream.poster}
             autoPlay
-            onError={error => {
-              console.error('Erro no player:', error);
-            }}
+            onError={error => console.error('Erro no player:', error)}
             streamId={currentStream.id}
-            type={(currentStream.type as 'movie' | 'series' | 'live') || 'live'}
-            isAutoSave={currentStream.type !== 'live'} // Não salvar progresso para lives
+            type={currentStream.type}
+            isAutoSave={currentStream.type !== 'live'}
             isControlsVisible={currentStream.type !== 'live'}
             onBack={handleGoBack}
             parentContent={currentStream.parentContent}
+            nextEpisode={nextEpisode}
+            currentSeason={currentSeasonNumber}
+            onNextEpisode={currentStream.type === 'series' ? handleNextEpisode : undefined}
           />
         </div>
-
-        {/* Info com URL Debug */}
-        {/* <div className="p-4 overflow-y-auto bg-gray-900 border-t border-gray-800 max-h-48">
-          <h2 className="mb-2 font-semibold text-white">{currentStream.title}</h2>
-          <div className="space-y-2">
-            <div>
-              <p className="mb-1 text-xs text-gray-400">URL Completa:</p>
-              <p className="p-2 font-mono text-xs text-gray-300 break-all border border-gray-700 rounded bg-gray-950">
-                {currentStream.url}
-              </p>
-            </div>
-            {currentStream.type && (
-              <div>
-                <p className="text-xs text-gray-400">Tipo: <span className="text-gray-300">{currentStream.type}</span></p>
-              </div>
-            )}
-          </div>
-        </div> */}
-
-        {/* Stream Debugger */}
-        {/* <StreamDebugger
-          streamInfo={{
-            url: currentStream.url,
-            type: currentStream.type as any,
-            title: currentStream.title,
-          }}
-        /> */}
       </div>
     )
   );
