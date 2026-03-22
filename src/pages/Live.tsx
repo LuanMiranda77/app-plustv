@@ -150,7 +150,7 @@ export const Live = () => {
             <VideoPlayer
               title={currentStream?.title}
               source={currentStream ? currentStream.streamUrl : ''}
-              poster={currentStream?.poster}
+              poster={currentStream?.logo}
               autoPlay
               isControlsVisible={false}
               onError={error => console.error('Erro no player:', error)}

@@ -203,9 +203,9 @@ export function useLivePage() {
         setActiveZone('menu');
         return;
       }
-      if (currentStream) {
-        setCurrentStream(null);
-      }
+      // if (currentStream) {
+      //   setCurrentStream(null);
+      // }
     }
   });
 
