@@ -1,6 +1,5 @@
 /* eslint-disable no-extra-boolean-cast */
 import { useState } from 'react';
-import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Movie } from '../../types';
 import { calcProgressPercent } from '../../utils/progressWatched';
 import { TrailerModal } from '../Player/TrilerModal';
@@ -22,6 +21,7 @@ interface SeriesHeroBannerProps {
   focusedButton?: number; // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
   showTrailer?: boolean;
   onSetShowTrailer?: (show: boolean) => void;
+  isFav?: boolean;
 }
 
 export const MovieHeroBanner = ({
@@ -33,11 +33,9 @@ export const MovieHeroBanner = ({
   onBack,
   onPlay,
   onToggleFavorite,
+  isFav
 }: SeriesHeroBannerProps) => {
-  const [imgError, setImgError] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-  const { isFavorite } = useFavoritesStore();
-  const isFav = isFavorite(String(movie.id));
   const progressPercent = calcProgressPercent(movie.progress ?? 0, movie.duration);
   // const hasProgress = progressPercent > 0 && progressPercent < 100;
 
@@ -58,8 +56,7 @@ export const MovieHeroBanner = ({
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${movie.poster})`,
-          animation: 'heroFade 0.8s ease both',
-          filter: imgError ? 'none' : undefined,
+          animation: 'heroFade 0.8s ease both'
         }}
       />
 
@@ -115,7 +112,7 @@ export const MovieHeroBanner = ({
               {onToggleFavorite && (
                 <ButtonFavorite
                   onClick={() => onToggleFavorite(movie)}
-                  isFocused={focusedButton === 3 || isFav}
+                  isFocused={focusedButton === 3}
                   isFav={isFav}
                 />
               )}

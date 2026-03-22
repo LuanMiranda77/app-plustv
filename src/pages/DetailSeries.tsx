@@ -1,9 +1,8 @@
 import EpisodeCard from '../components/Cards/EpisodeCard';
 import { LoadingSpinner } from '../components/UI/LoadingSpinner';
 import SeasonSelector from '../components/UI/SeasonSelector';
-import SeriesDetail from '../components/UI/SeriesDetail';
 import SeriesHeroBanner from '../components/UI/SeriesHeroBanner';
-import { useSeriesDetail } from '../hooks/useSeriesDetail';
+import { useSeriesDetail } from '../hooks/useDetailSeries';
 
 export const DetailSeries = () => {
   const {
@@ -37,8 +36,6 @@ export const DetailSeries = () => {
     handleToggleFavorite,
     handleBack,
     handleToggleWatched,
-    onLoadDetail,
-    
 
     // Refs
     episodesRef,

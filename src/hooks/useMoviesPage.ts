@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react';
 import { useFocusZone } from '../Context/FocusContext';
 import { useContentStore } from '../store/contentStore';
@@ -5,6 +6,7 @@ import { useFavoritesStore } from '../store/favoritesStore';
 import type { Movie } from '../types';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
+import { useNavigate } from 'react-router-dom';
 
 export function useMoviesPage() {
   const { movies, vodCategories } = useContentStore();
@@ -48,14 +50,13 @@ export function useMoviesPage() {
 
   const displayedMovies = filteredMovies.slice(0, displayCount);
   const hasMoreMovies = displayCount < filteredMovies.length;
+  const navigate = useNavigate();
 
-  const toggleFavorite = (movie: Movie) => {
-    if (isFavorite(movie.id)) {
-      removeFavorite(movie.id);
-    } else {
-      addFavorite(movie, 'movie');
-    }
-  };
+   const handleNavigate = (movie: Movie) => {
+     setCurrentMovie(movie);
+     navigate('/detail-movie', { state: movie });
+   };
+
 
   useRemoteControl({
     onRight: () => {
@@ -126,7 +127,7 @@ export function useMoviesPage() {
         setFocusedIndex(0);
       }
       if (isZoneList && displayedMovies[focusedIndex]) {
-        setCurrentMovie(displayedMovies[focusedIndex]);
+        handleNavigate(displayedMovies[focusedIndex]);
       }
     },
     onBack: () => {
@@ -227,6 +228,6 @@ export function useMoviesPage() {
     filteredMovies,
     displayedMovies,
     hasMoreMovies,
-    toggleFavorite
+    handleNavigate,
   };
 }

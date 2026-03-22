@@ -11,6 +11,7 @@ import { PageSeries } from './pages/Series';
 import { DetailSeries } from './pages/DetailSeries';
 import { WatchHistory } from './pages/WatchHistory';
 import { useAuthStore } from './store/authStore';
+import { DetailMovie } from './pages/DetailMovie';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -22,6 +23,7 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/movie" element={<Movies />} />
       <Route path="/series" element={<PageSeries />} />
+      <Route path="/detail-movie" element={<DetailMovie />} />
       <Route path="/detail-series" element={<DetailSeries />} />
       <Route path="/live" element={<Live />} />
       <Route path="/watch-history" element={<WatchHistory />} />

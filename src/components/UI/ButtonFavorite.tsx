@@ -1,7 +1,7 @@
 import { Heart } from 'lucide-react';
 
 type Props = {
-  isFav: boolean;
+  isFav?: boolean;
   isFocused: boolean;
   onClick: () => void;
 };

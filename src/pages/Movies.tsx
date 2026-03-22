@@ -2,7 +2,6 @@ import { Heart } from 'lucide-react';
 import { StreamPoster } from '../components/Cards/StreamPoster';
 import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
-import MovieDetail from '../components/UI/MovieDetail';
 import { useMoviesPage } from '../hooks/useMoviesPage';
 
 export const Movies = () => {
@@ -12,14 +11,6 @@ export const Movies = () => {
     setSearchTerm,
     selectedCategory,
     setSelectedCategory,
-
-    // Filme atual
-    currentMovie,
-    setCurrentMovie,
-
-    // Favoritos
-    isFavorite,
-    toggleFavorite,
 
     // Refs
     loadMoreRef,
@@ -41,18 +32,14 @@ export const Movies = () => {
     displayedMovies,
     hasMoreMovies,
     isLoadingMore,
+
+    //Funções
+    handleNavigate,
   } = useMoviesPage();
 
-  return currentMovie ? (
-    <MovieDetail
-      movie={currentMovie}
-      onBack={() => setCurrentMovie(null)}
-      onToggleFavorite={mv => toggleFavorite(mv)}
-    />
-  ) : (
+  return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
-
         {/* ── Categorias ───────────────────────────────────────────────────── */}
         {categoriesWithAll.length > 0 && (
           <div
@@ -83,7 +70,6 @@ export const Movies = () => {
 
         {/* ── Grid de filmes ───────────────────────────────────────────────── */}
         <div ref={gridRef} className="flex-1 px-6 py-8 overflow-y-scroll">
-
           {/* Busca */}
           <div className={`flex-1 mb-5 ${focusedInput ? 'ring-0 ring-red-600' : ''}`}>
             <Input
@@ -104,7 +90,7 @@ export const Movies = () => {
                   key={movie.id}
                   stream={movie}
                   isFocused={isZoneList && focusedIndex === i}
-                  onPlay={() => setCurrentMovie(movie)}
+                  onPlay={() => handleNavigate(movie)}
                 />
               ))}
 
@@ -128,5 +114,5 @@ export const Movies = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

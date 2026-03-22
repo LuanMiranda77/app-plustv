@@ -5,14 +5,15 @@ import { VideoPlayer } from '../components/Player/VideoPlayer';
 import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import type { Series } from '../types';
+
 // import { useAuthStore } from '../store/authStore';
 
 export interface PlayerStream {
   id: string | number;
   streamUrl: string;
   title: string;
-  poster?: string;
-  type?: string;
+  poster: string;
+  type: 'movie' | 'series' | 'live';
   category?: string;
   location?: string | null;
   parentContent?: Series | null;
@@ -29,15 +30,13 @@ export const Player = () => {
 
   // Pegar streamUrl do state ou como query param
   useEffect(() => {
-    const state: PlayerStream = location.state as any;
+    const state = location.state as any;
     if (state?.streamUrl && currentStream === null) {
       setCurrentStream({
-        id: state.id,
-        streamUrl: state.streamUrl,
-        title: state.title || 'Reproduzindo',
+        ...state,
         poster: state.poster,
+        title: state.title || 'Reproduzindo',
         type: state.type || 'live',
-        category: state.category || '',
         location: state.location || null,
         parentContent: state.parentContent || null
       });

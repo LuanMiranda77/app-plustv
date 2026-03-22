@@ -18,7 +18,6 @@ export function useSeriesDetail() {
 
   useEffect(() => {
     const state = location.state as any;
-    console.log(state);
     if (state && series === null) {
       setSeries(state);
       setSeasons(state.seasons || []);
