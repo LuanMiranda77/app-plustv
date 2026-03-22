@@ -134,7 +134,7 @@ export const Home = () => {
                   <StreamPoster
                     stream={movie}
                     isFocused={isFocused}
-                    onPlay={() => navigateMovie(movie)}
+                    onPlay={() => navigateMovie(movie.content)}
                   />
                 )}
                 onViewMore={() => navigate('/movie')}
@@ -154,7 +154,7 @@ export const Home = () => {
                   <StreamPoster
                     stream={movie}
                     isFocused={isFocused}
-                    onPlay={() => navigateMovie(movie)}
+                    onPlay={() => navigateMovie(movie, 'detail-movie')}
                   />
                 )}
                 onViewMore={() => navigate('/movie')}
@@ -174,7 +174,7 @@ export const Home = () => {
                   <StreamPoster
                     stream={movie}
                     isFocused={isFocused}
-                    onPlay={() => navigateMovie(movie)}
+                    onPlay={() => navigateMovie(movie, 'detail-movie')}
                   />
                 )}
                 onViewMore={() => navigate('/movie')}
@@ -194,7 +194,7 @@ export const Home = () => {
                   <StreamPoster
                     stream={series}
                     isFocused={isFocused}
-                    onPlay={() => navigateSerie(series)}
+                    onPlay={() => navigateSerie(series, 'detail-series')}
                   />
                 )}
                 onViewMore={() => navigate('/series')}
@@ -211,7 +211,11 @@ export const Home = () => {
                 badge="trending"
                 focusedItemIndex={getFocusedIndex('trending-series')}
                 renderItem={(s, idx, isFocused) => (
-                  <SeriesCard series={s} isFocused={isFocused} onPlay={() => navigateSerie(s)} />
+                  <SeriesCard
+                    series={s}
+                    isFocused={isFocused}
+                    onPlay={() => navigateSerie(s, 'detail-series')}
+                  />
                 )}
                 onViewMore={() => navigate('/series')}
               />
@@ -227,7 +231,11 @@ export const Home = () => {
                 badge="novo"
                 focusedItemIndex={getFocusedIndex('new-series')}
                 renderItem={(s, idx, isFocused) => (
-                  <SeriesCard series={s} isFocused={isFocused} onPlay={() => navigateSerie(s)} />
+                  <SeriesCard
+                    series={s}
+                    isFocused={isFocused}
+                    onPlay={() => navigateSerie(s, 'detail-series')}
+                  />
                 )}
                 onViewMore={() => navigate('/series')}
               />

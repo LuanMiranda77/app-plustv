@@ -4,7 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
 import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
-import type { Series } from '../types';
+import type { Episode, Season, Series } from '../types';
+import { indexedDbStorage } from '../utils/indexedDbStorage';
 
 // import { useAuthStore } from '../store/authStore';
 
@@ -22,11 +23,23 @@ export interface PlayerStream {
 export const Player = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const [testUrl, setTestUrl] = useState('');
+  // const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [season, setSeason] = useState<Season[]>([]);
   // const [showUrlInput, setShowUrlInput] = useState(false);
   // const [copiedUrl, setCopiedUrl] = useState(false);
   // const { serverConfig } = useAuthStore();
   const [currentStream, setCurrentStream] = useState<PlayerStream | null>(null);
+
+  const loadEpsodesForSeries = async (seriesId: string | number) => {
+    const cached = await indexedDbStorage.get(`list_episodes_cache_${seriesId}`);
+    let loadedSeasons: Season[];
+
+    if (cached && Array.isArray(cached)) {
+      console.log('📺 Episódios carregados do cache - player:', seriesId);
+      loadedSeasons = cached as Season[];
+      setSeason(loadedSeasons);
+    }
+  };
 
   // Pegar streamUrl do state ou como query param
   useEffect(() => {
@@ -40,6 +53,9 @@ export const Player = () => {
         location: state.location || null,
         parentContent: state.parentContent || null
       });
+      if (state.type === 'series' && state.parentContent) {
+        loadEpsodesForSeries(state.parentContent.id);
+      }
     }
   }, [location]);
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
+import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
@@ -108,46 +109,44 @@ export function useHome() {
   const currentSectionData = currentSection?.data || [];
 
   // Navegação helpers
-  const navigateMovie = (movie: any) => {
-    navigate('/player', {
-      state: {
-        id: movie.id,
-        streamUrl: movie.streamUrl,
-        title: movie.name,
-        poster: movie.poster,
-        type: 'movie',
-        category: movie.category,
-        location: 'movie',
-      }
-    });
+  const navigateMovie = (movie: any, location?: string) => {
+    const state: PlayerStream = {
+      ...movie,
+      id: movie.id,
+      streamUrl: movie.streamUrl,
+      title: movie.name,
+      poster: movie.poster,
+      type: 'movie',
+      location: location
+    };
+    navigate(`/${location || 'player'}`, { state: state });
   };
 
-  const navigateSerie = (serie: any) => {
-    navigate('/series', {
-      state: {
-        id: serie.id,
-        streamUrl: serie.streamUrl,
-        title: serie.name,
-        poster: serie.poster,
-        type: 'series',
-        category: serie.category,
-        location: 'series'
-      }
-    });
+  const navigateSerie = (serie: any, location?: string) => {
+    const state: PlayerStream = {
+      ...serie,
+      id: serie.id,
+      streamUrl: serie.streamUrl,
+      title: serie.name,
+      poster: serie.poster,
+      type: 'series',
+      location: location
+    };
+    navigate(`/${location || 'player'}`, { state: state });
   };
 
   const navigateEpisodio = (serie: any) => {
-    navigate('/player', {
-      state: {
-        id: serie.id,
-        streamUrl: serie.content.streamUrl,
-        title: serie.name,
-        poster: serie.poster,
-        type: 'series',
-        category: serie.category,
-        location: 'series',
-      }
-    });
+    const state: PlayerStream = {
+      ...serie,
+      id: serie.id,
+      streamUrl: serie.content.streamUrl,
+      title: serie.name,
+      poster: serie.poster,
+      type: 'series',
+      location: 'details-serie',
+      parentContent: serie
+    };
+    navigate('/player', { state: state });
   };
 
   // Hero items para o AutoCarousel
@@ -158,7 +157,7 @@ export function useHome() {
     })),
     ...series.slice(0, 5).map(s => ({
       ...s,
-      onPlay: () => navigateSerie(s)
+      onPlay: () => navigateSerie(s, "detail-series")
     }))
   ];
 

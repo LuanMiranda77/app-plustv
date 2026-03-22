@@ -6,6 +6,7 @@ import type { Channel, Episode, Movie, Series } from '../../types';
 import { PlayerControls } from './PlayerControls';
 import PlayerLoader from './PlaerLoader';
 import PlayerError from './PlayerError';
+import NextEpisodeButton from './NextEpisodeButton';
 
 interface VideoPlayerProps {
   title: string;
@@ -238,7 +239,7 @@ export const VideoPlayer = ({
       {/* ── Próximo Episódio ──────────────────────────────────────────────── */}
       {showNextEpisodeBtn && type === 'series' && onNextEpisode && (
         <div className="absolute bottom-24 right-8 z-[99999]">
-          <button
+          {/* <button
             onClick={() => {
               setShowNextEpisodeBtn(false);
               onNextEpisode();
@@ -248,7 +249,18 @@ export const VideoPlayer = ({
           >
             <span>➤</span>
             <span>Próximo Episódio</span>
-          </button>
+          </button> */}
+          <NextEpisodeButton
+            episodeName={nextEpisode?.name}
+            episodeNumber={nextEpisode?.number}
+            seasonNumber={currentSeason}
+            autoPlayDelay={10}
+            onNext={() => {
+              setShowNextEpisodeBtn(false);
+              onNextEpisode();
+            }}
+            onDismiss={() => setShowNextEpisodeBtn(false)}
+          />
         </div>
       )}
 
