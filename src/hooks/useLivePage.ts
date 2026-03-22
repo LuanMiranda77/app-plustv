@@ -112,7 +112,14 @@ export function useLivePage() {
       setActiveZone('list');
       setFocusedIndex(0);
     }
-  };
+    // ✅ Up no input → vai para o menu
+    if (e.key === 'ArrowUp' || e.keyCode === 38) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('menu');
+    }
+  };;
 
   useRemoteControl({
     onRight: () => {

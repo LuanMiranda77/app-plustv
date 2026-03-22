@@ -118,6 +118,14 @@ export function useMoviesPage() {
       setActiveZone('list');
       setFocusedIndex(0);
     }
+
+    // ✅ Up no input → vai para o menu
+    if (e.key === 'ArrowUp' || e.keyCode === 38) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('menu');
+    }
   };
 
   useRemoteControl({
@@ -163,9 +171,7 @@ export function useMoviesPage() {
     },
     onUp: () => {
       if (focusedInput) {
-        setFocusedInput(false);
-        inputRef.current?.blur();
-        setActiveZone('menu');
+        handleInputKeyDown({ key: 'Enter', keyCode: 13 } as any);
         return;
       }
       if (isZoneCat && focusedCat === 0) {
