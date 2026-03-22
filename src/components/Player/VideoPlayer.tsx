@@ -4,6 +4,8 @@ import { useProgress } from '../../hooks/useProgress';
 import { useRemoteControl } from '../../hooks/useRemotoControl';
 import type { Channel, Episode, Movie, Series } from '../../types';
 import { PlayerControls } from './PlayerControls';
+import PlayerLoader from './PlaerLoader';
+import PlayerError from './PlayerError';
 
 interface VideoPlayerProps {
   title: string;
@@ -50,11 +52,14 @@ export const VideoPlayer = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showNextEpisodeBtn, setShowNextEpisodeBtn] = useState(false);
   const [remoteActivityTrigger, setRemoteActivityTrigger] = useState(0);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+
   const { saveNow } = useProgress({
-    type: type, // ou 'series' dependendo do contexto
+    type,
     streamId: String(streamId),
     videoRef,
-    saveInterval: saveInterval ?? 5000, // salva a cada 5 segundos
+    saveInterval: saveInterval ?? 5000,
     isAutoSave,
     title,
     poster,
@@ -67,20 +72,16 @@ export const VideoPlayer = ({
     source
   );
 
-  // Update HLS quality
+  // Mostrar loading quando: HLS carregando OU buffering OU ainda não iniciou
+  const showLoader = (isLoading || isBuffering || !hasStarted) && !error;
+
   const handleQualityChange = (index: number) => {
     if (!hls) return;
-
-    if (index === -1) {
-      hls.currentLevel = -1; // Auto
-    } else {
-      hls.currentLevel = index;
-    }
+    hls.currentLevel = index === -1 ? -1 : index;
   };
 
   const handlePlayPause = () => {
     if (!videoRef.current) return;
-
     if (isPlaying) {
       videoRef.current.pause();
     } else {
@@ -89,24 +90,11 @@ export const VideoPlayer = ({
     setIsPlaying(!isPlaying);
   };
 
-  const handleMute = () => {
-    if (!videoRef.current) return;
-    if (isMuted) {
-      videoRef.current.volume = volume;
-      setIsMuted(false);
-    } else {
-      videoRef.current.volume = 0;
-      setIsMuted(true);
-    }
-  };
-
   const handleVolumeChange = (newVolume: number) => {
     if (!videoRef.current) return;
     setVolume(newVolume);
     videoRef.current.volume = newVolume;
-    if (newVolume > 0) {
-      setIsMuted(false);
-    }
+    if (newVolume > 0) setIsMuted(false);
   };
 
   const handleSeek = (time: number) => {
@@ -116,13 +104,10 @@ export const VideoPlayer = ({
 
   const handleFullscreen = async () => {
     if (!containerRef.current) return;
-
     try {
       if (!isFullscreen) {
-        if (containerRef.current.requestFullscreen) {
-          await containerRef.current.requestFullscreen();
-          setIsFullscreen(true);
-        }
+        await containerRef.current.requestFullscreen?.();
+        setIsFullscreen(true);
       } else {
         if (document.fullscreenElement) {
           await document.exitFullscreen();
@@ -134,15 +119,19 @@ export const VideoPlayer = ({
     }
   };
 
-  // Handle errors
   useEffect(() => {
-    if (error) {
-      onError?.(error);
-    }
+    if (error) onError?.(error);
   }, [error, onError]);
 
-  // Remote Control Handler — disabled for live streams to avoid
-  // accidental pause when navigating zones/categories on the Live page.
+  // Reset estados ao trocar source
+  useEffect(() => {
+    setHasStarted(false);
+    setIsBuffering(false);
+    setCurrentTime(0);
+    setDuration(0);
+    setShowNextEpisodeBtn(false);
+  }, [source]);
+
   useRemoteControl(
     {
       onUp: () => {
@@ -191,21 +180,29 @@ export const VideoPlayer = ({
       className="relative w-full bg-black group"
       style={{ aspectRatio: '16 / 9' }}
     >
+      {/* ── Video ────────────────────────────────────────────────────────── */}
       <video
         ref={videoRef}
         className="w-full h-full z-[999]"
-        poster={poster}
+        poster={!hasStarted ? poster : undefined}
         autoPlay={autoPlay}
-        // controls
-
         playsInline
-        onPlay={() => setIsPlaying(true)}
+        onPlay={() => {
+          setIsPlaying(true);
+          setHasStarted(true);
+          setIsBuffering(false);
+        }}
         onPause={() => setIsPlaying(false)}
+        onWaiting={() => setIsBuffering(true)}
+        onPlaying={() => {
+          setIsBuffering(false);
+          setHasStarted(true);
+        }}
+        onCanPlay={() => setIsBuffering(false)}
         onTimeUpdate={() => {
           if (videoRef.current) {
             const current = videoRef.current.currentTime;
             setCurrentTime(current);
-            // Mostrar botão de próximo episódio quando faltar 40 segundos
             if (type === 'series' && duration > 0) {
               const timeRemaining = duration - current;
               if (timeRemaining <= 60 && timeRemaining > 0) {
@@ -221,7 +218,6 @@ export const VideoPlayer = ({
         }}
         onEnded={() => {
           setIsPlaying(false);
-          // Auto-avançar para próximo episódio se for série
           if (type === 'series' && onNextEpisode) {
             onNextEpisode();
           } else {
@@ -229,25 +225,17 @@ export const VideoPlayer = ({
           }
         }}
         onVolumeChange={() => {
-          if (videoRef.current) {
-            setVolume(videoRef.current.volume);
-          }
+          if (videoRef.current) setVolume(videoRef.current.volume);
         }}
       />
 
-      {/* Back Button */}
+      {/* ── Loading Overlay ───────────────────────────────────────────────── */}
+      {showLoader && <PlayerLoader title={title} poster={poster} />}
 
-      {/* Error display */}
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-          <div className="text-center">
-            <p className="text-red-500 text-lg mb-2">⚠️ Erro</p>
-            <p className="text-white text-sm">{error}</p>
-          </div>
-        </div>
-      )}
+      {/* ── Error Overlay ─────────────────────────────────────────────────── */}
+      {error && <PlayerError error={error} />}
 
-      {/* Next Episode Button - Always visible when active */}
+      {/* ── Próximo Episódio ──────────────────────────────────────────────── */}
       {showNextEpisodeBtn && type === 'series' && onNextEpisode && (
         <div className="absolute bottom-24 right-8 z-[99999]">
           <button
@@ -255,7 +243,8 @@ export const VideoPlayer = ({
               setShowNextEpisodeBtn(false);
               onNextEpisode();
             }}
-            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-lg"
+            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold
+                       rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-lg"
           >
             <span>➤</span>
             <span>Próximo Episódio</span>
@@ -263,8 +252,8 @@ export const VideoPlayer = ({
         </div>
       )}
 
-      {/* Player Controls */}
-      {isControlsVisible && (
+      {/* ── Controles ─────────────────────────────────────────────────────── */}
+      {isControlsVisible && !showLoader && (
         <PlayerControls
           title={title}
           isPlaying={isPlaying}
