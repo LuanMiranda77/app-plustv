@@ -39,7 +39,8 @@ export const Live = () => {
     displayedChannels,
     hasMoreChannels,
     isLoadingMore,
-    setlectLiveIndex
+    setlectLiveIndex,
+    setSetlectLiveIndex,
   } = useLivePage();
 
   return (
@@ -96,14 +97,15 @@ export const Live = () => {
                   key={channel.id}
                   id={channel.id}
                   channel={channel}
-                  isFocused={focusedIndex === i}
-                  setlected={isZoneList && setlectLiveIndex === i}
+                  isFocused={isZoneList && focusedIndex === i}
+                  setlected={setlectLiveIndex === channel.id}
                   onPlay={() => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
                       setCurrentStream(channel);
                     } else {
                       setIsFullScreen(true);
                     }
+                    setSetlectLiveIndex(i);
                   }}
                 />
               ))}
@@ -169,7 +171,7 @@ export const Live = () => {
                 </section>
 
                 <EpgList
-                  ref={epgRef}
+                  // ref={epgRef}
                   epgList={epgList}
                   isZoneEpg={isZoneEpg}
                   focusedEpgIndex={focusedEpgIndex}

@@ -121,7 +121,7 @@ export function useLivePage() {
       if (isZoneList) {
         setActiveZone('content');
         setFocusedCat(focusedCat);
-        setSetlectLiveIndex(-1);
+        // setSetlectLiveIndex(-1);
       }
     },
     onDown: () => {
@@ -174,7 +174,7 @@ export function useLivePage() {
           currentStream.id !== displayedChannels[focusedIndex].id
         ) {
           setCurrentStream(displayedChannels[focusedIndex]);
-          setSetlectLiveIndex(focusedIndex);
+          setSetlectLiveIndex(displayedChannels[focusedIndex].id);
         } else {
           setIsFullScreen(true);
         }
