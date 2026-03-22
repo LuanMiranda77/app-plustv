@@ -11,6 +11,7 @@ import LogoHeader from '../../Logos/LogoHeader';
 import MenuButton from '../../UI/ButtonMenu';
 import ConfirmDialog from '../../UI/ConfirmDialog';
 import { Dropdown, type OptionType, type RefreshTarget } from '../../UI/Dropdown';
+import { useContentStore } from '../../../store/contentStore';
 
 interface Props {
   scrolling: boolean;
@@ -18,46 +19,87 @@ interface Props {
 
 const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const menus = [
-    { title: 'Início',    icon: Home,         path: '/home'   },
-    { title: 'TV ao Vivo',icon: Tv2,          path: '/live'   },
-    { title: 'Filmes',    icon: Film,         path: '/movie'  },
-    { title: 'Séries',    icon: TvMinimalPlay,path: '/series' },
+    { title: 'Início', icon: Home, path: '/home' },
+    { title: 'TV ao Vivo', icon: Tv2, path: '/live' },
+    { title: 'Filmes', icon: Film, path: '/movie' },
+    { title: 'Séries', icon: TvMinimalPlay, path: '/series' }
   ];
 
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // ── Foco ──────────────────────────────────────────────────────────────────
-  const [focusedIndex,   setFocusedIndex]   = useState(0);
-  const [focusedPerfil,  setFocusedPerfil]  = useState(false);
-  const [focusedConfig,  setFocuseConfig]   = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const [focusedPerfil, setFocusedPerfil] = useState(false);
+  const [focusedConfig, setFocuseConfig] = useState(false);
   const [focusedRefresh, setFocusedRefresh] = useState(false);
-  const [selectMenu,     setSelectMenu]     = useState(-1);
+  const [selectMenu, setSelectMenu] = useState(-1);
 
   // ── Dropdown ──────────────────────────────────────────────────────────────
-  const [dropdownOpen,         setDropdownOpen]         = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pendingRefreshTarget, setPendingRefreshTarget] = useState<RefreshTarget>('all');
 
   // ── Confirm dialog ────────────────────────────────────────────────────────
-  const [confirmRefresh,  setConfirmRefresh]  = useState(false);
+  const [confirmRefresh, setConfirmRefresh] = useState(false);
   const [confirmFocusBtn, setConfirmFocusBtn] = useState(1); // 1 = confirmar por padrão
 
-  const { activeProfile }                    = useAuthStore();
+  const { activeProfile } = useAuthStore();
   const { lastUpdate, forceRefresh, isLoading, loadingTarget } = useServerContent();
-  const { activeZone, setActiveZone }        = useFocusZone();
+  const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'menu';
 
   const FOCUS_REFRESH = menus.length;
-  const FOCUS_CONFIG  = menus.length + 1;
-  const FOCUS_PERFIL  = menus.length + 2;
-  const FOCUS_MAX     = FOCUS_PERFIL;
+  const FOCUS_CONFIG = menus.length + 1;
+  const FOCUS_PERFIL = menus.length + 2;
+  const FOCUS_MAX = FOCUS_PERFIL;
 
   const OPTIONS: OptionType[] = [
-    { id: 'live',   label: 'Canais ao Vivo', description: 'Somente TV ao vivo',       icon: <Tv2          className="w-4 h-4" /> },
-    { id: 'movies', label: 'Filmes',         description: 'Somente filmes',            icon: <Film         className="w-4 h-4" /> },
-    { id: 'series', label: 'Séries',         description: 'Somente séries',            icon: <TvMinimalPlay className="w-4 h-4" /> },
-    { id: 'all',    label: 'Atualizar Tudo', description: 'Canais, filmes e séries',   icon: <RefreshCw    className="w-4 h-4" /> },
+    {
+      id: 'live',
+      label: 'Canais ao Vivo',
+      description: 'Somente TV ao vivo',
+      icon: <Tv2 className="w-4 h-4" />
+    },
+    {
+      id: 'movies',
+      label: 'Filmes',
+      description: 'Somente filmes',
+      icon: <Film className="w-4 h-4" />
+    },
+    {
+      id: 'series',
+      label: 'Séries',
+      description: 'Somente séries',
+      icon: <TvMinimalPlay className="w-4 h-4" />
+    },
+    {
+      id: 'all',
+      label: 'Atualizar Tudo',
+      description: 'Canais, filmes e séries',
+      icon: <RefreshCw className="w-4 h-4" />
+    }
   ];
+
+  const { serverConfig } = useAuthStore();
+  const { movies, series, channels, fetchLiveContent, fetchMoviesContent, fetchSeriesContent } =
+    useContentStore();
+
+  // ── Carregar sob demanda por rota ──────────────────────────────────────────
+  useEffect(() => {
+    if (!serverConfig || isLoading) return;
+
+    switch (location.pathname) {
+      case '/live':
+        if (channels.length === 0) fetchLiveContent(serverConfig);
+        break;
+      case '/movie':
+        if (movies.length === 0) fetchMoviesContent(serverConfig);
+        break;
+      case '/series':
+        if (series.length === 0) fetchSeriesContent(serverConfig);
+        break;
+    }
+  }, [location.pathname, serverConfig]);
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -72,10 +114,10 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     clearExtras();
     setFocusedIndex(i => {
       const next = Math.min(i + 1, FOCUS_MAX);
-      if (next < menus.length)      navigate(menus[next].path);
+      if (next < menus.length) navigate(menus[next].path);
       else if (next === FOCUS_REFRESH) setFocusedRefresh(true);
-      else if (next === FOCUS_CONFIG)  setFocuseConfig(true);
-      else if (next === FOCUS_PERFIL)  setFocusedPerfil(true);
+      else if (next === FOCUS_CONFIG) setFocuseConfig(true);
+      else if (next === FOCUS_PERFIL) setFocusedPerfil(true);
       return next;
     });
   };
@@ -85,9 +127,9 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     clearExtras();
     setFocusedIndex(i => {
       const next = Math.max(i - 1, 0);
-      if (next < menus.length)      navigate(menus[next].path);
+      if (next < menus.length) navigate(menus[next].path);
       else if (next === FOCUS_REFRESH) setFocusedRefresh(true);
-      else if (next === FOCUS_CONFIG)  setFocuseConfig(true);
+      else if (next === FOCUS_CONFIG) setFocuseConfig(true);
       return next;
     });
   };
@@ -111,24 +153,30 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
 
   useRemoteControl({
     onRight: () => {
-      if (dropdownOpen) return   // dropdown intercepta
-      if (confirmRefresh) { setConfirmFocusBtn(1); return; }
+      if (dropdownOpen) return; // dropdown intercepta
+      if (confirmRefresh) {
+        setConfirmFocusBtn(1);
+        return;
+      }
       nextButton();
     },
     onLeft: () => {
-      if (dropdownOpen) return   // dropdown intercepta
-      if (confirmRefresh) { setConfirmFocusBtn(0); return; }
+      if (dropdownOpen) return; // dropdown intercepta
+      if (confirmRefresh) {
+        setConfirmFocusBtn(0);
+        return;
+      }
       backButton();
     },
     onDown: () => {
-      if (dropdownOpen) return   // dropdown intercepta
+      if (dropdownOpen) return; // dropdown intercepta
       if (confirmRefresh) return;
       if (!isActive) return;
       setActiveZone('content');
       setSelectMenu(focusedIndex);
     },
     onUp: () => {
-      if (dropdownOpen) return   // dropdown intercepta
+      if (dropdownOpen) return; // dropdown intercepta
     },
     onOk: () => {
       // Confirm dialog aberto
@@ -160,7 +208,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
         setConfirmFocusBtn(1);
         return;
       }
-    },
+    }
   });
 
   // ── Effects ───────────────────────────────────────────────────────────────
@@ -218,7 +266,6 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
 
               {/* ── Ações ───────────────────────────────────────────────── */}
               <section className="relative flex items-center gap-3">
-
                 {/* Data de atualização */}
                 {lastUpdate && (
                   <div className="text-right">
@@ -284,9 +331,11 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
             pendingRefreshTarget === 'all'
               ? 'Deseja atualizar todo o conteúdo? Isso pode levar alguns instantes.'
               : `Deseja atualizar apenas ${
-                  pendingRefreshTarget === 'live'   ? 'os canais ao vivo'  :
-                  pendingRefreshTarget === 'movies' ? 'os filmes'          :
-                  'as séries'
+                  pendingRefreshTarget === 'live'
+                    ? 'os canais ao vivo'
+                    : pendingRefreshTarget === 'movies'
+                      ? 'os filmes'
+                      : 'as séries'
                 }?`
           }
           confirmLabel="Atualizar"

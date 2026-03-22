@@ -27,7 +27,7 @@ interface Section {
 export function useHome() {
   const navigate = useNavigate();
   const { serverConfig } = useAuthStore();
-  const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
+  const { movies, channels, series, isLoading, error, fetchLiveContent } = useContentStore();
   const { getRecentlyWatched, getRecentChannels, loadFromStorage } = useWatchHistoryStore();
   const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
   const [recentChannels, setRecentChannels] = useState<any[]>([]);
@@ -109,7 +109,7 @@ export function useHome() {
   const currentSectionData = currentSection?.data || [];
 
   // Navegação helpers
-  const navigateMovie = (movie: any, location?: string) => {
+  const navigateMovie = (movie: any, dest?: string) => {
     const state: PlayerStream = {
       ...movie,
       id: movie.id,
@@ -117,12 +117,12 @@ export function useHome() {
       title: movie.name,
       poster: movie.poster,
       type: 'movie',
-      location: location
+      location: dest
     };
-    navigate(`/${location || 'player'}`, { state: state });
+    navigate(`/${dest || 'player'}`, { state: state });
   };
 
-  const navigateSerie = (serie: any, location?: string) => {
+  const navigateSerie = (serie: any, dest?: string) => {
     const state: PlayerStream = {
       ...serie,
       id: serie.id,
@@ -130,9 +130,9 @@ export function useHome() {
       title: serie.name,
       poster: serie.poster,
       type: 'series',
-      location: location
+      location: dest
     };
-    navigate(`/${location || 'player'}`, { state: state });
+    navigate(`/${dest || 'player'}`, { state: state });
   };
 
   const navigateEpisodio = (serie: any) => {
@@ -186,7 +186,7 @@ export function useHome() {
     loadFromStorage();
 
     if (serverConfig) {
-      fetchServerContent(serverConfig);
+      fetchLiveContent(serverConfig);
     }
 
     setTimeout(() => {
