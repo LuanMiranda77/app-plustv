@@ -1,11 +1,10 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
-import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
-import type { Season, Series } from '../types';
-import { xtreamApi } from '../utils/xtreamApi';
+import type { Series } from '../types';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 
@@ -13,11 +12,10 @@ export function useSeriesPage() {
   const { series, seriesCategories } = useContentStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const { serverConfig } = useAuthStore();
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
   const [displayCount, setDisplayCount] = useState(30);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const { isFavorite } = useFavoritesStore();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
@@ -27,6 +25,7 @@ export function useSeriesPage() {
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedInput, setFocusedInput] = useState(false);
+  const navigate = useNavigate();
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
 
@@ -39,6 +38,11 @@ export function useSeriesPage() {
     { id: null, name: 'TODOS' },
     ...seriesCategories
   ];
+
+  const handleNavigate = (serie: Series) => {
+    setCurrentSerie(serie);
+    navigate('/detail-series', { state: serie });
+  };
 
   useRemoteControl({
     onRight: () => {
@@ -109,7 +113,7 @@ export function useSeriesPage() {
         setFocusedIndex(0);
       }
       if (isZoneList && displayedSeries[focusedIndex]) {
-        setCurrentSerie(displayedSeries[focusedIndex]);
+        handleNavigate(displayedSeries[focusedIndex]);
       }
     },
     onBack: () => {
@@ -202,42 +206,6 @@ export function useSeriesPage() {
     }
   }, [location]);
 
-  const loadSeriesDetail = async (seriesId: string) => {
-    const data = await xtreamApi.getSeriesInfo(serverConfig!, seriesId);
-    const episodesMap = data.episodes as Record<string, any[]>;
-    const seasons: Season[] = Object.entries(episodesMap)
-      .map(([seasonNum, episodes]) => ({
-        number: Number(seasonNum),
-        progress: 0,
-        episodes: episodes.map(ep => ({
-          id: String(ep.id),
-          name: ep.title || `Episódio ${ep.episode_num}`,
-          number: ep.episode_num,
-          streamUrl: `${serverConfig!.url}/series/${serverConfig!.username}/${serverConfig!.password}/${ep.id}.${ep.container_extension}`,
-          watched: false,
-          progress: 0,
-          thumbnail: ep.info?.movie_image || '',
-          plot: ep.info?.plot || '',
-          duration: ep.info?.duration_secs || undefined,
-          displayDuration: ep.info?.duration || undefined,
-          rating: ep.info?.rating || '',
-          airDate: ep.air_date || ''
-        }))
-      }))
-      .sort((a, b) => a.number - b.number);
-    return seasons;
-  };
-
-  const toggleFavorite = (seriesId: string) => {
-    if (currentSerie) {
-      if (isFavorite(seriesId)) {
-        removeFavorite(seriesId);
-      } else {
-        addFavorite(currentSerie, 'series');
-      }
-    }
-  };
-
   return {
     searchTerm,
     setSearchTerm,
@@ -250,8 +218,6 @@ export function useSeriesPage() {
     isLoadingMore,
     setIsLoadingMore,
     isFavorite,
-    addFavorite,
-    removeFavorite,
     loadMoreRef,
     gridRef,
     categoriesRef,
@@ -270,7 +236,8 @@ export function useSeriesPage() {
     filteredSeries,
     displayedSeries,
     hasMoreSeries,
-    loadSeriesDetail,
-    toggleFavorite
+
+    // functinons
+    handleNavigate
   };
 }

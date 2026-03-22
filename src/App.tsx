@@ -8,6 +8,7 @@ import { Movies } from './pages/Movies';
 import { Player } from './pages/Player';
 import { ProfileSelect } from './pages/ProfileSelect';
 import { PageSeries } from './pages/Series';
+import { DetailSeries } from './pages/DetailSeries';
 import { WatchHistory } from './pages/WatchHistory';
 import { useAuthStore } from './store/authStore';
 
@@ -21,6 +22,7 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/movie" element={<Movies />} />
       <Route path="/series" element={<PageSeries />} />
+      <Route path="/detail-series" element={<DetailSeries />} />
       <Route path="/live" element={<Live />} />
       <Route path="/watch-history" element={<WatchHistory />} />
       <Route path="/player" element={<Player />} />

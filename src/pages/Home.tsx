@@ -89,7 +89,7 @@ export const Home = () => {
               focusedItemIndex={getFocusedIndex('continue-watching')}
               onPlay={item => {
                 if (item.type === 'movie') {
-                  navigateMovie(item);
+                  navigateMovie(item.content);
                 } else if (item.type === 'series') {
                   navigateEpisodio(item);
                 }

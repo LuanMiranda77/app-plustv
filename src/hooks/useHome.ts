@@ -116,7 +116,8 @@ export function useHome() {
         title: movie.name,
         poster: movie.poster,
         type: 'movie',
-        category: movie.category
+        category: movie.category,
+        location: 'movie',
       }
     });
   };
@@ -129,7 +130,8 @@ export function useHome() {
         title: serie.name,
         poster: serie.poster,
         type: 'series',
-        category: serie.category
+        category: serie.category,
+        location: 'series'
       }
     });
   };
@@ -142,7 +144,8 @@ export function useHome() {
         title: serie.name,
         poster: serie.poster,
         type: 'series',
-        category: serie.category
+        category: serie.category,
+        location: 'series',
       }
     });
   };

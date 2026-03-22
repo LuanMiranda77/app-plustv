@@ -74,7 +74,7 @@ export const useProgress = ({
               name = parentSeries.name;
               itemPoster = parentSeries.poster || itemPoster;
               // content é o episódio (contentObject)
-              content = contentObject || parentSeries;
+              content = contentObject;
             } else {
               content = contentObject;
               if (content && 'name' in content) {

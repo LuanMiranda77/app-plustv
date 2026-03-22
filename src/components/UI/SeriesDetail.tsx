@@ -60,7 +60,6 @@ export const SeriesDetail = ({
   const [activeSeason, setActiveSeason] = useState(1);
   const [seasons, setSeasons] = useState<Season[]>(series?.seasons || []);
   const [loading, setLoading] = useState(false);
-  const [isPlay, setIsPlay] = useState(false);
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(0);
   const maxButtons = 5;
   const [focusedButton, setFocusedButton] = useState(1); // 0=voltar 1=Assistir, 2=Trailer, 3=Favorito, 4=Episódios
@@ -138,7 +137,6 @@ export const SeriesDetail = ({
 
   const handlePlay = (episode: Episode, seasonNumber: number) => {
     // onPlay(episode, activeSeason);
-    setIsPlay(true);
     setCurrentEpisode(episode);
     setActiveSeason(seasonNumber);
   };
@@ -152,7 +150,6 @@ export const SeriesDetail = ({
   // Remote Control Navigation
   useRemoteControl({
     onUp: () => {
-      if (isPlay) return;
       if (selectedEpisodeIndex === 0 && focusedButton == -1) {
         // Força o scroll da lista de episódios para o topo
         pageRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -164,22 +161,18 @@ export const SeriesDetail = ({
       setSelectedEpisodeIndex(prev => Math.max(0, prev - 1));
     },
     onDown: () => {
-      if (isPlay) return;
       // Navega para baixo, fica no último se chegar ao final
       setSelectedEpisodeIndex(prev => Math.min(prev + 1, currentEpisodes.length - 1));
       setFocusedButton(-1);
     },
     onRight: () => {
-      if (isPlay) return;
       setFocusedButton(prev => (prev + 1) % maxButtons);
     },
     onLeft: () => {
-      if (isPlay) return;
       // Navegar entre botões ao contrário
       setFocusedButton(prev => (prev - 1 + maxButtons) % maxButtons);
     },
     onOk: () => {
-      if (isPlay) return;
       // Executar ação do botão focado
       if (focusedButton === 0) {
         // Assistir
@@ -196,11 +189,9 @@ export const SeriesDetail = ({
       }
     },
     onBack: () => {
-      if (isPlay) {
-        setIsPlay(false);
-      } else {
+   
         onBack();
-      }
+      
     }
   });
 
@@ -221,44 +212,20 @@ export const SeriesDetail = ({
 
   // Auto-scroll quando episódio selecionado muda
   useEffect(() => {
-    if (!isPlay) {
       const selectedElement = document.querySelector(
         `[data-episode-index="${selectedEpisodeIndex}"]`
       );
       if (selectedElement) {
         selectedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-    }
-  }, [selectedEpisodeIndex, isPlay]);
+    
+  }, [selectedEpisodeIndex]);
 
   const scrollToEpisodes = () => {
     episodesRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' });
   };
 
-  return currentEpisode && isPlay ? (
-    <div className="flex flex-col min-h-screen bg-black">
-      {/* Player */}
-      <div className="absolute z-[9999] w-screen h-h-screen flex items-center justify-center flex-1">
-        <VideoPlayer
-          title={currentEpisode.name}
-          source={currentEpisode.streamUrl}
-          poster={currentEpisode?.thumbnail || ''}
-          autoPlay
-          onError={error => {
-            console.error('Erro no player:', error);
-          }}
-          streamId={currentEpisode.id}
-          type="series"
-          isAutoSave
-          contentObject={currentEpisode}
-          parentContent={series}
-          onBack={() => setIsPlay(false)}
-          onNextEpisode={handlePlayNext}
-        />
-      </div>
-    </div>
-  ) : (
-    series && (
+  return series && (
       <div
         ref={pageRef}
         className="absolute top-0 max-h-[calc(100vh-60px)] bg-zinc-950 text-white w-full mt-[60px] overflow-y-auto"
@@ -351,7 +318,6 @@ export const SeriesDetail = ({
         </div>
       </div>
     )
-  );
 };
 export default SeriesDetail;
 // ─── Exemplo de uso ───────────────────────────────────────────────────────────

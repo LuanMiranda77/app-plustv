@@ -4,7 +4,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { VideoPlayer } from '../components/Player/VideoPlayer';
 import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
+import type { Series } from '../types';
 // import { useAuthStore } from '../store/authStore';
+
+export interface PlayerStream {
+  id: string | number;
+  streamUrl: string;
+  title: string;
+  poster?: string;
+  type?: string;
+  category?: string;
+  location?: string | null;
+  parentContent?: Series | null;
+}
 
 export const Player = () => {
   const navigate = useNavigate();
@@ -13,33 +25,28 @@ export const Player = () => {
   // const [showUrlInput, setShowUrlInput] = useState(false);
   // const [copiedUrl, setCopiedUrl] = useState(false);
   // const { serverConfig } = useAuthStore();
-  const [currentStream, setCurrentStream] = useState<{
-    id: string | number;
-    streamUrl: string;
-    title: string;
-    poster?: string;
-    type?: string;
-    category?: string;
-  } | null>(null);
+  const [currentStream, setCurrentStream] = useState<PlayerStream | null>(null);
 
   // Pegar streamUrl do state ou como query param
   useEffect(() => {
-    const state = location.state as any;
-    if (state?.streamUrl) {
+    const state: PlayerStream = location.state as any;
+    if (state?.streamUrl && currentStream === null) {
       setCurrentStream({
         id: state.id,
         streamUrl: state.streamUrl,
         title: state.title || 'Reproduzindo',
         poster: state.poster,
         type: state.type || 'live',
-        category: state.category || ''
+        category: state.category || '',
+        location: state.location || null,
+        parentContent: state.parentContent || null
       });
     }
   }, [location]);
 
   const handleGoBack = () => {
-    navigate(`/${!currentStream?.type ? 'home' : currentStream?.type}`, {
-      state: currentStream
+    navigate(`/${currentStream?.location ? currentStream?.location : currentStream?.type}`, {
+      state: currentStream?.parentContent ?? currentStream
     });
     setCurrentStream(null);
   };
@@ -72,12 +79,8 @@ export const Player = () => {
             type={(currentStream.type as 'movie' | 'series' | 'live') || 'live'}
             isAutoSave={currentStream.type !== 'live'} // Não salvar progresso para lives
             isControlsVisible={currentStream.type !== 'live'}
-            onBack={() => {
-              navigate(`/${!currentStream.type ? 'home' : currentStream.type}`, {
-                state: currentStream
-              });
-              setCurrentStream(null);
-            }}
+            onBack={handleGoBack}
+            parentContent={currentStream.parentContent}
           />
         </div>
 

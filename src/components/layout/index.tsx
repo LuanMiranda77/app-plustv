@@ -6,9 +6,10 @@ import { useAuthStore } from '../../store/authStore';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import { useWatchHistoryStore } from '../../store/watchHistoryStore';
 import MainHeader from './MainHeader';
+import { DEV_MODE } from '../../config/devMode';
 
 const Layout: React.FC = () => {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(!DEV_MODE);
   const { loadFromStorage, activeProfile } = useAuthStore();
   const { loadFromStorage: loadFavoritesFromStorage, setCurrentProfile: setFavoritesProfile } =
     useFavoritesStore();
@@ -17,7 +18,7 @@ const Layout: React.FC = () => {
   const location = useLocation();
 
   // Rotas onde MainHeader não deve aparecer
-  const hiddenHeaderRoutes = ['/', '/profiles', '/player'];
+  const hiddenHeaderRoutes = ['/', '/profiles', '/player', '/detail-series', '/detail-movie'];
   const shouldShowHeader = !hiddenHeaderRoutes.includes(location.pathname);
 
   // Carregar dados ao iniciar
@@ -39,9 +40,10 @@ const Layout: React.FC = () => {
 
   return (
     <Fragment>
-      {showSplash && <Splash onFinish={handleSplashFinish} />}
-      {shouldShowHeader && <MainHeader scrolling={false} />}
-      <App />
+      {showSplash  && <Splash onFinish={handleSplashFinish} />}
+      {shouldShowHeader && !showSplash && <MainHeader scrolling={false} />}
+      {!showSplash &&
+      <App />}
     </Fragment>
   );
 };

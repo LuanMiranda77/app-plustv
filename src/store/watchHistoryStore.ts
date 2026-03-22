@@ -28,6 +28,7 @@ interface WatchHistoryState {
   addChannelToHistory: (item: WatchHistoryItem) => void;
   updateProgress: (id: string, watched: number, duration: number) => void;
   removeFromHistory: (id: string) => void;
+  toggleWatched: (id: string) => void;
   clearHistory: () => void;
   getHistory: () => WatchHistoryItem[];
   getRecentlyWatched: (limit?: number) => WatchHistoryItem[];
@@ -153,6 +154,28 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
       storage.set(key, updated);
 
       return { history: updated };
+    });
+  },
+
+  toggleWatched: id => {
+    set(state => {
+      const history = state.history;
+      const index = history.findIndex(h => h.id === id);
+
+      if (index >= 0) {
+        const updated = [...history];
+        updated[index] = {
+          ...updated[index],
+          progress: 100,
+          lastWatched: new Date()
+        };
+
+        // Salva com chave do perfil atual
+        const key = getHistoryKey(state.currentProfileId);
+        storage.set(key, updated);
+        return { history: updated };
+      }
+      return state;
     });
   },
 

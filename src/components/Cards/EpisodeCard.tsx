@@ -194,7 +194,7 @@ export const EpisodeCard = ({
           {/* Ações */}
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             {/* Marcar como assistido */}
-            {onToggleWatched && (
+            {/* {onToggleWatched && (
               <button
                 title={isWatched ? 'Marcar como não assistido' : 'Marcar como assistido'}
                 className={`p-1.5 rounded-lg transition-colors duration-200
@@ -218,7 +218,7 @@ export const EpisodeCard = ({
                   <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-            )}
+            )} */}
 
             {/* Botão play */}
             <button

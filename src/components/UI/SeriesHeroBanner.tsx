@@ -46,7 +46,6 @@ export const SeriesHeroBanner = ({
   onSetShowTrailer,
 }: SeriesHeroBannerProps) => {
   const [imgError, setImgError] = useState(false);
-  const [showFullPlot, setShowFullPlot] = useState(false);
   const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(series.id));
 
@@ -120,7 +119,7 @@ export const SeriesHeroBanner = ({
               {onToggleFavorite && (
                 <ButtonFavorite
                   onClick={() => onToggleFavorite(series.id)}
-                  isFocused={focusedButton === 3 || isFav}
+                  isFocused={focusedButton === 3}
                   isFav={isFav}
                 />
               )}

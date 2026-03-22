@@ -2,7 +2,6 @@ import { Heart } from 'lucide-react';
 import { StreamPoster } from '../components/Cards/StreamPoster';
 import ButtonCategory from '../components/UI/ButtonCategory';
 import { Input } from '../components/UI/Input';
-import SeriesDetail from '../components/UI/SeriesDetail';
 import { useSeriesPage } from '../hooks/useSeriesPage';
 
 export const PageSeries = () => {
@@ -14,11 +13,7 @@ export const PageSeries = () => {
     setSelectedCategory,
 
     // Série atual
-    currentSerie,
-    setCurrentSerie,
-
-    // Favoritos
-    toggleFavorite,
+    // currentSerie,
 
     // Refs
     loadMoreRef,
@@ -41,21 +36,13 @@ export const PageSeries = () => {
     hasMoreSeries,
     isLoadingMore,
 
-    // Detalhe
-    loadSeriesDetail,
+    // Funções
+    handleNavigate,
   } = useSeriesPage();
 
-  return currentSerie ? (
-    <SeriesDetail
-      series={currentSerie}
-      onBack={() => setCurrentSerie(null)}
-      onToggleFavorite={id => toggleFavorite(id)}
-      onLoadDetail={id => loadSeriesDetail(id)}
-    />
-  ) : (
+  return (
     <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <div className="flex mt-[60px] h-[calc(100vh-60px)]">
-
         {/* ── Categorias ───────────────────────────────────────────────────── */}
         {categoriesWithAll.length > 0 && (
           <div
@@ -86,7 +73,6 @@ export const PageSeries = () => {
 
         {/* ── Grid de séries ───────────────────────────────────────────────── */}
         <div ref={gridRef} className="flex-1 mx-auto px-6 py-8 overflow-y-scroll">
-
           {/* Busca */}
           <div className={`flex-1 mb-5 ${focusedInput ? 'ring-2 ring-red-600' : ''}`}>
             <Input
@@ -107,7 +93,7 @@ export const PageSeries = () => {
                   key={s.id}
                   stream={s}
                   isFocused={isZoneList && focusedIndex === i}
-                  onPlay={() => setCurrentSerie(s)}
+                  onPlay={() => handleNavigate(s)}
                 />
               ))}
 
@@ -131,5 +117,5 @@ export const PageSeries = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
