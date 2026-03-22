@@ -40,7 +40,7 @@ export const Live = () => {
     isLoadingMore,
     setlectLiveIndex,
     setSetlectLiveIndex,
-    handleInputKeyDown,
+    handleInputKeyDown
   } = useLivePage();
 
   return (
@@ -143,21 +143,27 @@ export const Live = () => {
           >
             {!isFullScreen && (
               <div className="w-full text-2xl max-md:text-sm font-semibold line-clamp-1 bg-netflix-red">
-                Canal - {currentStream ? currentStream.name : 'Nenhum canal selecionado'}
+                {currentStream ? ` Canal - ${currentStream.name}` : 'Escolha um canal para assistir'}
               </div>
             )}
 
-            <VideoPlayer
-              title={currentStream?.title}
-              source={currentStream ? currentStream.streamUrl : ''}
-              poster={currentStream?.logo}
-              autoPlay
-              isControlsVisible={false}
-              onError={error => console.error('Erro no player:', error)}
-              streamId={currentStream?.id}
-              type="live"
-              onBack={() => setIsFullScreen(false)}
-            />
+            {currentStream ? (
+              <VideoPlayer
+                title={currentStream?.title}
+                source={currentStream ? currentStream.streamUrl : ''}
+                poster={currentStream?.logo}
+                autoPlay
+                isControlsVisible={false}
+                onError={error => console.error('Erro no player:', error)}
+                streamId={currentStream?.id}
+                type="live"
+                onBack={() => setIsFullScreen(false)}
+              />
+            ) : (
+              <div className="w-full aspect-video bg-zinc-900 flex items-center justify-center rounded-xl">
+                <p className="text-zinc-500 text-3xl max-md:text-sm">Nenhum canal selecionado</p>
+              </div>
+            )}
 
             {!isFullScreen && (
               <Fragment>
@@ -184,4 +190,4 @@ export const Live = () => {
       </div>
     </div>
   );
-}
+};
