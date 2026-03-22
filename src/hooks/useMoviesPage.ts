@@ -6,7 +6,7 @@ import { useFavoritesStore } from '../store/favoritesStore';
 import type { Movie } from '../types';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export function useMoviesPage() {
   const { movies, vodCategories } = useContentStore();
@@ -26,11 +26,9 @@ export function useMoviesPage() {
   const [focusedInput, setFocusedInput] = useState(false);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
-
-  useBackGuard(!!currentMovie, () => setCurrentMovie(null));
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const ITEMS_PER_PAGE = 20;
-
   const categoriesWithAll = [
     { id: '-1', name: 'FAVORITOS' },
     { id: null, name: 'TODOS' },
@@ -50,13 +48,66 @@ export function useMoviesPage() {
 
   const displayedMovies = filteredMovies.slice(0, displayCount);
   const hasMoreMovies = displayCount < filteredMovies.length;
-  const navigate = useNavigate();
 
-   const handleNavigate = (movie: Movie) => {
-     setCurrentMovie(movie);
-     navigate('/detail-movie', { state: movie });
-   };
+  useBackGuard(!!currentMovie, () => setCurrentMovie(null));
+  // Adicionar um ref para controlar se veio de navegação
+  const isRestoringRef = useRef(false);
 
+  // carregar filme do estado ao voltar para a página
+  useEffect(() => {
+    const state = location.state as any;
+    if (state && !isRestoringRef.current) {
+      isRestoringRef.current = true; // ← marca que está restaurando
+      setActiveZone('list');
+      setSelectedCategory(state.category || null);
+    }
+  }, [location]);
+
+  // 2. só após filteredMovies atualizar, busca o índice correto
+  useEffect(() => {
+    const state = location.state as any;
+    if (!state || !isRestoringRef.current) return;
+
+    const index = filteredMovies.findIndex(s => s.id === state.id);
+    if (index === -1) return;
+
+    // Expandir displayCount para garantir que o item está no DOM
+    if (index >= displayCount) {
+      setDisplayCount(index + ITEMS_PER_PAGE);
+    }
+
+    setFocusedIndex(index);
+
+    // Aguardar displayCount expandir e DOM re-renderizar
+    setTimeout(() => {
+      // ── Scroll do item na grid ─────────────────────────────────
+      const focusedElement = gridRef.current?.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // ── Scroll da categoria no sidebar ────────────────────────
+      if (categoriesRef.current && state.category) {
+        // Buscar pelo data-selected ou pelo texto da categoria
+        const catSelected = categoriesRef.current.querySelector('[data-selected="true"]');
+        if (catSelected instanceof HTMLElement) {
+          catSelected.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      isRestoringRef.current = false;
+    }, 300); // ← aumentar de 150ms para 300ms
+  }, [filteredMovies]);
+
+  const handleNavigate = (movie: Movie) => {
+    setCurrentMovie(movie);
+    navigate('/detail-movie', { state: movie });
+  };
+
+  const handleCategoryClick = (id: string | null) => {
+    setSelectedCategory(id);
+    setFocusedIndex(-1);
+  };
 
   useRemoteControl({
     onRight: () => {
@@ -123,8 +174,7 @@ export function useMoviesPage() {
     },
     onOk: () => {
       if (isZoneCat) {
-        setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
-        setFocusedIndex(0);
+        handleCategoryClick(categoriesWithAll[focusedCat]?.id || null);
       }
       if (isZoneList && displayedMovies[focusedIndex]) {
         handleNavigate(displayedMovies[focusedIndex]);
@@ -229,5 +279,6 @@ export function useMoviesPage() {
     displayedMovies,
     hasMoreMovies,
     handleNavigate,
+    handleCategoryClick
   };
 }

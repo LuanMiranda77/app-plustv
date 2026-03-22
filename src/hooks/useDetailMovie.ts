@@ -84,7 +84,7 @@ export function ueseDetailMovie() {
   };
 
   // Interceptar voltar nativo do navegador/TV
-  useBackGuard(!!movie, handleCloseTrailer);
+  useBackGuard(!!movie, showTrailer ? handleCloseTrailer : handleBack);
 
   const getPorcentagem =
     !movie?.progress || !movie.duration ? 0 : (movie.progress / movie.duration) * 100;
@@ -135,7 +135,6 @@ export function ueseDetailMovie() {
     focusedButton,
     setFocusedButton,
     showTrailer,
-    setShowTrailer,
 
     // Progresso
     getPorcentagem,
@@ -147,6 +146,7 @@ export function ueseDetailMovie() {
     handlePlay,
     handleBack,
     handleToggleFavorite,
-    loadProgress
+    loadProgress,
+    handleCloseTrailer
   };
 }

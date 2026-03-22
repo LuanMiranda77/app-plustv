@@ -9,6 +9,7 @@ import { indexedDbStorage } from '../utils/indexedDbStorage';
 import { getProgress } from '../utils/progressWatched';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useRemoteControl } from './useRemotoControl';
+import { useBackGuard } from './useBackGuard';
 
 export function useSeriesDetail() {
   const navigate = useNavigate();
@@ -166,7 +167,7 @@ export function useSeriesDetail() {
       id: episode.id,
       streamUrl: episode.streamUrl,
       title: episode.name,
-      poster: episode.thumbnail,
+      poster: episode.thumbnail ?? '',
       type: 'series',
       category: series?.category,
       location: 'detail-series',
@@ -233,6 +234,13 @@ export function useSeriesDetail() {
     episodesRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' });
     setSelectedEpisodeIndex(0);
   };
+
+  const handleCloseTrailer = () => {
+    setShowTrailer(false);
+  };
+
+  // Interceptar voltar nativo do navegador/TV
+  useBackGuard(!!series, showTrailer ? handleCloseTrailer : handleBack);
 
   // Remote Control Navigation
   useRemoteControl({
@@ -301,7 +309,6 @@ export function useSeriesDetail() {
     seasons,
     loading,
     showTrailer,
-    setShowTrailer,
     focusedButton,
     setFocusedButton,
     series,
@@ -330,6 +337,7 @@ export function useSeriesDetail() {
     handleBack,
     handleToggleWatched,
     onLoadDetail,
+    handleCloseTrailer,
 
     // Refs
     episodesRef,

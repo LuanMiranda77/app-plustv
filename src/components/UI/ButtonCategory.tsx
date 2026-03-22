@@ -18,6 +18,7 @@ export default function ButtonCategory({
   return (
     <button
       key={id}
+      data-selected={isSelected ? 'true' : 'false'}
       data-focused={isFocused ? 'true' : 'false'}
       onClick={onClick}
       className={`

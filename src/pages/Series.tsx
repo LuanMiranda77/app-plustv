@@ -10,7 +10,6 @@ export const PageSeries = () => {
     searchTerm,
     setSearchTerm,
     selectedCategory,
-    setSelectedCategory,
 
     // Série atual
     // currentSerie,
@@ -38,6 +37,7 @@ export const PageSeries = () => {
 
     // Funções
     handleNavigate,
+    handleCategoryClick,
   } = useSeriesPage();
 
   return (
@@ -63,7 +63,7 @@ export const PageSeries = () => {
                         <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
                       ) : undefined
                     }
-                    onClick={() => setSelectedCategory(cat.id as any)}
+                    onClick={() => handleCategoryClick(cat.id as any)}
                   />
                 ))}
               </div>

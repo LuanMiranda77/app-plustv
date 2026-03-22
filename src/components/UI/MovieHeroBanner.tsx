@@ -20,7 +20,7 @@ interface SeriesHeroBannerProps {
   onToggleFavorite?: (movie: Movie) => void;
   focusedButton?: number; // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
   showTrailer?: boolean;
-  onSetShowTrailer?: (show: boolean) => void;
+  onCloseTrailer?: (show: boolean) => void;
   isFav?: boolean;
 }
 
@@ -29,7 +29,7 @@ export const MovieHeroBanner = ({
   percent,
   focusedButton,
   showTrailer: propsShowTrailer,
-  onSetShowTrailer,
+  onCloseTrailer,
   onBack,
   onPlay,
   onToggleFavorite,
@@ -42,8 +42,8 @@ export const MovieHeroBanner = ({
   // Usar showTrailer dos props se fornecido, senão usar o state local
   const isShowingTrailer = propsShowTrailer !== undefined ? propsShowTrailer : showTrailer;
   const handleSetShowTrailer = (show: boolean) => {
-    if (onSetShowTrailer) {
-      onSetShowTrailer(show);
+    if (onCloseTrailer) {
+      onCloseTrailer(show);
     } else {
       setShowTrailer(show);
     }

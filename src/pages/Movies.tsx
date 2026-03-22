@@ -10,7 +10,6 @@ export const Movies = () => {
     searchTerm,
     setSearchTerm,
     selectedCategory,
-    setSelectedCategory,
 
     // Refs
     loadMoreRef,
@@ -35,6 +34,7 @@ export const Movies = () => {
 
     //Funções
     handleNavigate,
+    handleCategoryClick
   } = useMoviesPage();
 
   return (
@@ -48,21 +48,25 @@ export const Movies = () => {
           >
             <div className="px-6 py-4">
               <div className="flex flex-col gap-2 pb-2">
-                {categoriesWithAll.map((cat, i) => (
-                  <ButtonCategory
-                    key={cat.id || 'all'}
-                    id={String(cat.id || '-2')}
-                    name={cat.name.replace('FILMES |', '')}
-                    isSelected={selectedCategory === (cat.id as any)}
-                    isFocused={isZoneCat && focusedCat === i}
-                    icon={
-                      cat.id === '-1' ? (
-                        <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
-                      ) : undefined
-                    }
-                    onClick={() => setSelectedCategory(cat.id as any)}
-                  />
-                ))}
+                {categoriesWithAll.map((cat, i) => {
+                  const isSelected = selectedCategory === (cat.id as any);
+                  const isFocused = isZoneCat && focusedCat === i;
+                  return (
+                    <ButtonCategory
+                      key={cat.id || 'all'}
+                      id={String(cat.id || '-2')}
+                      name={cat.name.replace('FILMES |', '')}
+                      isSelected={isSelected}
+                      isFocused={isFocused}
+                      icon={
+                        cat.id === '-1' ? (
+                          <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
+                        ) : undefined
+                      }
+                      onClick={() => handleCategoryClick(cat.id as any)}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -1,17 +1,15 @@
-import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Episode, Season, Series } from '../../types';
 import { TrailerModal } from '../Player/TrilerModal';
 import { ButtonBack } from './ButtonBack';
-import StartRating from './StarRating';
-import { ButtonTrailer } from './ButtonTrailer';
-import { ChevronDown, Heart, Rat } from 'lucide-react';
-import { ButtonIcon } from './ButtonIcon';
 import ButtonFavorite from './ButtonFavorite';
+import { ButtonIcon } from './ButtonIcon';
 import PlayButton from './ButtonPlay';
-import PlotText from './PlotText';
-import MetaText from './MetaText';
+import { ButtonTrailer } from './ButtonTrailer';
 import GenreBadges from './GenreBadges';
+import MetaText from './MetaText';
+import PlotText from './PlotText';
 import Poster from './Poster';
 
 interface SeriesHeroBannerProps {
@@ -26,8 +24,8 @@ interface SeriesHeroBannerProps {
   onToggleFavorite?: (id: string) => void;
   onScrollToEpisodes: () => void;
   focusedButton?: number; // 0=Assistir, 1=Trailer, 2=Favorito, 3=Episódios
-  showTrailer?: boolean;
-  onSetShowTrailer?: (show: boolean) => void;
+  showTrailer: boolean;
+  onCloseTrailer: () => void;
 }
 
 export const SeriesHeroBanner = ({
@@ -43,9 +41,8 @@ export const SeriesHeroBanner = ({
   onScrollToEpisodes,
   focusedButton = 0,
   showTrailer = false,
-  onSetShowTrailer,
+  onCloseTrailer
 }: SeriesHeroBannerProps) => {
-  const [imgError, setImgError] = useState(false);
   const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(series.id));
 
@@ -56,8 +53,7 @@ export const SeriesHeroBanner = ({
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${series.poster})`,
-          animation: 'heroFade 0.8s ease both',
-          filter: imgError ? 'none' : undefined,
+          animation: 'heroFade 0.8s ease both'
         }}
       />
 
@@ -74,7 +70,7 @@ export const SeriesHeroBanner = ({
       <TrailerModal
         youtubeId={series.youtube_trailer ?? ''}
         open={showTrailer}
-        onClose={() => onSetShowTrailer?.(false)}
+        onClose={onCloseTrailer}
       />
 
       {/* Conteúdo hero */}

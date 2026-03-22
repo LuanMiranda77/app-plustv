@@ -28,20 +28,81 @@ export function useSeriesPage() {
   const navigate = useNavigate();
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
-
-  useBackGuard(!!currentSerie, () => setCurrentSerie(null));
-
   const ITEMS_PER_PAGE = 30;
-
   const categoriesWithAll = [
     { id: '-1', name: 'FAVORITOS' },
     { id: null, name: 'TODOS' },
     ...seriesCategories
   ];
 
+  const filteredSeries = series.filter(s => {
+    const matchesSearch =
+      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.category?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      !selectedCategory ||
+      s.category === selectedCategory ||
+      (selectedCategory === '-1' && isFavorite(s.id));
+    return matchesSearch && matchesCategory;
+  });
+
+  const displayedSeries = filteredSeries.slice(0, displayCount);
+  const hasMoreSeries = displayCount < filteredSeries.length;
+
+  useBackGuard(!!currentSerie, () => setCurrentSerie(null));
+
+  // Adicionar um ref para controlar se veio de navegação
+  const isRestoringRef = useRef(false);
+
+  // carregar filme do estado ao voltar para a página
+  useEffect(() => {
+    const state = location.state as any;
+    if (state && !isRestoringRef.current) {
+      isRestoringRef.current = true; // ← marca que está restaurando
+      setActiveZone('list');
+      setSelectedCategory(state.category || null);
+    }
+  }, [location]);
+
+  // 2. só após filteredSeries atualizar, busca o índice correto
+  useEffect(() => {
+    const state = location.state as any;
+    if (!state || !isRestoringRef.current) return;
+
+    const index = filteredSeries.findIndex(s => s.id === state.id);
+    if (index === -1) return;
+
+    if (index >= displayCount) {
+      setDisplayCount(index + ITEMS_PER_PAGE);
+    }
+
+    setFocusedIndex(index);
+
+    setTimeout(() => {
+      const focusedElement = gridRef.current?.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      if (categoriesRef.current && state.category) {
+        const catElement = categoriesRef.current.querySelector('[data-selected="true"]');
+        if (catElement instanceof HTMLElement) {
+          catElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      // ✅ Libera o guard APÓS scroll — navegação funciona, foco mantido
+      isRestoringRef.current = false;
+    }, 150);
+  }, [filteredSeries]);
+
   const handleNavigate = (serie: Series) => {
     setCurrentSerie(serie);
     navigate('/detail-series', { state: serie });
+  };
+
+  const handleCategoryClick = (id: string | null) => {
+    setSelectedCategory(id);
+    setFocusedIndex(-1);
   };
 
   useRemoteControl({
@@ -109,8 +170,7 @@ export function useSeriesPage() {
     },
     onOk: () => {
       if (isZoneCat) {
-        setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
-        setFocusedIndex(0);
+        handleCategoryClick(categoriesWithAll[focusedCat]?.id || null);
       }
       if (isZoneList && displayedSeries[focusedIndex]) {
         handleNavigate(displayedSeries[focusedIndex]);
@@ -126,20 +186,6 @@ export function useSeriesPage() {
       }
     }
   });
-
-  const filteredSeries = series.filter(s => {
-    const matchesSearch =
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      !selectedCategory ||
-      s.category === selectedCategory ||
-      (selectedCategory === '-1' && isFavorite(s.id));
-    return matchesSearch && matchesCategory;
-  });
-
-  const displayedSeries = filteredSeries.slice(0, displayCount);
-  const hasMoreSeries = displayCount < filteredSeries.length;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -196,16 +242,6 @@ export function useSeriesPage() {
     }
   }, [focusedIndex, isZoneList, displayedSeries.length, hasMoreSeries]);
 
-  useEffect(() => {
-    const state = location.state as any;
-    if (state) {
-      setCurrentSerie(state);
-      setSelectedCategory(state.category || null);
-    } else {
-      setCurrentSerie(null);
-    }
-  }, [location]);
-
   return {
     searchTerm,
     setSearchTerm,
@@ -238,6 +274,7 @@ export function useSeriesPage() {
     hasMoreSeries,
 
     // functinons
-    handleNavigate
+    handleNavigate,
+    handleCategoryClick
   };
 }

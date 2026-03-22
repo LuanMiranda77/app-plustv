@@ -12,7 +12,6 @@ export const DetailMovie = () => {
     // UI
     focusedButton,
     showTrailer,
-    setShowTrailer,
 
     // Progresso
     getPorcentagem,
@@ -23,7 +22,8 @@ export const DetailMovie = () => {
     // Ações
     handlePlay,
     handleBack,
-    handleToggleFavorite
+    handleToggleFavorite,
+    handleCloseTrailer
   } = ueseDetailMovie();
  
   return (
@@ -41,7 +41,7 @@ export const DetailMovie = () => {
           onToggleFavorite={handleToggleFavorite}
           focusedButton={focusedButton}
           showTrailer={showTrailer}
-          onSetShowTrailer={setShowTrailer}
+          onCloseTrailer={handleCloseTrailer}
           isFav={isFavorite(movie.id)}
         />
       </div>
