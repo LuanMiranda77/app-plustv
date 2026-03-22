@@ -109,6 +109,17 @@ export function useMoviesPage() {
     setFocusedIndex(-1);
   };
 
+  // Adicionar junto aos outros handlers
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('list');
+      setFocusedIndex(0);
+    }
+  };
+
   useRemoteControl({
     onRight: () => {
       if (isZoneCat) {
@@ -173,6 +184,12 @@ export function useMoviesPage() {
       }
     },
     onOk: () => {
+      // ✅ Se input estiver focado, ir para a lista
+      if (focusedInput) {
+        handleInputKeyDown({ key: 'Enter', keyCode: 13 } as any);
+        return;
+      }
+
       if (isZoneCat) {
         handleCategoryClick(categoriesWithAll[focusedCat]?.id || null);
       }
@@ -279,6 +296,7 @@ export function useMoviesPage() {
     displayedMovies,
     hasMoreMovies,
     handleNavigate,
-    handleCategoryClick
+    handleCategoryClick,
+    handleInputKeyDown
   };
 }

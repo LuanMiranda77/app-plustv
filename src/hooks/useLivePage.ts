@@ -103,6 +103,17 @@ export function useLivePage() {
     }
   }, [currentStream?.id, serverConfig]);
 
+  // Adicionar junto aos outros handlers
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('list');
+      setFocusedIndex(0);
+    }
+  };
+
   useRemoteControl({
     onRight: () => {
       if (isZoneCat) {
@@ -164,6 +175,11 @@ export function useLivePage() {
       }
     },
     onOk: () => {
+      // ✅ Se input estiver focado, ir para a lista
+      if (focusedInput) {
+        handleInputKeyDown({ key: 'Enter', keyCode: 13 } as any);
+        return;
+      }
       if (isZoneCat) {
         setSelectedCategory(categoriesWithAll[focusedCat]?.id || null);
         setFocusedIndex(0);
@@ -300,7 +316,7 @@ export function useLivePage() {
     setEpgList,
     isLoadingEpg,
     setIsLoadingEpg,
-    setlectLiveIndex, 
+    setlectLiveIndex,
     setSetlectLiveIndex,
     isFavorite,
     addFavorite,
@@ -327,6 +343,7 @@ export function useLivePage() {
     categoriesWithAll,
     filteredChannels,
     displayedChannels,
-    hasMoreChannels
+    hasMoreChannels,
+    handleInputKeyDown
   };
 }

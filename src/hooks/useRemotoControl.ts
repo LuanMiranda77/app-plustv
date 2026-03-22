@@ -14,6 +14,8 @@ type RemoteKeys = {
   onBlue?: () => void;
 };
 
+let blockNextOk = false;
+
 export function useRemoteControl(handlers: RemoteKeys, disabled = false) {
   const handlersRef = useRef(handlers);
   const disabledRef = useRef(disabled);
@@ -21,7 +23,6 @@ export function useRemoteControl(handlers: RemoteKeys, disabled = false) {
   useEffect(() => {
     handlersRef.current = handlers;
   }, [handlers]);
-
   useEffect(() => {
     disabledRef.current = disabled;
   }, [disabled]);
@@ -29,7 +30,24 @@ export function useRemoteControl(handlers: RemoteKeys, disabled = false) {
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const current = handlersRef.current;
 
-    // When disabled, only allow Back (ESC/461) to escape
+    // ✅ Verificar pelo target do evento, não pelo activeElement
+    const target = e.target as HTMLElement;
+    const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
+
+    if (isTyping) {
+      if (e.keyCode === 461 || e.keyCode === 27) {
+        target.blur();
+        current.onBack?.();
+        e.preventDefault();
+      }
+      // Enter no input — NÃO propagar
+      if (e.keyCode === 13) {
+        e.preventDefault();
+        e.stopImmediatePropagation(); // ← bloqueia outros listeners no window
+      }
+      return;
+    }
+
     if (disabledRef.current) {
       if (e.keyCode === 461 || e.keyCode === 27) {
         current.onBack?.();
@@ -57,7 +75,11 @@ export function useRemoteControl(handlers: RemoteKeys, disabled = false) {
         break;
       case 13:
       case 44:
-        current.onOk?.();
+        // ✅ Verificar o bloqueio antes de chamar onOk
+        if (!blockNextOk) {
+          current.onOk?.();
+        }
+        blockNextOk = false;
         e.preventDefault();
         break;
       case 461:

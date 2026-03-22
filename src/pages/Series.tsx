@@ -25,7 +25,6 @@ export const PageSeries = () => {
     isZoneList,
     focusedCat,
     focusedIndex,
-    focusedInput,
     setFocusedInput,
 
     // Dados
@@ -38,6 +37,7 @@ export const PageSeries = () => {
     // Funções
     handleNavigate,
     handleCategoryClick,
+    handleInputKeyDown
   } = useSeriesPage();
 
   return (
@@ -74,7 +74,7 @@ export const PageSeries = () => {
         {/* ── Grid de séries ───────────────────────────────────────────────── */}
         <div ref={gridRef} className="flex-1 mx-auto px-6 py-8 overflow-y-scroll">
           {/* Busca */}
-          <div className={`flex-1 mb-5 ${focusedInput ? 'ring-2 ring-red-600' : ''}`}>
+          <div className={`flex-1 mb-5 `}>
             <Input
               ref={inputRef}
               type="text"
@@ -83,6 +83,7 @@ export const PageSeries = () => {
               onChange={e => setSearchTerm(e.target.value)}
               onFocus={() => setFocusedInput(true)}
               onBlur={() => setFocusedInput(false)}
+              onKeyDown={handleInputKeyDown}
             />
           </div>
 
@@ -118,4 +119,4 @@ export const PageSeries = () => {
       </div>
     </div>
   );
-}
+};

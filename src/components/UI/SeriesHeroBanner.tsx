@@ -25,7 +25,7 @@ interface SeriesHeroBannerProps {
   onScrollToEpisodes: () => void;
   focusedButton?: number; // 0=Assistir, 1=Trailer, 2=Favorito, 3=Episódios
   showTrailer: boolean;
-  onCloseTrailer: () => void;
+  onSetShowTrailer: (params:boolean) => void;
 }
 
 export const SeriesHeroBanner = ({
@@ -41,7 +41,7 @@ export const SeriesHeroBanner = ({
   onScrollToEpisodes,
   focusedButton = 0,
   showTrailer = false,
-  onCloseTrailer
+  onSetShowTrailer,
 }: SeriesHeroBannerProps) => {
   const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(series.id));
@@ -70,7 +70,7 @@ export const SeriesHeroBanner = ({
       <TrailerModal
         youtubeId={series.youtube_trailer ?? ''}
         open={showTrailer}
-        onClose={onCloseTrailer}
+        onClose={()=>onSetShowTrailer(false)}
       />
 
       {/* Conteúdo hero */}
@@ -110,7 +110,8 @@ export const SeriesHeroBanner = ({
               />
               <ButtonTrailer
                 isFocused={focusedButton === 2}
-                disabled={Boolean(series.youtube_trailer)}
+                disabled={Boolean(series.youtube_trailer) == false}
+                onClick={() => onSetShowTrailer(true)}
               />
               {onToggleFavorite && (
                 <ButtonFavorite

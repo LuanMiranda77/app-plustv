@@ -69,10 +69,6 @@ export function ueseDetailMovie() {
     navigate('/movie', { state: movie });
   };
 
-  const handleCloseTrailer = () => {
-    setShowTrailer(false);
-  };
-
   const handleToggleFavorite = () => {
     if (!movie) return;
 
@@ -84,7 +80,7 @@ export function ueseDetailMovie() {
   };
 
   // Interceptar voltar nativo do navegador/TV
-  useBackGuard(!!movie, showTrailer ? handleCloseTrailer : handleBack);
+  useBackGuard(!!movie, showTrailer ? () => setShowTrailer(false) : handleBack);
 
   const getPorcentagem =
     !movie?.progress || !movie.duration ? 0 : (movie.progress / movie.duration) * 100;
@@ -109,7 +105,7 @@ export function ueseDetailMovie() {
       } else if (focusedButton === 1) {
         // Assistir
         handlePlay();
-      } else if (focusedButton === 2) {
+      } else if (focusedButton === 2 && movie?.youtube_trailer) {
         // Trailer
         setShowTrailer(true);
       } else if (focusedButton === 3) {
@@ -135,6 +131,7 @@ export function ueseDetailMovie() {
     focusedButton,
     setFocusedButton,
     showTrailer,
+    setShowTrailer,
 
     // Progresso
     getPorcentagem,
@@ -147,6 +144,5 @@ export function ueseDetailMovie() {
     handleBack,
     handleToggleFavorite,
     loadProgress,
-    handleCloseTrailer
   };
 }

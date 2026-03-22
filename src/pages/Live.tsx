@@ -24,7 +24,7 @@ export const Live = () => {
     gridRef,
     categoriesRef,
     inputRef,
-    epgRef,
+    // epgRef,
     isMobile,
     isZoneCat,
     isZoneList,
@@ -32,7 +32,6 @@ export const Live = () => {
     focusedCat,
     focusedIndex,
     focusedEpgIndex,
-    focusedInput,
     setFocusedInput,
     categoriesWithAll,
     filteredChannels,
@@ -41,6 +40,7 @@ export const Live = () => {
     isLoadingMore,
     setlectLiveIndex,
     setSetlectLiveIndex,
+    handleInputKeyDown,
   } = useLivePage();
 
   return (
@@ -84,9 +84,9 @@ export const Live = () => {
               placeholder="Buscar canais..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className={focusedInput ? 'ring-2 ring-red-600' : ''}
               onFocus={() => setFocusedInput(true)}
               onBlur={() => setFocusedInput(false)}
+              onKeyDown={handleInputKeyDown}
             />
           </div>
 

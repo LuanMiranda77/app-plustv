@@ -22,7 +22,6 @@ export const Movies = () => {
     isZoneList,
     focusedCat,
     focusedIndex,
-    focusedInput,
     setFocusedInput,
 
     // Dados
@@ -34,7 +33,8 @@ export const Movies = () => {
 
     //Funções
     handleNavigate,
-    handleCategoryClick
+    handleCategoryClick,
+    handleInputKeyDown
   } = useMoviesPage();
 
   return (
@@ -75,7 +75,7 @@ export const Movies = () => {
         {/* ── Grid de filmes ───────────────────────────────────────────────── */}
         <div ref={gridRef} className="flex-1 px-6 py-8 overflow-y-scroll">
           {/* Busca */}
-          <div className={`flex-1 mb-5 ${focusedInput ? 'ring-0 ring-red-600' : ''}`}>
+          <div className={`flex-1 mb-5`}>
             <Input
               ref={inputRef}
               type="text"
@@ -84,6 +84,7 @@ export const Movies = () => {
               onChange={e => setSearchTerm(e.target.value)}
               onFocus={() => setFocusedInput(true)}
               onBlur={() => setFocusedInput(false)}
+              onKeyDown={handleInputKeyDown}
             />
           </div>
 

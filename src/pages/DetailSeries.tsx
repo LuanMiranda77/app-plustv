@@ -35,7 +35,7 @@ export const DetailSeries = () => {
     handleToggleFavorite,
     handleBack,
     handleToggleWatched,
-    handleCloseTrailer,
+    setShowTrailer,
 
     // Refs
     episodesRef,
@@ -62,7 +62,7 @@ export const DetailSeries = () => {
           onScrollToEpisodes={scrollToEpisodes}
           focusedButton={focusedButton}
           showTrailer={showTrailer}
-          onCloseTrailer={handleCloseTrailer}
+          onSetShowTrailer={setShowTrailer}
         />
         {/* ── Episódios ─────────────────────────────────────────────────────────── */}
         <div ref={episodesRef} className="px-6 md:px-14 py-8">

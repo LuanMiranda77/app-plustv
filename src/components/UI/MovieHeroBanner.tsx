@@ -1,5 +1,4 @@
 /* eslint-disable no-extra-boolean-cast */
-import { useState } from 'react';
 import type { Movie } from '../../types';
 import { calcProgressPercent } from '../../utils/progressWatched';
 import { TrailerModal } from '../Player/TrilerModal';
@@ -19,8 +18,8 @@ interface SeriesHeroBannerProps {
   onPlay: () => void;
   onToggleFavorite?: (movie: Movie) => void;
   focusedButton?: number; // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
-  showTrailer?: boolean;
-  onCloseTrailer?: (show: boolean) => void;
+  showTrailer: boolean;
+  onSetShowTrailer: (params: boolean) => void;
   isFav?: boolean;
 }
 
@@ -28,26 +27,14 @@ export const MovieHeroBanner = ({
   movie,
   percent,
   focusedButton,
-  showTrailer: propsShowTrailer,
-  onCloseTrailer,
+  showTrailer,
+  onSetShowTrailer,
   onBack,
   onPlay,
   onToggleFavorite,
   isFav
 }: SeriesHeroBannerProps) => {
-  const [showTrailer, setShowTrailer] = useState(false);
   const progressPercent = calcProgressPercent(movie.progress ?? 0, movie.duration);
-  // const hasProgress = progressPercent > 0 && progressPercent < 100;
-
-  // Usar showTrailer dos props se fornecido, senão usar o state local
-  const isShowingTrailer = propsShowTrailer !== undefined ? propsShowTrailer : showTrailer;
-  const handleSetShowTrailer = (show: boolean) => {
-    if (onCloseTrailer) {
-      onCloseTrailer(show);
-    } else {
-      setShowTrailer(show);
-    }
-  };
 
   return (
     <div className="relative h-[calc(100vh-60px)] overflow-hidden">
@@ -72,8 +59,8 @@ export const MovieHeroBanner = ({
       />
       <TrailerModal
         youtubeId={movie.youtube_trailer ?? ''}
-        open={isShowingTrailer}
-        onClose={() => handleSetShowTrailer(false)}
+        open={showTrailer}
+        onClose={() => onSetShowTrailer(false)}
       />
 
       {/* Conteúdo hero */}
@@ -106,8 +93,8 @@ export const MovieHeroBanner = ({
               <PlayButton isFocused={focusedButton === 1} streamId={movie.id} onClick={onPlay} />
               <ButtonTrailer
                 isFocused={focusedButton === 2}
-                disabled={!Boolean(movie?.youtube_trailer)}
-                onClick={() => handleSetShowTrailer(true)}
+                disabled={Boolean(movie?.youtube_trailer) == false}
+                onClick={() => onSetShowTrailer(true)}
               />
               {onToggleFavorite && (
                 <ButtonFavorite

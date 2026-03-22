@@ -235,12 +235,9 @@ export function useSeriesDetail() {
     setSelectedEpisodeIndex(0);
   };
 
-  const handleCloseTrailer = () => {
-    setShowTrailer(false);
-  };
 
   // Interceptar voltar nativo do navegador/TV
-  useBackGuard(!!series, showTrailer ? handleCloseTrailer : handleBack);
+  useBackGuard(!!series, showTrailer ? () => setShowTrailer(false) : handleBack);
 
   // Remote Control Navigation
   useRemoteControl({
@@ -290,7 +287,7 @@ export function useSeriesDetail() {
       } else if (focusedButton === 2) {
         // Trailer
         setShowTrailer(true);
-      } else if (focusedButton === 3) {
+      } else if (focusedButton === 3 && series?.youtube_trailer) {
         // Favorito
         handleToggleFavorite(series?.id || '');
       } else if (focusedButton === 4) {
@@ -309,6 +306,7 @@ export function useSeriesDetail() {
     seasons,
     loading,
     showTrailer,
+    setShowTrailer,
     focusedButton,
     setFocusedButton,
     series,
@@ -337,7 +335,6 @@ export function useSeriesDetail() {
     handleBack,
     handleToggleWatched,
     onLoadDetail,
-    handleCloseTrailer,
 
     // Refs
     episodesRef,
