@@ -19,9 +19,23 @@ const initDB = (): Promise<IDBDatabase> => {
       reject(request.error);
     };
 
-    request.onsuccess = () => {
+    request.onsuccess = async () => {
       dbInstance = request.result;
       console.log('✅ IndexedDB inicializado com sucesso');
+      // const cached = await indexedDbStorage.get('playlist_cache');
+      // const json = JSON.stringify(cached);
+      // const bytes = new Blob([json]).size;
+
+      // const channels = JSON.stringify(cached.channels);
+      // const movies = JSON.stringify(cached.movies);
+      // const series = JSON.stringify(cached.series);
+
+      // console.table({
+      //   total: `${(bytes / 1024 / 1024).toFixed(2)}MB`,
+      //   channels: `${(new Blob([channels]).size / 1024 / 1024).toFixed(2)}MB`,
+      //   movies: `${(new Blob([movies]).size / 1024 / 1024).toFixed(2)}MB`,
+      //   series: `${(new Blob([series]).size / 1024 / 1024).toFixed(2)}MB`
+      // });
       resolve(dbInstance);
     };
 

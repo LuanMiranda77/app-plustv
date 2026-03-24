@@ -27,7 +27,7 @@ interface Section {
 export function useHome() {
   const navigate = useNavigate();
   const { serverConfig } = useAuthStore();
-  const { movies, channels, series, isLoading, error, fetchLiveContent } = useContentStore();
+  const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
   const { getRecentlyWatched, getRecentChannels, loadFromStorage } = useWatchHistoryStore();
   const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
   const [recentChannels, setRecentChannels] = useState<any[]>([]);
@@ -186,7 +186,7 @@ export function useHome() {
     loadFromStorage();
 
     if (serverConfig) {
-      fetchLiveContent(serverConfig);
+      fetchServerContent(serverConfig);
     }
 
     setTimeout(() => {

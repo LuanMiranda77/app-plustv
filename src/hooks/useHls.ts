@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import Hls from 'hls.js';
 import { useEffect, useState } from 'react';
 

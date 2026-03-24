@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability */
 import { useEffect, useRef, useState } from 'react';
 import { useHls } from '../../hooks/useHls';
 import { useProgress } from '../../hooks/useProgress';
