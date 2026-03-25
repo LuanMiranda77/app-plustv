@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { ArrowLeft, Loader, Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import useWindowSize from '../../hooks/useWindowSize';
 
 interface PlayerControlsProps {
   title: string;
   isPlaying: boolean;
+  showLoader: boolean;
   onPlayPause: () => void;
   currentTime: number;
   duration: number;
@@ -18,6 +20,7 @@ interface PlayerControlsProps {
   onQualityChange?: (index: number) => void;
   remoteActivityTrigger?: number;
   onBack?: () => void;
+  type?: 'movie' | 'series' | 'live';
 }
 
 export const PlayerControls = ({
@@ -36,10 +39,12 @@ export const PlayerControls = ({
   onQualityChange,
   remoteActivityTrigger = 0,
   onBack,
+  type,
+  showLoader
 }: PlayerControlsProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  const { isMobile } = useWindowSize();
   const scheduleHide = () => {
     if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
 
@@ -95,8 +100,9 @@ export const PlayerControls = ({
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const isControlesVisible = type === 'live' ? (isMobile ? false : false) : true;
 
-  return (
+  return showLoader && (
     <div
       onMouseMove={handleMouseMove}
       className="absolute inset-0 flex flex-col justify-between group"
@@ -128,103 +134,105 @@ export const PlayerControls = ({
       )}
 
       {/* Controls bar */}
-      <div
-        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 transition-opacity duration-300 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        {/* Progress bar */}
-        <div className="mb-4 group/progress cursor-pointer">
-          <div className="w-full h-1 bg-gray-700 rounded-full hover:h-2 transition-all">
-            <div
-              className="h-full bg-red-600 rounded-full transition-all"
-              style={{ width: `${progressPercent > 100 ? 100 : progressPercent}%` }}
-            >
-              <div className="w-4 h-4 bg-white rounded-full shadow-lg translate-y-1 -translate-x-2 opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+      {isControlesVisible && (
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 transition-opacity duration-300 ${
+            isVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          {/* Progress bar */}
+          <div className="mb-4 group/progress cursor-pointer">
+            <div className="w-full h-1 bg-gray-700 rounded-full hover:h-2 transition-all">
+              <div
+                className="h-full bg-red-600 rounded-full transition-all"
+                style={{ width: `${progressPercent > 100 ? 100 : progressPercent}%` }}
+              >
+                <div className="w-4 h-4 bg-white rounded-full shadow-lg translate-y-1 -translate-x-2 opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+              </div>
             </div>
+            <input
+              type="range"
+              min="0"
+              max={duration || 0}
+              value={currentTime}
+              onChange={e => onSeek(parseFloat(e.target.value))}
+              className="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
+            />
           </div>
-          <input
-            type="range"
-            min="0"
-            max={duration || 0}
-            value={currentTime}
-            onChange={(e) => onSeek(parseFloat(e.target.value))}
-            className="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
-          />
-        </div>
 
-        {/* Controls container */}
-        <div className="flex items-center justify-between gap-4">
-          {/* Left controls */}
-          <div className="flex items-center gap-3">
-            {/* Play/Pause */}
-            <button
-              onClick={onPlayPause}
-              className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
-              title={isPlaying ? 'Pausar (Espaço)' : 'Reproduzir (Espaço)'}
-            >
-              {isPlaying ? (
-                <Pause className="w-6 h-6 fill-current" />
-              ) : (
-                <Play className="w-6 h-6 fill-current" />
-              )}
-            </button>
-
-            {/* Volume */}
-            <div className="flex items-center gap-2 group/volume">
+          {/* Controls container */}
+          <div className="flex items-center justify-between gap-4">
+            {/* Left controls */}
+            <div className="flex items-center gap-3">
+              {/* Play/Pause */}
               <button
-                onClick={() => onVolumeChange(volume === 0 ? 1 : 0)}
+                onClick={onPlayPause}
                 className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
-                title="Mutar (M)"
+                title={isPlaying ? 'Pausar (Espaço)' : 'Reproduzir (Espaço)'}
               >
-                {volume === 0 ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+                {isPlaying ? (
+                  <Pause className="w-6 h-6 fill-current" />
+                ) : (
+                  <Play className="w-6 h-6 fill-current" />
+                )}
               </button>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={volume}
-                onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-                className="w-20 transition-all duration-200 cursor-pointer accent-red-600"
-              />
+
+              {/* Volume */}
+              <div className="flex items-center gap-2 group/volume">
+                <button
+                  onClick={() => onVolumeChange(volume === 0 ? 1 : 0)}
+                  className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
+                  title="Mutar (M)"
+                >
+                  {volume === 0 ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={volume}
+                  onChange={e => onVolumeChange(parseFloat(e.target.value))}
+                  className="w-20 transition-all duration-200 cursor-pointer accent-red-600"
+                />
+              </div>
+
+              {/* Time display */}
+              <span className="text-white text-sm font-mono ml-2">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
             </div>
 
-            {/* Time display */}
-            <span className="text-white text-sm font-mono ml-2">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </span>
-          </div>
+            {/* Right controls */}
+            <div className="flex items-center gap-2">
+              {/* Quality selector */}
+              {qualities.length > 0 && (
+                <select
+                  value={currentQuality}
+                  onChange={e => onQualityChange?.(parseInt(e.target.value))}
+                  className="bg-gray-800/80 text-white text-xs px-2 py-1 rounded border border-gray-600 hover:border-red-600 transition-colors"
+                >
+                  <option value={-1}>Auto</option>
+                  {qualities.map((q, idx) => (
+                    <option key={idx} value={idx}>
+                      {q}
+                    </option>
+                  ))}
+                </select>
+              )}
 
-          {/* Right controls */}
-          <div className="flex items-center gap-2">
-            {/* Quality selector */}
-            {qualities.length > 0 && (
-              <select
-                value={currentQuality}
-                onChange={(e) => onQualityChange?.(parseInt(e.target.value))}
-                className="bg-gray-800/80 text-white text-xs px-2 py-1 rounded border border-gray-600 hover:border-red-600 transition-colors"
+              {/* Fullscreen */}
+              <button
+                onClick={onFullscreen}
+                className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
+                title="Tela cheia (F)"
               >
-                <option value={-1}>Auto</option>
-                {qualities.map((q, idx) => (
-                  <option key={idx} value={idx}>
-                    {q}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            {/* Fullscreen */}
-            <button
-              onClick={onFullscreen}
-              className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
-              title="Tela cheia (F)"
-            >
-              <Maximize className="w-6 h-6" />
-            </button>
+                <Maximize className="w-6 h-6" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -19,6 +19,7 @@ export function ueseDetailMovie() {
   const navigate = useNavigate();
   const location = useLocation();
   const [movie, setMovie] = useState<Movie | null>(null);
+  const {serverConfig} = useAuthStore();
 
   const loadProgress = async (movie: Movie) => {
     const progress = await getProgress('movie', profileId!, String(movie!.id));
@@ -73,9 +74,9 @@ export function ueseDetailMovie() {
     if (!movie) return;
 
     if (isFavorite(movie.id)) {
-      removeFavorite(movie.id);
+      removeFavorite(movie.id, serverConfig!);
     } else {
-      addFavorite(movie, 'movie');
+      addFavorite(movie, 'movie', serverConfig!);
     }
   };
 

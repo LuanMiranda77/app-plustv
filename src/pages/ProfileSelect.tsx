@@ -1,21 +1,21 @@
-import { RectangleHorizontalIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AutoCarousel from '../components/AutoCarousel';
 import LogoHeader from '../components/Logos/LogoHeader';
 import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
+import RemoteHint from '../components/UI/RemoteHint';
 import { useRemoteControl } from '../hooks/useRemotoControl';
+import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Profile } from '../types';
-import RemoteHint from '../components/UI/RemoteHint';
-import useWindowSize from '../hooks/useWindowSize';
 
 export const ProfileSelect = () => {
   const navigate = useNavigate();
+    const { serverConfig } = useAuthStore();
   const { profiles, addProfile, updateProfile, setActiveProfile } = useAuthStore();
   const { setCurrentProfile: setFavoritesProfile } = useFavoritesStore();
   const { setCurrentProfile: setHistoryProfile } = useWatchHistoryStore();
@@ -196,8 +196,8 @@ export const ProfileSelect = () => {
   const handleSelectProfile = (profile: Profile) => {
     setActiveProfile(profile);
     // Carregar favoritos e histórico do perfil selecionado
-    setFavoritesProfile(profile.id);
-    setHistoryProfile(profile.id);
+    setFavoritesProfile(profile.id, serverConfig!);
+    setHistoryProfile(profile.id, serverConfig!);
     navigate('/home');
   };
 
@@ -234,7 +234,7 @@ export const ProfileSelect = () => {
   const { isMobile } = useWindowSize();
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
+    <div className="relative min-h-screen overflow-y-auto bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
       {heroItems.length > 0 && !isLoading && !isMobile && (
         <div className="absolute inset-0 z-10">
           <AutoCarousel items={heroItems} autoPlayInterval={5000} className="absolute" infoRight />
@@ -252,7 +252,7 @@ export const ProfileSelect = () => {
         <RemoteHint color="yellow" label="Editar perfil" />
 
         {/* Profiles Grid */}
-        <div className="grid grid-cols-1 max-md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 grid-cols-4 gap-4">
           {profiles.map((profile, index) => (
             <div
               key={profile.id}

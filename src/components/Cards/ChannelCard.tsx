@@ -3,6 +3,7 @@ import { Heart } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Channel } from '../../types';
+import { useAuthStore } from '../../store/authStore';
 
 interface ChannelCardProps {
   id?: string | number;
@@ -15,12 +16,13 @@ interface ChannelCardProps {
 export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: ChannelCardProps) => {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(channel.id));
+  const {serverConfig} = useAuthStore();
 
   const toggleFavorite = () => {
     if (isFav) {
-      removeFavorite(String(channel.id));
+      removeFavorite(String(channel.id), serverConfig!);
     } else {
-      addFavorite(channel, 'live');
+      addFavorite(channel, 'live', serverConfig!);
     }
   };
   const containerRef = useRef<HTMLDivElement>(null);

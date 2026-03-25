@@ -15,11 +15,18 @@ import { DetailMovie } from './pages/DetailMovie';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
-
+  
   return (
     <Routes>
-      <Route path="/" element={isAuthenticated ? <Navigate to="/profiles" /> : <Login />} />
-      <Route path="/profiles" element={isAuthenticated ? <ProfileSelect /> : <Navigate to="/" />} />
+      <Route
+        path="/"
+        element={isAuthenticated ? <Navigate to="/profiles" /> : <Navigate to="/login" />}
+      />
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/profiles" /> : <Login />} />
+      <Route
+        path="/profiles"
+        element={isAuthenticated ? <ProfileSelect /> : <Navigate to="/login" />}
+      />
       <Route path="/home" element={<Home />} />
       <Route path="/movie" element={<Movies />} />
       <Route path="/series" element={<PageSeries />} />

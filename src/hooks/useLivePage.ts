@@ -1,15 +1,18 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import { requestWithRetry } from '../utils/nertwork';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 import useWindowSize from './useWindowSize';
+import type { Channel } from '../types';
+import type { PlayerStream } from '../pages/Player';
 
 export function useLivePage() {
   const location = useLocation();
@@ -30,7 +33,6 @@ export function useLivePage() {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowSize();
   const { activeZone, setActiveZone } = useFocusZone();
-  const [sortedChannels, setSortedChannels] = useState(channels);
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedEpgIndex, setFocusedEpgIndex] = useState(0);
@@ -41,6 +43,27 @@ export function useLivePage() {
   const isZoneList = activeZone === 'list';
   const isZoneEpg = activeZone === 'epg';
   const [setlectLiveIndex, setSetlectLiveIndex] = useState(-1);
+  const navigate = useNavigate();
+
+  const filteredChannels = useMemo(() => {
+    return channels.filter(channel => {
+      const matchesSearch =
+        channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        channel.category?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesCategory =
+        !selectedCategory ||
+        channel.category === selectedCategory ||
+        (selectedCategory === '-1' && isFavorite(String(channel.id)));
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [channels, searchTerm, selectedCategory, isFavorite]);
+
+  const displayedChannels = useMemo(() => {
+    return filteredChannels.slice(0, displayCount);
+  }, [filteredChannels, displayCount]);
+  const hasMoreChannels = displayCount < filteredChannels.length;
 
   useBackGuard(isFullScreen, () => setIsFullScreen(false));
 
@@ -53,54 +76,54 @@ export function useLivePage() {
   ];
 
   useEffect(() => {
-    const sorted = [...channels].sort((a, b) => a.name.localeCompare(b.name));
-    setSortedChannels(sorted);
-  }, [channels]);
-
-  const filteredChannels = sortedChannels.filter(channel => {
-    const matchesSearch =
-      channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      channel.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      !selectedCategory ||
-      channel.category === selectedCategory ||
-      (selectedCategory === '-1' && isFavorite(String(channel.id)));
-    return matchesSearch && matchesCategory;
-  });
-
-  const displayedChannels = filteredChannels.slice(0, displayCount);
-  const hasMoreChannels = displayCount < filteredChannels.length;
-
-  useEffect(() => {
-    if (currentStream?.id && serverConfig) {
-      addChannelToHistory({
-        id: currentStream.id,
-        type: 'channel',
-        name: currentStream.name,
-        logo: currentStream.logo,
-        progress: 0,
-        duration: 0,
-        watched: 0,
-        lastWatched: new Date(),
-        content: currentStream
-      });
-      setIsLoadingEpg(true);
-      xtreamApi
-        .getLiveEpg(serverConfig, currentStream.id)
-        .then(data => {
-          if (Array.isArray(data)) {
-            setEpgList(data);
-          } else if (data && typeof data === 'object' && data.epg_listingsArr) {
-            setEpgList(data.epg_listingsArr || []);
-          } else if (data && typeof data === 'object' && data.epg_listings) {
-            setEpgList(data.epg_listings || []);
-          }
-        })
-        .catch(() => setEpgList([]))
-        .finally(() => setIsLoadingEpg(false));
-    } else {
+    if (!currentStream?.id || !serverConfig) {
       setEpgList([]);
+      return;
     }
+
+    let cancelled = false;
+
+    const loadEpg = async () => {
+      setIsLoadingEpg(true);
+      addChannelToHistory(
+        {
+          id: currentStream.id,
+          type: 'channel',
+          name: currentStream.name,
+          logo: currentStream.logo,
+          progress: 0,
+          duration: 0,
+          watched: 0,
+          lastWatched: new Date(),
+          content: currentStream
+        },
+        serverConfig
+      );
+
+      try {
+        const data = await requestWithRetry(() =>
+          xtreamApi.getLiveEpg(serverConfig, currentStream.id)
+        );
+
+        if (cancelled) return;
+
+        if (Array.isArray(data)) {
+          setEpgList(data);
+        } else {
+          setEpgList(data?.epg_listings || data?.epg_listingsArr || []);
+        }
+      } catch {
+        if (!cancelled) setEpgList([]);
+      } finally {
+        if (!cancelled) setIsLoadingEpg(false);
+      }
+    };
+
+    loadEpg();
+
+    return () => {
+      cancelled = true;
+    };
   }, [currentStream?.id, serverConfig]);
 
   // Adicionar junto aos outros handlers
@@ -119,7 +142,62 @@ export function useLivePage() {
       inputRef.current?.blur();
       setActiveZone('menu');
     }
-  };;
+  };
+
+  const handlePlayStream = (stream: Channel) => {
+    setCurrentStream(stream);
+    setSetlectLiveIndex(stream.id);
+  };
+
+  const isRestoringRef = useRef(false);
+
+  // carregar filme do estado ao voltar para a página
+  useEffect(() => {
+    const state = location.state as any;
+    if (state && !isRestoringRef.current) {
+      const channel = channels.find(c => c.id === state.id);
+      isRestoringRef.current = true; // ← marca que está restaurando
+      setActiveZone('list');
+      handlePlayStream(channel!);
+      setSelectedCategory(state.category || null);
+    }
+  }, [location]);
+
+  // 2. só após filteredMovies atualizar, busca o índice correto
+  useEffect(() => {
+    const state = location.state as any;
+    if (!state || !isRestoringRef.current) return;
+
+    const index = filteredChannels.findIndex(s => s.id === state.id);
+    if (index === -1) return;
+
+    // Expandir displayCount para garantir que o item está no DOM
+    if (index >= displayCount) {
+      setDisplayCount(index + ITEMS_PER_PAGE);
+    }
+
+    setFocusedIndex(index);
+
+    // Aguardar displayCount expandir e DOM re-renderizar
+    setTimeout(() => {
+      // ── Scroll do item na grid ─────────────────────────────────
+      const focusedElement = gridRef.current?.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }
+
+      // ── Scroll da categoria no sidebar ────────────────────────
+      if (categoriesRef.current && state.category) {
+        // Buscar pelo data-selected ou pelo texto da categoria
+        const catSelected = categoriesRef.current.querySelector('[data-selected="true"]');
+        if (catSelected instanceof HTMLElement) {
+          catSelected.scrollIntoView({ behavior: 'auto', block: 'center' });
+        }
+      }
+
+      isRestoringRef.current = false;
+    }, 300); // ← aumentar de 150ms para 300ms
+  }, [filteredChannels]);
 
   useRemoteControl({
     onRight: () => {
@@ -159,7 +237,7 @@ export function useLivePage() {
     },
     onUp: () => {
       if (isZoneCat && focusedCat == 0) {
-        categoriesRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        categoriesRef.current?.scrollTo({ top: 0, behavior: 'auto' });
         setActiveZone('menu');
       }
       if (isZoneCat && focusedCat > 0) {
@@ -173,7 +251,7 @@ export function useLivePage() {
         setFocusedInput(true);
         setFocusedIndex(-1);
         setTimeout(() => inputRef.current?.focus(), 0);
-        gridRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        gridRef.current?.scrollTo({ top: 0, behavior: 'auto' });
       } else if (isZoneList && focusedIndex > 0) {
         setFocusedIndex(Math.max(focusedIndex - 1, 0));
       }
@@ -196,8 +274,7 @@ export function useLivePage() {
           Boolean(currentStream) == false ||
           currentStream.id !== displayedChannels[focusedIndex].id
         ) {
-          setCurrentStream(displayedChannels[focusedIndex]);
-          setSetlectLiveIndex(displayedChannels[focusedIndex].id);
+          handlePlayStream(displayedChannels[focusedIndex]);
         } else {
           setIsFullScreen(true);
         }
@@ -207,9 +284,9 @@ export function useLivePage() {
       if (isZoneList && focusedIndex >= 0 && displayedChannels[focusedIndex]) {
         const ch = displayedChannels[focusedIndex];
         if (isFavorite(String(ch.id))) {
-          removeFavorite(String(ch.id));
+          removeFavorite(String(ch.id), serverConfig!);
         } else {
-          addFavorite(ch, 'live');
+          addFavorite(ch, 'live', serverConfig!);
         }
       }
     },
@@ -233,36 +310,22 @@ export function useLivePage() {
   });
 
   useEffect(() => {
-    const state = location.state as any;
-    if (state) {
-      setCurrentStream(state);
-      setSelectedCategory(state.category || null);
-    } else {
-      setCurrentStream(null);
-    }
-  }, [location]);
+    if (!loadMoreRef.current) return;
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMoreChannels && !isLoadingMore) {
-          setIsLoadingMore(true);
-          setTimeout(() => {
-            setDisplayCount(prev => prev + ITEMS_PER_PAGE);
-            setIsLoadingMore(false);
-          }, 300);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMoreChannels && !isLoadingMore) {
+        setIsLoadingMore(true);
+
+        requestAnimationFrame(() => {
+          setDisplayCount(prev => prev + ITEMS_PER_PAGE);
+          setIsLoadingMore(false);
+        });
       }
-    };
+    });
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
   }, [hasMoreChannels, isLoadingMore]);
 
   useEffect(() => {
@@ -272,11 +335,11 @@ export function useLivePage() {
   useEffect(() => {
     if (isZoneCat && categoriesRef.current) {
       if (focusedCat === 0) {
-        categoriesRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        categoriesRef.current.scrollTo({ top: 0, behavior: 'auto' });
       } else {
         const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
         if (focusedElement instanceof HTMLElement) {
-          focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
         }
       }
     }
@@ -286,7 +349,7 @@ export function useLivePage() {
     if (isZoneList && gridRef.current) {
       const focusedElement = gridRef.current.querySelector('[data-focused="true"]');
       if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
   }, [focusedIndex, isZoneList]);
@@ -301,10 +364,23 @@ export function useLivePage() {
     if (isZoneEpg && epgRef.current) {
       const focusedElement = epgRef.current.querySelector('[data-focused="true"]');
       if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
   }, [focusedEpgIndex, isZoneEpg]);
+
+    // Navegação helpers
+    const navigateLive = (live: Channel) => {
+      const state: PlayerStream = {
+        ...live,
+        id: live.id,
+        streamUrl: live.streamUrl,
+        title: live.name,
+        poster: live.logo,
+        type: 'live',
+      };
+      navigate(`/player`, { state: state });
+    };
 
   return {
     searchTerm,
@@ -351,6 +427,8 @@ export function useLivePage() {
     filteredChannels,
     displayedChannels,
     hasMoreChannels,
-    handleInputKeyDown
+    handleInputKeyDown,
+    handlePlayStream,
+    navigateLive
   };
 }

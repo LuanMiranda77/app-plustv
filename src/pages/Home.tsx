@@ -6,7 +6,6 @@ import { StreamPoster } from '../components/Cards/StreamPoster';
 import AdvertisementCarousel from '../components/UI/AdvertisementCarousel';
 import CarouselSection from '../components/UI/CarouselSection';
 import ContinueWatchingSection from '../components/UI/ContinueWatchingSection';
-import { LoadingSpinner } from '../components/UI/LoadingSpinner';
 import { useHome } from '../hooks/useHome';
 
 export const Home = () => {
@@ -27,7 +26,8 @@ export const Home = () => {
     navigate,
     navigateMovie,
     navigateSerie,
-    navigateEpisodio
+    navigateEpisodio,
+    navigateLive
   } = useHome();
 
   return (
@@ -69,11 +69,11 @@ export const Home = () => {
 
       {/* Main Content */}
       <div className="w-9/12 mx-auto px-6 space-y-16 pb-16">
-        {isLoading && (
+        {/* {isLoading && (
           <div className="flex justify-center items-center py-16">
-            <LoadingSpinner />
+            <LoadingSpinner message='Carregando...' />
           </div>
-        )}
+        )} */}
 
         {!isLoading && error && (
           <div className="bg-red-900/20 border border-red-600/50 rounded-lg p-4 mb-6">
@@ -108,13 +108,13 @@ export const Home = () => {
                     : 'Seus canais favoritos em tempo real'
                 }
                 icon={Tv2}
-                items={topChannels}
+                items={recentChannels.length > 0 ? recentChannels : topChannels}
                 focusedItemIndex={getFocusedIndex('live-channels')}
                 renderItem={(channel, idx, isFocused) => (
                   <ChannelPoster
                     channel={channel}
                     isFocused={isFocused}
-                    onPlay={() => navigate('/player', { state: channel })}
+                    onPlay={() => navigateLive(channel)}
                   />
                 )}
                 onViewMore={() => navigate('/live')}

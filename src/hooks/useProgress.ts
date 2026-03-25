@@ -35,6 +35,7 @@ export const useProgress = ({
   const { activeProfile } = useAuthStore();
   const { addToHistory } = useWatchHistoryStore();
   const { movies, series, channels } = useContentStore();
+  const { serverConfig } = useAuthStore();
 
   // Chave única por perfil + tipo + stream
   const Key = `${(KEYS_PROCESS as any)[type]}_${activeProfile?.id}_${streamId}`;
@@ -84,9 +85,31 @@ export const useProgress = ({
             }
 
             if (content) {
-              addToHistory({
-                id: parentSeries?.id || streamId,
-                type: 'series',
+              addToHistory(
+                {
+                  id: parentSeries?.id || streamId,
+                  type: 'series',
+                  name,
+                  poster: itemPoster,
+                  progress: Math.round((progress / duration) * 100),
+                  duration: Math.floor(duration),
+                  watched: progress,
+                  lastWatched: new Date(),
+                  content
+                },
+                serverConfig!
+              );
+              console.log(`📝 Adicionado ao histórico-Serie: ${name}`);
+            }
+            return;
+          }
+
+          // Adicionar ao histórico apenas se encontrou o conteúdo (movie)
+          if (content) {
+            addToHistory(
+              {
+                id: streamId,
+                type: type as 'movie' | 'series',
                 name,
                 poster: itemPoster,
                 progress: Math.round((progress / duration) * 100),
@@ -94,26 +117,10 @@ export const useProgress = ({
                 watched: progress,
                 lastWatched: new Date(),
                 content
-              });
-              console.log(`📝 Adicionado ao histórico: ${name}`);
-            }
-            return;
-          }
-
-          // Adicionar ao histórico apenas se encontrou o conteúdo (movie)
-          if (content) {
-            addToHistory({
-              id: streamId,
-              type: type as 'movie' | 'series',
-              name,
-              poster: itemPoster,
-              progress: Math.round((progress / duration) * 100),
-              duration: Math.floor(duration),
-              watched: progress,
-              lastWatched: new Date(),
-              content
-            });
-            console.log(`📝 Adicionado ao histórico: ${name}`);
+              },
+              serverConfig!
+            );
+            console.log(`📝 Adicionado ao histórico-Filme: ${name}`);
           }
         }
       } catch (error) {

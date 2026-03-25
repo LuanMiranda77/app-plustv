@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     host: true,
-    allowedHosts: true
+    allowedHosts: true,
   },
   build: {
     minify: false,

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useWatchHistoryStore } from '../store/watchHistoryStore'
 import type { Channel, Movie, Series } from '../types'
+import { useAuthStore } from '../store/authStore'
 
 interface UseVideoTrackingProps {
   videoRef: React.RefObject<HTMLVideoElement>
@@ -20,6 +21,7 @@ export const useVideoTracking = ({
   enabled = true,
 }: UseVideoTrackingProps) => {
   const { addToHistory } = useWatchHistoryStore()
+    const {serverConfig} = useAuthStore();
   const updateIntervalRef = useRef<any | null>(null)
 
   useEffect(() => {
@@ -31,18 +33,24 @@ export const useVideoTracking = ({
       // Update history every 10 seconds
       updateIntervalRef.current = setInterval(() => {
         if (video.duration && video.currentTime > 0) {
-          addToHistory({
-            id: content.id,
-            type: contentType,
-            name: contentType === 'channel' ? (content as Channel).name : (content as Movie | Series).name,
-            poster: contentType !== 'channel' ? (content as Movie | Series).poster : undefined,
-            logo: contentType === 'channel' ? (content as Channel).logo : undefined,
-            progress: Math.round((video.currentTime / video.duration) * 100),
-            duration: Math.round(video.duration),
-            watched: Math.round(video.currentTime),
-            lastWatched: new Date(),
-            content,
-          })
+          addToHistory(
+            {
+              id: content.id,
+              type: contentType,
+              name:
+                contentType === 'channel'
+                  ? (content as Channel).name
+                  : (content as Movie | Series).name,
+              poster: contentType !== 'channel' ? (content as Movie | Series).poster : undefined,
+              logo: contentType === 'channel' ? (content as Channel).logo : undefined,
+              progress: Math.round((video.currentTime / video.duration) * 100),
+              duration: Math.round(video.duration),
+              watched: Math.round(video.currentTime),
+              lastWatched: new Date(),
+              content
+            },
+            serverConfig!
+          );
         }
       }, 10000) // Every 10 seconds
     }
@@ -56,18 +64,24 @@ export const useVideoTracking = ({
 
     const handleEnded = () => {
       // Mark as fully watched
-      addToHistory({
-        id: content.id,
-        type: contentType,
-        name: contentType === 'channel' ? (content as Channel).name : (content as Movie | Series).name,
-        poster: contentType !== 'channel' ? (content as Movie | Series).poster : undefined,
-        logo: contentType === 'channel' ? (content as Channel).logo : undefined,
-        progress: 100,
-        duration: Math.round(video.duration),
-        watched: Math.round(video.duration),
-        lastWatched: new Date(),
-        content,
-      })
+      addToHistory(
+        {
+          id: content.id,
+          type: contentType,
+          name:
+            contentType === 'channel'
+              ? (content as Channel).name
+              : (content as Movie | Series).name,
+          poster: contentType !== 'channel' ? (content as Movie | Series).poster : undefined,
+          logo: contentType === 'channel' ? (content as Channel).logo : undefined,
+          progress: 100,
+          duration: Math.round(video.duration),
+          watched: Math.round(video.duration),
+          lastWatched: new Date(),
+          content
+        },
+        serverConfig!
+      );
       stopTracking()
     }
 

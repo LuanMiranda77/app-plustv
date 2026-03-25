@@ -1,12 +1,16 @@
-export const LoadingSpinner = ({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) => {
+interface LoadingSpinnerProps {
+  size?: 'sm' | 'md' | 'lg';
+  message?: string;
+}
+export const LoadingSpinner = ({ size = 'md', message }: LoadingSpinnerProps) => {
   const sizes = {
     sm: 'w-6 h-6',
     md: 'w-12 h-12',
-    lg: 'w-16 h-16',
-  }
+    lg: 'w-16 h-16'
+  };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center">
       <svg
         className={`animate-spin text-red-600 ${sizes[size]}`}
         xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +31,7 @@ export const LoadingSpinner = ({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) =
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         />
       </svg>
-      {/* {message && <span className="ml-4 text-gray-500">{message}</span>} */}
+      {message && <span className="mt-4 text-white text-2xl max-sm:text-xs animate-pulse">{message}</span>}
     </div>
-  )
-}
+  );
+};

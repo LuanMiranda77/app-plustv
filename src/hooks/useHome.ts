@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
-import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import { useRemoteControl } from './useRemotoControl';
@@ -26,9 +25,8 @@ interface Section {
 
 export function useHome() {
   const navigate = useNavigate();
-  const { serverConfig } = useAuthStore();
-  const { movies, channels, series, isLoading, error, fetchServerContent } = useContentStore();
-  const { getRecentlyWatched, getRecentChannels, loadFromStorage } = useWatchHistoryStore();
+  const { movies, channels, series, isLoading, error } = useContentStore();
+  const { getRecentlyWatched, getRecentChannels } = useWatchHistoryStore();
   const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
   const [recentChannels, setRecentChannels] = useState<any[]>([]);
   const hasLoadedData = useRef(false);
@@ -109,6 +107,18 @@ export function useHome() {
   const currentSectionData = currentSection?.data || [];
 
   // Navegação helpers
+  const navigateLive = (live: any) => {
+    const state: PlayerStream = {
+      ...live,
+      id: live.id,
+      streamUrl: live.streamUrl,
+      title: live.name,
+      poster: live.poster,
+      type: 'live',
+    };
+    navigate(`/live`, { state: state });
+  };
+  
   const navigateMovie = (movie: any, dest?: string) => {
     const state: PlayerStream = {
       ...movie,
@@ -143,10 +153,10 @@ export function useHome() {
       title: serie.name,
       poster: serie.poster,
       type: 'series',
-      location: 'details-serie',
-      episodeId: serie.content.episode.id, // ← identificar posição na lista
-      episodeNumber: serie.content.episode.number,
-      seasonNumber: serie.content.episode.season_number,
+      location: 'detail-series',
+      episodeId: serie.content.id, // ← identificar posição na lista
+      episodeNumber: serie.content.number,
+      seasonNumber: serie.content.season_number,
       parentContent: serie
     };
     navigate('/player', { state: state });
@@ -183,11 +193,11 @@ export function useHome() {
     if (hasLoadedData.current) return;
     hasLoadedData.current = true;
 
-    loadFromStorage();
+    // loadFromStorage();
 
-    if (serverConfig) {
-      fetchServerContent(serverConfig);
-    }
+    // if (serverConfig) {
+    //   fetchServerContent(serverConfig);
+    // }
 
     setTimeout(() => {
       setRecentlyWatched(getRecentlyWatched(20));
@@ -297,6 +307,7 @@ export function useHome() {
     navigate,
     navigateMovie,
     navigateSerie,
-    navigateEpisodio
+    navigateEpisodio,
+    navigateLive
   };
 }

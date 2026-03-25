@@ -90,7 +90,11 @@ export const MovieHeroBanner = ({
 
             {/* Ações */}
             <div className="flex items-center gap-3 flex-wrap">
-              <PlayButton isFocused={focusedButton === 1} streamId={movie.id} onClick={onPlay} />
+              <PlayButton
+                isFocused={focusedButton === 1}
+                streamId={movie.progress ? movie.id : undefined}
+                onClick={onPlay}
+              />
               <ButtonTrailer
                 isFocused={focusedButton === 2}
                 disabled={Boolean(movie?.youtube_trailer) == false}

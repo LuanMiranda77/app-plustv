@@ -11,7 +11,6 @@ import LogoHeader from '../../Logos/LogoHeader';
 import MenuButton from '../../UI/ButtonMenu';
 import ConfirmDialog from '../../UI/ConfirmDialog';
 import { Dropdown, type OptionType, type RefreshTarget } from '../../UI/Dropdown';
-import { useContentStore } from '../../../store/contentStore';
 
 interface Props {
   scrolling: boolean;
@@ -79,27 +78,6 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
       icon: <RefreshCw className="w-4 h-4" />
     }
   ];
-
-  const { serverConfig } = useAuthStore();
-  const { movies, series, channels, fetchLiveContent, fetchMoviesContent, fetchSeriesContent } =
-    useContentStore();
-
-  // ── Carregar sob demanda por rota ──────────────────────────────────────────
-  useEffect(() => {
-    if (!serverConfig || isLoading) return;
-
-    switch (location.pathname) {
-      case '/live':
-        if (channels.length === 0) fetchLiveContent(serverConfig);
-        break;
-      case '/movie':
-        if (movies.length === 0) fetchMoviesContent(serverConfig);
-        break;
-      case '/series':
-        if (series.length === 0) fetchSeriesContent(serverConfig);
-        break;
-    }
-  }, [location.pathname, serverConfig]);
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -233,7 +211,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
     activeProfile && (
       <>
         <div
-          className={`fixed z-50 w-full border-b border-gray-800 top-0 transition-all duration-300 ${
+          className={`fixed z-40 w-full border-b border-gray-800 top-0 transition-all duration-300 ${
             scrolling ? 'bg-gray-950/95 backdrop-blur' : 'bg-gray-950/80 backdrop-blur'
           }`}
         >
@@ -329,7 +307,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
           title="Atualizar Conteúdo"
           description={
             pendingRefreshTarget === 'all'
-              ? 'Deseja atualizar todo o conteúdo? Isso pode levar alguns instantes.'
+              ? 'Deseja atualizar todo o conteúdo? Isso pode levar alguns minutos.'
               : `Deseja atualizar apenas ${
                   pendingRefreshTarget === 'live'
                     ? 'os canais ao vivo'

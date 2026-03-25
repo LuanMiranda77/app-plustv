@@ -6,6 +6,8 @@ import { useBackGuard } from '../hooks/useBackGuard';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import type { Episode, Season, Series } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
+import { KEYS_PROCESS_EPISODE } from '../utils/keys_cache';
+import { useAuthStore } from '../store/authStore';
 
 export interface PlayerStream {
   id: string | number;
@@ -28,10 +30,12 @@ export const Player = () => {
   const [currentStream, setCurrentStream] = useState<PlayerStream | null>(null);
   const [currentEpisodeId, setCurrentEpisodeId] = useState<string | null>(null);
   const [currentSeasonNumber, setCurrentSeasonNumber] = useState<number>(1);
+  const { serverConfig } = useAuthStore();
 
   // ── Carregar episódios do cache ───────────────────────────────────────────
   const loadEpisodesForSeries = async (seriesId: string | number) => {
-    const cached = await indexedDbStorage.get(`list_episodes_cache_${seriesId}`);
+    const KEY = `${KEYS_PROCESS_EPISODE}_${serverConfig?.url}_${seriesId}`;
+    const cached = await indexedDbStorage.get(KEY);
     if (cached && Array.isArray(cached)) {
       console.log('📺 Episódios carregados do cache - player:', seriesId);
       setSeasons(cached as Season[]);
@@ -126,12 +130,13 @@ export const Player = () => {
             streamId={currentStream.id}
             type={currentStream.type}
             isAutoSave={currentStream.type !== 'live'}
-            isControlsVisible={currentStream.type !== 'live'}
+            isControlsVisible
             onBack={handleGoBack}
-            parentContent={currentStream.parentContent}
             nextEpisode={nextEpisode}
             currentSeason={currentSeasonNumber}
             onNextEpisode={currentStream.type === 'series' ? handleNextEpisode : undefined}
+            contentObject={{ ...currentStream, parentContent:null } as any}
+            parentContent={currentStream.parentContent}
           />
         </div>
       </div>

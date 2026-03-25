@@ -15,7 +15,6 @@ export const Live = () => {
     selectedCategory,
     setSelectedCategory,
     currentStream,
-    setCurrentStream,
     isFullScreen,
     setIsFullScreen,
     epgList,
@@ -39,8 +38,9 @@ export const Live = () => {
     hasMoreChannels,
     isLoadingMore,
     setlectLiveIndex,
-    setSetlectLiveIndex,
-    handleInputKeyDown
+    handleInputKeyDown,
+    handlePlayStream,
+    navigateLive,
   } = useLivePage();
 
   return (
@@ -58,7 +58,7 @@ export const Live = () => {
                   <ButtonCategory
                     key={cat.id || 'all'}
                     id={String(cat.id || '-2')}
-                    name={cat.name.replace('CANAIS |', '')}
+                    name={cat.name}
                     isSelected={selectedCategory === (cat.id as any)}
                     isFocused={isZoneCat && focusedCat === i}
                     icon={
@@ -101,11 +101,11 @@ export const Live = () => {
                   setlected={setlectLiveIndex === channel.id}
                   onPlay={() => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
-                      setCurrentStream(channel);
+                      handlePlayStream(channel);
                     } else {
-                      setIsFullScreen(true);
+                      console.log(isMobile);
+                      navigateLive(channel);
                     }
-                    setSetlectLiveIndex(i);
                   }}
                 />
               ))}

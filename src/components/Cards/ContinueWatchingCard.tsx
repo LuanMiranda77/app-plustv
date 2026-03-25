@@ -1,5 +1,6 @@
 import { Play, X } from 'lucide-react'
 import { useWatchHistoryStore, type WatchHistoryItem } from '../../store/watchHistoryStore'
+import { useAuthStore } from '../../store/authStore';
 
 interface ContinueWatchingCardProps {
   item: WatchHistoryItem;
@@ -15,10 +16,11 @@ export const ContinueWatchingCard = ({
   isFocused
 }: ContinueWatchingCardProps) => {
   const { getRecentlyWatched, removeFromHistory } = useWatchHistoryStore();
+  const {serverConfig} = useAuthStore();
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
-    removeFromHistory(String(item.id));
+    removeFromHistory(String(item.id), serverConfig!);
     onRecentlyWatched?.(getRecentlyWatched());
   };
 

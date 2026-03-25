@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFocusZone } from '../Context/FocusContext';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
@@ -35,18 +35,24 @@ export function useMoviesPage() {
     ...vodCategories
   ];
 
-  const filteredMovies = movies.filter(movie => {
-    const matchesSearch =
-      movie.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      movie.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      !selectedCategory ||
-      movie.category === selectedCategory ||
-      (selectedCategory === '-1' && isFavorite(movie.id));
-    return matchesSearch && matchesCategory;
-  });
+  const filteredMovies = useMemo(() => {
+    return movies.filter(channel => {
+      const matchesSearch =
+        channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        channel.category?.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const displayedMovies = filteredMovies.slice(0, displayCount);
+      const matchesCategory =
+        !selectedCategory ||
+        channel.category === selectedCategory ||
+        (selectedCategory === '-1' && isFavorite(String(channel.id)));
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [movies, searchTerm, selectedCategory, isFavorite]);
+
+  const displayedMovies = useMemo(() => {
+    return filteredMovies.slice(0, displayCount);
+  }, [filteredMovies, displayCount]);
   const hasMoreMovies = displayCount < filteredMovies.length;
 
   useBackGuard(!!currentMovie, () => setCurrentMovie(null));
@@ -83,7 +89,7 @@ export function useMoviesPage() {
       // ── Scroll do item na grid ─────────────────────────────────
       const focusedElement = gridRef.current?.querySelector('[data-focused="true"]');
       if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'center' });
       }
 
       // ── Scroll da categoria no sidebar ────────────────────────
@@ -91,7 +97,7 @@ export function useMoviesPage() {
         // Buscar pelo data-selected ou pelo texto da categoria
         const catSelected = categoriesRef.current.querySelector('[data-selected="true"]');
         if (catSelected instanceof HTMLElement) {
-          catSelected.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          catSelected.scrollIntoView({ behavior: 'auto', block: 'center' });
         }
       }
 
@@ -175,7 +181,7 @@ export function useMoviesPage() {
         return;
       }
       if (isZoneCat && focusedCat === 0) {
-        categoriesRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        categoriesRef.current?.scrollTo({ top: 0, behavior: 'auto' });
         setActiveZone('menu');
       } else if (isZoneCat && focusedCat > 0) {
         setFocusedCat(Math.max(focusedCat - 1, 0));
@@ -184,7 +190,7 @@ export function useMoviesPage() {
         setFocusedIndex(-1);
         setFocusedInput(true);
         setTimeout(() => inputRef.current?.focus(), 0);
-        gridRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        gridRef.current?.scrollTo({ top: 0, behavior: 'auto' });
       } else if (isZoneList && focusedIndex > 0) {
         setFocusedIndex(Math.max(focusedIndex - 5, 0));
       }
@@ -215,40 +221,42 @@ export function useMoviesPage() {
   });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMoreMovies && !isLoadingMore) {
-          setIsLoadingMore(true);
-          setTimeout(() => {
-            setDisplayCount(prev => prev + ITEMS_PER_PAGE);
-            setIsLoadingMore(false);
-          }, 300);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
+    const state = location.state as any;
+    if (state) {
+      setCurrentMovie(state);
+      setSelectedCategory(state.category || null);
+    } else {
+      setCurrentMovie(null);
     }
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [hasMoreMovies, isLoadingMore]);
+  }, [location]);
 
   useEffect(() => {
-    setDisplayCount(ITEMS_PER_PAGE);
-  }, [searchTerm, selectedCategory]);
+    if (!loadMoreRef.current) return;
+
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMoreMovies && !isLoadingMore) {
+        setIsLoadingMore(true);
+
+        requestAnimationFrame(() => {
+          setDisplayCount(prev => prev + ITEMS_PER_PAGE);
+          setIsLoadingMore(false);
+        });
+      }
+    });
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [hasMoreMovies, isLoadingMore]);
 
   useEffect(() => {
     if (isZoneCat && categoriesRef.current) {
       if (focusedCat === 0) {
-        categoriesRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        categoriesRef.current.scrollTo({ top: 0, behavior: 'auto' });
       } else {
         const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
         if (focusedElement instanceof HTMLElement) {
-          focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
         }
       }
     }
@@ -258,7 +266,7 @@ export function useMoviesPage() {
     if (isZoneList && gridRef.current) {
       const focusedElement = gridRef.current.querySelector('[data-focused="true"]');
       if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
   }, [focusedIndex, isZoneList]);

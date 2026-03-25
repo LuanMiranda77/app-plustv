@@ -48,7 +48,7 @@ export default function RemoteHint({ color, label }: Props) {
   const c = colorMap[color];
 
   return (
-    <div className={`mb-6 p-3 ${c.wrapper} border ${c.border} rounded-lg max-w-md hidden md:block`}>
+    <div className={`mb-6 p-3 ${c.wrapper} border ${c.border} rounded-lg max-w-md hidden xl:block`}>
       <p className={`${c.text} text-xl flex items-center gap-2`}>
         <RectangleHorizontalIcon className={`text-lg ${c.icon}`} />
         <span>

@@ -25,3 +25,4 @@ dist-ssr
 *.Identifier
 webos_rsa
 com.plustv.iptv_1.0.0_all.ipk
+android/*

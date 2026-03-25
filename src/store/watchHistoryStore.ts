@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Channel, Episode, Movie, Series } from '../types';
+import type { Channel, Episode, Movie, Series, ServerConfig } from '../types';
 import { storage, STORAGE_KEYS } from '../utils/storage';
 
 export interface WatchHistoryItem {
@@ -21,16 +21,16 @@ interface WatchHistoryState {
   currentProfileId: string | null;
 
   // Profile management
-  setCurrentProfile: (profileId: string | null) => void;
-  loadProfileHistory: (profileId: string) => void;
+  setCurrentProfile: (profileId: string | null, config: ServerConfig) => void;
+  loadProfileHistory: (profileId: string, config: ServerConfig) => void;
 
-  addToHistory: (item: WatchHistoryItem) => void;
-  addChannelToHistory: (item: WatchHistoryItem) => void;
-  updateProgress: (id: string, watched: number, duration: number) => void;
-  removeFromHistory: (id: string) => void;
-  toggleWatched: (id: string) => void;
-  clearHistory: () => void;
-  getHistory: () => WatchHistoryItem[];
+  addToHistory: (item: WatchHistoryItem, config: ServerConfig) => void;
+  addChannelToHistory: (item: WatchHistoryItem, config: ServerConfig) => void;
+  updateProgress: (id: string, watched: number, duration: number, config: ServerConfig) => void;
+  removeFromHistory: (id: string, config: ServerConfig) => void;
+  toggleWatched: (id: string, config: ServerConfig) => void;
+  clearHistory: (config: ServerConfig) => void;
+  getHistory: (config: ServerConfig) => WatchHistoryItem[];
   getRecentlyWatched: (limit?: number) => WatchHistoryItem[];
   getRecentMovies: () => WatchHistoryItem[];
   getRecentSeries: () => WatchHistoryItem[];
@@ -39,12 +39,16 @@ interface WatchHistoryState {
 }
 
 // Gera a chave de storage com o profileId
-const getHistoryKey = (profileId: string | null) => {
-  return profileId ? `${STORAGE_KEYS.WATCH_HISTORY}_${profileId}` : STORAGE_KEYS.WATCH_HISTORY;
+const getHistoryKey = (profileId: string | null, config: ServerConfig) => {
+  return profileId
+    ? `${STORAGE_KEYS.WATCH_HISTORY}_${profileId}_${config.url}`
+    : STORAGE_KEYS.WATCH_HISTORY;
 };
 
-const getChannelHistoryKey = (profileId: string | null) => {
-  return profileId ? `${STORAGE_KEYS.CHANNEL_HISTORY}_${profileId}` : STORAGE_KEYS.CHANNEL_HISTORY;
+const getChannelHistoryKey = (profileId: string | null, config: ServerConfig) => {
+  return profileId
+    ? `${STORAGE_KEYS.CHANNEL_HISTORY}_${profileId}_${config.url}`
+    : STORAGE_KEYS.CHANNEL_HISTORY;
 };
 
 export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
@@ -52,22 +56,22 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
   channelHistory: [],
   currentProfileId: null,
 
-  setCurrentProfile: profileId => {
+  setCurrentProfile: (profileId, config) => {
     set({ currentProfileId: profileId });
     if (profileId) {
-      get().loadProfileHistory(profileId);
+      get().loadProfileHistory(profileId, config);
     }
   },
 
-  loadProfileHistory: profileId => {
-    const key = getHistoryKey(profileId);
+  loadProfileHistory: (profileId, config) => {
+    const key = getHistoryKey(profileId, config);
     const stored = storage.get(key) || [];
-    const chKey = getChannelHistoryKey(profileId);
+    const chKey = getChannelHistoryKey(profileId, config);
     const chStored = storage.get(chKey) || [];
     set({ history: stored, channelHistory: chStored, currentProfileId: profileId });
   },
 
-  addToHistory: item => {
+  addToHistory: (item, config) => {
     set(state => {
       const currentHistory = state.history;
       const existingIndex = currentHistory.findIndex(h => h.id === item.id);
@@ -89,14 +93,14 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
       const finalHistory = newHistory.slice(0, 20);
 
       // Salva com chave do perfil atual
-      const key = getHistoryKey(state.currentProfileId);
+      const key = getHistoryKey(state.currentProfileId, config);
       storage.set(key, finalHistory);
 
       return { history: finalHistory };
     });
   },
 
-  addChannelToHistory: item => {
+  addChannelToHistory: (item, config) => {
     set(state => {
       const current = state.channelHistory;
       const existingIndex = current.findIndex(h => h.id === item.id);
@@ -113,14 +117,14 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
 
       const finalHistory = newHistory.slice(0, 20);
 
-      const key = getChannelHistoryKey(state.currentProfileId);
+      const key = getChannelHistoryKey(state.currentProfileId, config);
       storage.set(key, finalHistory);
 
       return { channelHistory: finalHistory };
     });
   },
 
-  updateProgress: (id, watched, duration) => {
+  updateProgress: (id, watched, duration, config) => {
     set(state => {
       const history = state.history;
       const index = history.findIndex(h => h.id === id);
@@ -136,7 +140,7 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
         };
 
         // Salva com chave do perfil atual
-        const key = getHistoryKey(state.currentProfileId);
+        const key = getHistoryKey(state.currentProfileId, config);
         storage.set(key, updated);
 
         return { history: updated };
@@ -145,19 +149,19 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
     });
   },
 
-  removeFromHistory: id => {
+  removeFromHistory: (id, config) => {
     set(state => {
       const updated = state.history.filter(h => h.id != id);
 
       // Salva com chave do perfil atual
-      const key = getHistoryKey(state.currentProfileId);
+      const key = getHistoryKey(state.currentProfileId, config);
       storage.set(key, updated);
 
       return { history: updated };
     });
   },
 
-  toggleWatched: id => {
+  toggleWatched: (id, config) => {
     set(state => {
       const history = state.history;
       const index = history.findIndex(h => h.id === id);
@@ -171,7 +175,7 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
         };
 
         // Salva com chave do perfil atual
-        const key = getHistoryKey(state.currentProfileId);
+        const key = getHistoryKey(state.currentProfileId, config);
         storage.set(key, updated);
         return { history: updated };
       }
@@ -179,9 +183,9 @@ export const useWatchHistoryStore = create<WatchHistoryState>((set, get) => ({
     });
   },
 
-  clearHistory: () => {
+  clearHistory: config => {
     set(state => {
-      const key = getHistoryKey(state.currentProfileId);
+      const key = getHistoryKey(state.currentProfileId, config);
       storage.remove(key);
       return { history: [] };
     });
