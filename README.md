@@ -72,4 +72,44 @@ export default defineConfig([
 ])
 comando para debug na tv
 ares-inspect --device minha-lg --app com.plustv.iptv
+
+add in android
+antes colocas esta tag -> android:usesCleartextTraffic="true"
+caminho android/app/src/main/AndroidManifest.xml
+exemplo:
+<application
+    android:usesCleartextTraffic="true"
+
+colocar outra tag iniciar a tela em  -> android:screenOrientation="landscape"
+exemplo:
+<activity
+    android:name=".MainActivity"
+    android:screenOrientation="landscape"
+
+colocar tag fullscreen ->  android:theme="@style/Theme.App.Fullscreen"
+<activity
+    android:name=".MainActivity"
+    android:theme="@style/Theme.App.Fullscreen"
+    
+caminho android/app/src/main/res/values/themes.xml
+<style name="Theme.App.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowNoTitle">true</item>
+</style>
+
+______________________________________________________________
+
+# 5. No Android Studio — gerar o APK
+```
+Menu → Build → Build Bundle(s) / APK(s) → Build APK(s)
+```
+
+Aguardar o build. Quando terminar aparece uma notificação:
+```
+APK(s) generated → locate
+```
+
+O APK fica em:
+```
+android/app/build/outputs/apk/debug/app-debug.apk
 ```

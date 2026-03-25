@@ -130,7 +130,7 @@ export const Player = () => {
             streamId={currentStream.id}
             type={currentStream.type}
             isAutoSave={currentStream.type !== 'live'}
-            isControlsVisible={currentStream.type !== 'live'}
+            isControlsVisible
             onBack={handleGoBack}
             nextEpisode={nextEpisode}
             currentSeason={currentSeasonNumber}

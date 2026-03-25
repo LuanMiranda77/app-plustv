@@ -282,6 +282,7 @@ export const VideoPlayer = ({
           onQualityChange={handleQualityChange}
           remoteActivityTrigger={remoteActivityTrigger}
           onBack={onBack}
+          type={type}
         />
       )}
     </div>

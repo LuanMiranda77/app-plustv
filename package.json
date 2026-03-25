@@ -9,12 +9,18 @@
     "build-tv": "tsc -b && vite build && ares-package dist/",
     "build-tv:teste": "ares-inspect --device minha-lg --app com.plustv.iptv",
     "build-tv:prod": "tsc -b && vite build --mode production && ares-package dist/ && ares-install --device minha-lg --remove com.plustv.iptv ; ares-install --device minha-lg com.plustv.iptv_1.0.0_all.ipk && ares-launch --device minha-lg com.plustv.iptv",
+    "build:apk": "vite build && npx cap sync android",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.2.0",
+    "@capacitor/cli": "^8.2.0",
+    "@capacitor/core": "^8.2.0",
+    "@capacitor/screen-orientation": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.1",
     "@tailwindcss/vite": "^4.2.1",
     "axios": "^1.13.6",
     "hls.js": "^1.6.15",
@@ -30,6 +36,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@eslint/js": "^9.39.4",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",

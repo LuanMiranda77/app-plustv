@@ -18,7 +18,7 @@ const useWindowSize = (): WindowSize => {
       setWindowSize({
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
-        isMobile: window.innerWidth <= 768, // Define mobile as width <= 768px
+        isMobile: window.innerWidth <= 992, // Define mobile as width <= 768px
       });
     };
 

@@ -40,6 +40,7 @@ export const Live = () => {
     setlectLiveIndex,
     handleInputKeyDown,
     handlePlayStream,
+    navigateLive,
   } = useLivePage();
 
   return (
@@ -102,7 +103,8 @@ export const Live = () => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
                       handlePlayStream(channel);
                     } else {
-                      setIsFullScreen(true);
+                      console.log(isMobile);
+                      navigateLive(channel);
                     }
                   }}
                 />

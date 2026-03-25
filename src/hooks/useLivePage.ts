@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
@@ -12,6 +12,7 @@ import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 import useWindowSize from './useWindowSize';
 import type { Channel } from '../types';
+import type { PlayerStream } from '../pages/Player';
 
 export function useLivePage() {
   const location = useLocation();
@@ -42,6 +43,7 @@ export function useLivePage() {
   const isZoneList = activeZone === 'list';
   const isZoneEpg = activeZone === 'epg';
   const [setlectLiveIndex, setSetlectLiveIndex] = useState(-1);
+  const navigate = useNavigate();
 
   const filteredChannels = useMemo(() => {
     return channels.filter(channel => {
@@ -367,6 +369,19 @@ export function useLivePage() {
     }
   }, [focusedEpgIndex, isZoneEpg]);
 
+    // Navegação helpers
+    const navigateLive = (live: Channel) => {
+      const state: PlayerStream = {
+        ...live,
+        id: live.id,
+        streamUrl: live.streamUrl,
+        title: live.name,
+        poster: live.logo,
+        type: 'live',
+      };
+      navigate(`/player`, { state: state });
+    };
+
   return {
     searchTerm,
     setSearchTerm,
@@ -413,6 +428,7 @@ export function useLivePage() {
     displayedChannels,
     hasMoreChannels,
     handleInputKeyDown,
-    handlePlayStream
+    handlePlayStream,
+    navigateLive
   };
 }

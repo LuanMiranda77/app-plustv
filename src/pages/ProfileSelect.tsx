@@ -234,7 +234,7 @@ export const ProfileSelect = () => {
   const { isMobile } = useWindowSize();
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
+    <div className="relative min-h-screen overflow-y-auto bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
       {heroItems.length > 0 && !isLoading && !isMobile && (
         <div className="absolute inset-0 z-10">
           <AutoCarousel items={heroItems} autoPlayInterval={5000} className="absolute" infoRight />
@@ -252,7 +252,7 @@ export const ProfileSelect = () => {
         <RemoteHint color="yellow" label="Editar perfil" />
 
         {/* Profiles Grid */}
-        <div className="grid grid-cols-1 max-md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 grid-cols-4 gap-4">
           {profiles.map((profile, index) => (
             <div
               key={profile.id}

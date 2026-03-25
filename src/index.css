@@ -6,6 +6,10 @@
   --color-netflix-card: #141414;
   --color-netflix-red: #E50914;
   --color-netflix-gray: #221f1f;
+
+  --breakpoint-sm: 40rem;   /* 640px */
+  --breakpoint-md: 62rem;   /* ~992px */
+  --breakpoint-lg: 80rem;   /* 1280px */
 }
 
 :root {
