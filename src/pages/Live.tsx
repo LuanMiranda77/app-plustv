@@ -15,7 +15,6 @@ export const Live = () => {
     selectedCategory,
     setSelectedCategory,
     currentStream,
-    setCurrentStream,
     isFullScreen,
     setIsFullScreen,
     epgList,
@@ -39,8 +38,8 @@ export const Live = () => {
     hasMoreChannels,
     isLoadingMore,
     setlectLiveIndex,
-    setSetlectLiveIndex,
-    handleInputKeyDown
+    handleInputKeyDown,
+    handlePlayStream,
   } = useLivePage();
 
   return (
@@ -101,11 +100,10 @@ export const Live = () => {
                   setlected={setlectLiveIndex === channel.id}
                   onPlay={() => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
-                      setCurrentStream(channel);
+                      handlePlayStream(channel);
                     } else {
                       setIsFullScreen(true);
                     }
-                    setSetlectLiveIndex(i);
                   }}
                 />
               ))}

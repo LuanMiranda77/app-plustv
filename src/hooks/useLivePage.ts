@@ -11,6 +11,7 @@ import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 import useWindowSize from './useWindowSize';
+import type { Channel } from '../types';
 
 export function useLivePage() {
   const location = useLocation();
@@ -42,16 +43,6 @@ export function useLivePage() {
   const isZoneEpg = activeZone === 'epg';
   const [setlectLiveIndex, setSetlectLiveIndex] = useState(-1);
 
-  useBackGuard(isFullScreen, () => setIsFullScreen(false));
-
-  const ITEMS_PER_PAGE = 20;
-
-  const categoriesWithAll = [
-    { id: '-1', name: 'FAVORITOS' },
-    { id: null, name: 'TODOS' },
-    ...liveCategories
-  ];
-
   const filteredChannels = useMemo(() => {
     return channels.filter(channel => {
       const matchesSearch =
@@ -71,6 +62,16 @@ export function useLivePage() {
     return filteredChannels.slice(0, displayCount);
   }, [filteredChannels, displayCount]);
   const hasMoreChannels = displayCount < filteredChannels.length;
+
+  useBackGuard(isFullScreen, () => setIsFullScreen(false));
+
+  const ITEMS_PER_PAGE = 20;
+
+  const categoriesWithAll = [
+    { id: '-1', name: 'FAVORITOS' },
+    { id: null, name: 'TODOS' },
+    ...liveCategories
+  ];
 
   useEffect(() => {
     if (!currentStream?.id || !serverConfig) {
@@ -140,6 +141,61 @@ export function useLivePage() {
       setActiveZone('menu');
     }
   };
+
+  const handlePlayStream = (stream: Channel) => {
+    setCurrentStream(stream);
+    setSetlectLiveIndex(stream.id);
+  };
+
+  const isRestoringRef = useRef(false);
+
+  // carregar filme do estado ao voltar para a página
+  useEffect(() => {
+    const state = location.state as any;
+    if (state && !isRestoringRef.current) {
+      const channel = channels.find(c => c.id === state.id);
+      isRestoringRef.current = true; // ← marca que está restaurando
+      setActiveZone('list');
+      handlePlayStream(channel!);
+      setSelectedCategory(state.category || null);
+    }
+  }, [location]);
+
+  // 2. só após filteredMovies atualizar, busca o índice correto
+  useEffect(() => {
+    const state = location.state as any;
+    if (!state || !isRestoringRef.current) return;
+
+    const index = filteredChannels.findIndex(s => s.id === state.id);
+    if (index === -1) return;
+
+    // Expandir displayCount para garantir que o item está no DOM
+    if (index >= displayCount) {
+      setDisplayCount(index + ITEMS_PER_PAGE);
+    }
+
+    setFocusedIndex(index);
+
+    // Aguardar displayCount expandir e DOM re-renderizar
+    setTimeout(() => {
+      // ── Scroll do item na grid ─────────────────────────────────
+      const focusedElement = gridRef.current?.querySelector('[data-focused="true"]');
+      if (focusedElement instanceof HTMLElement) {
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }
+
+      // ── Scroll da categoria no sidebar ────────────────────────
+      if (categoriesRef.current && state.category) {
+        // Buscar pelo data-selected ou pelo texto da categoria
+        const catSelected = categoriesRef.current.querySelector('[data-selected="true"]');
+        if (catSelected instanceof HTMLElement) {
+          catSelected.scrollIntoView({ behavior: 'auto', block: 'center' });
+        }
+      }
+
+      isRestoringRef.current = false;
+    }, 300); // ← aumentar de 150ms para 300ms
+  }, [filteredChannels]);
 
   useRemoteControl({
     onRight: () => {
@@ -216,8 +272,7 @@ export function useLivePage() {
           Boolean(currentStream) == false ||
           currentStream.id !== displayedChannels[focusedIndex].id
         ) {
-          setCurrentStream(displayedChannels[focusedIndex]);
-          setSetlectLiveIndex(displayedChannels[focusedIndex].id);
+          handlePlayStream(displayedChannels[focusedIndex]);
         } else {
           setIsFullScreen(true);
         }
@@ -251,16 +306,6 @@ export function useLivePage() {
       // }
     }
   });
-
-  useEffect(() => {
-    const state = location.state as any;
-    if (state) {
-      setCurrentStream(state);
-      setSelectedCategory(state.category || null);
-    } else {
-      setCurrentStream(null);
-    }
-  }, [location]);
 
   useEffect(() => {
     if (!loadMoreRef.current) return;
@@ -367,6 +412,7 @@ export function useLivePage() {
     filteredChannels,
     displayedChannels,
     hasMoreChannels,
-    handleInputKeyDown
+    handleInputKeyDown,
+    handlePlayStream
   };
 }

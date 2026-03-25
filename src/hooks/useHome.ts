@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
-import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import { useRemoteControl } from './useRemotoControl';
@@ -108,6 +107,18 @@ export function useHome() {
   const currentSectionData = currentSection?.data || [];
 
   // Navegação helpers
+  const navigateLive = (live: any) => {
+    const state: PlayerStream = {
+      ...live,
+      id: live.id,
+      streamUrl: live.streamUrl,
+      title: live.name,
+      poster: live.poster,
+      type: 'live',
+    };
+    navigate(`/live`, { state: state });
+  };
+  
   const navigateMovie = (movie: any, dest?: string) => {
     const state: PlayerStream = {
       ...movie,
@@ -296,6 +307,7 @@ export function useHome() {
     navigate,
     navigateMovie,
     navigateSerie,
-    navigateEpisodio
+    navigateEpisodio,
+    navigateLive
   };
 }

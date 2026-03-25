@@ -222,19 +222,19 @@ export const useContentStore = create<ContentState>((set, get) => ({
 
     if (!cache) return;
 
-    const json = JSON.stringify(cache);
-    const bytes = new Blob([json]).size;
+    // const json = JSON.stringify(cache);
+    // const bytes = new Blob([json]).size;
 
-    const channels = JSON.stringify(cache.channels);
-    const movies = JSON.stringify(cache.movies);
-    const series = JSON.stringify(cache.series);
+    // const channels = JSON.stringify(cache.channels);
+    // const movies = JSON.stringify(cache.movies);
+    // const series = JSON.stringify(cache.series);
 
-    console.table({
-      total: `${(bytes / 1024 / 1024).toFixed(2)}MB`,
-      channels: `${(new Blob([channels]).size / 1024 / 1024).toFixed(2)}MB`,
-      movies: `${(new Blob([movies]).size / 1024 / 1024).toFixed(2)}MB`,
-      series: `${(new Blob([series]).size / 1024 / 1024).toFixed(2)}MB`
-    });
+    // console.table({
+    //   total: `${(bytes / 1024 / 1024).toFixed(2)}MB`,
+    //   channels: `${(new Blob([channels]).size / 1024 / 1024).toFixed(2)}MB`,
+    //   movies: `${(new Blob([movies]).size / 1024 / 1024).toFixed(2)}MB`,
+    //   series: `${(new Blob([series]).size / 1024 / 1024).toFixed(2)}MB`
+    // });
 
     console.log('📦 Cache aplicado na UI');
 
