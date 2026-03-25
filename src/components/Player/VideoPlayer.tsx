@@ -265,7 +265,7 @@ export const VideoPlayer = ({
       )}
 
       {/* ── Controles ─────────────────────────────────────────────────────── */}
-      {isControlsVisible && !showLoader && (
+      {isControlsVisible && (
         <PlayerControls
           title={title}
           isPlaying={isPlaying}
@@ -283,6 +283,7 @@ export const VideoPlayer = ({
           remoteActivityTrigger={remoteActivityTrigger}
           onBack={onBack}
           type={type}
+          showLoader={!showLoader}
         />
       )}
     </div>

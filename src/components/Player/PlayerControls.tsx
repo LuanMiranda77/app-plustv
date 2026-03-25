@@ -6,6 +6,7 @@ import useWindowSize from '../../hooks/useWindowSize';
 interface PlayerControlsProps {
   title: string;
   isPlaying: boolean;
+  showLoader: boolean;
   onPlayPause: () => void;
   currentTime: number;
   duration: number;
@@ -38,7 +39,8 @@ export const PlayerControls = ({
   onQualityChange,
   remoteActivityTrigger = 0,
   onBack,
-  type
+  type,
+  showLoader
 }: PlayerControlsProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -98,8 +100,9 @@ export const PlayerControls = ({
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const isControlesVisible = type === 'live' ? (isMobile ? false : false) : true;
 
-  return (
+  return showLoader && (
     <div
       onMouseMove={handleMouseMove}
       className="absolute inset-0 flex flex-col justify-between group"
@@ -131,7 +134,7 @@ export const PlayerControls = ({
       )}
 
       {/* Controls bar */}
-      {(!isMobile || type !== 'live') && (
+      {isControlesVisible && (
         <div
           className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 transition-opacity duration-300 ${
             isVisible ? 'opacity-100' : 'opacity-0'
