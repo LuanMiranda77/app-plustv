@@ -46,7 +46,7 @@ export const VideoPlayer = ({
   contentObject,
   parentContent,
   nextEpisode,
-  currentSeason = 1,
+  currentSeason = 1
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -71,7 +71,7 @@ export const VideoPlayer = ({
     title,
     poster,
     contentObject,
-    parentContent,
+    parentContent
   });
 
   const { hls, error, isLoading, currentQuality, qualities } = useHls(
@@ -174,7 +174,7 @@ export const VideoPlayer = ({
         } else {
           onBack?.();
         }
-      },
+      }
     },
     type === 'live'
   );
@@ -256,7 +256,10 @@ export const VideoPlayer = ({
               setShowNextEpisodeBtn(false);
               onNextEpisode();
             }}
-            onDismiss={() => setShowNextEpisodeBtn(false)}
+            onDismiss={() => {
+              setShowNextEpisodeBtn(false);
+              onBack?.();
+            }}
           />
         </div>
       )}

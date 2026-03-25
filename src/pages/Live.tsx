@@ -58,7 +58,7 @@ export const Live = () => {
                   <ButtonCategory
                     key={cat.id || 'all'}
                     id={String(cat.id || '-2')}
-                    name={cat.name.replace('CANAIS |', '')}
+                    name={cat.name}
                     isSelected={selectedCategory === (cat.id as any)}
                     isFocused={isZoneCat && focusedCat === i}
                     icon={

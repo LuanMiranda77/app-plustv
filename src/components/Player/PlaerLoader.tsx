@@ -1,4 +1,5 @@
 import React from 'react';
+import { LoadingSpinner } from '../UI/LoadingSpinner';
 interface PlayerLoaderProps {
   title: string;
   poster?: string;
@@ -17,21 +18,20 @@ const PlayerLoader: React.FC<PlayerLoaderProps> = ({ title, poster }) => {
 
       <div className="relative z-10 flex flex-col items-center gap-6">
         {/* Spinner */}
-        <div className="relative w-16 h-16">
+        <LoadingSpinner message="Carregando..." />
+        {/* <div className="relative w-16 h-16">
           <div className="absolute inset-0 rounded-full border-4 border-white/10" />
           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-red-600 animate-spin" />
           <div
             className="absolute inset-0 rounded-full border-4 border-transparent border-t-red-400 animate-spin"
             style={{ animationDuration: '1.5s', animationDirection: 'reverse' }}
           />
-        </div>
+        </div> */}
 
         {/* Título */}
         <div className="text-center px-8">
-          <p className="text-zinc-400 text-sm uppercase tracking-widest mb-1">Carregando...</p>
-          <p
-            className="text-white font-semibold text-2xl max-md:text-lg line-clamp-2 max-w-sm"
-          >
+          {/* <p className="text-zinc-400 text-sm uppercase tracking-widest mb-1">Carregando...</p> */}
+          <p className="text-white font-semibold text-2xl max-md:text-lg line-clamp-2 max-w-sm">
             {title}
           </p>
         </div>

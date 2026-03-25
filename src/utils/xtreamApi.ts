@@ -1,10 +1,12 @@
 import axios from 'axios';
 import type { ServerConfig, XtreamAuthResponse } from '../types';
+import { delay, requestWithRetry } from './nertwork';
 
 const api = axios.create();
+const timeout = 40000; // 40 segundos
 
 // Remover a barra final da URL se existir
-const normalizeUrl = (url: string) => url.replace(/\/$/, '');
+const normalizeUrl = (url: string) => url.trim().replace(/\/$/, '');
 
 export const xtreamApi = {
   // Testar conexão e autenticar
@@ -16,7 +18,7 @@ export const xtreamApi = {
           username: config.username,
           password: config.password
         },
-        timeout: 10000
+        timeout: timeout
       });
 
       if (!response.data || response.status !== 200) {
@@ -48,7 +50,7 @@ export const xtreamApi = {
           password: config.password,
           action: 'get_live_categories'
         },
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {
@@ -68,7 +70,7 @@ export const xtreamApi = {
           action: 'get_live_streams',
           category_id: categoryId
         },
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {
@@ -87,7 +89,7 @@ export const xtreamApi = {
           password: config.password,
           action: 'get_vod_categories'
         },
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {
@@ -107,7 +109,7 @@ export const xtreamApi = {
           action: 'get_vod_streams',
           category_id: categoryId
         },
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {
@@ -126,7 +128,7 @@ export const xtreamApi = {
           password: config.password,
           action: 'get_series_categories'
         },
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {
@@ -149,7 +151,7 @@ export const xtreamApi = {
       }
       const response = await api.get(`${baseUrl}/player_api.php`, {
         params,
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {
@@ -202,7 +204,7 @@ export const xtreamApi = {
       params.series_id = streamId;
       const response = await api.get(`${baseUrl}/player_api.php`, {
         params,
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {
@@ -228,7 +230,10 @@ export const xtreamApi = {
       // Buscar live streams de cada categoria
       if (Array.isArray(liveCategories)) {
         for (const category of liveCategories) {
-          const streams = await this.getLiveStreams(config, category.category_id);
+          await delay(500); // 🔥 ESSENCIAL
+          const streams = await await requestWithRetry(() =>
+            this.getLiveStreams(config, category.category_id)
+          );
           if (Array.isArray(streams)) {
             liveStreams.push(...streams);
           }
@@ -238,7 +243,10 @@ export const xtreamApi = {
       // Buscar VOD streams de cada categoria
       if (Array.isArray(vodCategories)) {
         for (const category of vodCategories) {
-          const streams = await this.getVodStreams(config, category.category_id);
+          await delay(500); // 🔥 ESSENCIAL
+          const streams = await await requestWithRetry(() =>
+            this.getVodStreams(config, category.category_id)
+          );
           if (Array.isArray(streams)) {
             vodStreams.push(...streams);
           }
@@ -248,7 +256,10 @@ export const xtreamApi = {
       // Buscar séries de cada categoria
       if (Array.isArray(seriesCategories)) {
         for (const category of seriesCategories) {
-          const streams = await this.getSeries(config, category.category_id);
+          await delay(500); // 🔥 ESSENCIAL
+          const streams = await requestWithRetry(() =>
+            this.getSeries(config, category.category_id)
+          );
           if (Array.isArray(streams)) {
             seriesStreams.push(...streams);
           }
@@ -288,7 +299,7 @@ export const xtreamApi = {
           action: 'get_short_epg',
           stream_id: streamId
         },
-        timeout: 10000
+        timeout: timeout
       });
       return response.data || [];
     } catch (error) {

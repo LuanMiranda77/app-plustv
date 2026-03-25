@@ -103,7 +103,7 @@ export const DetailSeries = () => {
 
           {/* Lista de episódios */}
           {loading ? (
-            <LoadingSpinner />
+            <LoadingSpinner message="Carregando episódios..." />
           ) : currentEpisodes.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3 text-zinc-600">
               <svg

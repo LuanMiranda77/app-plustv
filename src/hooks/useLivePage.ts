@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import { requestWithRetry } from '../utils/nertwork';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
@@ -30,7 +31,6 @@ export function useLivePage() {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowSize();
   const { activeZone, setActiveZone } = useFocusZone();
-  const [sortedChannels, setSortedChannels] = useState(channels);
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedEpgIndex, setFocusedEpgIndex] = useState(0);
@@ -52,55 +52,75 @@ export function useLivePage() {
     ...liveCategories
   ];
 
-  useEffect(() => {
-    const sorted = [...channels].sort((a, b) => a.name.localeCompare(b.name));
-    setSortedChannels(sorted);
-  }, [channels]);
+  const filteredChannels = useMemo(() => {
+    return channels.filter(channel => {
+      const matchesSearch =
+        channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        channel.category?.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const filteredChannels = sortedChannels.filter(channel => {
-    const matchesSearch =
-      channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      channel.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      !selectedCategory ||
-      channel.category === selectedCategory ||
-      (selectedCategory === '-1' && isFavorite(String(channel.id)));
-    return matchesSearch && matchesCategory;
-  });
+      const matchesCategory =
+        !selectedCategory ||
+        channel.category === selectedCategory ||
+        (selectedCategory === '-1' && isFavorite(String(channel.id)));
 
-  const displayedChannels = filteredChannels.slice(0, displayCount);
+      return matchesSearch && matchesCategory;
+    });
+  }, [channels, searchTerm, selectedCategory, isFavorite]);
+
+  const displayedChannels = useMemo(() => {
+    return filteredChannels.slice(0, displayCount);
+  }, [filteredChannels, displayCount]);
   const hasMoreChannels = displayCount < filteredChannels.length;
 
   useEffect(() => {
-    if (currentStream?.id && serverConfig) {
-      addChannelToHistory({
-        id: currentStream.id,
-        type: 'channel',
-        name: currentStream.name,
-        logo: currentStream.logo,
-        progress: 0,
-        duration: 0,
-        watched: 0,
-        lastWatched: new Date(),
-        content: currentStream
-      });
-      setIsLoadingEpg(true);
-      xtreamApi
-        .getLiveEpg(serverConfig, currentStream.id)
-        .then(data => {
-          if (Array.isArray(data)) {
-            setEpgList(data);
-          } else if (data && typeof data === 'object' && data.epg_listingsArr) {
-            setEpgList(data.epg_listingsArr || []);
-          } else if (data && typeof data === 'object' && data.epg_listings) {
-            setEpgList(data.epg_listings || []);
-          }
-        })
-        .catch(() => setEpgList([]))
-        .finally(() => setIsLoadingEpg(false));
-    } else {
+    if (!currentStream?.id || !serverConfig) {
       setEpgList([]);
+      return;
     }
+
+    let cancelled = false;
+
+    const loadEpg = async () => {
+      setIsLoadingEpg(true);
+      addChannelToHistory(
+        {
+          id: currentStream.id,
+          type: 'channel',
+          name: currentStream.name,
+          logo: currentStream.logo,
+          progress: 0,
+          duration: 0,
+          watched: 0,
+          lastWatched: new Date(),
+          content: currentStream
+        },
+        serverConfig
+      );
+
+      try {
+        const data = await requestWithRetry(() =>
+          xtreamApi.getLiveEpg(serverConfig, currentStream.id)
+        );
+
+        if (cancelled) return;
+
+        if (Array.isArray(data)) {
+          setEpgList(data);
+        } else {
+          setEpgList(data?.epg_listings || data?.epg_listingsArr || []);
+        }
+      } catch {
+        if (!cancelled) setEpgList([]);
+      } finally {
+        if (!cancelled) setIsLoadingEpg(false);
+      }
+    };
+
+    loadEpg();
+
+    return () => {
+      cancelled = true;
+    };
   }, [currentStream?.id, serverConfig]);
 
   // Adicionar junto aos outros handlers
@@ -119,7 +139,7 @@ export function useLivePage() {
       inputRef.current?.blur();
       setActiveZone('menu');
     }
-  };;
+  };
 
   useRemoteControl({
     onRight: () => {
@@ -159,7 +179,7 @@ export function useLivePage() {
     },
     onUp: () => {
       if (isZoneCat && focusedCat == 0) {
-        categoriesRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        categoriesRef.current?.scrollTo({ top: 0, behavior: 'auto' });
         setActiveZone('menu');
       }
       if (isZoneCat && focusedCat > 0) {
@@ -173,7 +193,7 @@ export function useLivePage() {
         setFocusedInput(true);
         setFocusedIndex(-1);
         setTimeout(() => inputRef.current?.focus(), 0);
-        gridRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        gridRef.current?.scrollTo({ top: 0, behavior: 'auto' });
       } else if (isZoneList && focusedIndex > 0) {
         setFocusedIndex(Math.max(focusedIndex - 1, 0));
       }
@@ -207,9 +227,9 @@ export function useLivePage() {
       if (isZoneList && focusedIndex >= 0 && displayedChannels[focusedIndex]) {
         const ch = displayedChannels[focusedIndex];
         if (isFavorite(String(ch.id))) {
-          removeFavorite(String(ch.id));
+          removeFavorite(String(ch.id), serverConfig!);
         } else {
-          addFavorite(ch, 'live');
+          addFavorite(ch, 'live', serverConfig!);
         }
       }
     },
@@ -243,26 +263,22 @@ export function useLivePage() {
   }, [location]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMoreChannels && !isLoadingMore) {
-          setIsLoadingMore(true);
-          setTimeout(() => {
-            setDisplayCount(prev => prev + ITEMS_PER_PAGE);
-            setIsLoadingMore(false);
-          }, 300);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+    if (!loadMoreRef.current) return;
+
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMoreChannels && !isLoadingMore) {
+        setIsLoadingMore(true);
+
+        requestAnimationFrame(() => {
+          setDisplayCount(prev => prev + ITEMS_PER_PAGE);
+          setIsLoadingMore(false);
+        });
       }
-    };
+    });
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
   }, [hasMoreChannels, isLoadingMore]);
 
   useEffect(() => {
@@ -272,11 +288,11 @@ export function useLivePage() {
   useEffect(() => {
     if (isZoneCat && categoriesRef.current) {
       if (focusedCat === 0) {
-        categoriesRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        categoriesRef.current.scrollTo({ top: 0, behavior: 'auto' });
       } else {
         const focusedElement = categoriesRef.current.querySelector('[data-focused="true"]');
         if (focusedElement instanceof HTMLElement) {
-          focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
         }
       }
     }
@@ -286,7 +302,7 @@ export function useLivePage() {
     if (isZoneList && gridRef.current) {
       const focusedElement = gridRef.current.querySelector('[data-focused="true"]');
       if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
   }, [focusedIndex, isZoneList]);
@@ -301,7 +317,7 @@ export function useLivePage() {
     if (isZoneEpg && epgRef.current) {
       const focusedElement = epgRef.current.querySelector('[data-focused="true"]');
       if (focusedElement instanceof HTMLElement) {
-        focusedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        focusedElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
   }, [focusedEpgIndex, isZoneEpg]);

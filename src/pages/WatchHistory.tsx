@@ -5,13 +5,15 @@ import { ContinueWatchingCard } from '../components/Cards/ContinueWatchingCard';
 import { useFocusZone } from '../Context/FocusContext';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import { useAuthStore } from '../store/authStore';
 
 export const WatchHistory = () => {
   const navigate = useNavigate();
+  const { serverConfig } = useAuthStore();
   const { getHistory, clearHistory } = useWatchHistoryStore();
   const { activeZone } = useFocusZone();
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const history = getHistory();
+  const history = getHistory(serverConfig!);
 
   // Group by date
   const getTimeLabel = (date: string | Date) => {
@@ -38,7 +40,7 @@ export const WatchHistory = () => {
   const groupedHistory = sortedHistory.reduce(
     (acc, item) => {
       const label = getTimeLabel(item.lastWatched);
-      const existing = acc.find((g) => g.label === label);
+      const existing = acc.find(g => g.label === label);
 
       if (existing) {
         existing.items.push(item);
@@ -71,7 +73,7 @@ export const WatchHistory = () => {
       if (activeZone === 'content' && focusedIndex > 0) {
         setFocusedIndex(Math.max(focusedIndex - 3, 0));
       }
-    },
+    }
   });
 
   return (
@@ -98,7 +100,7 @@ export const WatchHistory = () => {
               <button
                 onClick={() => {
                   if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
-                    clearHistory();
+                    clearHistory(serverConfig!);
                   }
                 }}
                 className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-500 transition-colors font-semibold"
@@ -129,7 +131,7 @@ export const WatchHistory = () => {
           </div>
         ) : (
           <div className="space-y-10">
-            {groupedHistory.map((group) => (
+            {groupedHistory.map(group => (
               <section key={group.label}>
                 <h2 className="text-xl font-bold text-white mb-6 pb-4 border-b border-gray-800">
                   {group.label}
@@ -143,15 +145,15 @@ export const WatchHistory = () => {
                       onPlay={() => {
                         if (item.type === 'movie') {
                           navigate('/player', {
-                            state: { movieId: item.id, streamUrl: item.content.streamUrl },
+                            state: { movieId: item.id, streamUrl: item.content.streamUrl }
                           });
                         } else if (item.type === 'series') {
                           navigate('/player', {
-                            state: { seriesId: item.id, streamUrl: item.content.streamUrl },
+                            state: { seriesId: item.id, streamUrl: item.content.streamUrl }
                           });
                         } else {
                           navigate('/player', {
-                            state: { channelId: item.id, streamUrl: item.content.streamUrl },
+                            state: { channelId: item.id, streamUrl: item.content.streamUrl }
                           });
                         }
                       }}
@@ -173,14 +175,14 @@ export const WatchHistory = () => {
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
                   <p className="text-gray-400 text-sm mb-2">Em Progresso</p>
                   <p className="text-3xl font-bold text-white">
-                    {history.filter((h) => h.progress < 100).length}
+                    {history.filter(h => h.progress < 100).length}
                   </p>
                 </div>
 
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
                   <p className="text-gray-400 text-sm mb-2">Concluídos</p>
                   <p className="text-3xl font-bold text-white">
-                    {history.filter((h) => h.progress === 100).length}
+                    {history.filter(h => h.progress === 100).length}
                   </p>
                 </div>
               </div>

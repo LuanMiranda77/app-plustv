@@ -69,11 +69,11 @@ export const Home = () => {
 
       {/* Main Content */}
       <div className="w-9/12 mx-auto px-6 space-y-16 pb-16">
-        {isLoading && (
+        {/* {isLoading && (
           <div className="flex justify-center items-center py-16">
-            <LoadingSpinner />
+            <LoadingSpinner message='Carregando...' />
           </div>
-        )}
+        )} */}
 
         {!isLoading && error && (
           <div className="bg-red-900/20 border border-red-600/50 rounded-lg p-4 mb-6">

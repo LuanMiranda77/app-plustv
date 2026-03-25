@@ -55,7 +55,7 @@ export const Movies = () => {
                     <ButtonCategory
                       key={cat.id || 'all'}
                       id={String(cat.id || '-2')}
-                      name={cat.name.replace('FILMES |', '')}
+                      name={cat.name}
                       isSelected={isSelected}
                       isFocused={isFocused}
                       icon={

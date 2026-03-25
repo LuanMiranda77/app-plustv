@@ -88,42 +88,6 @@ export const NextEpisodeButton = ({
                      transition-all duration-200 hover:scale-105
                      shadow-lg shadow-black/30"
         >
-          {/* Countdown circular */}
-          {autoPlayDelay > 0 && countdown > 0 && (
-            <div className="relative w-10 h-10 flex-shrink-0 -ml-1">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 48 48">
-                {/* Trilha */}
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="20"
-                  fill="none"
-                  stroke="rgba(0,0,0,0.15)"
-                  strokeWidth="3"
-                />
-                {/* Progresso */}
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="20"
-                  fill="none"
-                  stroke="rgba(0,0,0,0.6)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  style={{ transition: 'stroke-dashoffset 1s linear' }}
-                />
-              </svg>
-              {/* Número */}
-              <span
-                className="absolute inset-0 flex items-center justify-center
-                               text-xs font-bold text-black leading-none"
-              >
-                {countdown}
-              </span>
-            </div>
-          )}
           {/* Ícone play */}
           <svg className="w-4 h-4 fill-black flex-shrink-0" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />

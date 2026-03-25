@@ -55,7 +55,7 @@ export const PageSeries = () => {
                   <ButtonCategory
                     key={cat.id || 'all'}
                     id={String(cat.id || '-2')}
-                    name={cat.name.replace('SÉRIES |', '')}
+                    name={cat.name}
                     isSelected={selectedCategory === (cat.id as any)}
                     isFocused={isZoneCat && focusedCat === i}
                     icon={

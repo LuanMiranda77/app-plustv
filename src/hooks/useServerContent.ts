@@ -18,7 +18,6 @@ export const useServerContent = () => {
     movies,
     series,
     lastUpdate,
-    isCacheValid,
     isCacheValidAsync,
     loadFromCache,
     clearCache
@@ -30,7 +29,7 @@ export const useServerContent = () => {
     const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE);
     if (cached && JSON.stringify(cached).length > 5000000) {
       console.log('🧹 Cache localStorage muito grande! Limpando...');
-      clearCache();
+      clearCache(serverConfig!);
     }
 
     if (serverConfig) {
@@ -38,7 +37,7 @@ export const useServerContent = () => {
         .then(isValid => {
           if (isValid) {
             console.log('✅ Cache do IndexedDB VÁLIDO! Carregando dados...');
-            loadFromCache();
+            loadFromCache(serverConfig);
           } else {
             console.log('⏰ Cache expirado. Buscando dados do servidor...');
             fetchServerContent(serverConfig);

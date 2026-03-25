@@ -6,10 +6,11 @@ import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Episode, Season, Series } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
+import { KEYS_PROCESS_EPISODE } from '../utils/keys_cache';
 import { getProgress } from '../utils/progressWatched';
 import { xtreamApi } from '../utils/xtreamApi';
-import { useRemoteControl } from './useRemotoControl';
 import { useBackGuard } from './useBackGuard';
+import { useRemoteControl } from './useRemotoControl';
 
 export function useSeriesDetail() {
   const navigate = useNavigate();
@@ -123,9 +124,10 @@ export function useSeriesDetail() {
       setLoading(true);
       try {
         // ── Tentar cache primeiro ──────────────────────────────────────
+        const KEY = `${KEYS_PROCESS_EPISODE}_${serverConfig?.url}_${series.id}`;
         let loadedSeasons: Season[] | null = null;
 
-        const cached = await indexedDbStorage.get(`list_episodes_cache_${series.id}`);
+        const cached = await indexedDbStorage.get(KEY);
 
         if (cached && Array.isArray(cached)) {
           console.log('📺 Episódios carregados do cache:', series.id);
@@ -137,7 +139,7 @@ export function useSeriesDetail() {
 
           // Salvar no cache
           await indexedDbStorage
-            .set(`list_episodes_cache_${series.id}`, loadedSeasons)
+            .set(KEY, loadedSeasons)
             .catch(e => console.error('❌ Erro ao salvar cache:', e));
         }
 
@@ -199,15 +201,15 @@ export function useSeriesDetail() {
   const handleToggleFavorite = (seriesId: string) => {
     if (series) {
       if (isFavorite(seriesId)) {
-        removeFavorite(seriesId);
+        removeFavorite(seriesId, serverConfig!);
       } else {
-        addFavorite(series, 'series');
+        addFavorite(series, 'series', serverConfig!);
       }
     }
   };
 
   const handleToggleWatched = (epsodioID: string) => {
-    toggleWatched(epsodioID);
+    toggleWatched(epsodioID, serverConfig!);
   };
 
   // Resetar seleção quando temporada muda

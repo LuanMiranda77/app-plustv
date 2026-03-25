@@ -1,53 +1,58 @@
 import { create } from 'zustand';
 import { DEV_MODE } from '../config/devMode';
 import type { Channel, Movie, Series, ServerConfig } from '../types';
-import { indexedDbStorage } from '../utils/indexedDbStorage';
-import { storage, STORAGE_KEYS } from '../utils/storage';
 import { xtreamApi } from '../utils/xtreamApi';
+import { CacheService } from '../utils/cacheService';
+import { delay, requestWithRetry } from '../utils/nertwork';
 
 interface ContentState {
   channels: Channel[];
   movies: Movie[];
   series: Series[];
-  liveCategories: Array<{ id: string; name: string }>;
-  vodCategories: Array<{ id: string; name: string }>;
-  seriesCategories: Array<{ id: string; name: string }>;
+  liveCategories: any[];
+  vodCategories: any[];
+  seriesCategories: any[];
   isLoading: boolean;
   error: string | null;
   lastUpdate: number | null;
 
-  setChannels: (channels: Channel[]) => void;
-  setMovies: (movies: Movie[]) => void;
-  setSeries: (series: Series[]) => void;
-  setLiveCategories: (categories: Array<{ id: string; name: string }>) => void;
-  setVodCategories: (categories: Array<{ id: string; name: string }>) => void;
-  setSeriesCategories: (categories: Array<{ id: string; name: string }>) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  loadFromCache: () => void;
-  clearCache: () => void;
-  isCacheValid: () => boolean;
-  isCacheValidAsync: (config?: ServerConfig) => Promise<boolean>;
+  loadFromCache: (config: ServerConfig) => Promise<void>;
+  isCacheValidAsync: (config: ServerConfig) => Promise<boolean>;
+  clearCache: (config: ServerConfig) => Promise<void>;
+
   fetchServerContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>;
   fetchLiveContent: (config: ServerConfig) => Promise<void>;
   fetchMoviesContent: (config: ServerConfig) => Promise<void>;
   fetchSeriesContent: (config: ServerConfig) => Promise<void>;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const getServerId = (config: ServerConfig) => `${config.url}|${config.username}`;
+// ─────────────────────────────────────────────
+// MAPPERS (mantidos iguais)
+// ─────────────────────────────────────────────
+const mapCategory = (cat: any) => ({
+  id: String(cat.category_id),
+  name: cat.category_name
+    .replace('FILMES |', '')
+    .replace('Filmes |', '')
+    .replace('SÉRIES |', '')
+    .replace('Séries |', '')
+    .replace('CANAIS |', '')
+    .replace('Canais |', '')
+});
 
 const mapChannel = (stream: any, config: ServerConfig): Channel => ({
   id: Number(stream.stream_id),
   name: stream.name,
   logo: stream.stream_icon || '',
   streamUrl: xtreamApi.buildStreamUrl(
-    config.url, config.username, config.password,
-    stream.stream_id, stream.stream_type || 'live'
+    config.url,
+    config.username,
+    config.password,
+    stream.stream_id,
+    'live'
   ),
   category: stream.category_id || 'Sem categoria',
-  isFavorite: false,
+  isFavorite: false
 });
 
 const mapMovie = (stream: any, config: ServerConfig): Movie => ({
@@ -55,327 +60,259 @@ const mapMovie = (stream: any, config: ServerConfig): Movie => ({
   name: stream.name,
   poster: stream.stream_icon || '',
   streamUrl: xtreamApi.buildStreamUrl(
-    config.url, config.username, config.password,
-    stream.stream_id, stream.stream_type || 'movie'
+    config.url,
+    config.username,
+    config.password,
+    stream.stream_id,
+    'movie'
   ),
   category: stream.category_id || 'Sem categoria',
   rating: stream.rating || 'N/A',
   year: stream.year || 'N/A',
-  youtube_trailer: stream.youtube_trailer || '',
-  genre: stream.genre || '',
-  plot: stream.plot || '',
   isFavorite: false,
   watched: false,
   progress: 0,
-  duration: stream.duration || 0,
+  duration: stream.duration || 0
 });
 
 const mapSeries = (stream: any): Series => ({
   id: String(stream.series_id),
   name: stream.name,
-  poster: stream.cover || stream.series_cover || '',
+  poster: stream.cover || '',
   category: stream.category_id || 'Sem categoria',
   rating: stream.rating || 'N/A',
-  plot: stream.plot || '',
-  genre: stream.genre || '',
-  year: stream.year || '',
-  youtube_trailer: stream.youtube_trailer || '',
   isFavorite: false,
   seasons: [],
-  loaded: false,
+  loaded: false
 });
 
-const mapCategory = (cat: any) => ({
-  id: String(cat.category_id),
-  name: cat.category_name,
-});
+const findLiveSevice = async (config: ServerConfig) => {
+  const categories = await xtreamApi.getLiveCategories(config);
+  const liveCatsRaw = categories.map(mapCategory);
+  const channels: any[] = [];
 
-// ── Buscar categorias em lotes paralelos ──────────────────────────────────────
-// Substitui o for...of sequencial do getAllContent por Promise.all em lotes
-// O xtreamApi já busca por categoria — só precisamos paralelizar
-const fetchCategoriesInBatches = async <T>(
-  categories: any[],
-  fetchFn: (categoryId: string) => Promise<any[]>,
-  mapFn: (item: any) => T,
-  batchSize = 5
-): Promise<T[]> => {
-  const results: T[] = []
-  const total = Math.ceil(categories.length / batchSize)
+  for (const category of categories) {
+    await delay(200);
 
-  for (let i = 0; i < categories.length; i += batchSize) {
-    const batch = categories.slice(i, i + batchSize)
-    const current = Math.floor(i / batchSize) + 1
+    try {
+      const data = await requestWithRetry(() =>
+        xtreamApi.getLiveStreams(config, category.category_id)
+      );
+      // mapear por categoria
+      // channels.push(data.flat().map((s: any) => mapChannel(s, config)));
 
-    console.log(`📦 Lote ${current}/${total} — ${batch.map((c: any) => c.category_name || c.name).join(', ')}`)
+      //listar tudo e mapear depois
+      // data.flat().map((s: any) => channels.push(mapChannel(s, config)));
+      for (const s of data.flat()) {
+        channels.push(mapChannel(s, config));
+      }
+    } catch {
+      console.warn('Erro live categoria:', category.category_id);
+    }
+  }
 
-    const batchResults = await Promise.all(
-      batch.map(async (cat: any) => {
-        try {
-          const items = await fetchFn(cat.category_id || cat.id)
-          return Array.isArray(items) ? items.map(mapFn) : []
-        } catch (err) {
-          console.warn(`⚠️ Categoria "${cat.category_name}" falhou — pulando`)
-          return []
+  await CacheService.savePartial(
+    {
+      channels: channels.sort((a: Channel, b: Channel) => a.name.localeCompare(b.name)),
+      liveCategories: liveCatsRaw.sort((a: Channel, b: Channel) => a.name.localeCompare(b.name))
+    },
+    config
+  );
+  return { channels, liveCatsRaw };
+};
+
+const findVodSevice = async (config: ServerConfig) => {
+  const categories = await xtreamApi.getVodCategories(config);
+  const vodCatsRaw = categories.map(mapCategory);
+
+  const movies: any[] = [];
+
+  for (const category of categories) {
+    await delay(300);
+
+    try {
+      const data = await requestWithRetry(() =>
+        xtreamApi.getVodStreams(config, category.category_id)
+      );
+
+      // movies.push(data.flat().map((s: any) => mapMovie(s, config)));
+      // data.flat().map((s: any) => movies.push(mapMovie(s, config)));
+      for (const s of data.flat()) {
+        movies.push(mapMovie(s, config));
+      }
+    } catch {
+      console.warn('Erro VOD categoria:', category.category_id);
+    }
+  }
+
+  await CacheService.savePartial(
+    {
+      movies: movies.sort((a: Movie, b: Movie) => a.name.localeCompare(b.name)),
+      vodCategories: vodCatsRaw.sort((a: Channel, b: Channel) => a.name.localeCompare(b.name))
+    },
+    config
+  );
+
+  return { movies, vodCatsRaw };
+};
+
+const findSeriesSevice = async (config: ServerConfig) => {
+  const categories = await xtreamApi.getSeriesCategories(config);
+  const seriesCatsRaw = categories.map(mapCategory);
+
+  const series: any[] = [];
+
+  if (Array.isArray(categories)) {
+    for (const category of categories) {
+      await delay(300); // 🔥 evita flood no servidor
+
+      try {
+        const data = await requestWithRetry(() =>
+          xtreamApi.getSeries(config, category.category_id)
+        );
+
+        if (Array.isArray(data)) {
+          // 🔥 LIMITA PRA TV LG
+          // series.push(data.flat().map((s: any) => mapSeries(s)));
+          // data.flat().map((s: any) => series.push(mapSeries(s)));
+          for (const s of data.flat()) {
+            series.push(mapSeries(s));
+          }
         }
-      })
-    )
-
-    results.push(...batchResults.flat())
-    console.log(`✅ ${results.length} itens acumulados`)
+      } catch (e: any) {
+        if (e?.response?.status === 503) {
+          console.warn('Categoria sobrecarregada:', category.category_id);
+          continue;
+        }
+        console.error('Erro categoria:', category.category_id, e);
+      }
+    }
   }
 
-  // Remover duplicatas pelo id
-  const seen = new Set<string>()
-  return results.filter(item => {
-    const id = String((item as any).id)
-    if (seen.has(id)) return false
-    seen.add(id)
-    return true
-  })
-}
+  await CacheService.savePartial(
+    {
+      series: series.sort((a: Movie, b: Movie) => a.name.localeCompare(b.name)),
+      seriesCategories: seriesCatsRaw.sort((a: Channel, b: Channel) => a.name.localeCompare(b.name))
+    },
+    config
+  );
 
-// ── Salva cache completo ──────────────────────────────────────────────────────
-const saveFullCache = (
-  channels: Channel[],
-  movies: Movie[],
-  series: Series[],
-  liveCategories: any[],
-  vodCategories: any[],
-  seriesCategories: any[],
-  config: ServerConfig
-): number => {
-  const timestamp = Date.now()
-  indexedDbStorage
-    .set('playlist_cache', {
-      channels, movies, series,
-      liveCategories, vodCategories, seriesCategories,
-      timestamp, serverId: getServerId(config),
-    })
-    .catch(err => console.error('❌ Erro ao salvar no IndexedDB:', err))
-  storage.set(STORAGE_KEYS.PLAYLIST_CACHE, { timestamp })
-  return timestamp
-}
+  return { series, seriesCatsRaw };
+};
 
-// ── Salva cache por tipo — substitui APENAS o tipo atualizado ─────────────────
-const saveCacheByType = async (
-  data: {
-    channels?: Channel[]
-    movies?: Movie[]
-    series?: Series[]
-    liveCategories?: any[]
-    vodCategories?: any[]
-    seriesCategories?: any[]
-  },
-  config: ServerConfig
-): Promise<number> => {
-  const current: any = (await indexedDbStorage.get('playlist_cache')) || {}
-  const timestamp = Date.now()
-
-  const updated = {
-    channels:         current.channels         || [],
-    movies:           current.movies           || [],
-    series:           current.series           || [],
-    liveCategories:   current.liveCategories   || [],
-    vodCategories:    current.vodCategories    || [],
-    seriesCategories: current.seriesCategories || [],
-    ...data,
-    timestamp,
-    serverId: getServerId(config),
-  }
-
-  await indexedDbStorage
-    .set('playlist_cache', updated)
-    .catch(err => console.error('❌ Erro ao salvar cache por tipo:', err))
-  storage.set(STORAGE_KEYS.PLAYLIST_CACHE, { timestamp })
-  return timestamp
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-
-const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE)
+// ─────────────────────────────────────────────
 
 export const useContentStore = create<ContentState>((set, get) => ({
-  channels:         cached?.channels         || [],
-  movies:           cached?.movies           || [],
-  series:           cached?.series           || [],
-  liveCategories:   cached?.liveCategories   || [],
-  vodCategories:    cached?.vodCategories    || [],
-  seriesCategories: cached?.seriesCategories || [],
+  channels: [],
+  movies: [],
+  series: [],
+  liveCategories: [],
+  vodCategories: [],
+  seriesCategories: [],
   isLoading: false,
   error: null,
-  lastUpdate: cached?.timestamp || null,
+  lastUpdate: null,
 
-  // ── Setters ───────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
+  // CACHE
+  // ─────────────────────────────────────────────
 
-  setChannels: channels => {
-    const s = get()
-    saveFullCache(channels, s.movies, s.series, s.liveCategories, s.vodCategories, s.seriesCategories, s as any)
-    set({ channels })
-  },
-  setMovies: movies => {
-    const s = get()
-    saveFullCache(s.channels, movies, s.series, s.liveCategories, s.vodCategories, s.seriesCategories, s as any)
-    set({ movies })
-  },
-  setSeries: series => {
-    const s = get()
-    saveFullCache(s.channels, s.movies, series, s.liveCategories, s.vodCategories, s.seriesCategories, s as any)
-    set({ series })
-  },
-  setLiveCategories: liveCategories => {
-    const s = get()
-    saveFullCache(s.channels, s.movies, s.series, liveCategories, s.vodCategories, s.seriesCategories, s as any)
-    set({ liveCategories })
-  },
-  setVodCategories: vodCategories => {
-    const s = get()
-    saveFullCache(s.channels, s.movies, s.series, s.liveCategories, vodCategories, s.seriesCategories, s as any)
-    set({ vodCategories })
-  },
-  setSeriesCategories: seriesCategories => {
-    const s = get()
-    saveFullCache(s.channels, s.movies, s.series, s.liveCategories, s.vodCategories, seriesCategories, s as any)
-    set({ seriesCategories })
-  },
-  setLoading: loading => set({ isLoading: loading }),
-  setError: error => set({ error }),
+  loadFromCache: async config => {
+    const cache = await CacheService.load(config);
 
-  // ── Cache ─────────────────────────────────────────────────────────────────
+    if (!cache) return;
 
-  isCacheValid: () => {
-    const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE)
-    if (!cached?.timestamp) return false
-    const CACHE_DURATION = 72 * 60 * 60 * 1000
-    return Date.now() - cached.timestamp < CACHE_DURATION
-  },
+    const json = JSON.stringify(cache);
+    const bytes = new Blob([json]).size;
 
-  isCacheValidAsync: async (config?: ServerConfig) => {
-    const cached: any = await indexedDbStorage.get('playlist_cache')
-    if (!cached?.timestamp) return false
-    if (config && cached.serverId && cached.serverId !== getServerId(config)) return false
-    const CACHE_DURATION = 72 * 60 * 60 * 1000
-    const cacheAge = Date.now() - cached.timestamp
-    const hoursRemaining = ((CACHE_DURATION - cacheAge) / (1000 * 60 * 60)).toFixed(1)
-    const isValid = cacheAge < CACHE_DURATION
-    console.log(`📦 Cache age: ${(cacheAge / (1000 * 60 * 60)).toFixed(1)}h | Válido por mais: ${hoursRemaining}h`)
-    console.log(isValid ? '✅ Cache VÁLIDO' : '❌ Cache EXPIRADO')
-    return isValid
-  },
+    const channels = JSON.stringify(cache.channels);
+    const movies = JSON.stringify(cache.movies);
+    const series = JSON.stringify(cache.series);
 
-  loadFromCache: async () => {
-    let cached: any = await indexedDbStorage.get('playlist_cache')
-    if (!cached) cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE)
-    if (cached) {
-      console.log('✅ Cache carregado com sucesso!')
-      set({
-        channels:         cached.channels         || [],
-        movies:           cached.movies           || [],
-        series:           cached.series           || [],
-        liveCategories:   cached.liveCategories   || [],
-        vodCategories:    cached.vodCategories    || [],
-        seriesCategories: cached.seriesCategories || [],
-        lastUpdate:       cached.timestamp        || null,
-      })
-    }
-  },
+    console.table({
+      total: `${(bytes / 1024 / 1024).toFixed(2)}MB`,
+      channels: `${(new Blob([channels]).size / 1024 / 1024).toFixed(2)}MB`,
+      movies: `${(new Blob([movies]).size / 1024 / 1024).toFixed(2)}MB`,
+      series: `${(new Blob([series]).size / 1024 / 1024).toFixed(2)}MB`
+    });
 
-  clearCache: async () => {
-    storage.remove(STORAGE_KEYS.PLAYLIST_CACHE)
-    await indexedDbStorage.remove('playlist_cache')
+    console.log('📦 Cache aplicado na UI');
+
     set({
-      channels: [], movies: [], series: [],
-      liveCategories: [], vodCategories: [], seriesCategories: [],
-      lastUpdate: null,
-    })
+      channels: cache.channels || [],
+      movies: cache.movies || [],
+      series: cache.series || [],
+      liveCategories: cache.liveCategories || [],
+      vodCategories: cache.vodCategories || [],
+      seriesCategories: cache.seriesCategories || [],
+      lastUpdate: cache.timestamp || null
+    });
   },
 
-  // ── Fetch canais ao vivo ──────────────────────────────────────────────────
+  isCacheValidAsync: async config => {
+    return CacheService.isValid(config);
+  },
 
-  fetchLiveContent: async (config: ServerConfig) => {
-    console.log('📡 Atualizando canais ao vivo...')
-    set({ isLoading: true, error: null })
+  clearCache: async config => {
+    await CacheService.clear(config);
+
+    set({
+      channels: [],
+      movies: [],
+      series: [],
+      liveCategories: [],
+      vodCategories: [],
+      seriesCategories: [],
+      lastUpdate: null
+    });
+  },
+  // ─────────────────────────────────────────────
+  // FETCH INCREMENTAL (🔥 DIFERENCIAL)
+  // ─────────────────────────────────────────────
+
+  fetchLiveContent: async config => {
+    set({ isLoading: true });
+
     try {
-      const liveCategories = await xtreamApi.getLiveCategories(config)
-      console.log(`📂 ${liveCategories.length} categorias de canais`)
-
-      const channels = await fetchCategoriesInBatches(
-        liveCategories,
-        (catId) => xtreamApi.getLiveStreams(config, catId),
-        (s: any) => mapChannel(s, config),
-        5
-      )
-
-      const cats = liveCategories.map(mapCategory)
-      const timestamp = await saveCacheByType({ channels, liveCategories: cats }, config)
-      set({ channels, liveCategories: cats, lastUpdate: timestamp, isLoading: false })
-      console.log(`✅ Canais atualizados: ${channels.length}`)
-    } catch (err) {
-      console.error('❌ Erro ao atualizar canais:', err)
-      set({ error: 'Erro ao atualizar canais', isLoading: false })
+      const { channels, liveCatsRaw } = await findLiveSevice(config);
+      set({ channels, liveCategories: liveCatsRaw, isLoading: false });
+    } catch {
+      set({ error: 'Erro ao atualizar canais', isLoading: false });
     }
   },
 
-  // ── Fetch filmes por categoria ────────────────────────────────────────────
-
-  fetchMoviesContent: async (config: ServerConfig) => {
-    console.log('📡 Atualizando filmes por categoria...')
-    set({ isLoading: true, error: null })
+  fetchMoviesContent: async config => {
+    set({ isLoading: true });
+    const { movies, vodCatsRaw } = await findVodSevice(config);
     try {
-      const vodCategories = await xtreamApi.getVodCategories(config)
-      console.log(`📂 ${vodCategories.length} categorias de filmes`)
-
-      const movies = await fetchCategoriesInBatches(
-        vodCategories,
-        (catId) => xtreamApi.getVodStreams(config, catId),
-        (s: any) => mapMovie(s, config),
-        5
-      )
-
-      const cats = vodCategories.map(mapCategory)
-      const timestamp = await saveCacheByType({ movies, vodCategories: cats }, config)
-      set({ movies, vodCategories: cats, lastUpdate: timestamp, isLoading: false })
-      console.log(`✅ Filmes atualizados: ${movies.length}`)
-    } catch (err) {
-      console.error('❌ Erro ao atualizar filmes:', err)
-      set({ error: 'Erro ao atualizar filmes', isLoading: false })
+      set({ movies, vodCategories: vodCatsRaw, isLoading: false });
+    } catch {
+      set({ error: 'Erro ao atualizar filmes', isLoading: false });
     }
   },
 
-  // ── Fetch séries por categoria ────────────────────────────────────────────
+  fetchSeriesContent: async config => {
+    set({ isLoading: true });
 
-  fetchSeriesContent: async (config: ServerConfig) => {
-    console.log('📡 Atualizando séries por categoria...')
-    set({ isLoading: true, error: null })
     try {
-      const seriesCategories = await xtreamApi.getSeriesCategories(config)
-      console.log(`📂 ${seriesCategories.length} categorias de séries`)
+      const { series, seriesCatsRaw } = await findSeriesSevice(config);
 
-      const series = await fetchCategoriesInBatches(
-        seriesCategories,
-        (catId) => xtreamApi.getSeries(config, catId),
-        mapSeries,
-        5
-      )
-
-      const cats = seriesCategories.map(mapCategory)
-      const timestamp = await saveCacheByType({ series, seriesCategories: cats }, config)
-      set({ series, seriesCategories: cats, lastUpdate: timestamp, isLoading: false })
-      console.log(`✅ Séries atualizadas: ${series.length}`)
-    } catch (err) {
-      console.error('❌ Erro ao atualizar séries:', err)
-      set({ error: 'Erro ao atualizar séries', isLoading: false })
+      set({ series, seriesCategories: seriesCatsRaw, isLoading: false });
+    } catch {
+      set({ error: 'Erro ao atualizar séries', isLoading: false });
     }
   },
+  // ─────────────────────────────────────────────
+  // FETCH COMPLETO
+  // ─────────────────────────────────────────────
 
-  // ── Fetch tudo ────────────────────────────────────────────────────────────
-
-  fetchServerContent: async (config: ServerConfig, forceRefresh = false) => {
-    console.log('📡 fetchServerContent iniciado:', config.url)
+  fetchServerContent: async (config, forceRefresh = false) => {
+    console.log('🚀 fetchServerContent');
 
     // ── DEV_MODE ──────────────────────────────────────────────────────────
-    if (DEV_MODE) {
-      console.log('🛠️ DEV_MODE ativo — carregando dados mock...')
-      set({ isLoading: true, error: null })
+    if (!DEV_MODE) {
+      console.log('🛠️ DEV_MODE ativo — carregando dados mock...');
+      set({ isLoading: true, error: null });
       try {
         const [
           { default: channelsMock },
@@ -386,109 +323,89 @@ export const useContentStore = create<ContentState>((set, get) => ({
           import('../data/channel_ex.json'),
           import('../data/movie_ex.json'),
           import('../data/series_ex.json'),
-          import('../data/mockData'),
-        ])
+          import('../data/mockData')
+        ]);
 
-        const channels         = channelsMock.map((s: any) => mapChannel(s, config))
-        const movies           = moviesMock.map((s: any) => mapMovie(s, config))
-        const series           = seriesMock.map(mapSeries)
-        const liveCategories   = categoriesLiveMock.map(mapCategory)
-        const vodCategories    = categoriasMoveisMock.map(mapCategory)
-        const seriesCategories = categoraiesSeriesMock.map(mapCategory)
+        const channels = channelsMock.map((s: any) => mapChannel(s, config));
+        const movies = moviesMock.map((s: any) => mapMovie(s, config));
+        const series = seriesMock.map(mapSeries);
+        const liveCategories = categoriesLiveMock.map(mapCategory);
+        const vodCategories = categoriasMoveisMock.map(mapCategory);
+        const seriesCategories = categoraiesSeriesMock.map(mapCategory);
 
-        console.log('✅ Mock carregado:', { canais: channels.length, filmes: movies.length, series: series.length })
-        set({ channels, movies, series, liveCategories, vodCategories, seriesCategories, lastUpdate: Date.now(), isLoading: false })
+        console.log('✅ Mock carregado:', {
+          canais: channels.length,
+          filmes: movies.length,
+          series: series.length
+        });
+        set({
+          channels,
+          movies,
+          series,
+          liveCategories,
+          vodCategories,
+          seriesCategories,
+          lastUpdate: Date.now(),
+          isLoading: false
+        });
       } catch (err) {
-        console.error('❌ Erro ao carregar mock:', err)
-        set({ error: 'Erro ao carregar dados mock', isLoading: false })
+        console.error('❌ Erro ao carregar mock:', err);
+        set({ error: 'Erro ao carregar dados mock', isLoading: false });
       }
-      return
-    }
-
-    // ── Servidor diferente? Limpar cache ──────────────────────────────────
-    const cachedRaw: any = await indexedDbStorage.get('playlist_cache')
-    if (cachedRaw?.serverId && cachedRaw.serverId !== getServerId(config)) {
-      console.log('🔄 Servidor trocado! Limpando cache antigo...')
-      await get().clearCache()
+      return;
     }
 
     // ── Cache válido? Usar cache ───────────────────────────────────────────
     if (!forceRefresh && (await get().isCacheValidAsync(config))) {
-      console.log('✅ Cache válido, carregando...')
-      get().loadFromCache()
-      return
+      console.log('✅ usando cache');
+      await get().loadFromCache(config);
+      return;
     }
 
-    set({ isLoading: true, error: null })
+    set({ isLoading: true, error: null });
+
     try {
-      // 1. Buscar todas as categorias em paralelo
-      console.log('📡 Buscando categorias...')
-      const [liveCategoriesRaw, vodCategoriesRaw, seriesCategoriesRaw] = await Promise.all([
-        xtreamApi.getLiveCategories(config),
-        xtreamApi.getVodCategories(config),
-        xtreamApi.getSeriesCategories(config),
-      ])
+      // 🔥 inicia tudo em paralelo
+      const livePromise = findLiveSevice(config);
+      const vodPromise = findVodSevice(config);
+      const seriesPromise = findSeriesSevice(config);
 
-      console.log(`📂 ${liveCategoriesRaw.length} live | ${vodCategoriesRaw.length} filmes | ${seriesCategoriesRaw.length} séries`)
+      // 🔥 atualiza UI conforme chega
+      livePromise.then(({ channels, liveCatsRaw }) => {
+        set({ channels, liveCategories: liveCatsRaw });
+      });
 
-      // 2. Buscar streams por categoria em lotes — tudo em paralelo entre os 3 tipos
-      console.log('📡 Buscando streams por categoria em lotes...')
-      const [channels, movies, series] = await Promise.all([
-        fetchCategoriesInBatches(
-          liveCategoriesRaw,
-          (catId) => xtreamApi.getLiveStreams(config, catId),
-          (s: any) => mapChannel(s, config),
-          5
-        ),
-        fetchCategoriesInBatches(
-          vodCategoriesRaw,
-          (catId) => xtreamApi.getVodStreams(config, catId),
-          (s: any) => mapMovie(s, config),
-          5
-        ),
-        fetchCategoriesInBatches(
-          seriesCategoriesRaw,
-          (catId) => xtreamApi.getSeries(config, catId),
-          mapSeries,
-          5
-        ),
-      ])
+      vodPromise.then(({ movies, vodCatsRaw }) => {
+        set({ movies, vodCategories: vodCatsRaw });
+      });
 
-      const liveCats   = liveCategoriesRaw.map(mapCategory)
-      const vodCats    = vodCategoriesRaw.map(mapCategory)
-      const seriesCats = seriesCategoriesRaw.map(mapCategory)
+      seriesPromise.then(({ series, seriesCatsRaw }) => {
+        set({ series, seriesCategories: seriesCatsRaw });
+      });
 
-      console.log(`✅ Total: ${channels.length} canais | ${movies.length} filmes | ${series.length} séries`)
+      // 🔥 espera tudo terminar
+      const [{ channels, liveCatsRaw }, { movies, vodCatsRaw }, { series, seriesCatsRaw }] =
+        await Promise.all([livePromise, vodPromise, seriesPromise]);
 
-      const timestamp = saveFullCache(channels, movies, series, liveCats, vodCats, seriesCats, config)
+      const data = {
+        channels,
+        movies,
+        series,
+        liveCategories: liveCatsRaw,
+        vodCategories: vodCatsRaw,
+        seriesCategories: seriesCatsRaw
+      };
+
+      await CacheService.saveFull(data, config);
+
       set({
-        channels, movies, series,
-        liveCategories: liveCats,
-        vodCategories: vodCats,
-        seriesCategories: seriesCats,
-        lastUpdate: timestamp,
-        isLoading: false,
-      })
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : 'Erro ao buscar conteúdo'
-      console.error('❌ Erro ao buscar conteúdo:', error)
-
-      const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE)
-      if (cached) {
-        set({
-          channels:         cached.channels         || [],
-          movies:           cached.movies           || [],
-          series:           cached.series           || [],
-          liveCategories:   cached.liveCategories   || [],
-          vodCategories:    cached.vodCategories    || [],
-          seriesCategories: cached.seriesCategories || [],
-          lastUpdate:       cached.timestamp        || null,
-          isLoading: false,
-          error: msg + ' (mostrando dados em cache)',
-        })
-      } else {
-        set({ error: msg, isLoading: false })
-      }
+        ...data,
+        lastUpdate: Date.now(),
+        isLoading: false
+      });
+    } catch (err) {
+      console.error(err);
+      set({ error: 'Erro ao carregar conteúdo', isLoading: false });
     }
-  },
-}))
+  }
+}));

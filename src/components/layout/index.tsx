@@ -7,8 +7,12 @@ import { useFavoritesStore } from '../../store/favoritesStore';
 import { useWatchHistoryStore } from '../../store/watchHistoryStore';
 import MainHeader from './MainHeader';
 import { DEV_MODE } from '../../config/devMode';
+import { useContentStore } from '../../store/contentStore';
+import ToastLoading from '../UI/ToastLoading';
 
 const Layout: React.FC = () => {
+  const { serverConfig } = useAuthStore();
+  const { fetchServerContent, isLoading } = useContentStore();
   const [showSplash, setShowSplash] = useState(!DEV_MODE);
   const { loadFromStorage, activeProfile } = useAuthStore();
   const { loadFromStorage: loadFavoritesFromStorage, setCurrentProfile: setFavoritesProfile } =
@@ -26,13 +30,16 @@ const Layout: React.FC = () => {
     loadFromStorage();
     loadFavoritesFromStorage();
     loadHistoryFromStorage();
+    if (serverConfig) {
+      fetchServerContent(serverConfig);
+    }
   }, []);
 
   // Quando activeProfile muda, carregar dados específicos do perfil
   useEffect(() => {
     if (activeProfile?.id) {
-      setFavoritesProfile(activeProfile.id);
-      setHistoryProfile(activeProfile.id);
+      setFavoritesProfile(activeProfile.id, serverConfig!);
+      setHistoryProfile(activeProfile.id, serverConfig!);
     }
   }, [activeProfile?.id, setFavoritesProfile, setHistoryProfile]);
 
@@ -40,10 +47,10 @@ const Layout: React.FC = () => {
 
   return (
     <Fragment>
-      {showSplash  && <Splash onFinish={handleSplashFinish} />}
+      {showSplash && <Splash onFinish={handleSplashFinish} />}
+      {<ToastLoading isLoading={isLoading} message="Carregando..." />}
       {shouldShowHeader && !showSplash && <MainHeader scrolling={false} />}
-      {!showSplash &&
-      <App />}
+      {!showSplash && <App />}
     </Fragment>
   );
 };

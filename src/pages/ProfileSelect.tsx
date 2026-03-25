@@ -1,21 +1,21 @@
-import { RectangleHorizontalIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AutoCarousel from '../components/AutoCarousel';
 import LogoHeader from '../components/Logos/LogoHeader';
 import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
+import RemoteHint from '../components/UI/RemoteHint';
 import { useRemoteControl } from '../hooks/useRemotoControl';
+import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
 import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Profile } from '../types';
-import RemoteHint from '../components/UI/RemoteHint';
-import useWindowSize from '../hooks/useWindowSize';
 
 export const ProfileSelect = () => {
   const navigate = useNavigate();
+    const { serverConfig } = useAuthStore();
   const { profiles, addProfile, updateProfile, setActiveProfile } = useAuthStore();
   const { setCurrentProfile: setFavoritesProfile } = useFavoritesStore();
   const { setCurrentProfile: setHistoryProfile } = useWatchHistoryStore();
@@ -196,8 +196,8 @@ export const ProfileSelect = () => {
   const handleSelectProfile = (profile: Profile) => {
     setActiveProfile(profile);
     // Carregar favoritos e histórico do perfil selecionado
-    setFavoritesProfile(profile.id);
-    setHistoryProfile(profile.id);
+    setFavoritesProfile(profile.id, serverConfig!);
+    setHistoryProfile(profile.id, serverConfig!);
     navigate('/home');
   };
 
