@@ -310,7 +310,7 @@ export const useContentStore = create<ContentState>((set, get) => ({
     console.log('🚀 fetchServerContent');
 
     // ── DEV_MODE ──────────────────────────────────────────────────────────
-    if (!DEV_MODE) {
+    if (DEV_MODE) {
       console.log('🛠️ DEV_MODE ativo — carregando dados mock...');
       set({ isLoading: true, error: null });
       try {
