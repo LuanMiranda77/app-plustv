@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PlusTV</string>
+    <string name="title_activity_main">PlusTV</string>
+    <string name="package_name">com.plustv.iptv</string>
+    <string name="custom_url_scheme">com.plustv.iptv</string>
+</resources>

@@ -1,0 +1,5 @@
+package com.plustv.iptv;
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {}
