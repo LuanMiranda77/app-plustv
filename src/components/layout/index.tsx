@@ -26,7 +26,7 @@ const Layout: React.FC = () => {
   const { loadFromStorage: loadHistoryFromStorage, setCurrentProfile: setHistoryProfile } =
     useWatchHistoryStore();
   const location = useLocation();
-  const [isTest, setIsTest] = useState(true);
+  const [isTest, setIsTest] = useState(false);
   const [isTestEspired, setIsTestExpired] = useState(false);
 
   // Rotas onde MainHeader não deve aparecer
