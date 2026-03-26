@@ -252,7 +252,7 @@ export const ProfileSelect = () => {
         <RemoteHint color="yellow" label="Editar perfil" />
 
         {/* Profiles Grid */}
-        <div className="grid grid-cols-1 grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 max-md:grid-cols-4 gap-4">
           {profiles.map((profile, index) => (
             <div
               key={profile.id}

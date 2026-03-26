@@ -58,6 +58,10 @@ const Layout: React.FC = () => {
   useEffect(() => {
     let active = true;
     const dateTest = storage.get('perid-teste');
+    const adultUnlocked = storage.get('adult-unlocked');
+    if(!adultUnlocked) {
+      storage.set('adult-unlocked', false);
+    }
     if (dateTest) {
       if (moment(dateTest).diff(moment(), 'days') > 7) {
         setIsTestExpired(true);

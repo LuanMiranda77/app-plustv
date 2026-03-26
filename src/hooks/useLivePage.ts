@@ -13,6 +13,7 @@ import { useRemoteControl } from './useRemotoControl';
 import useWindowSize from './useWindowSize';
 import type { Channel } from '../types';
 import type { PlayerStream } from '../pages/Player';
+import { storage } from '../utils/storage';
 
 export function useLivePage() {
   const location = useLocation();
@@ -32,18 +33,22 @@ export function useLivePage() {
   const gridRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowSize();
-  const { activeZone, setActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedEpgIndex, setFocusedEpgIndex] = useState(0);
   const [focusedInput, setFocusedInput] = useState(false);
   const epgRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { activeZone, setActiveZone } = useFocusZone();
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
   const isZoneEpg = activeZone === 'epg';
   const [setlectLiveIndex, setSetlectLiveIndex] = useState(-1);
   const navigate = useNavigate();
+  const isAdultUnlocked = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return storage.get('adult-unlocked') === true;
+  }, []);
 
   const filteredChannels = useMemo(() => {
     return channels.filter(channel => {
@@ -429,6 +434,7 @@ export function useLivePage() {
     hasMoreChannels,
     handleInputKeyDown,
     handlePlayStream,
-    navigateLive
+    navigateLive,
+    isAdultUnlocked
   };
 }

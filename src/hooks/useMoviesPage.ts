@@ -7,6 +7,7 @@ import type { Movie } from '../types';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { storage } from '../utils/storage';
 
 export function useMoviesPage() {
   const { movies, vodCategories } = useContentStore();
@@ -34,6 +35,11 @@ export function useMoviesPage() {
     { id: null, name: 'TODOS' },
     ...vodCategories
   ];
+
+  const isAdultUnlocked = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return storage.get('adult-unlocked') === true;
+  }, []);
 
   const filteredMovies = useMemo(() => {
     return movies.filter(channel => {
@@ -311,6 +317,7 @@ export function useMoviesPage() {
     hasMoreMovies,
     handleNavigate,
     handleCategoryClick,
-    handleInputKeyDown
+    handleInputKeyDown,
+    isAdultUnlocked
   };
 }

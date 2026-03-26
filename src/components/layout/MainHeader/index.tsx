@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { Film, Home, RefreshCw, Server, Tv2, TvMinimalPlay } from 'lucide-react';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../../../Context/FocusContext';
 import { useRemoteControl } from '../../../hooks/useRemotoControl';
@@ -11,6 +11,9 @@ import LogoHeader from '../../Logos/LogoHeader';
 import MenuButton from '../../UI/ButtonMenu';
 import ConfirmDialog from '../../UI/ConfirmDialog';
 import { Dropdown, type OptionType, type RefreshTarget } from '../../UI/Dropdown';
+import { DropdownBase, type OptionTypeConfig, type TargetConfig } from '../../UI/DropdownBase';
+import { AdultContentUnlock } from '../../UI/FromAdultContent';
+import { storage } from '../../../utils/storage';
 
 interface Props {
   scrolling: boolean;
@@ -35,8 +38,12 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const [selectMenu, setSelectMenu] = useState(-1);
 
   // ── Dropdown ──────────────────────────────────────────────────────────────
+  // ── Adult Content ─────────────────────────────────────────────────────────
+  const [showAdultUnlock, setShowAdultUnlock] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpenConfig, setDropdownOpenConfig] = useState(false);
   const [pendingRefreshTarget, setPendingRefreshTarget] = useState<RefreshTarget>('all');
+  const [pendingTargetConfig, setPendingTargetConfig] = useState<TargetConfig>('server');
 
   // ── Confirm dialog ────────────────────────────────────────────────────────
   const [confirmRefresh, setConfirmRefresh] = useState(false);
@@ -45,12 +52,32 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const { activeProfile } = useAuthStore();
   const { lastUpdate, forceRefresh, isLoading, loadingTarget } = useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
+  const isAdultUnlocked = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return storage.get('adult-unlocked') === true;
+  }, [pendingTargetConfig]);
   const isActive = activeZone === 'menu';
+  const isContent = activeZone === 'content';
 
   const FOCUS_REFRESH = menus.length;
   const FOCUS_CONFIG = menus.length + 1;
   const FOCUS_PERFIL = menus.length + 2;
   const FOCUS_MAX = FOCUS_PERFIL;
+
+  const OPTIONS_CONFIG: OptionTypeConfig[] = [
+    {
+      id: 'server',
+      label: 'Servidores',
+      description: 'Configurar servidores',
+      icon: <Server className="w-4 h-4" />
+    },
+    {
+      id: 'adult',
+      label: 'Conteudo adulto',
+      description: `${!isAdultUnlocked ? 'Liberar' : 'Bloquear'} conteúdo`,
+      icon: <div className="w-4 h-4 flex items-center justify-center">🔞</div>
+    }
+  ];
 
   const OPTIONS: OptionType[] = [
     {
@@ -121,9 +148,22 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
       // ✅ Abrir dropdown em vez do confirm direto
       if (!isLoading) setDropdownOpen(true);
     } else if (i === FOCUS_CONFIG) {
-      navigate('/config-server');
+      setDropdownOpenConfig(true);
+      // navigate('/config-server');
     } else if (i === FOCUS_PERFIL) {
       navigate('/profiles');
+    }
+  };
+
+  const okConfig = (target: TargetConfig) => {
+    clearExtras();
+    // setPendingTargetConfig(target);
+    setDropdownOpenConfig(false);
+
+    if (target === 'server') {
+      navigate('/config-server');
+    } else if (target === 'adult') {
+      setShowAdultUnlock(true);
     }
   };
 
@@ -131,7 +171,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
 
   useRemoteControl({
     onRight: () => {
-      if (dropdownOpen) return; // dropdown intercepta
+      if (dropdownOpen || dropdownOpenConfig) return; // dropdown intercepta
       if (confirmRefresh) {
         setConfirmFocusBtn(1);
         return;
@@ -139,7 +179,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
       nextButton();
     },
     onLeft: () => {
-      if (dropdownOpen) return; // dropdown intercepta
+      if (dropdownOpen || dropdownOpenConfig) return; // dropdown intercepta
       if (confirmRefresh) {
         setConfirmFocusBtn(0);
         return;
@@ -147,14 +187,15 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
       backButton();
     },
     onDown: () => {
-      if (dropdownOpen) return; // dropdown intercepta
+      if (dropdownOpen || dropdownOpenConfig) return; // dropdown intercepta
       if (confirmRefresh) return;
       if (!isActive) return;
       setActiveZone('content');
       setSelectMenu(focusedIndex);
+      // clearExtras();
     },
     onUp: () => {
-      if (dropdownOpen) return; // dropdown intercepta
+      if (dropdownOpen || dropdownOpenConfig) return; // dropdown intercepta
     },
     onOk: () => {
       // Confirm dialog aberto
@@ -172,13 +213,17 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
         return;
       }
       // Dropdown intercepta o OK internamente via capture
-      if (dropdownOpen) return;
+      if (dropdownOpen || dropdownOpenConfig) return;
       okButton(focusedIndex);
     },
     onBack: () => {
       // Fechar dropdown com back
       if (dropdownOpen) {
         setDropdownOpen(false);
+        return;
+      }
+      if (dropdownOpenConfig) {
+        setDropdownOpenConfig(false);
         return;
       }
       if (confirmRefresh) {
@@ -266,29 +311,29 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                     setPendingRefreshTarget(target);
                     setDropdownOpen(false);
                     setConfirmRefresh(true);
-                    setConfirmFocusBtn(1); // foco padrão em "Confirmar"
+                    setConfirmFocusBtn(1);
+                    clearExtras(); // foco padrão em "Confirmar"
                   }}
                 />
 
-                {/* Config server */}
-                <button
-                  className={`p-2 rounded-lg transition-all ${
-                    focusedConfig
-                      ? 'bg-red-600 text-white scale-110 shadow-lg shadow-red-600/50'
-                      : 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white'
-                  }`}
-                  title="Servidores"
-                  onClick={() => navigate('/config-server')}
-                >
-                  <Server className="w-6 h-6 max-md:w-4 max-md:h-4" />
-                </button>
+                {/* Dropdown de atualização */}
+                <DropdownBase
+                  isLoading={isLoading}
+                  isFocused={focusedConfig}
+                  isOpen={dropdownOpenConfig}
+                  onOpenChange={setDropdownOpenConfig}
+                  options={OPTIONS_CONFIG}
+                  onClick={okConfig}
+                />
 
                 {/* Perfil */}
                 <button
                   className={`p-0.5 rounded-lg text-[24px] max-md:text-xl transition-all ${
-                    focusedPerfil
-                      ? 'ring-2 ring-red-600 scale-110 shadow-lg shadow-red-600/50 bg-red-600'
-                      : 'bg-gray-600'
+                    focusedPerfil && isContent
+                      ? 'bg-red-600/20 scale-110'
+                      : focusedPerfil
+                        ? ' bg-red-600 text-white scale-110 shadow-lg shadow-red-600/50'
+                        : 'bg-gray-600 hover:bg-gray-600 text-gray-300 hover:text-white'
                   }`}
                   title={activeProfile?.name}
                   onClick={() => navigate('/profiles')}
@@ -330,6 +375,8 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
           isFocusedCancelar={confirmFocusBtn === 0}
           isFocusedConfirmar={confirmFocusBtn === 1}
         />
+
+        <AdultContentUnlock open={showAdultUnlock} onClose={() => setShowAdultUnlock(false)} />
       </>
     )
   );

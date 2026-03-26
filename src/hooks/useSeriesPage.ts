@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import { useContentStore } from '../store/contentStore';
@@ -7,6 +7,7 @@ import { useFavoritesStore } from '../store/favoritesStore';
 import type { Series } from '../types';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
+import { storage } from '../utils/storage';
 
 export function useSeriesPage() {
   const { series, seriesCategories } = useContentStore();
@@ -26,6 +27,10 @@ export function useSeriesPage() {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedInput, setFocusedInput] = useState(false);
   const navigate = useNavigate();
+  const isAdultUnlocked = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return storage.get('adult-unlocked') === true;
+  }, []);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
   const ITEMS_PER_PAGE = 30;
@@ -121,7 +126,7 @@ export function useSeriesPage() {
       inputRef.current?.blur();
       setActiveZone('menu');
     }
-  };;
+  };
 
   useRemoteControl({
     onRight: () => {
@@ -296,6 +301,7 @@ export function useSeriesPage() {
     filteredSeries,
     displayedSeries,
     hasMoreSeries,
+    isAdultUnlocked,
 
     // functinons
     handleNavigate,

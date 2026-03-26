@@ -33,6 +33,7 @@ export const PageSeries = () => {
     displayedSeries,
     hasMoreSeries,
     isLoadingMore,
+    isAdultUnlocked,
 
     // Funções
     handleNavigate,
@@ -51,21 +52,26 @@ export const PageSeries = () => {
           >
             <div className="max-w-7xl mx-auto px-6 py-4">
               <div className="flex flex-col gap-2 pb-2">
-                {categoriesWithAll.map((cat, i) => (
-                  <ButtonCategory
-                    key={cat.id || 'all'}
-                    id={String(cat.id || '-2')}
-                    name={cat.name}
-                    isSelected={selectedCategory === (cat.id as any)}
-                    isFocused={isZoneCat && focusedCat === i}
-                    icon={
-                      cat.id === '-1' ? (
-                        <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
-                      ) : undefined
-                    }
-                    onClick={() => handleCategoryClick(cat.id as any)}
-                  />
-                ))}
+                {categoriesWithAll
+                  .filter(item => {
+                    if (isAdultUnlocked) return item;
+                    if (!item.name.toUpperCase().includes('ADULTO')) return item;
+                  })
+                  .map((cat, i) => (
+                    <ButtonCategory
+                      key={cat.id || 'all'}
+                      id={String(cat.id || '-2')}
+                      name={cat.name}
+                      isSelected={selectedCategory === (cat.id as any)}
+                      isFocused={isZoneCat && focusedCat === i}
+                      icon={
+                        cat.id === '-1' ? (
+                          <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
+                        ) : undefined
+                      }
+                      onClick={() => handleCategoryClick(cat.id as any)}
+                    />
+                  ))}
               </div>
             </div>
           </div>

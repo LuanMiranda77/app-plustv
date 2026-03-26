@@ -41,6 +41,7 @@ export const Live = () => {
     handleInputKeyDown,
     handlePlayStream,
     navigateLive,
+    isAdultUnlocked,
   } = useLivePage();
 
   return (
@@ -54,7 +55,10 @@ export const Live = () => {
           >
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2">
-                {categoriesWithAll.map((cat, i) => (
+                {categoriesWithAll.filter((item)=>{
+                  if (isAdultUnlocked) return item;
+                  if (!item.name.toUpperCase().includes('ADULTO')) return item;
+                }).map((cat, i) => (
                   <ButtonCategory
                     key={cat.id || 'all'}
                     id={String(cat.id || '-2')}

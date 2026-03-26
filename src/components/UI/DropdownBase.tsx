@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/immutability */
-import { RefreshCw } from 'lucide-react';
+import { Cog, RefreshCw } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useFocusZone } from '../../Context/FocusContext';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type RefreshTarget = 'all' | 'live' | 'movies' | 'series';
+export type TargetConfig = 'server' | 'adult';
 
-export interface OptionType {
-  id: RefreshTarget;
+export interface OptionTypeConfig {
+  id: TargetConfig;
   label: string;
   description: string;
   icon: React.ReactNode;
@@ -16,40 +16,40 @@ export interface OptionType {
 
 interface RefreshDropdownProps {
   isLoading?: boolean;
-  loadingTarget?: RefreshTarget | null;
+  loadingTarget?: TargetConfig | null;
   isFocused?: boolean;
-  onRefresh: (target: RefreshTarget) => void;
-  options: OptionType[];
+  onClick: (target: TargetConfig) => void;
+  options: OptionTypeConfig[];
   mainElement?: React.ReactNode;
   // ── Controlled open state (para useRemoteControl) ─────────────────────────
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export const Dropdown = ({
+export const DropdownBase = ({
   isLoading = false,
   loadingTarget = null,
   isFocused = false,
-  onRefresh,
+  onClick,
   options,
   mainElement,
   isOpen: isOpenProp,
-  onOpenChange
+  onOpenChange,
 }: RefreshDropdownProps) => {
   // Se vier isOpen/onOpenChange de fora, usa controlled. Senão, uncontrolled.
-  const isControlled = isOpenProp !== undefined;
-  const [isOpenInternal, setIsOpenInternal] = useState(false);
-  const isOpen = isControlled ? isOpenProp! : isOpenInternal;
-  const { activeZone } = useFocusZone();
-  const isContent = activeZone === 'content';
+  const isControlled = isOpenProp !== undefined
+  const [isOpenInternal, setIsOpenInternal] = useState(false)
+  const isOpen = isControlled ? isOpenProp! : isOpenInternal
+    const { activeZone } = useFocusZone();
+    const isContent = activeZone === 'content';
 
   const setIsOpen = (val: boolean) => {
     if (isControlled) {
-      onOpenChange?.(val);
+      onOpenChange?.(val)
     } else {
-      setIsOpenInternal(val);
+      setIsOpenInternal(val)
     }
-  };
+  }
 
   const [focusedOption, setFocusedOption] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -67,8 +67,8 @@ export const Dropdown = ({
 
   // Reset focusedOption ao abrir
   useEffect(() => {
-    if (isOpen) setFocusedOption(0);
-  }, [isOpen]);
+    if (isOpen) setFocusedOption(0)
+  }, [isOpen])
 
   // Navegação por teclado quando aberto
   useEffect(() => {
@@ -100,9 +100,9 @@ export const Dropdown = ({
     return () => window.removeEventListener('keydown', handler, true);
   }, [isOpen, focusedOption, options]);
 
-  const handleSelect = (target: RefreshTarget) => {
+  const handleSelect = (target: TargetConfig) => {
     setIsOpen(false);
-    onRefresh(target);
+    onClick(target);
   };
 
   const handleButtonClick = () => {
@@ -110,8 +110,8 @@ export const Dropdown = ({
     setIsOpen(!isOpen);
   };
 
-  const isItemLoading = (id: RefreshTarget) =>
-    isLoading && (loadingTarget === id || loadingTarget === 'all');
+  const isItemLoading = (id: TargetConfig) =>
+    isLoading && (loadingTarget === id);
 
   return (
     <div ref={dropdownRef} className="relative">
@@ -125,15 +125,14 @@ export const Dropdown = ({
           disabled:opacity-50 disabled:cursor-not-allowed
           ${
             isFocused && isContent
-              ? 'bg-red-600/20 scale-110'
-              : isFocused || isOpen
-                ? 'bg-red-600 scale-110 shadow-lg shadow-red-600/50'
-                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+              ? 'bg-red-600/20 scale-110': isFocused || isOpen
+              ? 'bg-red-600 scale-110 shadow-lg shadow-red-600/50'
+              : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
           }
         `}
       >
         {mainElement ?? (
-          <RefreshCw
+          <Cog
             className={`
               w-6 h-6 max-md:w-4 max-md:h-4
               ${isFocused || isOpen ? 'text-white' : 'text-red-600'}
@@ -143,7 +142,7 @@ export const Dropdown = ({
         )}
 
         {/* Indicador de loading por tipo */}
-        {isLoading && loadingTarget && loadingTarget !== 'all' && (
+        {isLoading && loadingTarget && (
           <span
             className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full
                            animate-pulse border border-gray-900"
@@ -154,7 +153,7 @@ export const Dropdown = ({
       {/* ── Dropdown ────────────────────────────────────────────────────── */}
       {isOpen && (
         <div
-          className="absolute right-0 top-full mt-2 w-56 z-[200]
+          className="absolute right-0 top-full mt-2 w-60 z-[200]
                      bg-gray-900 border border-gray-700 rounded-xl
                      shadow-2xl shadow-black/60 overflow-hidden
                      animate-[dropdownIn_0.15s_ease_both]"
@@ -168,7 +167,7 @@ export const Dropdown = ({
 
           {/* Header */}
           <div className="px-4 py-2.5 border-b border-gray-800">
-            <p className="text-zinc-400 text-xs uppercase tracking-widest">Atualizar</p>
+            <p className="text-zinc-400 text-xs uppercase tracking-widest">Configuração</p>
           </div>
 
           {/* Opções */}
@@ -192,7 +191,6 @@ export const Dropdown = ({
                       ? 'bg-red-600/20 text-white'
                       : 'text-zinc-300 hover:bg-gray-800 hover:text-white'
                   }
-                  ${option.id === 'all' ? 'font-semibold' : ''}
                 `}
               >
                 {/* Ícone */}
@@ -201,7 +199,7 @@ export const Dropdown = ({
                   flex-shrink-0 w-8 h-8 rounded-lg
                   flex items-center justify-center
                   ${focused ? 'bg-red-600 text-white' : 'bg-gray-800 text-zinc-400'}
-                  ${option.id === 'all' && !focused ? 'bg-red-600/20 text-red-400' : ''}
+                  ${!focused ? 'bg-red-600/20 text-red-400' : ''}
                 `}
                 >
                   {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : option.icon}
@@ -209,8 +207,10 @@ export const Dropdown = ({
 
                 {/* Texto */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium leading-none mb-0.5">{option.label}</p>
-                  <p className="text-zinc-500 text-xs">
+                  <p className="text-lg max-sm:text-sm font-medium leading-none mb-0.5">
+                    {option.label}
+                  </p>
+                  <p className="text-zinc-500 text-sm max-sm:text-xs">
                     {loading ? 'Atualizando...' : option.description}
                   </p>
                 </div>
@@ -226,4 +226,4 @@ export const Dropdown = ({
   );
 };
 
-export default Dropdown;
+export default DropdownBase;
