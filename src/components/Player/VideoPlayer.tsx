@@ -259,7 +259,7 @@ export const VideoPlayer = ({
 
       {/* ── Próximo Episódio ──────────────────────────────────────────────── */}
       {showNextEpisodeBtn && type === 'series' && onNextEpisode && (
-        <div className="absolute bottom-24 right-8 z-[99999]">
+        <div className="absolute bottom-24 right-8 z-99999">
           <NextEpisodeButton
             episodeName={nextEpisode?.name}
             episodeNumber={nextEpisode?.number}
