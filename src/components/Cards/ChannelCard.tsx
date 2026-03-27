@@ -1,31 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Heart } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Channel } from '../../types';
-import { useAuthStore } from '../../store/authStore';
 const placehoder = './placeholde.png';
 
 interface ChannelCardProps {
   id?: string | number;
   channel: Channel;
   onPlay?: () => void;
+  onFavoriteToggle?: (channel: Channel) => void;
   isFocused?: boolean;
   setlected?: boolean;
+  isFav?: boolean;
 }
 
-export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: ChannelCardProps) => {
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
-  const isFav = isFavorite(String(channel.id));
-  const { serverConfig } = useAuthStore();
-
-  const toggleFavorite = () => {
-    if (isFav) {
-      removeFavorite(String(channel.id), serverConfig!);
-    } else {
-      addFavorite(channel, 'live', serverConfig!);
-    }
-  };
+export const ChannelCard = ({
+  id,
+  channel,
+  onPlay,
+  isFocused,
+  setlected,
+  onFavoriteToggle,
+  isFav
+}: ChannelCardProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const handleFullscreen = async () => {
@@ -107,7 +104,7 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: Chann
         <button
           onClick={e => {
             e.stopPropagation();
-            toggleFavorite();
+            onFavoriteToggle?.(channel);
           }}
           className={`
           flex-shrink-0 w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px]

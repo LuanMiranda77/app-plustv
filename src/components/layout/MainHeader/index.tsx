@@ -7,13 +7,13 @@ import { useFocusZone } from '../../../Context/FocusContext';
 import { useRemoteControl } from '../../../hooks/useRemotoControl';
 import { useServerContent } from '../../../hooks/useServerContent';
 import { useAuthStore } from '../../../store/authStore';
+import { storage } from '../../../utils/storage';
 import LogoHeader from '../../Logos/LogoHeader';
 import MenuButton from '../../UI/ButtonMenu';
 import ConfirmDialog from '../../UI/ConfirmDialog';
 import { Dropdown, type OptionType, type RefreshTarget } from '../../UI/Dropdown';
 import { DropdownBase, type OptionTypeConfig, type TargetConfig } from '../../UI/DropdownBase';
 import { AdultContentUnlock } from '../../UI/FromAdultContent';
-import { storage } from '../../../utils/storage';
 
 interface Props {
   scrolling: boolean;
@@ -52,6 +52,8 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const { activeProfile } = useAuthStore();
   const { lastUpdate, forceRefresh, isLoading, loadingTarget } = useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
+  const { serverConfig } = useAuthStore();
+
   const isAdultUnlocked = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return storage.get('adult-unlocked') === true;
@@ -294,6 +296,7 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
                   <div className="text-right">
                     <b className="text-gray-300 text-lg max-md:text-xs">Atualizado em</b>{' '}
                     <p className="text-gray-400 text-sm max-md:text-[10px]">
+                      {serverConfig?.url?.replace(/^https?:\/\//, '')} -
                       {moment(lastUpdate).format('DD/MM/YY HH:mm')}
                     </p>
                   </div>

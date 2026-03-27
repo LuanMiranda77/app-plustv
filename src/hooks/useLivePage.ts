@@ -178,6 +178,17 @@ export function useLivePage() {
     setSetlectLiveIndex(stream.id);
   };
 
+  const handleFavoriteToggle = (channel: Channel) => {
+    console.log(channel);
+    if (!channel) return;
+
+    if (isFavorite(String(channel.id))) {
+      removeFavorite(String(channel.id), serverConfig!);
+    } else {
+      addFavorite(channel, 'live', serverConfig!);
+    }
+  };
+
   const isRestoringRef = useRef(false);
 
   // carregar filme do estado ao voltar para a página
@@ -313,12 +324,7 @@ export function useLivePage() {
     },
     onYellow: () => {
       if (isZoneList && focusedIndex >= 0 && displayedChannels[focusedIndex]) {
-        const ch = displayedChannels[focusedIndex];
-        if (isFavorite(String(ch.id))) {
-          removeFavorite(String(ch.id), serverConfig!);
-        } else {
-          addFavorite(ch, 'live', serverConfig!);
-        }
+        handleFavoriteToggle(displayedChannels[focusedIndex]);
       }
     },
     onBack: () => {
@@ -461,6 +467,7 @@ export function useLivePage() {
     handleInputKeyDown,
     handlePlayStream,
     navigateLive,
-    isAdultUnlocked
+    isAdultUnlocked,
+    handleFavoriteToggle
   };
 }

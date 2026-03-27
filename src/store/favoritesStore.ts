@@ -46,7 +46,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
   addFavorite: (item, type, config) => {
     set(state => {
-      if (state.favorites.some(f => f.id === item.id)) {
+      if (state.favorites.some(f => f.id == item.id)) {
         return state;
       }
       item.type = type; // Adiciona o tipo ao item
@@ -62,7 +62,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
   removeFavorite: (id: string, config: ServerConfig) => {
     set(state => {
-      const updated = state.favorites.filter(item => item.id !== id);
+      const updated = state.favorites.filter(item => item.id != id);
 
       // Salva com chave do perfil atual
       const key = getFavoritesKey(state.currentProfileId, config);
@@ -74,7 +74,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
   getFavoritesByType: (type: 'live' | 'movie' | 'series') => {
     const favorites = get().favorites;
-    return favorites.filter(f => f.type === type);
+    return favorites.filter(f => f.type == type);
   },
 
   loadFromStorage: () => {

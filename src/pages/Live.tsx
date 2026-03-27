@@ -41,7 +41,9 @@ export const Live = () => {
     handleInputKeyDown,
     handlePlayStream,
     navigateLive,
-    isAdultUnlocked
+    isAdultUnlocked,
+    handleFavoriteToggle,
+    isFavorite,
   } = useLivePage();
 
   return (
@@ -105,6 +107,8 @@ export const Live = () => {
                   channel={channel}
                   isFocused={isZoneList && focusedIndex === i}
                   setlected={setlectLiveIndex === channel.id}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  isFav={isFavorite(String(channel.id))}
                   onPlay={() => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
                       handlePlayStream(channel);
@@ -167,7 +171,7 @@ export const Live = () => {
                 streamId={currentStream?.id}
                 type="live"
                 onBack={() => setIsFullScreen(false)}
-                epgList={epgList?epgList.slice(0, 2):[]} // ← passar só os próximos 5 programas para o player
+                epgList={epgList ? epgList.slice(0, 2) : []} // ← passar só os próximos 5 programas para o player
               />
             ) : (
               <div className="w-full aspect-video bg-zinc-900 flex items-center justify-center rounded-xl">

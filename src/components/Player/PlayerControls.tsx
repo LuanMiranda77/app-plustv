@@ -187,14 +187,17 @@ export const PlayerControls = ({
             }`}
           >
             {/* Progress bar */}
-            <div className="mb-4 group/progress cursor-pointer">
-              <div className="w-full h-1 bg-gray-700 rounded-full hover:h-2 transition-all">
+            <div className="mb-4 group/progress cursor-pointer relative" style={{ height: '24px' }}>
+              <div className="w-full h-1 bg-gray-700 rounded-full hover:h-2 transition-all absolute top-1/2 left-0 -translate-y-1/2 z-10">
                 <div
-                  className="h-full bg-red-600 rounded-full transition-all"
+                  className="h-full bg-red-600 rounded-full transition-all relative"
                   style={{ width: `${progressPercent > 100 ? 100 : progressPercent}%` }}
-                >
-                  <div className="w-4 h-4 bg-white rounded-full shadow-lg translate-y-1 -translate-x-2 opacity-0 group-hover/progress:opacity-100 transition-opacity" />
-                </div>
+                />
+                {/* Bolinha branca acompanha o progresso */}
+                <div
+                  className="w-4 h-4 bg-red-700 rounded-full shadow-lg absolute top-1/2 -translate-y-1/2 opacity-100 transition-opacity z-20"
+                  style={{ left: `calc(${progressPercent > 100 ? 100 : progressPercent}% - 8px)` }}
+                />
               </div>
               <input
                 type="range"
@@ -202,7 +205,8 @@ export const PlayerControls = ({
                 max={duration || 0}
                 value={currentTime}
                 onChange={e => onSeek(parseFloat(e.target.value))}
-                className="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
+                className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-30"
+                style={{ height: '24px' }}
               />
             </div>
 
