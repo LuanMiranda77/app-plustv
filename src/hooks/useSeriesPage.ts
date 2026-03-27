@@ -14,7 +14,7 @@ export function useSeriesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
-  const [displayCount, setDisplayCount] = useState(30);
+  const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { isFavorite } = useFavoritesStore();
   const loadMoreRef = useRef<HTMLDivElement>(null);

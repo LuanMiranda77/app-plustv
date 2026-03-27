@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AutoCarousel from '../components/AutoCarousel';
 import LogoHeader from '../components/Logos/LogoHeader';
+import AutoCarousel from '../components/UI/AutoCarousel';
 import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
 import RemoteHint from '../components/UI/RemoteHint';
@@ -15,7 +15,7 @@ import type { Profile } from '../types';
 
 export const ProfileSelect = () => {
   const navigate = useNavigate();
-    const { serverConfig } = useAuthStore();
+  const { serverConfig } = useAuthStore();
   const { profiles, addProfile, updateProfile, setActiveProfile } = useAuthStore();
   const { setCurrentProfile: setFavoritesProfile } = useFavoritesStore();
   const { setCurrentProfile: setHistoryProfile } = useWatchHistoryStore();
@@ -38,10 +38,10 @@ export const ProfileSelect = () => {
   // Total de itens: perfis + botão de adicionar (se disponível)
   const totalItems = profiles.length + (profiles.length < 5 ? 1 : 0);
   const heroItems = [
-    ...movies.slice(0, 5).map(m => ({
+    ...movies.slice(0, 3).map(m => ({
       ...m
     })),
-    ...series.slice(0, 5).map(s => ({
+    ...series.slice(0, 3).map(s => ({
       ...s
     }))
   ];
@@ -236,7 +236,7 @@ export const ProfileSelect = () => {
   return (
     <div className="relative min-h-screen overflow-y-auto bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
       {heroItems.length > 0 && !isLoading && !isMobile && (
-        <div className="absolute inset-0 z-10">
+        <div className="absolute inset-0 z-10 right-0 w-full">
           <AutoCarousel items={heroItems} autoPlayInterval={5000} className="absolute" infoRight />
         </div>
       )}

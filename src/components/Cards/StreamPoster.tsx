@@ -1,7 +1,9 @@
 import { Heart } from 'lucide-react';
+import { useState } from 'react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Movie, Series } from '../../types';
 import StartRating from '../UI/StarRating';
+const placehoder = './placeholde.png';
 
 interface MovieCardProps {
   stream: Movie | Series;
@@ -12,6 +14,7 @@ interface MovieCardProps {
 export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
   const { isFavorite } = useFavoritesStore();
   const isFav = isFavorite(stream.id);
+  const [loadingImg, setLoadingImg] = useState(true);
 
   return (
     <button
@@ -24,19 +27,23 @@ export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
-        {stream.poster ? (
-          <img
-            src={stream.poster}
-            alt={stream.name}
-            loading="lazy" // carrega só quando visível
-            decoding="async" // não bloqueia render
-            className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-600">
-            <span className="text-4xl">🎬</span>
-          </div>
-        )}
+        <img
+          src={loadingImg ? placehoder : stream.poster}
+          alt={stream.name}
+          loading="lazy" // carrega só quando visível
+          decoding="async" // não bloqueia render
+          onLoad={() => setLoadingImg(false)}
+          className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
+          onError={(e: any) => {
+            e.currentTarget.style.display = 'none';
+            if (e.currentTarget.nextElementSibling)
+              e.currentTarget.nextElementSibling.style.display = 'flex';
+          }}
+        />
+        <img
+          className="hidden w-full h-full object-cover group-hover:brightness-75 transition-brightness"
+          src={placehoder}
+        />
       </div>
 
       {/* Overlay */}
@@ -49,7 +56,9 @@ export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
           ${isFocused ? 'opacity-100' : ''}
         `}
       >
-        <h3 className="text-white font-semibold text-2xl max-md:text-sm line-clamp-2 mb-2">{stream.name}</h3>
+        <h3 className="text-white font-semibold text-2xl max-md:text-sm line-clamp-2 mb-2">
+          {stream.name}
+        </h3>
 
         {/* <div className="flex gap-2">
           <button

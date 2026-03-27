@@ -72,7 +72,10 @@ const mapMovie = (stream: any, config: ServerConfig): Movie => ({
   isFavorite: false,
   watched: false,
   progress: 0,
-  duration: stream.duration || 0
+  duration: stream.duration || 0,
+  plot: stream.plot || '',
+  genre: stream.genre || '',
+  youtube_trailer: stream.youtube_trailer || ''
 });
 
 const mapSeries = (stream: any): Series => ({
@@ -83,7 +86,10 @@ const mapSeries = (stream: any): Series => ({
   rating: stream.rating || 'N/A',
   isFavorite: false,
   seasons: [],
-  loaded: false
+  loaded: false,
+  plot: stream.plot || '',
+  genre: stream.genre || '',
+  youtube_trailer: stream.youtube_trailer || ''
 });
 
 const findLiveSevice = async (config: ServerConfig) => {

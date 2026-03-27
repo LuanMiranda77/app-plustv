@@ -1,7 +1,7 @@
 import { Repeat, Sparkles, TrendingUp } from 'lucide-react';
-import { Carousel } from '../Carousel';
 import { useMemo } from 'react';
 import { storage } from '../../utils/storage';
+import { Carousel } from './Carousel';
 
 type Props = {
   title: string;

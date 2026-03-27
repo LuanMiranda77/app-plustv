@@ -1,6 +1,6 @@
 import { Clock } from 'lucide-react';
 import { ContinueWatchingCard } from '../Cards/ContinueWatchingCard';
-import { Carousel } from '../Carousel';
+import { Carousel } from './Carousel';
 
 type Props = {
   items: any[];

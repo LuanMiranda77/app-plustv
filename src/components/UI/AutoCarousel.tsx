@@ -1,10 +1,10 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import ButtonPlay from './UI/ButtonPlay';
-import GenreBadges from './UI/GenreBadges';
-import MetaText from './UI/MetaText';
-import PlotText from './UI/PlotText';
-import Poster from './UI/Poster';
+import ButtonPlay from './ButtonPlay';
+import GenreBadges from './GenreBadges';
+import MetaText from './MetaText';
+import PlotText from './PlotText';
+import Poster from './Poster';
 
 interface AutoCarouselItem {
   id: string;
@@ -34,7 +34,7 @@ export const AutoCarousel = ({
   autoPlayInterval = 5000,
   onPlay,
   onInfo,
-  infoRight,
+  infoRight
 }: AutoCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
@@ -49,7 +49,7 @@ export const AutoCarousel = ({
     if (!isAutoPlay) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
+      setCurrentIndex(prev => (prev + 1) % items.length);
       setImgError(false);
     }, autoPlayInterval);
 
@@ -63,12 +63,12 @@ export const AutoCarousel = ({
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % items.length);
+    setCurrentIndex(prev => (prev + 1) % items.length);
     setImgError(false);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+    setCurrentIndex(prev => (prev - 1 + items.length) % items.length);
     setImgError(false);
   };
 
@@ -100,7 +100,7 @@ export const AutoCarousel = ({
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage: `url(${item.poster})`,
-                opacity: imgError ? 0.2 : 1,
+                opacity: imgError ? 0.2 : 0.7
               }}
               onError={() => setImgError(true)}
             />
@@ -114,9 +114,11 @@ export const AutoCarousel = ({
 
       {/* Content */}
       <div
-        className={`absolute inset-0 flex flex-col ${infoRight ? 'items-end' : 'items-start'} justify-end p-8 md:p-16 z-10`}
+        className={`absolute inset-0 flex flex-col ${infoRight ? 'items-end' : 'items-start'}  justify-end p-8 md:p-16 z-10`}
       >
-        <div className="flex gap-8 items-end max-w-7xl w-full">
+        <div
+          className={`flex gap-4 items-end ${infoRight ? 'justify-end' : 'justify-start'} max-w-7xl w-full px-6`}
+        >
           {!infoRight && <Poster poster={currentItem.poster} name={currentItem.name} />}
           {/* Info */}
           <div>

@@ -1,9 +1,8 @@
 import { Film, Sparkles, TrendingUp, Tv2, TvMinimalPlay } from 'lucide-react';
-import AutoCarousel from '../components/AutoCarousel';
 import { ChannelPoster } from '../components/Cards/ChannelPoster';
-import { SeriesCard } from '../components/Cards/SeriesCard';
 import { StreamPoster } from '../components/Cards/StreamPoster';
 import AdvertisementCarousel from '../components/UI/AdvertisementCarousel';
+import AutoCarousel from '../components/UI/AutoCarousel';
 import CarouselSection from '../components/UI/CarouselSection';
 import ContinueWatchingSection from '../components/UI/ContinueWatchingSection';
 import { useHome } from '../hooks/useHome';
@@ -211,8 +210,8 @@ export const Home = () => {
                 badge="trending"
                 focusedItemIndex={getFocusedIndex('trending-series')}
                 renderItem={(s, idx, isFocused) => (
-                  <SeriesCard
-                    series={s}
+                  <StreamPoster
+                    stream={s}
                     isFocused={isFocused}
                     onPlay={() => navigateSerie(s, 'detail-series')}
                   />
@@ -231,8 +230,8 @@ export const Home = () => {
                 badge="novo"
                 focusedItemIndex={getFocusedIndex('new-series')}
                 renderItem={(s, idx, isFocused) => (
-                  <SeriesCard
-                    series={s}
+                  <StreamPoster
+                    stream={s}
                     isFocused={isFocused}
                     onPlay={() => navigateSerie(s, 'detail-series')}
                   />
