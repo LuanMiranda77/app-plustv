@@ -138,6 +138,14 @@ export function useMoviesPage() {
       inputRef.current?.blur();
       setActiveZone('menu');
     }
+
+    if (e.key === 'ArrowDown' || e.keyCode === 40) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('list');
+      setFocusedIndex(0);
+    }
   };
 
   useRemoteControl({

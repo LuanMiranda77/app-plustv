@@ -8,7 +8,10 @@ export const STORAGE_KEYS = {
   WATCH_HISTORY: 'iptv_watch_history',
   CHANNEL_HISTORY: 'iptv_channel_history',
   PLAYLIST_CACHE: 'iptv_playlist_cache',
-  SETTINGS: 'iptv_settings'
+  SETTINGS: 'iptv_settings',
+  LIST_EPISODES: 'list_episodes_cache',
+  MOVIE_PROGRESS: 'movie_progress',
+  SERIE_PROGRESS: 'serie_progress'
 } as const;
 
 // Funções auxiliares de storage

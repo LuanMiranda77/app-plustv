@@ -8,9 +8,11 @@ import RemoteHint from '../components/UI/RemoteHint';
 import { useFocusZone } from '../Context/FocusContext';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import { useAuthStore } from '../store/authStore';
+import { useContentStore } from '../store/contentStore';
 import { useServerListStore, type ServerEntry } from '../store/serverListStore';
 import type { ServerConfig } from '../types';
-import { useContentStore } from '../store/contentStore';
+import { storage, STORAGE_KEYS } from '../utils/storage';
+import { xtreamApi } from '../utils/xtreamApi';
 
 const emptyForm: ServerConfig = { name: '', url: '', username: '', password: '' };
 
@@ -40,6 +42,8 @@ export const ConfigServer = () => {
   const { fetchServerContent } = useContentStore(); // Para forçar atualização de conteúdo ao mudar de servidor
   const { setActiveZone } = useFocusZone();
   const serverRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { clearCache } = useContentStore();
+  const { profiles, serverConfig } = useAuthStore();
 
   const handleBack = () => {
     navigate(-1);
@@ -72,19 +76,33 @@ export const ConfigServer = () => {
     }
   };
 
-  const validate = (): boolean => {
+  const validate = async (): Promise<boolean> => {
     const e: Partial<ServerConfig> = {};
+    // Testar autenticação
     if (!formData.name.trim()) e.name = 'Nome é obrigatório';
     if (!formData.url.trim()) e.url = 'URL é obrigatória';
     else if (!formData.url.startsWith('http')) e.url = 'URL deve começar com http:// ou https://';
     if (!formData.username.trim()) e.username = 'Usuário é obrigatório';
     if (!formData.password.trim()) e.password = 'Senha é obrigatória';
+
+    // Só tenta autenticar se não houver erros básicos
+    if (Object.keys(e).length === 0) {
+      try {
+        await xtreamApi.authenticate(formData);
+      } catch (err) {
+        console.error('Erro ao autenticar com o servidor:', err);
+        e.url = 'Não foi possível conectar ao servidor!';
+      }
+    }
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const handleSave = () => {
-    if (!validate()) return;
+  const handleSave = async () => {
+    const isValid = await validate();
+    console.log(isValid);
+    if (!isValid) return;
     if (editingId) updateServer(editingId, formData);
     else addServer(formData);
     setFormData(emptyForm);
@@ -108,7 +126,35 @@ export const ConfigServer = () => {
     setErrors({});
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    // Buscar o servidor pelo id para obter config
+    const index = servers.findIndex(s => s.id === id);
+    const server = servers[index];
+
+    if (server) {
+      // Limpa o cache relacionado ao servidor
+      await clearCache(server);
+
+      for (const prof of profiles) {
+        let key = `${STORAGE_KEYS.FAVORITES}_${prof.id}__${server.url}`;
+        storage.remove(key);
+        key = `${STORAGE_KEYS.WATCH_HISTORY}_${prof.id}__${server.url}`;
+        storage.remove(key);
+        key = `${STORAGE_KEYS.CHANNEL_HISTORY}_${prof.id}__${server.url}`;
+        storage.remove(key);
+      }
+      if (serverConfig?.url === server.url) {
+        const nextServer = servers[index + 1] || servers[index - 1];
+        setServerConfig({
+          name: nextServer.name,
+          url: nextServer.url,
+          username: nextServer.username,
+          password: nextServer.password
+        });
+        setActiveServer(nextServer.id);
+        setAuthenticated(true);
+      }
+    }
     removeServer(id);
     setConfirmDeleteId(null);
   };
@@ -328,12 +374,14 @@ export const ConfigServer = () => {
                   serverRefs.current[idx] = el;
                 }}
                 className={`bg-gray-800/80 border rounded-xl p-5 transition-all ${
-                  idx === focusedIndex && !inHeader
-                    ? 'ring-2 ring-red-500 scale-[1.01] border-red-600 shadow-lg shadow-red-600/20'
-                    : 'border-gray-700'
+                  server.id === activeServerId && idx !== focusedIndex && !inHeader
+                    ? ` bg-red-600/40 border border-red-600/30 shadow-lg shadow-red-600/20`
+                    : idx === focusedIndex && !inHeader
+                      ? 'ring-2 ring-red-500 scale-[1.02] border-red-600 shadow-lg shadow-red-600/20'
+                      : 'border-gray-700'
                 }`}
               >
-                <div className="flex items-start justify-between">
+                <div className={'flex items-start justify-between'}>
                   <div className="flex items-start gap-4 flex-1">
                     <div
                       className={`w-12 h-12 max-md:w-8 max-md:h-8 rounded-lg flex items-center justify-center ${server.id === activeServerId ? 'bg-red-600' : 'bg-gray-700'}`}
@@ -346,7 +394,7 @@ export const ConfigServer = () => {
                           {server.name || 'Sem nome'}
                         </h3>
                         {server.id === activeServerId && (
-                          <span className="px-2 py-0.5 bg-green-600/20 border border-green-600/50 text-green-400 text-sm rounded-full">
+                          <span className="px-10 py-1 bg-green-600/20 border-2 border-green-600/50 text-green-400 font-bold text-xl max-md:text-sm rounded-full">
                             Ativo
                           </span>
                         )}
@@ -362,29 +410,29 @@ export const ConfigServer = () => {
                     {server.id !== activeServerId && (
                       <button
                         onClick={() => handleSelect(server)}
-                        className="flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
+                        className="flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xl max-md:text-sm rounded-lg transition-colors"
                       >
-                        <Check className="w-4 h-4" /> Usar
+                        <Check /> Usar
                       </button>
                     )}
                     <button
                       onClick={() => handleEdit(server)}
-                      className="p-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-lg transition-colors"
+                      className="p-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white text-xl max-md:text-sm rounded-lg transition-colors"
                       title="Editar"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <Edit2 />
                     </button>
                     {confirmDeleteId === server.id ? (
                       <div className="flex gap-1">
                         <button
                           onClick={() => handleDelete(server.id)}
-                          className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors"
+                          className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xl max-md:text-sm rounded-lg transition-colors"
                         >
                           Confirmar
                         </button>
                         <button
                           onClick={() => setConfirmDeleteId(null)}
-                          className="px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white text-xs rounded-lg transition-colors"
+                          className="px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white text-xl max-md:text-sm rounded-lg transition-colors"
                         >
                           Não
                         </button>
@@ -392,10 +440,10 @@ export const ConfigServer = () => {
                     ) : (
                       <button
                         onClick={() => setConfirmDeleteId(server.id)}
-                        className="p-2 bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white rounded-lg transition-colors"
+                        className="p-2 bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white text-xl max-md:text-sm rounded-lg transition-colors"
                         title="Excluir"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 />
                       </button>
                     )}
                   </div>

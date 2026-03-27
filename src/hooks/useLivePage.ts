@@ -14,6 +14,8 @@ import useWindowSize from './useWindowSize';
 import type { Channel } from '../types';
 import type { PlayerStream } from '../pages/Player';
 import { storage } from '../utils/storage';
+import moment from 'moment';
+// import { epgMock } from '../data/mockData';
 
 export function useLivePage() {
   const location = useLocation();
@@ -106,16 +108,31 @@ export function useLivePage() {
       );
 
       try {
-        const data = await requestWithRetry(() =>
+        let data = await requestWithRetry(() =>
           xtreamApi.getLiveEpg(serverConfig, currentStream.id)
         );
+
+        // Filtra apenas programas que começam a partir de hoje (ignora programas passados)
+        const now = moment();
+        // data = epgMock;
+        if (Array.isArray(data)) {
+          data = data.filter((item: any) => moment(item.end).isSameOrAfter(now));
+        } else if (data?.epg_listings) {
+          data.epg_listings = data.epg_listings.filter((item: any) =>
+            moment(item.start).isSameOrAfter(now)
+          );
+        } else if (data?.epg_listingsArr) {
+          data.epg_listingsArr = data.epg_listingsArr.filter((item: any) =>
+            moment(item.start).isSameOrAfter(now)
+          );
+        }
 
         if (cancelled) return;
 
         if (Array.isArray(data)) {
-          setEpgList(data);
+          setEpgList(data.slice(0, 50));
         } else {
-          setEpgList(data?.epg_listings || data?.epg_listingsArr || []);
+          setEpgList(data?.epg_listings.slice(0, 50) || data?.epg_listingsArr.slice(0, 50) || []);
         }
       } catch {
         if (!cancelled) setEpgList([]);
@@ -147,6 +164,13 @@ export function useLivePage() {
       inputRef.current?.blur();
       setActiveZone('menu');
     }
+    if (e.key === 'ArrowDown' || e.keyCode === 40) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('list');
+      setFocusedIndex(0);
+    }
   };
 
   const handlePlayStream = (stream: Channel) => {
@@ -162,9 +186,11 @@ export function useLivePage() {
     if (state && !isRestoringRef.current) {
       const channel = channels.find(c => c.id === state.id);
       isRestoringRef.current = true; // ← marca que está restaurando
-      setActiveZone('list');
-      handlePlayStream(channel!);
-      setSelectedCategory(state.category || null);
+      if (channel) {
+        setActiveZone('list');
+        handlePlayStream(channel!);
+        setSelectedCategory(state.category || null);
+      }
     }
   }, [location]);
 
@@ -374,18 +400,18 @@ export function useLivePage() {
     }
   }, [focusedEpgIndex, isZoneEpg]);
 
-    // Navegação helpers
-    const navigateLive = (live: Channel) => {
-      const state: PlayerStream = {
-        ...live,
-        id: live.id,
-        streamUrl: live.streamUrl,
-        title: live.name,
-        poster: live.logo,
-        type: 'live',
-      };
-      navigate(`/player`, { state: state });
+  // Navegação helpers
+  const navigateLive = (live: Channel) => {
+    const state: PlayerStream = {
+      ...live,
+      id: live.id,
+      streamUrl: live.streamUrl,
+      title: live.name,
+      poster: live.logo,
+      type: 'live'
     };
+    navigate(`/player`, { state: state });
+  };
 
   return {
     searchTerm,

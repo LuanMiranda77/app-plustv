@@ -42,8 +42,8 @@ export const PageSeries = () => {
   } = useSeriesPage();
 
   return (
-    <div className="max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
-      <div className="flex mt-[60px] h-[calc(100vh-60px)]">
+    <div className="max-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950">
+      <div className="flex mt-15 h-[calc(100vh-60px)]">
         {/* ── Categorias ───────────────────────────────────────────────────── */}
         {categoriesWithAll.length > 0 && (
           <div

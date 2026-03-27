@@ -56,36 +56,53 @@ export default function FormServer({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
-          ref={el => { inputRefs.current[0] = el }}
-          label="Nome" type="text"
-          value={formData.name} placeholder="Ex: Meu Servidor"
+          ref={el => {
+            inputRefs.current[0] = el;
+          }}
+          label="Nome"
+          type="text"
+          value={formData.name}
+          placeholder="Ex: Meu Servidor"
           error={errors.name}
           onChange={e => onChange({ ...formData, name: e.target.value })}
           onKeyDown={handleKeyDown}
           className={isFieldFocused(0) ? 'border-red-500 ring-2 ring-red-500' : ''}
         />
         <Input
-          ref={el => { inputRefs.current[1] = el }}
-          label="URL do Servidor" type="text"
-          value={formData.url} placeholder="http://servidor.com:8080"
+          ref={el => {
+            inputRefs.current[1] = el;
+          }}
+          label="URL do Servidor"
+          value={formData.url}
+          placeholder="http://servidor.com:8080"
           error={errors.url}
           onChange={e => onChange({ ...formData, url: e.target.value })}
           onKeyDown={handleKeyDown}
           className={isFieldFocused(1) ? 'border-red-500 ring-2 ring-red-500' : ''}
+          type="url"
+          name="url"
         />
         <Input
-          ref={el => { inputRefs.current[2] = el }}
-          label="Usuário" type="text"
-          value={formData.username} placeholder="Usuário"
+          ref={el => {
+            inputRefs.current[2] = el;
+          }}
+          label="Usuário"
+          type="text"
+          value={formData.username}
+          placeholder="Usuário"
           error={errors.username}
           onChange={e => onChange({ ...formData, username: e.target.value })}
           onKeyDown={handleKeyDown}
           className={isFieldFocused(2) ? 'border-red-500 ring-2 ring-red-500' : ''}
         />
         <Input
-          ref={el => { inputRefs.current[3] = el }}
-          label="Senha" type="password"
-          value={formData.password} placeholder="Senha"
+          ref={el => {
+            inputRefs.current[3] = el;
+          }}
+          label="Senha"
+          type="text"
+          value={formData.password}
+          placeholder="Senha"
           error={errors.password}
           onChange={e => onChange({ ...formData, password: e.target.value })}
           onKeyDown={handleKeyDown}
@@ -96,22 +113,26 @@ export default function FormServer({
       <div className="flex justify-end gap-3 mt-6 pb-4">
         <button
           onClick={onCancel}
-          className={`flex items-center gap-2 px-5 py-2 bg-gray-600 hover:bg-gray-500
+          className={`flex items-center gap-2 px-5 py-2 
+                    bg-gray-600 hover:bg-gray-500
+                      text-2xl max-md:text-sm 
                       text-white rounded-lg transition-colors
                       ${formFocusIndex === 4 ? 'ring-2 ring-red-500 scale-105' : ''}`}
         >
-          <X className="w-4 h-4" /> Cancelar
+          <X /> Cancelar
         </button>
         <button
           onClick={onSave}
-          className={`flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700
+          className={`flex items-center gap-2 px-5 py-2 
+                      text-2xl max-md:text-sm 
+                      bg-red-600 hover:bg-red-700
                       text-white rounded-lg transition-colors
                       ${formFocusIndex === 5 ? 'ring-2 ring-red-500 scale-105' : ''}`}
         >
-          <Check className="w-4 h-4" />
+          <Check />
           {editingId ? 'Salvar Alterações' : 'Adicionar'}
         </button>
       </div>
     </div>
-  )
+  );
 }

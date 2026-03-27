@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react'
+import { formatTimeEpg, safeAtob } from '../../utils/geral';
 
 interface EpgProgram {
   start_timestamp?: number
@@ -13,23 +14,6 @@ interface EpgListProps {
   isZoneEpg?: boolean
   focusedEpgIndex?: number
   isLoadingEpg?: boolean
-}
-
-function safeAtob(str?: string): string {
-  if (!str) return ''
-  try {
-    return atob(str)
-  } catch {
-    return str
-  }
-}
-
-function formatTime(timestamp?: number): string {
-  if (!timestamp) return ''
-  return new Date(timestamp * 1000).toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
 }
 
 export function EpgList({
@@ -81,8 +65,8 @@ export function EpgList({
         {/* Programs */}
         {!isLoadingEpg &&
           epgList.map((program, idx) => {
-            const startTime = formatTime(program.start_timestamp)
-            const endTime = formatTime(program.stop_timestamp)
+            const startTime = formatTimeEpg(program.start_timestamp);
+            const endTime = formatTimeEpg(program.stop_timestamp);
             const isFocused = isZoneEpg && focusedEpgIndex === idx
             const title =
               safeAtob(program.title) || safeAtob(program.NAME) || 'Sem título'
@@ -105,19 +89,19 @@ export function EpgList({
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1">
-                    <p className="text-left text-2xl max-md:text-sm font-medium text-gray-100 line-clamp-1">
+                  <div className="flex-1 text-left">
+                    <p className="text-2xl max-md:text-sm font-medium text-gray-100 line-clamp-1">
                       {title}
                     </p>
                     {description && (
-                      <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                      <p className="text-sm max-md:text-xs text-gray-400 mt-1 line-clamp-2">
                         {description}
                       </p>
                     )}
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
       </div>
     </section>

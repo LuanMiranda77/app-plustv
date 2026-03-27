@@ -2,6 +2,7 @@ import { Heart } from 'lucide-react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Movie, Series } from '../../types';
 import StartRating from '../UI/StarRating';
+const placehoder = './placeholde.png';
 
 interface MovieCardProps {
   movie: Movie | Series;
@@ -24,19 +25,22 @@ export const MovieCard = ({ movie, onPlay, isFocused }: MovieCardProps) => {
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
-        {movie.poster ? (
-          <img
-            src={movie.poster}
-            alt={movie.name}
-            loading="lazy" // carrega só quando visível
-            decoding="async" // não bloqueia render
-            className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-600">
-            <span className="text-4xl">🎬</span>
-          </div>
-        )}
+        <img
+          src={movie.poster}
+          alt={movie.name}
+          loading="lazy" // carrega só quando visível
+          decoding="async" // não bloqueia render
+          className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
+          onError={(e: any) => {
+            e.currentTarget.style.display = 'none';
+            if (e.currentTarget.nextElementSibling)
+              e.currentTarget.nextElementSibling.style.display = 'flex';
+          }}
+        />
+        <img
+          className="hidden w-full h-full object-cover group-hover:brightness-75 transition-brightness"
+          src={placehoder}
+        />
       </div>
 
       {/* Overlay */}

@@ -2,6 +2,7 @@ import { Heart } from 'lucide-react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Series } from '../../types';
 import StartRating from '../UI/StarRating';
+const placehoder = './placeholde.png';
 
 interface SeriesCardProps {
   series: Series;
@@ -24,19 +25,25 @@ export const SeriesCard = ({ series, onPlay, isFocused }: SeriesCardProps) => {
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-gray-900">
-        {series.poster ? (
-          <img
-            src={series.poster}
-            alt={series.name}
-            // loading="lazy"
-            // decoding="async"
-            className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-600">
-            <span className="text-4xl">📺</span>
-          </div>
-        )}
+        <img
+          src={series.poster}
+          alt={series.name}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover group-hover:brightness-75 transition-brightness"
+          onError={(e: any) => {
+            e.currentTarget.style.display = 'none';
+            if (e.currentTarget.nextElementSibling)
+              e.currentTarget.nextElementSibling.style.display = 'flex';
+          }}
+        />
+        <img
+          className="
+            hidden 
+            w-full h-full object-cover group-hover:brightness-75 transition-brightness
+          "
+          src={placehoder}
+        />
       </div>
 
       {/* Overlay */}

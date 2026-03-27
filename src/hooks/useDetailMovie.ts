@@ -22,7 +22,7 @@ export function ueseDetailMovie() {
   const {serverConfig} = useAuthStore();
 
   const loadProgress = async (movie: Movie) => {
-    const progress = await getProgress('movie', profileId!, String(movie!.id));
+    const progress = await getProgress('movie', profileId!, String(movie!.id), serverConfig!);
     const updatedMovie: any = {
       ...movie!,
       watched: progress.watched,

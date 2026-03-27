@@ -4,10 +4,11 @@ import { useHls } from '../../hooks/useHls';
 import { useProgress } from '../../hooks/useProgress';
 import { useRemoteControl } from '../../hooks/useRemotoControl';
 import type { Channel, Episode, Movie, Series } from '../../types';
-import { PlayerControls } from './PlayerControls';
-import PlayerLoader from './PlaerLoader';
-import PlayerError from './PlayerError';
 import NextEpisodeButton from './NextEpisodeButton';
+import PlayerLoader from './PlaerLoader';
+import { PlayerControls } from './PlayerControls';
+import PlayerError from './PlayerError';
+import useWindowSize from '../../hooks/useWindowSize';
 
 interface VideoPlayerProps {
   title: string;
@@ -17,6 +18,7 @@ interface VideoPlayerProps {
   onError?: (error: string) => void;
   onEnded?: () => void;
   onNextEpisode?: () => void;
+  onBackEpisode?: () => void;
   onBack?: () => void;
   isControlsVisible?: boolean;
   streamId: string | number;
@@ -27,6 +29,7 @@ interface VideoPlayerProps {
   parentContent?: Series | null;
   nextEpisode?: Episode | null;
   currentSeason?: number;
+  epgList?: any[];
 }
 
 export const VideoPlayer = ({
@@ -38,6 +41,7 @@ export const VideoPlayer = ({
   onError,
   onEnded,
   onNextEpisode,
+  onBackEpisode,
   onBack,
   streamId,
   saveInterval,
@@ -46,7 +50,8 @@ export const VideoPlayer = ({
   contentObject,
   parentContent,
   nextEpisode,
-  currentSeason = 1
+  currentSeason = 1,
+  epgList,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,6 +64,7 @@ export const VideoPlayer = ({
   const [remoteActivityTrigger, setRemoteActivityTrigger] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const { isMobile } = useWindowSize();
 
   const timeRemaining = duration > 0 ? Math.floor(duration - currentTime) : 0;
 
@@ -79,7 +85,18 @@ export const VideoPlayer = ({
     source
   );
 
-  const showLoader = (isLoading || isBuffering || !hasStarted) && !error;
+  // Não mostrar loader ao adiantar (seek manual)
+  const [isSeeking, setIsSeeking] = useState(false);
+  const timeNextButton = 30; // segundos para mostrar botão de próximo episódio
+  // Handler para detectar seek manual
+  const handleSeek = (time: number) => {
+    if (!videoRef.current) return;
+    setIsSeeking(true);
+    videoRef.current.currentTime = time;
+    setTimeout(() => setIsSeeking(false), 800); // tempo para esconder loader após seek
+  };
+
+  const showLoader = (isLoading || (isBuffering && !isSeeking) || !hasStarted) && !error;
 
   const handleQualityChange = (index: number) => {
     if (!hls) return;
@@ -102,10 +119,7 @@ export const VideoPlayer = ({
     videoRef.current.volume = newVolume;
   };
 
-  const handleSeek = (time: number) => {
-    if (!videoRef.current) return;
-    videoRef.current.currentTime = time;
-  };
+  // handleSeek já redefinido acima
 
   const handleFullscreen = async () => {
     if (!containerRef.current) return;
@@ -182,8 +196,8 @@ export const VideoPlayer = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full bg-black group"
-      style={{ aspectRatio: '16 / 9' }}
+      className={`relative w-full bg-black group ${isMobile && 'h-screen'}`}
+      style={{ aspectRatio: isMobile ? undefined : '16 / 9' }}
     >
       {/* ── Video ────────────────────────────────────────────────────────── */}
       <video
@@ -211,7 +225,7 @@ export const VideoPlayer = ({
             // Mostrar botão quando faltar 60 segundos
             if (type === 'series' && duration > 0 && onNextEpisode) {
               const remaining = duration - current;
-              if (remaining <= 60 && remaining > 0) {
+              if (remaining <= timeNextButton && remaining > 0) {
                 setShowNextEpisodeBtn(true);
               }
             }
@@ -267,6 +281,7 @@ export const VideoPlayer = ({
       {/* ── Controles ─────────────────────────────────────────────────────── */}
       {isControlsVisible && (
         <PlayerControls
+          poster={poster}
           title={title}
           isPlaying={isPlaying}
           onPlayPause={handlePlayPause}
@@ -284,6 +299,9 @@ export const VideoPlayer = ({
           onBack={onBack}
           type={type}
           showLoader={!showLoader}
+          epgList={epgList}
+          onNextEpisode={onNextEpisode}
+          onBackEpisode={onBackEpisode}
         />
       )}
     </div>

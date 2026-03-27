@@ -75,7 +75,7 @@ export function useSeriesDetail() {
   const loadProgressForEpisodes = (episodes: Episode[]) => {
     return Promise.all(
       episodes.map(async episode => {
-        const progress = await getProgress('series', profileId!, episode.id);
+        const progress = await getProgress('series', profileId!, episode.id, serverConfig!);
         return {
           ...episode,
           watched: progress.watched,
@@ -292,10 +292,10 @@ export function useSeriesDetail() {
       } else if (focusedButton === 1) {
         // Assistir
         handlePlayNext();
-      } else if (focusedButton === 2) {
+      } else if (focusedButton === 2 && series?.youtube_trailer) {
         // Trailer
         setShowTrailer(true);
-      } else if (focusedButton === 3 && series?.youtube_trailer) {
+      } else if (focusedButton === 3) {
         // Favorito
         handleToggleFavorite(series?.id || '');
       } else if (focusedButton === 4) {

@@ -1,6 +1,7 @@
 import LZString from 'lz-string';
 import type { ServerConfig } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
+import { STORAGE_KEYS } from './storage';
 
 const CACHE_DURATION = 72 * 60 * 60 * 1000; // 72h
 
@@ -102,5 +103,21 @@ export const CacheService = {
   async clear(config: ServerConfig) {
     const key = getKey(config);
     await indexedDbStorage.remove(key);
+
+    const prefixEpisodes = `${STORAGE_KEYS.LIST_EPISODES}_${config.url}`;
+    indexedDbStorage.getKeysByPrefix(prefixEpisodes).then(keys => {
+      keys.forEach(k => indexedDbStorage.remove(k));
+    });
+
+    const prefixMovieProgress = `${STORAGE_KEYS.MOVIE_PROGRESS}_${config.url}`;
+    indexedDbStorage.getKeysByPrefix(prefixMovieProgress).then(keys => {
+      keys.forEach(k => indexedDbStorage.remove(k));
+    });
+
+    const prefixSerieProgress = `${STORAGE_KEYS.SERIE_PROGRESS}_${config.url}`;
+    indexedDbStorage.getKeysByPrefix(prefixSerieProgress).then(keys => {
+      keys.forEach(k => indexedDbStorage.remove(k));
+    });
+    console.log('🧹 Cache limpo:', key);
   }
 };

@@ -41,7 +41,7 @@ export const Live = () => {
     handleInputKeyDown,
     handlePlayStream,
     navigateLive,
-    isAdultUnlocked,
+    isAdultUnlocked
   } = useLivePage();
 
   return (
@@ -55,24 +55,26 @@ export const Live = () => {
           >
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2">
-                {categoriesWithAll.filter((item)=>{
-                  if (isAdultUnlocked) return item;
-                  if (!item.name.toUpperCase().includes('ADULTO')) return item;
-                }).map((cat, i) => (
-                  <ButtonCategory
-                    key={cat.id || 'all'}
-                    id={String(cat.id || '-2')}
-                    name={cat.name}
-                    isSelected={selectedCategory === (cat.id as any)}
-                    isFocused={isZoneCat && focusedCat === i}
-                    icon={
-                      cat.id === '-1' ? (
-                        <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
-                      ) : undefined
-                    }
-                    onClick={() => setSelectedCategory(cat.id as any)}
-                  />
-                ))}
+                {categoriesWithAll
+                  .filter(item => {
+                    if (isAdultUnlocked) return item;
+                    if (!item.name.toUpperCase().includes('ADULTO')) return item;
+                  })
+                  .map((cat, i) => (
+                    <ButtonCategory
+                      key={cat.id || 'all'}
+                      id={String(cat.id || '-2')}
+                      name={cat.name}
+                      isSelected={selectedCategory === (cat.id as any)}
+                      isFocused={isZoneCat && focusedCat === i}
+                      icon={
+                        cat.id === '-1' ? (
+                          <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
+                        ) : undefined
+                      }
+                      onClick={() => setSelectedCategory(cat.id as any)}
+                    />
+                  ))}
               </div>
             </div>
           </div>
@@ -106,9 +108,10 @@ export const Live = () => {
                   onPlay={() => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
                       handlePlayStream(channel);
-                    } else {
-                      console.log(isMobile);
+                    } else if (isMobile) {
                       navigateLive(channel);
+                    } else {
+                      setIsFullScreen(true);
                     }
                   }}
                 />
@@ -147,21 +150,24 @@ export const Live = () => {
           >
             {!isFullScreen && (
               <div className="w-full text-2xl max-md:text-sm font-semibold line-clamp-1 bg-netflix-red">
-                {currentStream ? ` Canal - ${currentStream.name}` : 'Escolha um canal para assistir'}
+                {currentStream
+                  ? ` Canal - ${currentStream.name}`
+                  : 'Escolha um canal para assistir'}
               </div>
             )}
 
             {currentStream ? (
               <VideoPlayer
-                title={currentStream?.title}
+                title={currentStream?.name || ''}
                 source={currentStream ? currentStream.streamUrl : ''}
                 poster={currentStream?.logo}
                 autoPlay
-                isControlsVisible={false}
+                isControlsVisible
                 onError={error => console.error('Erro no player:', error)}
                 streamId={currentStream?.id}
                 type="live"
                 onBack={() => setIsFullScreen(false)}
+                epgList={epgList?epgList.slice(0, 2):[]} // ← passar só os próximos 5 programas para o player
               />
             ) : (
               <div className="w-full aspect-video bg-zinc-900 flex items-center justify-center rounded-xl">

@@ -1,10 +1,11 @@
-import type { ProgressData } from '../types';
+import type { ProgressData, ServerConfig } from '../types';
 import { indexedDbStorage } from './indexedDbStorage';
+import { STORAGE_KEYS } from './storage';
 interface Keys {
   series: string;
   movie: string;
 }
-export const KEYS_PROCESS: Keys = { series: 'serie_progress', movie: 'movie_progress' };
+export const KEYS_PROCESS: Keys = { series: STORAGE_KEYS.SERIE_PROGRESS, movie: STORAGE_KEYS.MOVIE_PROGRESS };
 
 type ProgressType = 'series' | 'movie';
 
@@ -12,10 +13,11 @@ type ProgressType = 'series' | 'movie';
 export const getProgress = async (
   type: ProgressType,
   profileId: any,
-  streamId: string
+  streamId: string,
+  server:ServerConfig
 ): Promise<ProgressData> => {
   try {
-    const Key = `${KEYS_PROCESS[type]}_${profileId}_${streamId}`;
+    const Key = `${KEYS_PROCESS[type]}_${server.url}_${profileId}_${streamId}`;
     const data = await indexedDbStorage.get(Key);
     if (!data) return { progress: 0, duration: 0, watched: false, updatedAt: '' };
     return data as ProgressData;

@@ -64,7 +64,7 @@ export const indexedDbStorage = {
           const result = request.result;
           if (result) {
             console.log(`📖 Dados lidos do IndexedDB [${key}]:`, {
-              tamanho: JSON.stringify(result.value).length,
+              tamanho: JSON.stringify(result.value).length
             });
             resolve(result.value);
           } else {
@@ -93,7 +93,7 @@ export const indexedDbStorage = {
         const sizeInMB = (dataSize / 1024 / 1024).toFixed(2);
 
         console.log(`📝 Salvando no IndexedDB [${key}]:`, {
-          tamanho: `${dataSize} bytes (${sizeInMB}MB)`,
+          tamanho: `${dataSize} bytes (${sizeInMB}MB)`
         });
 
         const request = store.put({ key, value });
@@ -137,6 +137,30 @@ export const indexedDbStorage = {
     }
   },
 
+  async getKeysByPrefix(prefix: string): Promise<string[]> {
+    const db = await initDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([STORE_NAME], 'readonly');
+      const store = transaction.objectStore(STORE_NAME);
+      const keys: string[] = [];
+      const request = store.openCursor();
+
+      request.onsuccess = (event: any) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          if (cursor.key.startsWith(prefix)) {
+            keys.push(cursor.key);
+          }
+          cursor.continue();
+        } else {
+          resolve(keys);
+        }
+      };
+
+      request.onerror = () => reject(request.error);
+    });
+  },
+
   async clear() {
     try {
       const db = await initDB();
@@ -158,5 +182,5 @@ export const indexedDbStorage = {
       console.error('❌ Erro ao limpar IndexedDB:', error);
       throw error;
     }
-  },
+  }
 };

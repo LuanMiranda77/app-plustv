@@ -42,6 +42,34 @@ export const Player = () => {
     }
   };
 
+  // Função que encontra o episódio anterior
+  const getPreviousEpisode = (
+    currentEpisodeId: string | null,
+    currentSeasonNumber: number,
+    seasons: Season[]
+  ): any | null => {
+    // Encontrar a temporada atual
+    if (currentStream?.type != 'series') return null;
+    const currentSeason = seasons.find(s => s.number === currentSeasonNumber);
+    if (!currentSeason) return null;
+
+    // Encontrar índice do episódio atual na temporada
+    const currentEpisodeIndex = currentSeason.episodes.findIndex(ep => ep.id === currentEpisodeId);
+
+    if (currentEpisodeIndex > 0) {
+      // Existe episódio anterior na mesma temporada
+      return currentSeason.episodes[currentEpisodeIndex - 1];
+    } else {
+      // Verificar temporada anterior
+      const previousSeasonNumber = currentSeasonNumber - 1;
+      const previousSeason = seasons.find(s => s.number === previousSeasonNumber);
+      if (!previousSeason || previousSeason.episodes.length === 0) return null;
+
+      // Retornar último episódio da temporada anterior
+      return previousSeason.episodes[previousSeason.episodes.length - 1];
+    }
+  };
+
   // ── Inicializar stream ────────────────────────────────────────────────────
   useEffect(() => {
     const state = location.state as any;
@@ -74,16 +102,38 @@ export const Player = () => {
   const nextEpisode = allEpisodes[currentEpisodeIndex + 1] ?? null;
   const nextSeasonNumber = nextEpisode?._season ?? currentSeasonNumber;
 
+  const previousEpisode = getPreviousEpisode(currentEpisodeId, currentSeasonNumber, seasons);
+  const previousSeasonNumber = previousEpisode?.seasonNumber;
+
+  // ── Episódio anterior ──────────────────────────────────────────────────────
+  const handlePreviousEpisode = () => {
+    if (!previousEpisode || !currentStream?.parentContent) {
+      // Não existe episódio anterior — voltar para a série
+      navigate('/detail-series', { state: currentStream?.parentContent });
+      return;
+    }
+    setCurrentStream(prev => ({
+      ...prev!,
+      id: previousEpisode.id,
+      streamUrl: previousEpisode.streamUrl,
+      title: `${currentStream.parentContent?.name} — T${previousSeasonNumber}:E${String(previousEpisode.number).padStart(2, '0')}${previousEpisode.name ? ` · ${previousEpisode.name}` : ''}`,
+      poster: previousEpisode.thumbnail || prev!.poster,
+      episodeId: previousEpisode.id,
+      episodeNumber: previousEpisode.number,
+      seasonNumber: previousSeasonNumber
+    }));
+
+    setCurrentEpisodeId(previousEpisode.id);
+    setCurrentSeasonNumber(previousSeasonNumber);
+  };
+
   // ── Próximo episódio ──────────────────────────────────────────────────────
   const handleNextEpisode = () => {
     if (!nextEpisode || !currentStream?.parentContent) {
       // Acabou tudo — voltar para a série
-      console.log('🎬 Fim da série — voltando para /series');
       navigate('/series', { state: currentStream?.parentContent });
       return;
     }
-
-    console.log(`▶️ Próximo: T${nextSeasonNumber}:E${nextEpisode.number} — ${nextEpisode.name}`);
 
     setCurrentStream(prev => ({
       ...prev!,
@@ -135,7 +185,8 @@ export const Player = () => {
             nextEpisode={nextEpisode}
             currentSeason={currentSeasonNumber}
             onNextEpisode={currentStream.type === 'series' ? handleNextEpisode : undefined}
-            contentObject={{ ...currentStream, parentContent:null } as any}
+            onBackEpisode={currentStream.type === 'series' ? handlePreviousEpisode : undefined}
+            contentObject={{ ...currentStream, parentContent: null } as any}
             parentContent={currentStream.parentContent}
           />
         </div>

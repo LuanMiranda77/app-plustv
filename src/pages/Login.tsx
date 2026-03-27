@@ -194,7 +194,7 @@ export const Login = () => {
       const response = await xtreamApi.authenticate(formData);
 
       if (!response.user_info) {
-        throw new Error('Resposta inválida do servidor');
+        throw new Error('Resposta inválida do servidor!');
       }
 
       // Salvar config e autenticar
@@ -304,7 +304,7 @@ export const Login = () => {
 
             <Input
               ref={passwordInputRef}
-              type="password"
+              type="text"
               name="password"
               label="Senha"
               placeholder="sua_senha"

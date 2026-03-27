@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Channel } from '../../types';
 import { useAuthStore } from '../../store/authStore';
+const placehoder = './placeholde.png';
 
 interface ChannelCardProps {
   id?: string | number;
@@ -16,7 +17,7 @@ interface ChannelCardProps {
 export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: ChannelCardProps) => {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const isFav = isFavorite(String(channel.id));
-  const {serverConfig} = useAuthStore();
+  const { serverConfig } = useAuthStore();
 
   const toggleFavorite = () => {
     if (isFav) {
@@ -75,26 +76,24 @@ export const ChannelCard = ({ id, channel, onPlay, isFocused, setlected }: Chann
         {/* Logo/Thumbnail */}
         <div className="bg-gray-700/50 flex-shrink-0 flex items-center justify-center rounded-l-lg">
           <img
-            src={channel.logo ?? '/placeholder.png'}
+            src={channel.logo}
             alt={channel.name}
             loading="lazy"
             decoding="async"
-            className="w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px] object-contain p-2"
+            className="w-25 h-25 max-md:w-15 max-md:h-15 object-contain p-2"
             onError={(e: any) => {
               e.currentTarget.style.display = 'none';
               if (e.currentTarget.nextElementSibling)
                 e.currentTarget.nextElementSibling.style.display = 'flex';
             }}
           />
-          <div
+          <img
             className="
             hidden 
-            w-[100px] h-[100px] max-md:w-[60px] max-md:h-[60px] 
-            items-center justify-center text-gray-500 text-3xl
+            w-25 h-25 max-md:w-15 max-md:h-15 object-contain p-2
           "
-          >
-            📺
-          </div>
+            src={placehoder}
+          />
         </div>
 
         {/* Channel info */}

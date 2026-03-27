@@ -38,7 +38,7 @@ export const useProgress = ({
   const { serverConfig } = useAuthStore();
 
   // Chave única por perfil + tipo + stream
-  const Key = `${(KEYS_PROCESS as any)[type]}_${activeProfile?.id}_${streamId}`;
+  const Key = `${(KEYS_PROCESS as any)[type]}_${serverConfig?.url}_${activeProfile?.id}_${streamId}`;
 
   // ── Salvar ────────────────────────────────────────────────────────────────
   const saveProgress = useCallback(
