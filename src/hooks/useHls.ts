@@ -35,6 +35,73 @@ export const useHls = (
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSourceRef = useRef<string>('');
 
+  const createHlsInstance = (video: HTMLVideoElement) => {
+    const hlsInstance = new Hls({
+      maxBufferLength: options.bufferConfig?.maxBufferLength || 30,
+      maxMaxBufferLength: options.bufferConfig?.maxMaxBufferLength || 60,
+      maxBufferSize: 60 * 1000 * 1000,
+      maxBufferHole: 0.5,
+      manifestLoadingTimeOut: 10000,
+      manifestLoadingMaxRetry: 3,
+      levelLoadingTimeOut: 10000,
+      levelLoadingMaxRetry: 3,
+      fragLoadingTimeOut: 20000,
+      fragLoadingMaxRetry: 6,
+      startLevel: -1,
+      capLevelToPlayerSize: true,
+      liveBackBufferLength: 10,
+      enableWorker: true,
+      liveSyncDurationCount: 3
+    });
+
+    hlsInstance.loadSource(source);
+    hlsInstance.attachMedia(video);
+
+    hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+      console.log('Manifesto HLS carregado');
+      setIsLoading(false);
+      const levels = hlsInstance.levels.map(
+        level => `${level.height}p (${Math.round(level.bitrate / 1000)}k)`
+      );
+      setQualities(levels);
+    });
+
+    hlsInstance.on(Hls.Events.LEVEL_SWITCHED, (_event, data) => {
+      setCurrentQuality(data.level);
+    });
+
+    hlsInstance.on(Hls.Events.ERROR, (_event, data) => {
+      console.error('HLS Error:', data);
+
+      if (data.fatal) {
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            setError('Erro de rede. Tentando reconectar...');
+            hlsInstance.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            setError('Erro de mídia. Tentando recuperar...');
+            hlsInstance.recoverMediaError();
+            break;
+          default:
+            setError('Erro fatal no stream');
+            break;
+        }
+      } else {
+        // Erro não fatal, apenas log
+        console.warn('Erro não fatal HLS:', data);
+      }
+    });
+
+    setHls(hlsInstance);
+
+    return () => {
+      if (hlsInstance) {
+        hlsInstance.destroy();
+      }
+    };
+  };
+
   const reconnect = () => {
     if (!videoRef.current || !source) return;
 
@@ -43,19 +110,13 @@ export const useHls = (
     setIsLoading(true);
 
     const video = videoRef.current;
-    const newSource = source.includes('?')
-      ? `${source}&_reconnect=${Date.now()}`
-      : `${source}?_reconnect=${Date.now()}`;
 
     if (source.includes('.ts')) {
-      video.src = newSource;
+      video.src = source;
       video.load();
     } else if (source.includes('.m3u8') && hls) {
       hls.destroy();
-      const newHls = new Hls();
-      newHls.loadSource(newSource);
-      newHls.attachMedia(video);
-      setHls(newHls);
+      createHlsInstance(video);
     }
   };
 
@@ -77,16 +138,12 @@ export const useHls = (
     retryTimeoutRef.current = setTimeout(() => {
       if (!videoRef.current) return;
 
-      const newSrc = src.includes('?')
-        ? `${src}&_retry=${Date.now()}`
-        : `${src}?_retry=${Date.now()}`;
-
       if (src.includes('.ts')) {
-        video.src = newSrc;
+        video.src = src;
         video.load();
       } else if (src.includes('.m3u8') && Hls.isSupported()) {
         const newHls = new Hls();
-        newHls.loadSource(newSrc);
+        newHls.loadSource(src);
         newHls.attachMedia(video);
         setHls(newHls);
       }
@@ -161,7 +218,8 @@ export const useHls = (
         setError(null);
       };
 
-      video.onerror = e => {
+      video.onerror = () => {
+        console.log('DEU ERRO!!');
         clearTimeout(timeoutId);
         const mediaError = video.error;
         console.error('Erro no vídeo:', mediaError);
@@ -223,70 +281,7 @@ export const useHls = (
       console.log('Detectado stream HLS .m3u8');
 
       if (Hls.isSupported()) {
-        const hlsInstance = new Hls({
-          maxBufferLength: options.bufferConfig?.maxBufferLength || 30,
-          maxMaxBufferLength: options.bufferConfig?.maxMaxBufferLength || 60,
-          maxBufferSize: 60 * 1000 * 1000,
-          maxBufferHole: 0.5,
-          manifestLoadingTimeOut: 10000,
-          manifestLoadingMaxRetry: 3,
-          levelLoadingTimeOut: 10000,
-          levelLoadingMaxRetry: 3,
-          fragLoadingTimeOut: 20000,
-          fragLoadingMaxRetry: 6,
-          startLevel: -1,
-          capLevelToPlayerSize: true,
-          liveBackBufferLength: 10,
-          enableWorker: true,
-          liveSyncDurationCount: 3
-        });
-
-        hlsInstance.loadSource(source);
-        hlsInstance.attachMedia(video);
-
-        hlsInstance.on(Hls.Events.MANIFEST_PARSED, (_event:any, data) => {
-          console.log('Manifesto HLS carregado');
-          setIsLoading(false);
-          const levels = hlsInstance.levels.map(
-            level => `${level.height}p (${Math.round(level.bitrate / 1000)}k)`
-          );
-          setQualities(levels);
-        });
-
-        hlsInstance.on(Hls.Events.LEVEL_SWITCHED, (_event, data) => {
-          setCurrentQuality(data.level);
-        });
-
-        hlsInstance.on(Hls.Events.ERROR, (_event, data) => {
-          console.error('HLS Error:', data);
-
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                setError('Erro de rede. Tentando reconectar...');
-                hlsInstance.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                setError('Erro de mídia. Tentando recuperar...');
-                hlsInstance.recoverMediaError();
-                break;
-              default:
-                setError('Erro fatal no stream');
-                break;
-            }
-          } else {
-            // Erro não fatal, apenas log
-            console.warn('Erro não fatal HLS:', data);
-          }
-        });
-
-        setHls(hlsInstance);
-
-        return () => {
-          if (hlsInstance) {
-            hlsInstance.destroy();
-          }
-        };
+        createHlsInstance(video);
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         console.log('Usando HLS nativo do Safari');
         video.src = source;

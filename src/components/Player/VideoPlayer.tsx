@@ -115,7 +115,7 @@ export const VideoPlayer = ({
   });
 
   // Combinar erros
-  const error = hlsError;
+  // const error = hlsError;
   const isLoading = hlsLoading;
 
   // Não mostrar loader ao adiantar (seek manual)
@@ -130,7 +130,7 @@ export const VideoPlayer = ({
     setTimeout(() => setIsSeeking(false), 800); // tempo para esconder loader após seek
   };
 
-  const showLoader = (isLoading || (isBuffering && !isSeeking) || !hasStarted) && !error;
+  const showLoader = (isLoading || (isBuffering && !isSeeking) || !hasStarted) && !hlsError;
 
   const handleQualityChange = (index: number) => {
     if (!hls) return;
@@ -186,10 +186,7 @@ export const VideoPlayer = ({
       reconnect();
     } else if (videoRef.current && currentSource) {
       // Recarregar o source
-      const newSource = currentSource.includes('?')
-        ? `${currentSource}&_reconnect=${Date.now()}`
-        : `${currentSource}?_reconnect=${Date.now()}`;
-      videoRef.current.src = newSource;
+      videoRef.current.src = currentSource;
       videoRef.current.load();
       if (autoPlay) {
         videoRef.current.play().catch(console.error);
@@ -199,7 +196,7 @@ export const VideoPlayer = ({
 
   // Efeito para tentar reconectar quando houver erro
   useEffect(() => {
-    if (error && type === 'live' && reconnectAttempt < 3) {
+    if (hlsError && type === 'live' && reconnectAttempt < 3) {
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
       }
@@ -213,13 +210,13 @@ export const VideoPlayer = ({
         clearTimeout(reconnectTimeoutRef.current);
       }
     };
-  }, [error, type, reconnectAttempt, handleReconnect]);
+  }, [hlsError, type, reconnectAttempt, handleReconnect]);
 
   useEffect(() => {
-    if (error) {
-      onError?.(error);
+    if (hlsError) {
+      onError?.(hlsError);
     }
-  }, [error, onError]);
+  }, [hlsError, onError]);
 
   // Reset ao trocar source (novo episódio)
   useEffect(() => {
@@ -348,9 +345,9 @@ export const VideoPlayer = ({
       {showLoader && <PlayerLoader title={title} poster={poster} />}
 
       {/* ── Erro ──────────────────────────────────────────────────────────── */}
-      {error && (
+      {hlsError && (
         <PlayerError
-          error={error}
+          error={hlsError}
           onRetry={handleReconnect}
           retryCount={reconnectAttempt}
           maxRetries={3}
