@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/immutability */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useHls } from '../../hooks/useHls';
 import { useProgress } from '../../hooks/useProgress';
 import { useRemoteControl } from '../../hooks/useRemotoControl';
@@ -20,6 +20,7 @@ interface VideoPlayerProps {
   onNextEpisode?: () => void;
   onBackEpisode?: () => void;
   onBack?: () => void;
+  onRefreshSource?: () => string | Promise<string>;
   isControlsVisible?: boolean;
   streamId: string | number;
   saveInterval?: number;
@@ -35,7 +36,7 @@ interface VideoPlayerProps {
 export const VideoPlayer = ({
   isControlsVisible = true,
   title,
-  source,
+  source: initialSource,
   poster,
   autoPlay = false,
   onError,
@@ -43,6 +44,7 @@ export const VideoPlayer = ({
   onNextEpisode,
   onBackEpisode,
   onBack,
+  onRefreshSource,
   streamId,
   saveInterval,
   isAutoSave = false,
@@ -51,7 +53,7 @@ export const VideoPlayer = ({
   parentContent,
   nextEpisode,
   currentSeason = 1,
-  epgList,
+  epgList
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -64,6 +66,9 @@ export const VideoPlayer = ({
   const [remoteActivityTrigger, setRemoteActivityTrigger] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [currentSource, setCurrentSource] = useState(initialSource);
+  const [reconnectAttempt, setReconnectAttempt] = useState(0);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { isMobile } = useWindowSize();
 
   const timeRemaining = duration > 0 ? Math.floor(duration - currentTime) : 0;
@@ -80,14 +85,43 @@ export const VideoPlayer = ({
     parentContent
   });
 
-  const { hls, error, isLoading, currentQuality, qualities } = useHls(
-    videoRef as React.RefObject<HTMLVideoElement>,
-    source
-  );
+  const handleTokenExpired = useCallback(async () => {
+    console.log('Token expirado, tentando renovar...');
+    if (onRefreshSource) {
+      try {
+        const newSource = await onRefreshSource();
+        if (newSource) {
+          setCurrentSource(newSource);
+          setReconnectAttempt(0);
+          return;
+        }
+      } catch (err) {
+        console.error('Erro ao renovar token:', err);
+      }
+    }
+    // Se não tem função de refresh, tenta reconectar com o mesmo source
+    handleReconnect();
+  }, [onRefreshSource]);
+
+  const {
+    hls,
+    error: hlsError,
+    isLoading: hlsLoading,
+    currentQuality,
+    qualities,
+    reconnect
+  } = useHls(videoRef as React.RefObject<HTMLVideoElement>, currentSource, {
+    onTokenExpired: handleTokenExpired
+  });
+
+  // Combinar erros
+  const error = hlsError;
+  const isLoading = hlsLoading;
 
   // Não mostrar loader ao adiantar (seek manual)
   const [isSeeking, setIsSeeking] = useState(false);
   const timeNextButton = 30; // segundos para mostrar botão de próximo episódio
+
   // Handler para detectar seek manual
   const handleSeek = (time: number) => {
     if (!videoRef.current) return;
@@ -108,7 +142,10 @@ export const VideoPlayer = ({
     if (isPlaying) {
       videoRef.current.pause();
     } else {
-      videoRef.current.play();
+      videoRef.current.play().catch(err => {
+        console.error('Erro ao reproduzir:', err);
+        onError?.('Não foi possível reproduzir o stream');
+      });
     }
     setIsPlaying(!isPlaying);
   };
@@ -118,8 +155,6 @@ export const VideoPlayer = ({
     setVolume(newVolume);
     videoRef.current.volume = newVolume;
   };
-
-  // handleSeek já redefinido acima
 
   const handleFullscreen = async () => {
     if (!containerRef.current) return;
@@ -138,8 +173,52 @@ export const VideoPlayer = ({
     }
   };
 
+  const handleReconnect = useCallback(() => {
+    if (reconnectAttempt >= 3) {
+      onError?.('Falha ao reconectar após múltiplas tentativas. Verifique sua conexão.');
+      return;
+    }
+
+    setReconnectAttempt(prev => prev + 1);
+    console.log(`Tentativa de reconexão ${reconnectAttempt + 1}/3`);
+
+    if (reconnect) {
+      reconnect();
+    } else if (videoRef.current && currentSource) {
+      // Recarregar o source
+      const newSource = currentSource.includes('?')
+        ? `${currentSource}&_reconnect=${Date.now()}`
+        : `${currentSource}?_reconnect=${Date.now()}`;
+      videoRef.current.src = newSource;
+      videoRef.current.load();
+      if (autoPlay) {
+        videoRef.current.play().catch(console.error);
+      }
+    }
+  }, [reconnectAttempt, reconnect, currentSource, autoPlay, onError]);
+
+  // Efeito para tentar reconectar quando houver erro
   useEffect(() => {
-    if (error) onError?.(error);
+    if (error && type === 'live' && reconnectAttempt < 3) {
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+      reconnectTimeoutRef.current = setTimeout(() => {
+        handleReconnect();
+      }, 3000);
+    }
+
+    return () => {
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+    };
+  }, [error, type, reconnectAttempt, handleReconnect]);
+
+  useEffect(() => {
+    if (error) {
+      onError?.(error);
+    }
   }, [error, onError]);
 
   // Reset ao trocar source (novo episódio)
@@ -149,17 +228,31 @@ export const VideoPlayer = ({
     setCurrentTime(0);
     setDuration(0);
     setShowNextEpisodeBtn(false);
-  }, [source]);
+    setReconnectAttempt(0);
+  }, [currentSource]);
+
+  // Atualizar source quando initialSource mudar
+  useEffect(() => {
+    if (initialSource !== currentSource) {
+      setCurrentSource(initialSource);
+    }
+  }, [initialSource]);
 
   useRemoteControl(
     {
       onUp: () => {
         setRemoteActivityTrigger(t => t + 1);
         setVolume(v => Math.min(v + 0.1, 1));
+        if (videoRef.current) {
+          videoRef.current.volume = Math.min(videoRef.current.volume + 0.1, 1);
+        }
       },
       onDown: () => {
         setRemoteActivityTrigger(t => t + 1);
         setVolume(v => Math.max(v - 0.1, 0));
+        if (videoRef.current) {
+          videoRef.current.volume = Math.max(videoRef.current.volume - 0.1, 0);
+        }
       },
       onRight: () => {
         setRemoteActivityTrigger(t => t + 1);
@@ -222,10 +315,10 @@ export const VideoPlayer = ({
           if (videoRef.current) {
             const current = videoRef.current.currentTime;
             setCurrentTime(current);
-            // Mostrar botão quando faltar 60 segundos
+            // Mostrar botão quando faltar 30 segundos
             if (type === 'series' && duration > 0 && onNextEpisode) {
               const remaining = duration - current;
-              if (remaining <= timeNextButton && remaining > 0) {
+              if (remaining <= timeNextButton && remaining > 0 && !showNextEpisodeBtn) {
                 setShowNextEpisodeBtn(true);
               }
             }
@@ -255,7 +348,14 @@ export const VideoPlayer = ({
       {showLoader && <PlayerLoader title={title} poster={poster} />}
 
       {/* ── Erro ──────────────────────────────────────────────────────────── */}
-      {error && <PlayerError error={error} />}
+      {error && (
+        <PlayerError
+          error={error}
+          onRetry={handleReconnect}
+          retryCount={reconnectAttempt}
+          maxRetries={3}
+        />
+      )}
 
       {/* ── Próximo Episódio ──────────────────────────────────────────────── */}
       {showNextEpisodeBtn && type === 'series' && onNextEpisode && (

@@ -2,9 +2,19 @@ import React from 'react';
 interface PlayerErrorProps {
   error: string;
   onBack?: () => void;
+  onRetry?: () => void;
+  retryCount?: number;
+  maxRetries?: number;
 }
 
-const PlayerError: React.FC<PlayerErrorProps> = ({ error, onBack }) => {
+const PlayerError: React.FC<PlayerErrorProps> = ({
+  error,
+  onBack,
+  onRetry,
+  retryCount = 0,
+  maxRetries = 3
+}) => {
+  const canRetry = retryCount < maxRetries;
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/90">
       <div className="text-center px-8 max-w-sm">
@@ -28,6 +38,19 @@ const PlayerError: React.FC<PlayerErrorProps> = ({ error, onBack }) => {
         </div>
         <p className="text-white font-semibold mb-1">Erro ao reproduzir</p>
         <p className="text-zinc-400 text-sm mb-6">{error}</p>
+        {canRetry && onRetry && (
+          <button
+            onClick={onRetry}
+            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+          >
+            Tentar Novamente {retryCount > 0 ? `(${retryCount}/${maxRetries})` : ''}
+          </button>
+        )}
+        {!canRetry && (
+          <p className="text-gray-400 text-xs mt-4">
+            Limite de tentativas atingido. Verifique sua conexão e tente novamente mais tarde.
+          </p>
+        )}
         {onBack && (
           <button
             onClick={onBack}
