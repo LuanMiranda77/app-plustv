@@ -1,11 +1,26 @@
 import { Film, Sparkles, TrendingUp, Tv2, TvMinimalPlay } from 'lucide-react';
+import { lazy, Suspense, memo, useMemo, useCallback } from 'react';
 import { ChannelPoster } from '../components/Cards/ChannelPoster';
 import { StreamPoster } from '../components/Cards/StreamPoster';
 import AdvertisementCarousel from '../components/UI/AdvertisementCarousel';
-import AutoCarousel from '../components/UI/AutoCarousel';
 import CarouselSection from '../components/UI/CarouselSection';
 import ContinueWatchingSection from '../components/UI/ContinueWatchingSection';
 import { useHome } from '../hooks/useHome';
+
+// Lazy load do AutoCarousel
+const AutoCarousel = lazy(() => import('../components/UI/AutoCarousel'));
+
+// Componente de loading para o carousel
+const CarouselLoader = () => (
+  <div className="w-full h-[400px] bg-gray-900/50 animate-pulse rounded-lg" />
+);
+
+// Memoizar componentes de seção para evitar re-renders desnecessários
+const MemoizedChannelPoster = memo(ChannelPoster);
+const MemoizedStreamPoster = memo(StreamPoster);
+const MemoizedCarouselSection = memo(CarouselSection);
+const MemoizedContinueWatchingSection = memo(ContinueWatchingSection);
+const MemoizedAdvertisementCarousel = memo(AdvertisementCarousel);
 
 export const Home = () => {
   const {
@@ -29,51 +44,58 @@ export const Home = () => {
     navigateLive
   } = useHome();
 
+  // Memoizar dados filtrados
+  const lastMovies = useMemo(
+    () => recentlyWatched.filter(item => item.type === 'movie'),
+    [recentlyWatched]
+  );
+
+  const lastSeries = useMemo(
+    () => recentlyWatched.filter(item => item.type === 'series'),
+    [recentlyWatched]
+  );
+
+  const displayChannels = useMemo(
+    () => (recentChannels.length > 0 ? recentChannels : topChannels),
+    [recentChannels, topChannels]
+  );
+
+  const hasAnyContent = useMemo(
+    () => trendingMovies.length > 0 || topChannels.length > 0 || trendingSeries.length > 0,
+    [trendingMovies, topChannels, trendingSeries]
+  );
+
+  // Handler memoizado
+  const handleContinueWatchingPlay = useCallback(
+    (item: any) => {
+      if (item.type === 'movie') {
+        navigateMovie(item.content);
+      } else if (item.type === 'series') {
+        navigateEpisodio(item);
+      }
+    },
+    [navigateMovie, navigateEpisodio]
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-y-scroll">
-      {/* Auto Carousel Hero */}
+      {/* Auto Carousel Hero - Lazy loading */}
       {heroItems.length > 0 && !isLoading && (
         <div
           data-focused={focusedSection === -1}
           className={focusedSection === -1 ? 'ring-2 ring-red-600 rounded-lg m-4' : ''}
         >
-          <AutoCarousel
-            className="max-h-[700px]"
-            items={heroItems}
-            autoPlayInterval={5000}
-            // onPlay={(item) => {
-            //   const movie = movies.find((m) => m.id === item.id);
-            //   const serie = series.find((s) => s.id === item.id);
-            //   if (movie) {
-            //     navigateMovie(item);
-            //   } else if (serie) {
-            //     navigateSerie(item);
-            //   }
-            // }}
-            // onInfo={(item) => {
-            //   const movie = movies.find((m) => m.id === item.id);
-            //   const serie = series.find((s) => s.id === item.id);
-            //   if (movie) {
-            //     navigateMovie(item);
-            //   } else if (serie) {
-            //     navigateSerie(item);
-            //   }
-            // }}
-          />
+          <Suspense fallback={<CarouselLoader />}>
+            <AutoCarousel className="max-h-[700px]" items={heroItems} autoPlayInterval={5000} />
+          </Suspense>
         </div>
       )}
 
-      {/* Advertisement Carousel */}
-      <AdvertisementCarousel />
+      {/* Advertisement Carousel - Memoizado */}
+      <MemoizedAdvertisementCarousel />
 
       {/* Main Content */}
       <div className="w-9/12 mx-auto px-6 space-y-16 pb-16">
-        {/* {isLoading && (
-          <div className="flex justify-center items-center py-16">
-            <LoadingSpinner message='Carregando...' />
-          </div>
-        )} */}
-
         {!isLoading && error && (
           <div className="bg-red-900/20 border border-red-600/50 rounded-lg p-4 mb-6">
             <p className="text-red-400">Erro ao carregar conteúdo: {error}</p>
@@ -83,23 +105,19 @@ export const Home = () => {
         {!isLoading && (
           <>
             {/* Continue Watching */}
-            <ContinueWatchingSection
-              items={recentlyWatched}
-              focusedItemIndex={getFocusedIndex('continue-watching')}
-              onPlay={item => {
-                if (item.type === 'movie') {
-                  navigateMovie(item.content);
-                } else if (item.type === 'series') {
-                  navigateEpisodio(item);
-                }
-              }}
-              onViewHistory={() => navigate('/watch-history')}
-              onRecentlyWatched={setRecentlyWatched}
-            />
+            {recentlyWatched.length > 0 && (
+              <MemoizedContinueWatchingSection
+                items={recentlyWatched}
+                focusedItemIndex={getFocusedIndex('continue-watching')}
+                onPlay={handleContinueWatchingPlay}
+                onViewHistory={() => navigate('/watch-history')}
+                onRecentlyWatched={setRecentlyWatched}
+              />
+            )}
 
             {/* Live Channels */}
-            {topChannels.length > 0 && (
-              <CarouselSection
+            {displayChannels.length > 0 && (
+              <MemoizedCarouselSection
                 title={recentChannels.length > 0 ? 'Últimos Canais Assistidos' : 'Canais ao Vivo'}
                 subtitle={
                   recentChannels.length > 0
@@ -107,10 +125,10 @@ export const Home = () => {
                     : 'Seus canais favoritos em tempo real'
                 }
                 icon={Tv2}
-                items={recentChannels.length > 0 ? recentChannels : topChannels}
+                items={displayChannels}
                 focusedItemIndex={getFocusedIndex('live-channels')}
                 renderItem={(channel, idx, isFocused) => (
-                  <ChannelPoster
+                  <MemoizedChannelPoster
                     channel={channel}
                     isFocused={isFocused}
                     onPlay={() => navigateLive(channel)}
@@ -120,17 +138,17 @@ export const Home = () => {
               />
             )}
 
-            {/* Utimate Movies */}
-            {recentlyWatched.length > 0 && (
-              <CarouselSection
-                title="Utimos Filmes Assistidos"
+            {/* Last Movies */}
+            {lastMovies.length > 0 && (
+              <MemoizedCarouselSection
+                title="Últimos Filmes Assistidos"
                 subtitle="Se gostou, assista novamente"
                 icon={TrendingUp}
-                items={recentlyWatched.filter(item => item.type === 'movie')}
+                items={lastMovies}
                 badge="repeat"
                 focusedItemIndex={getFocusedIndex('last-movies')}
                 renderItem={(movie, idx, isFocused) => (
-                  <StreamPoster
+                  <MemoizedStreamPoster
                     stream={movie}
                     isFocused={isFocused}
                     onPlay={() => navigateMovie(movie.content)}
@@ -142,7 +160,7 @@ export const Home = () => {
 
             {/* Trending Movies */}
             {trendingMovies.length > 0 && (
-              <CarouselSection
+              <MemoizedCarouselSection
                 title="Filmes em Tendência"
                 subtitle="Os filmes mais assistidos neste mês"
                 icon={TrendingUp}
@@ -150,7 +168,7 @@ export const Home = () => {
                 badge="trending"
                 focusedItemIndex={getFocusedIndex('trending-movies')}
                 renderItem={(movie, idx, isFocused) => (
-                  <StreamPoster
+                  <MemoizedStreamPoster
                     stream={movie}
                     isFocused={isFocused}
                     onPlay={() => navigateMovie(movie, 'detail-movie')}
@@ -162,7 +180,7 @@ export const Home = () => {
 
             {/* New Movies */}
             {newMovies.length > 0 && (
-              <CarouselSection
+              <MemoizedCarouselSection
                 title="Lançamentos"
                 subtitle="Confira os novos filmes adicionados"
                 icon={Sparkles}
@@ -170,7 +188,7 @@ export const Home = () => {
                 badge="novo"
                 focusedItemIndex={getFocusedIndex('new-movies')}
                 renderItem={(movie, idx, isFocused) => (
-                  <StreamPoster
+                  <MemoizedStreamPoster
                     stream={movie}
                     isFocused={isFocused}
                     onPlay={() => navigateMovie(movie, 'detail-movie')}
@@ -180,17 +198,17 @@ export const Home = () => {
               />
             )}
 
-            {/* Utimate Series */}
-            {recentlyWatched.length > 0 && (
-              <CarouselSection
-                title="Utimos Séries Assistidos"
+            {/* Last Series */}
+            {lastSeries.length > 0 && (
+              <MemoizedCarouselSection
+                title="Últimas Séries Assistidas"
                 subtitle="Se gostou, assista novamente"
                 icon={TrendingUp}
-                items={recentlyWatched.filter(item => item.type === 'series')}
+                items={lastSeries}
                 badge="repeat"
                 focusedItemIndex={getFocusedIndex('last-series')}
                 renderItem={(series, idx, isFocused) => (
-                  <StreamPoster
+                  <MemoizedStreamPoster
                     stream={series}
                     isFocused={isFocused}
                     onPlay={() => navigateSerie(series, 'detail-series')}
@@ -202,7 +220,7 @@ export const Home = () => {
 
             {/* Trending Series */}
             {trendingSeries.length > 0 && (
-              <CarouselSection
+              <MemoizedCarouselSection
                 title="Séries Populares"
                 subtitle="Acompanhe as séries mais assistidas"
                 icon={TvMinimalPlay}
@@ -210,7 +228,7 @@ export const Home = () => {
                 badge="trending"
                 focusedItemIndex={getFocusedIndex('trending-series')}
                 renderItem={(s, idx, isFocused) => (
-                  <StreamPoster
+                  <MemoizedStreamPoster
                     stream={s}
                     isFocused={isFocused}
                     onPlay={() => navigateSerie(s, 'detail-series')}
@@ -222,15 +240,15 @@ export const Home = () => {
 
             {/* New Series */}
             {newSeries.length > 0 && (
-              <CarouselSection
-                title="Lançamento"
-                subtitle="Confira os novos séries adicionados"
+              <MemoizedCarouselSection
+                title="Lançamentos"
+                subtitle="Confira as novas séries adicionadas"
                 icon={Sparkles}
                 items={newSeries}
                 badge="novo"
                 focusedItemIndex={getFocusedIndex('new-series')}
                 renderItem={(s, idx, isFocused) => (
-                  <StreamPoster
+                  <MemoizedStreamPoster
                     stream={s}
                     isFocused={isFocused}
                     onPlay={() => navigateSerie(s, 'detail-series')}
@@ -241,17 +259,15 @@ export const Home = () => {
             )}
 
             {/* Empty State */}
-            {trendingMovies.length === 0 &&
-              topChannels.length === 0 &&
-              trendingSeries.length === 0 && (
-                <div className="text-center py-16">
-                  <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
-                  <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
-                  <p className="text-gray-500 text-sm mt-2">
-                    Faça login com suas credenciais IPTV para ver o conteúdo
-                  </p>
-                </div>
-              )}
+            {!hasAnyContent && (
+              <div className="text-center py-16">
+                <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
+                <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
+                <p className="text-gray-500 text-sm mt-2">
+                  Faça login com suas credenciais IPTV para ver o conteúdo
+                </p>
+              </div>
+            )}
           </>
         )}
       </div>

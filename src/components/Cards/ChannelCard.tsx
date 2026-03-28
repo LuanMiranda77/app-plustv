@@ -48,7 +48,7 @@ export const ChannelCard = ({
 
   return (
     <div className="relative flex items-center justify-between">
-      <button
+      <div
         id={`cd-${id}`}
         data-focused={isFocused ? 'true' : 'false'}
         className={`
@@ -116,7 +116,7 @@ export const ChannelCard = ({
         >
           <Heart className={`w-6 h-6 ${isFav ? 'fill-current' : ''}`} />
         </button>
-      </button>
+      </div>
     </div>
   );
 };

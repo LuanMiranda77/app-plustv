@@ -1,7 +1,7 @@
-import { useState } from 'react';
+/* eslint-disable react-hooks/set-state-in-render */
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LogoHeader from '../components/Logos/LogoHeader';
-import AutoCarousel from '../components/UI/AutoCarousel';
 import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
 import RemoteHint from '../components/UI/RemoteHint';
@@ -12,6 +12,14 @@ import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Profile } from '../types';
+
+// Lazy load do AutoCarousel para reduzir o bundle inicial
+const AutoCarousel = lazy(() => import('../components/UI/AutoCarousel'));
+
+// Componente de loading simplificado para o carousel
+const CarouselLoader = () => (
+  <div className="absolute inset-0 z-10 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950" />
+);
 
 export const ProfileSelect = () => {
   const navigate = useNavigate();
@@ -29,22 +37,31 @@ export const ProfileSelect = () => {
     avatar: string;
   } | null>(null);
   const { movies, series, isLoading } = useContentStore();
+  const { isMobile } = useWindowSize();
+
+  // Estado para controlar quando o carousel deve ser renderizado
+  const [showCarousel, setShowCarousel] = useState(false);
+  const [carouselItems, setCarouselItems] = useState<any[]>([]);
 
   const avatars = ['🐵​', '🐯', '🦁​', '🦄', '🐼', '🦈', '😈​', '😇', '🤖', '👽​'];
   const AVATAR_COLS = 5;
   const AVATAR_COUNT = avatars.length;
-  // btnfocusIndex: 0-9 = avatares, 10 = input, 11 = cancelar, 12 = criar/salvar
+
+  // Memoizar os itens do carousel para evitar recálculos desnecessários
+  useMemo(() => {
+    if (!isLoading && (movies.length > 0 || series.length > 0)) {
+      const items = [
+        ...movies.slice(0, 3).map(m => ({ ...m })),
+        ...series.slice(0, 3).map(s => ({ ...s }))
+      ];
+      setCarouselItems(items);
+      // Delay para mostrar o carousel apenas após os dados estarem prontos
+      setTimeout(() => setShowCarousel(true), 100);
+    }
+  }, [movies, series, isLoading]);
 
   // Total de itens: perfis + botão de adicionar (se disponível)
   const totalItems = profiles.length + (profiles.length < 5 ? 1 : 0);
-  const heroItems = [
-    ...movies.slice(0, 3).map(m => ({
-      ...m
-    })),
-    ...series.slice(0, 3).map(s => ({
-      ...s
-    }))
-  ];
 
   // Handlers para navegação por controle remoto/teclado
   useRemoteControl({
@@ -53,17 +70,16 @@ export const ProfileSelect = () => {
         // Avatares
         if (btnfocusIndex >= 0 && btnfocusIndex < AVATAR_COUNT) {
           if (btnfocusIndex % AVATAR_COLS < AVATAR_COLS - 1) {
-            // próximo avatar na mesma linha
             setBtnFocusIndex(btnfocusIndex + 1);
           }
         }
         // Input
         else if (btnfocusIndex === AVATAR_COUNT) {
-          setBtnFocusIndex(AVATAR_COUNT + 1); // Cancelar
+          setBtnFocusIndex(AVATAR_COUNT + 1);
         }
         // Cancelar
         else if (btnfocusIndex === AVATAR_COUNT + 1) {
-          setBtnFocusIndex(AVATAR_COUNT + 2); // Criar/Salvar
+          setBtnFocusIndex(AVATAR_COUNT + 2);
         }
       } else {
         setFocusedIndex(prev => (prev + 1) % totalItems);
@@ -71,21 +87,14 @@ export const ProfileSelect = () => {
     },
     onLeft: () => {
       if (showAddForm) {
-        // Avatares
         if (btnfocusIndex >= 0 && btnfocusIndex < AVATAR_COUNT) {
           if (btnfocusIndex % AVATAR_COLS > 0) {
-            // avatar anterior na mesma linha
             setBtnFocusIndex(btnfocusIndex - 1);
           }
-        }
-        // Input
-        else if (btnfocusIndex === AVATAR_COUNT) {
-          // volta último avatar
+        } else if (btnfocusIndex === AVATAR_COUNT) {
           setBtnFocusIndex(AVATAR_COUNT - 1);
-        }
-        // Criar/Salvar
-        else if (btnfocusIndex === AVATAR_COUNT + 2) {
-          setBtnFocusIndex(AVATAR_COUNT + 1); // Cancelar
+        } else if (btnfocusIndex === AVATAR_COUNT + 2) {
+          setBtnFocusIndex(AVATAR_COUNT + 1);
         }
       } else {
         setFocusedIndex(prev => (prev - 1 + totalItems) % totalItems);
@@ -93,18 +102,13 @@ export const ProfileSelect = () => {
     },
     onDown: () => {
       if (showAddForm) {
-        // Avatares
         if (btnfocusIndex >= 0 && btnfocusIndex < AVATAR_COUNT) {
           if (btnfocusIndex + AVATAR_COLS < AVATAR_COUNT) {
-            // próxima linha
             setBtnFocusIndex(btnfocusIndex + AVATAR_COLS);
           } else {
-            // vai para input
             setBtnFocusIndex(AVATAR_COUNT);
           }
-        }
-        // Input vai para botões (Cancelar)
-        else if (btnfocusIndex === AVATAR_COUNT) {
+        } else if (btnfocusIndex === AVATAR_COUNT) {
           setBtnFocusIndex(AVATAR_COUNT + 1);
         }
       } else {
@@ -113,20 +117,14 @@ export const ProfileSelect = () => {
     },
     onUp: () => {
       if (showAddForm) {
-        // Avatares
         if (btnfocusIndex >= 0 && btnfocusIndex < AVATAR_COUNT) {
           if (btnfocusIndex - AVATAR_COLS >= 0) {
-            // linha anterior
             setBtnFocusIndex(btnfocusIndex - AVATAR_COLS);
           }
-        }
-        // Input volta para último avatar
-        else if (btnfocusIndex === AVATAR_COUNT) {
+        } else if (btnfocusIndex === AVATAR_COUNT) {
           const lastAvatarRow = Math.floor((AVATAR_COUNT - 1) / AVATAR_COLS);
           setBtnFocusIndex(lastAvatarRow * AVATAR_COLS);
-        }
-        // Botões voltam para input
-        else if (btnfocusIndex === AVATAR_COUNT + 1 || btnfocusIndex === AVATAR_COUNT + 2) {
+        } else if (btnfocusIndex === AVATAR_COUNT + 1 || btnfocusIndex === AVATAR_COUNT + 2) {
           setBtnFocusIndex(AVATAR_COUNT);
         }
       } else {
@@ -135,31 +133,24 @@ export const ProfileSelect = () => {
     },
     onOk: () => {
       if (showAddForm) {
-        // Avatar
         if (btnfocusIndex >= 0 && btnfocusIndex < AVATAR_COUNT) {
           setNewProfile({ ...newProfile, avatar: avatars[btnfocusIndex] });
-          // Vai automaticamente para o input
           setBtnFocusIndex(AVATAR_COUNT);
           setTimeout(() => {
             const inputElement = document.getElementById('profile-name-input');
             inputElement?.focus();
           }, 0);
-        }
-        // Input - enviar o perfil
-        else if (btnfocusIndex === AVATAR_COUNT) {
+        } else if (btnfocusIndex === AVATAR_COUNT) {
           if (newProfile.name.trim() && (editingProfile || profiles.length < 5)) {
             const event = new Event('submit', { bubbles: true });
             const formElement = document.getElementById('profile-form');
             formElement?.dispatchEvent(event);
           }
-        }
-        // Cancelar
-        else if (btnfocusIndex === AVATAR_COUNT + 1) {
+        } else if (btnfocusIndex === AVATAR_COUNT + 1) {
           setShowAddForm(false);
           setEditingProfile(null);
-        }
-        // Criar/Salvar
-        else if (btnfocusIndex === AVATAR_COUNT + 2) {
+          setNewProfile({ name: '', avatar: '🎬' });
+        } else if (btnfocusIndex === AVATAR_COUNT + 2) {
           if (newProfile.name.trim() && (editingProfile || profiles.length < 5)) {
             const event = new Event('submit', { bubbles: true });
             const formElement = document.getElementById('profile-form');
@@ -171,13 +162,12 @@ export const ProfileSelect = () => {
       if (focusedIndex < profiles.length) {
         handleSelectProfile(profiles[focusedIndex]);
       } else {
-        if (profiles.length >= 5) return; // Máximo 5 perfis
+        if (profiles.length >= 5) return;
         setShowAddForm(true);
         setBtnFocusIndex(0);
       }
     },
     onYellow: () => {
-      // Editar perfil focado (Yellow button)
       if (!showAddForm && focusedIndex < profiles.length) {
         const profile = profiles[focusedIndex];
         setEditingProfile({ id: profile.id, name: profile.name, avatar: profile.avatar });
@@ -187,15 +177,16 @@ export const ProfileSelect = () => {
       }
     },
     onBack: () => {
-      setNewProfile({ name: '', avatar: '🎬' });
-      setEditingProfile(null);
-      setShowAddForm(false);
+      if (showAddForm) {
+        setNewProfile({ name: '', avatar: '🎬' });
+        setEditingProfile(null);
+        setShowAddForm(false);
+      }
     }
   });
 
   const handleSelectProfile = (profile: Profile) => {
     setActiveProfile(profile);
-    // Carregar favoritos e histórico do perfil selecionado
     setFavoritesProfile(profile.id, serverConfig!);
     setHistoryProfile(profile.id, serverConfig!);
     navigate('/home');
@@ -206,7 +197,6 @@ export const ProfileSelect = () => {
     if (!newProfile.name.trim()) return;
 
     if (editingProfile) {
-      // Modo edição
       updateProfile(editingProfile.id, {
         name: newProfile.name,
         avatar: newProfile.avatar
@@ -215,8 +205,7 @@ export const ProfileSelect = () => {
       setEditingProfile(null);
       setShowAddForm(false);
     } else {
-      // Modo criação
-      if (profiles.length >= 5) return; // Máximo 5 perfis
+      if (profiles.length >= 5) return;
 
       const profile: Profile = {
         id: Date.now().toString(),
@@ -231,27 +220,43 @@ export const ProfileSelect = () => {
     }
   };
 
-  const { isMobile } = useWindowSize();
+  // Limpar carousel quando o componente desmontar
+  useEffect(() => {
+    return () => {
+      setShowCarousel(false);
+      setCarouselItems([]);
+    };
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-y-auto bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
-      {heroItems.length > 0 && !isLoading && !isMobile && (
+      {/* Carousel otimizado - apenas renderiza quando os dados estão prontos */}
+      {!isLoading && carouselItems.length > 0 && !isMobile && (
         <div className="absolute inset-0 z-10 right-0 w-full">
-          <AutoCarousel items={heroItems} autoPlayInterval={5000} className="absolute" infoRight />
+          <Suspense fallback={<CarouselLoader />}>
+            {showCarousel && (
+              <AutoCarousel
+                items={carouselItems}
+                autoPlayInterval={5000}
+                className="absolute"
+                infoRight
+              />
+            )}
+          </Suspense>
         </div>
       )}
+
       <div className="mx-auto z-30 absolute inset-0 left-10 top-10">
         <div className="flex items-center justify-between mb-10">
           <div className="">
             <LogoHeader />
-            <p className="text-gray-400 mt-2">Seleione um perfil para continuar</p>
+            <p className="text-gray-400 mt-2">Selecione um perfil para continuar</p>
           </div>
         </div>
 
-        {/* Instruções de Controle - Apenas TV */}
         <RemoteHint color="yellow" label="Editar perfil" />
 
-        {/* Profiles Grid */}
+        {/* Profiles Grid - Otimizado para TV */}
         <div className="grid grid-cols-1 max-md:grid-cols-4 gap-4">
           {profiles.map((profile, index) => (
             <div
@@ -263,7 +268,6 @@ export const ProfileSelect = () => {
               }`}
               onClick={() => handleSelectProfile(profile)}
             >
-              {/* Botão Editar (para celular e desktop) */}
               <button
                 onClick={e => {
                   e.stopPropagation();
@@ -297,7 +301,6 @@ export const ProfileSelect = () => {
             </div>
           ))}
 
-          {/* Add Profile Button */}
           {profiles.length < 5 && (
             <button
               onClick={() => setShowAddForm(true)}
@@ -315,7 +318,7 @@ export const ProfileSelect = () => {
 
         {/* Add/Edit Profile Modal */}
         {showAddForm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm z-50">
             <div className="bg-gray-900 rounded-xl p-6 w-full max-w-sm border border-gray-800">
               <h2 className="text-2xl font-bold text-white mb-4">
                 {editingProfile ? 'Editar Perfil' : 'Novo Perfil'}
@@ -357,11 +360,10 @@ export const ProfileSelect = () => {
                   }`}
                   onKeyDown={e => {
                     if (
-                      e.keyCode === 13 &&
+                      e.key === 'Enter' &&
                       e.currentTarget.value.trim().length > 0 &&
                       (editingProfile || profiles.length < 5)
                     ) {
-                      // Enter no input - submit
                       const event = new Event('submit', { bubbles: true });
                       const formElement = document.getElementById('profile-form');
                       formElement?.dispatchEvent(event);

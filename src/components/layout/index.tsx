@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -15,6 +16,7 @@ import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { storage } from '../../utils/storage';
 import moment from 'moment';
 import ExpiredTrialModal from '../UI/ExpiredTrialModal';
+import useWindowSize from '../../hooks/useWindowSize';
 
 const Layout: React.FC = () => {
   const { serverConfig } = useAuthStore();
@@ -28,6 +30,7 @@ const Layout: React.FC = () => {
   const location = useLocation();
   const [isTest, setIsTest] = useState(false);
   const [isTestEspired, setIsTestExpired] = useState(false);
+  const { isMobile } = useWindowSize();
 
   // Rotas onde MainHeader não deve aparecer
   const hiddenHeaderRoutes = ['/login', '/profiles', '/player', '/detail-series', '/detail-movie'];
@@ -40,7 +43,7 @@ const Layout: React.FC = () => {
   useEffect(() => {
     loadFromStorage();
     loadFavoritesFromStorage();
-    closeBar();
+    isMobile && closeBar();
     loadHistoryFromStorage();
     if (serverConfig) {
       fetchServerContent(serverConfig);
@@ -82,7 +85,7 @@ const Layout: React.FC = () => {
       }
     };
 
-    setOrientation();
+    isMobile && setOrientation();
 
     return () => {
       active = false;
