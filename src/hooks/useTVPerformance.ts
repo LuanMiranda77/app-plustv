@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 // utils/tvOptimization.ts
 export const tvOptimization = {
   // Debounce para eventos de controle remoto
