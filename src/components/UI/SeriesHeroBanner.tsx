@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, RefreshCcwDotIcon } from 'lucide-react';
 import type { Episode, Season, Series } from '../../types';
 import { TrailerModal } from '../Player/TrilerModal';
 import { ButtonBack } from './ButtonBack';
@@ -20,11 +20,12 @@ interface SeriesHeroBannerProps {
   currentEpisodeId?: string;
   onBack: () => void;
   onPlayNext: () => void;
-  onToggleFavorite?: (series:Series) => void;
+  onToggleFavorite?: (series: Series) => void;
   onScrollToEpisodes: () => void;
   focusedButton?: number; // 0=Assistir, 1=Trailer, 2=Favorito, 3=Episódios
   showTrailer: boolean;
   onSetShowTrailer: (params: boolean) => void;
+  onLoadDetail: (series: Series, isForceRefresh:boolean) => void;
 }
 
 export const SeriesHeroBanner = ({
@@ -40,7 +41,8 @@ export const SeriesHeroBanner = ({
   onScrollToEpisodes,
   focusedButton = 0,
   showTrailer = false,
-  onSetShowTrailer
+  onSetShowTrailer,
+  onLoadDetail
 }: SeriesHeroBannerProps) => {
   return (
     <div className="relative h-[60vh] min-h-[500px] overflow-hidden">
@@ -71,7 +73,7 @@ export const SeriesHeroBanner = ({
 
       {/* Conteúdo hero */}
       <div className="absolute inset-0 flex items-end pb-10 px-8 md:px-14">
-        <div className="flex gap-8 items-end max-w-7xl w-full">
+        <div className="flex gap-8 items-end max-w-360 w-full">
           {/* Poster */}
           <Poster poster={series.poster} name={series.name} />
 
@@ -121,6 +123,12 @@ export const SeriesHeroBanner = ({
                 onClick={onScrollToEpisodes}
                 icon={<ChevronDown className="w-4 h-4" />}
                 isFocused={focusedButton === 4}
+              />
+              <ButtonIcon
+                label={'Atualizar lista'}
+                onClick={() => onLoadDetail(series, true)}
+                icon={<RefreshCcwDotIcon className="w-4 h-4" />}
+                isFocused={focusedButton === 5}
               />
             </div>
           </div>

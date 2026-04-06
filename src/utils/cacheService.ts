@@ -3,7 +3,7 @@ import type { ServerConfig } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
 import { STORAGE_KEYS } from './storage';
 
-const CACHE_DURATION = 72 * 60 * 60 * 1000; // 72h
+const CACHE_DURATION = 168 * 60 * 60 * 1000; // 72h
 
 export type ListType = 'LIST_CHANNELS' | 'LIST_SERIES' | 'LIST_MOVIES';
 

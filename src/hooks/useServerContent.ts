@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import {
   useChannelStore,
@@ -13,18 +13,8 @@ export const useServerContent = () => {
   const { serverConfig } = useAuthStore();
   const { fetchServerContent } = useContentStore();
   const { lastUpdate: lastChannel, fetchLiveContent } = useChannelStore();
-  const {
-    lastUpdate: lastVod,
-    fetchMoviesContent,
-    isCacheValidAsyncMovie,
-    loadFromCache: loadCacheMovie
-  } = useMovieStore();
-  const {
-    lastUpdate: lastSeries,
-    fetchSeriesContent,
-    isCacheValidAsyncSeries,
-    loadFromCache: loadCacheSerie
-  } = useSeriesStore();
+  const { lastUpdate: lastVod, fetchMoviesContent } = useMovieStore();
+  const { lastUpdate: lastSeries, fetchSeriesContent } = useSeriesStore();
   const [loadingTarget, setLoadingTarget] = useState<RefreshTarget | null>(null);
   const [isLoading, setIsLoading] = useState(false); // ← para forçar re-render quando necessário
 
@@ -55,38 +45,6 @@ export const useServerContent = () => {
       setLoadingTarget(null);
     }
   };
-
-  useEffect(() => {
-    if (!serverConfig) return;
-
-    const checkCacheAndLoad = async () => {
-      setIsLoading(true);
-
-      try {
-        const [moviesValid, seriesValid] = await Promise.all([
-          isCacheValidAsyncMovie(serverConfig),
-          isCacheValidAsyncSeries(serverConfig)
-        ]);
-
-        await Promise.all([
-          moviesValid ? loadCacheMovie(serverConfig) : fetchMoviesContent(serverConfig),
-          seriesValid ? loadCacheSerie(serverConfig) : fetchSeriesContent(serverConfig)
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkCacheAndLoad();
-  }, [
-    serverConfig,
-    isCacheValidAsyncMovie,
-    isCacheValidAsyncSeries,
-    loadCacheMovie,
-    loadCacheSerie,
-    fetchMoviesContent,
-    fetchSeriesContent
-  ]);
 
   return {
     isLoading,

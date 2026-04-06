@@ -10,7 +10,6 @@ interface ContentState {
   error: string | null;
 
   loadFromCache: (config: ServerConfig) => Promise<void>;
-  isCacheValidAsync: (config: ServerConfig) => Promise<boolean>;
   clearCache: (config: ServerConfig) => Promise<void>;
   fetchServerContent: (config: ServerConfig, forceRefresh?: boolean) => void;
 }
@@ -496,16 +495,6 @@ export const useContentStore = create<ContentState>(set => ({
       useMovieStore.getState().loadFromCache(config),
       useSeriesStore.getState().loadFromCache(config)
     ]);
-  },
-
-  isCacheValidAsync: async (config: ServerConfig) => {
-    const [liveValid, moviesValid, seriesValid] = await Promise.all([
-      useChannelStore.getState().isCacheValidAsyncChannel(config),
-      useMovieStore.getState().isCacheValidAsyncMovie(config),
-      useSeriesStore.getState().isCacheValidAsyncSeries(config)
-    ]);
-
-    return liveValid && moviesValid && seriesValid;
   },
 
   clearCache: async (config: ServerConfig) => {

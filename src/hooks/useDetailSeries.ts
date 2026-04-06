@@ -1,3 +1,4 @@
+import LZString from 'lz-string';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { PlayerStream } from '../pages/Player';
@@ -31,7 +32,7 @@ export function useSeriesDetail() {
   const [activeSeason, setActiveSeason] = useState(1);
   const [loading, setLoading] = useState(false);
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(-1);
-  const maxButtons = 5;
+  const maxButtons = 6;
   const [focusedButton, setFocusedButton] = useState(1); //0=voltar 1=Assistir, 2=Trailer, 3=Favorito, 4=Episódios
   const [showTrailer, setShowTrailer] = useState(false);
   const episodesRef = useRef<HTMLDivElement>(null);
@@ -116,53 +117,60 @@ export function useSeriesDetail() {
     return seasons;
   };
 
+  const handleLoadDetail = async (series: Series, isForceRefresh: boolean = false) => {
+    // ── Tentar cache primeiro ──────────────────────────────────────
+    try {
+      setLoading(true);
+      const KEY = `${KEYS_PROCESS_EPISODE}_${serverConfig?.url}_${series.id}`;
+      let loadedSeasons: Season[] | null = null;
+
+      const compressed = isForceRefresh ? null : await indexedDbStorage.get(KEY);
+
+      if (compressed) {
+        const cached = JSON.parse(LZString.decompress(String(compressed)));
+        console.log('📺 Episódios carregados do cache:', series.id);
+        loadedSeasons = cached as Season[];
+      } else {
+        // ── Carregar da API ──────────────────────────────────────────
+        console.log('🌐 Carregando episódios da API:', series.id);
+        loadedSeasons = await onLoadDetail(series.id);
+
+        // Salvar no cache
+        const compressed = LZString.compress(JSON.stringify(loadedSeasons));
+
+        await indexedDbStorage
+          .set(KEY, compressed)
+          .catch(e => console.error('❌ Erro ao salvar cache:', e));
+      }
+
+      // ── Enriquecer com progresso ───────────────────────────────────
+      const seasonsWithProgress = await Promise.all(
+        loadedSeasons.map(async (season: Season) => {
+          const episodes = await loadProgressForEpisodes(season.episodes);
+          return { ...season, episodes };
+        })
+      );
+
+      setSeasons(seasonsWithProgress);
+
+      // ── Ir para temporada do episódio atual ────────────────────────
+      if (currentEpisode) {
+        const seasonNum = findNextSeasonForEpisode(seasonsWithProgress);
+        setActiveSeason(seasonNum);
+      }
+    } catch (error) {
+      console.error('❌ Erro ao carregar episódios:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Carregar detalhes da série
   useEffect(() => {
     if (!series || series.loaded) return;
 
     const load = async () => {
-      setLoading(true);
-      try {
-        // ── Tentar cache primeiro ──────────────────────────────────────
-        const KEY = `${KEYS_PROCESS_EPISODE}_${serverConfig?.url}_${series.id}`;
-        let loadedSeasons: Season[] | null = null;
-
-        const cached = await indexedDbStorage.get(KEY);
-
-        if (cached && Array.isArray(cached)) {
-          console.log('📺 Episódios carregados do cache:', series.id);
-          loadedSeasons = cached as Season[];
-        } else {
-          // ── Carregar da API ──────────────────────────────────────────
-          console.log('🌐 Carregando episódios da API:', series.id);
-          loadedSeasons = await onLoadDetail(series.id);
-
-          // Salvar no cache
-          await indexedDbStorage
-            .set(KEY, loadedSeasons)
-            .catch(e => console.error('❌ Erro ao salvar cache:', e));
-        }
-
-        // ── Enriquecer com progresso ───────────────────────────────────
-        const seasonsWithProgress = await Promise.all(
-          loadedSeasons.map(async (season: Season) => {
-            const episodes = await loadProgressForEpisodes(season.episodes);
-            return { ...season, episodes };
-          })
-        );
-
-        setSeasons(seasonsWithProgress);
-
-        // ── Ir para temporada do episódio atual ────────────────────────
-        if (currentEpisode) {
-          const seasonNum = findNextSeasonForEpisode(seasonsWithProgress);
-          setActiveSeason(seasonNum);
-        }
-      } catch (error) {
-        console.error('❌ Erro ao carregar episódios:', error);
-      } finally {
-        setLoading(false);
-      }
+      await handleLoadDetail(series);
     };
 
     load();
@@ -297,6 +305,9 @@ export function useSeriesDetail() {
       } else if (focusedButton === 4) {
         // Episódios
         scrollToEpisodes();
+      } else if (focusedButton === 5) {
+        // Episódios
+        handleLoadDetail(series!, true);
       }
     },
     onBack: () => {
@@ -339,6 +350,7 @@ export function useSeriesDetail() {
     handleBack,
     handleToggleWatched,
     onLoadDetail,
+    handleLoadDetail,
 
     // Refs
     episodesRef,

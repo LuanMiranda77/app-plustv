@@ -10,7 +10,7 @@ import { DEV_MODE } from '../../config/devMode';
 import useWindowSize from '../../hooks/useWindowSize';
 import { Splash } from '../../pages/Splash';
 import { useAuthStore } from '../../store/authStore';
-import { useChannelStore } from '../../store/contentStore';
+import { useContentStore } from '../../store/contentStore';
 import { useHomeStore } from '../../store/homeStore';
 import { useWatchHistoryStore } from '../../store/watchHistoryStore';
 import { storage } from '../../utils/storage';
@@ -20,8 +20,8 @@ import MainHeader from './MainHeader';
 
 const Layout: React.FC = () => {
   const { serverConfig } = useAuthStore();
-  // const { fetchServerContent, isLoading } = useContentStore();
-  const { fetchLiveContent, isLoading } = useChannelStore();
+  const { fetchServerContent, isLoading } = useContentStore();
+  // const { fetchLiveContent, isLoading } = useServer();
   const [showSplash, setShowSplash] = useState(!DEV_MODE);
   const { loadFromStorage, activeProfile } = useAuthStore();
   const { loadFromStorage: loadHomeStorage } = useHomeStore();
@@ -55,9 +55,9 @@ const Layout: React.FC = () => {
 
       lastLoadedServerRef.current = serverKey;
       loadHomeStorage(serverConfig);
-      fetchLiveContent(serverConfig);
+      fetchServerContent(serverConfig);
     }
-  }, [serverConfig, fetchLiveContent, loadHomeStorage]);
+  }, [serverConfig, fetchServerContent, loadHomeStorage]);
 
   // Quando activeProfile muda, carregar dados específicos do perfil
   useEffect(() => {
@@ -108,8 +108,8 @@ const Layout: React.FC = () => {
   return (
     <Fragment>
       {showSplash && <Splash onFinish={handleSplashFinish} />}
-      {<ToastLoading isLoading={isLoading} message="Atualizando os canais...." />}
-      {!showSplash && !isLoading && (
+      {<ToastLoading isLoading={isLoading} message="Carregando aguarde...." />}
+      {!showSplash && (
         <Fragment>
           {shouldShowHeader && <MainHeader scrolling={false} />}
           <App />

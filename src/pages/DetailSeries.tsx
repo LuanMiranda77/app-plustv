@@ -36,6 +36,7 @@ export const DetailSeries = () => {
     handleBack,
     handleToggleWatched,
     setShowTrailer,
+    handleLoadDetail,
 
     // Refs
     episodesRef,
@@ -63,11 +64,12 @@ export const DetailSeries = () => {
           focusedButton={focusedButton}
           showTrailer={showTrailer}
           onSetShowTrailer={setShowTrailer}
+          onLoadDetail={handleLoadDetail}
         />
         {/* ── Episódios ─────────────────────────────────────────────────────────── */}
         <div ref={episodesRef} className="px-6 md:px-14 py-8">
           {/* Header da seção */}
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <div className="text-left flex items-center justify-between mb-6 flex-wrap gap-4">
             <div>
               <h2
                 className="text-2xl font-bold text-white mb-1"
