@@ -11,7 +11,6 @@ import useWindowSize from '../../hooks/useWindowSize';
 import { Splash } from '../../pages/Splash';
 import { useAuthStore } from '../../store/authStore';
 import { useChannelStore } from '../../store/contentStore';
-import { useFavoritesStore } from '../../store/favoritesStore';
 import { useHomeStore } from '../../store/homeStore';
 import { useWatchHistoryStore } from '../../store/watchHistoryStore';
 import { storage } from '../../utils/storage';
@@ -26,8 +25,6 @@ const Layout: React.FC = () => {
   const [showSplash, setShowSplash] = useState(!DEV_MODE);
   const { loadFromStorage, activeProfile } = useAuthStore();
   const { loadFromStorage: loadHomeStorage } = useHomeStore();
-  const { loadFromStorage: loadFavoritesFromStorage, setCurrentProfile: setFavoritesProfile } =
-    useFavoritesStore();
   const { loadFromStorage: loadHistoryFromStorage, setCurrentProfile: setHistoryProfile } =
     useWatchHistoryStore();
   const location = useLocation();
@@ -47,15 +44,8 @@ const Layout: React.FC = () => {
   useEffect(() => {
     if (isMobile) closeBar();
     loadFromStorage();
-    loadFavoritesFromStorage();
     loadHistoryFromStorage();
-  }, [
-    isMobile,
-    loadHomeStorage,
-    loadFromStorage,
-    loadHistoryFromStorage,
-    loadFavoritesFromStorage
-  ]);
+  }, [isMobile, loadHomeStorage, loadFromStorage, loadHistoryFromStorage]);
 
   useEffect(() => {
     if (serverConfig) {
@@ -72,10 +62,9 @@ const Layout: React.FC = () => {
   // Quando activeProfile muda, carregar dados específicos do perfil
   useEffect(() => {
     if (activeProfile?.id) {
-      setFavoritesProfile(activeProfile.id, serverConfig!);
       setHistoryProfile(activeProfile.id, serverConfig!);
     }
-  }, [activeProfile?.id, setFavoritesProfile, setHistoryProfile]);
+  }, [activeProfile?.id, setHistoryProfile]);
 
   useEffect(() => {
     let active = true;

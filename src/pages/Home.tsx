@@ -24,8 +24,6 @@ const MemoizedAdvertisementCarousel = memo(AdvertisementCarousel);
 
 export const Home = () => {
   const {
-    isLoading,
-    error,
     focusedSection,
     heroItems,
     topChannels,
@@ -80,7 +78,7 @@ export const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-y-scroll">
       {/* Auto Carousel Hero - Lazy loading */}
-      {heroItems.length > 0 && !isLoading && (
+      {heroItems.length > 0 && (
         <div
           data-focused={focusedSection === -1}
           className={focusedSection === -1 ? 'ring-2 ring-red-600 rounded-lg m-4' : ''}
@@ -96,13 +94,7 @@ export const Home = () => {
 
       {/* Main Content */}
       <div className="w-9/12 mx-auto px-6 space-y-16 pb-16">
-        {!isLoading && error && (
-          <div className="bg-red-900/20 border border-red-600/50 rounded-lg p-4 mb-6">
-            <p className="text-red-400">Erro ao carregar conteúdo: {error}</p>
-          </div>
-        )}
-
-        {!isLoading && (
+        {
           <>
             {/* Continue Watching */}
             {recentlyWatched.length > 0 && (
@@ -269,7 +261,7 @@ export const Home = () => {
               </div>
             )}
           </>
-        )}
+        }
       </div>
     </div>
   );

@@ -16,9 +16,6 @@ export const DetailMovie = () => {
     // Progresso
     getPorcentagem,
 
-    // Favoritos
-    isFavorite,
-
     // Ações
     handlePlay,
     handleBack,
@@ -42,7 +39,6 @@ export const DetailMovie = () => {
           focusedButton={focusedButton}
           showTrailer={showTrailer}
           onSetShowTrailer={setShowTrailer}
-          isFav={isFavorite(movie.id)}
         />
       </div>
     )

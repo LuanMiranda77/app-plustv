@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import type { Category, Channel, Movie, Series, ServerConfig } from '../types';
-import { xtreamApi } from '../utils/xtreamApi';
 import { CacheService } from '../utils/cacheService';
 import { delay, requestWithRetry } from '../utils/nertwork';
+import { xtreamApi } from '../utils/xtreamApi';
 import { useHomeStore } from './homeStore';
 
 interface ContentState {
@@ -25,6 +25,9 @@ interface ChannelState {
   isCacheValidAsyncChannel: (config: ServerConfig) => Promise<boolean>;
   clearCache: (config: ServerConfig) => Promise<void>;
   fetchLiveContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>;
+  toggleFavorite: (id: string, config: ServerConfig) => void;
+  isFavorite: (id: string) => boolean;
+  getFavorites: () => Channel[];
 }
 interface SeriesState {
   series: Series[];
@@ -37,6 +40,9 @@ interface SeriesState {
   isCacheValidAsyncSeries: (config: ServerConfig) => Promise<boolean>;
   clearCache: (config: ServerConfig) => Promise<void>;
   fetchSeriesContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>;
+  toggleFavorite: (id: string, config: ServerConfig) => void;
+  isFavorite: (id: string) => boolean;
+  getFavorites: () => Series[];
 }
 interface MovieState {
   movies: Movie[];
@@ -49,6 +55,9 @@ interface MovieState {
   isCacheValidAsyncMovie: (config: ServerConfig) => Promise<boolean>;
   clearCache: (config: ServerConfig) => Promise<void>;
   fetchMoviesContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>;
+  toggleFavorite: (id: string, config: ServerConfig) => void;
+  isFavorite: (id: string) => boolean;
+  getFavorites: () => Movie[];
 }
 
 const orderByName = (list: any[]): any[] => {
@@ -317,7 +326,7 @@ export const useChannelStore = create<ChannelState>((set, get) => ({
   fetchLiveContent: async (config, forceRefresh) => {
     try {
       if (!forceRefresh && (await get().isCacheValidAsyncChannel(config))) {
-        console.log("load-cahce-channels");
+        console.log('load-cahce-channels');
         await get().loadFromCache(config);
         return;
       }
@@ -327,10 +336,24 @@ export const useChannelStore = create<ChannelState>((set, get) => ({
       console.log('carregar');
       const { channels, liveCatsRaw } = await findLiveSevice(config, cahceChannels);
       set({ channels, liveCategories: liveCatsRaw, isLoading: false });
-    } catch(e) {
+    } catch (e) {
       console.error('Erro ao atualizar canais', e);
       set({ error: 'Erro ao atualizar canais', isLoading: false });
     }
+  },
+
+  isFavorite: id => get().channels.some(c => c.id === id && c.isFavorite),
+
+  getFavorites: () => get().channels.filter(c => c.isFavorite),
+
+  toggleFavorite: async (id, config) => {
+    const channels = get().channels.map(c =>
+      c.id === id ? { ...c, isFavorite: !c.isFavorite } : c
+    );
+    set({ channels });
+    const updated = channels.find(c => c.id === id);
+    if (!updated) return;
+    await CacheService.patchFavoriteInList(config, 'LIST_CHANNELS', id, updated.isFavorite);
   }
 }));
 
@@ -383,6 +406,18 @@ export const useMovieStore = create<MovieState>((set, get) => ({
     } catch {
       set({ error: 'Erro ao atualizar canais', isLoading: false });
     }
+  },
+
+  isFavorite: id => get().movies.some(m => m.id === id && m.isFavorite),
+
+  getFavorites: () => get().movies.filter(m => m.isFavorite),
+
+  toggleFavorite: async (id, config) => {
+    const movies = get().movies.map(m => (m.id === id ? { ...m, isFavorite: !m.isFavorite } : m));
+    set({ movies });
+    const updated = movies.find(m => m.id === id);
+    if (!updated) return;
+    await CacheService.patchFavoriteInList(config, 'LIST_MOVIES', id, updated.isFavorite);
   }
 }));
 
@@ -436,6 +471,18 @@ export const useSeriesStore = create<SeriesState>((set, get) => ({
     } catch {
       set({ error: 'Erro ao atualizar canais', isLoading: false });
     }
+  },
+
+  isFavorite: id => get().series.some(s => s.id === id && s.isFavorite),
+
+  getFavorites: () => get().series.filter(s => s.isFavorite),
+
+  toggleFavorite: async (id, config) => {
+    const series = get().series.map(s => (s.id === id ? { ...s, isFavorite: !s.isFavorite } : s));
+    set({ series });
+    const updated = series.find(s => s.id === id);
+    if (!updated) return;
+    await CacheService.patchFavoriteInList(config, 'LIST_SERIES', id, updated.isFavorite);
   }
 }));
 

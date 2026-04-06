@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
-import { useFavoritesStore } from '../store/favoritesStore';
+import { useMovieStore } from '../store/contentStore';
 import type { Movie } from '../types';
 import { getProgress } from '../utils/progressWatched';
-import { useRemoteControl } from './useRemotoControl';
 import { useBackGuard } from './useBackGuard';
+import { useRemoteControl } from './useRemotoControl';
 
 export function ueseDetailMovie() {
   const { activeProfile } = useAuthStore();
@@ -15,11 +15,11 @@ export function ueseDetailMovie() {
   const [focusedButton, setFocusedButton] = useState(1); // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
   const [showTrailer, setShowTrailer] = useState(false);
   const pageRef = useRef<HTMLDivElement>(null);
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const { toggleFavorite } = useMovieStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [movie, setMovie] = useState<Movie | null>(null);
-  const {serverConfig} = useAuthStore();
+  const { serverConfig } = useAuthStore();
 
   const loadProgress = async (movie: Movie) => {
     const progress = await getProgress('movie', profileId!, String(movie!.id), serverConfig!);
@@ -72,12 +72,8 @@ export function ueseDetailMovie() {
 
   const handleToggleFavorite = () => {
     if (!movie) return;
-
-    if (isFavorite(movie.id)) {
-      removeFavorite(movie.id, serverConfig!);
-    } else {
-      addFavorite(movie, 'movie', serverConfig!);
-    }
+    setMovie({ ...movie, isFavorite: !movie.isFavorite });
+    toggleFavorite(movie.id, serverConfig!);
   };
 
   // Interceptar voltar nativo do navegador/TV
@@ -137,13 +133,10 @@ export function ueseDetailMovie() {
     // Progresso
     getPorcentagem,
 
-    // Favoritos
-    isFavorite,
-
     // Ações
     handlePlay,
     handleBack,
     handleToggleFavorite,
-    loadProgress,
+    loadProgress
   };
 }

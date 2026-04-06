@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import { useSeriesStore } from '../store/contentStore';
-import { useFavoritesStore } from '../store/favoritesStore';
 import type { Series } from '../types';
 import { storage } from '../utils/storage';
 import { useBackGuard } from './useBackGuard';
@@ -16,7 +15,7 @@ export function useSeriesPage() {
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const { isFavorite } = useFavoritesStore();
+
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
@@ -47,7 +46,7 @@ export function useSeriesPage() {
     const matchesCategory =
       !selectedCategory ||
       s.category === selectedCategory ||
-      (selectedCategory === '-1' && isFavorite(s.id));
+      (selectedCategory === '-1' && s.isFavorite);
     return matchesSearch && matchesCategory;
   });
 
@@ -289,7 +288,6 @@ export function useSeriesPage() {
     setDisplayCount,
     isLoadingMore,
     setIsLoadingMore,
-    isFavorite,
     loadMoreRef,
     gridRef,
     categoriesRef,

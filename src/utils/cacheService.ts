@@ -9,7 +9,8 @@ export type ListType = 'LIST_CHANNELS' | 'LIST_SERIES' | 'LIST_MOVIES';
 
 const getServerId = (config: ServerConfig) => `${config.url}|${config.username}`;
 
-const getKey = (config: ServerConfig, typeList: ListType) => `CACHE_${typeList}_${getServerId(config)}`;
+const getKey = (config: ServerConfig, typeList: ListType) =>
+  `CACHE_${typeList}_${getServerId(config)}`;
 
 export const CacheService = {
   // ─────────────────────────────────────────────
@@ -27,6 +28,38 @@ export const CacheService = {
     await indexedDbStorage.set(key, compressed);
 
     console.log('💾 Cache FULL salvo:', key);
+  },
+
+  async patchFavoriteInList(
+    config: ServerConfig,
+    typeList: ListType,
+    id: string,
+    isFavorite: boolean
+  ) {
+    const key = getKey(config, typeList);
+    const compressed = await indexedDbStorage.get(key);
+
+    if (!compressed) return;
+
+    try {
+      const parsed = JSON.parse(LZString.decompress(String(compressed)));
+      const listKey =
+        typeList === 'LIST_CHANNELS'
+          ? 'channels'
+          : typeList === 'LIST_MOVIES'
+            ? 'movies'
+            : 'series';
+      const list = Array.isArray(parsed?.[listKey]) ? parsed[listKey] : [];
+
+      parsed[listKey] = list.map((item: any) =>
+        String(item.id) === String(id) ? { ...item, isFavorite } : item
+      );
+
+      const updatedCompressed = LZString.compress(JSON.stringify(parsed));
+      await indexedDbStorage.set(key, updatedCompressed);
+    } catch {
+      console.error('❌ Erro ao atualizar favorito no cache:', key);
+    }
   },
   // ─────────────────────────────────────────────
   // SALVAR CACHE COMPLETO (compressão)

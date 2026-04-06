@@ -20,7 +20,6 @@ interface SeriesHeroBannerProps {
   focusedButton?: number; // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
   showTrailer: boolean;
   onSetShowTrailer: (params: boolean) => void;
-  isFav?: boolean;
 }
 
 export const MovieHeroBanner = ({
@@ -32,7 +31,6 @@ export const MovieHeroBanner = ({
   onBack,
   onPlay,
   onToggleFavorite,
-  isFav
 }: SeriesHeroBannerProps) => {
   const progressPercent = calcProgressPercent(movie.progress ?? 0, movie.duration);
 
@@ -104,7 +102,7 @@ export const MovieHeroBanner = ({
                 <ButtonFavorite
                   onClick={() => onToggleFavorite(movie)}
                   isFocused={focusedButton === 3}
-                  isFav={isFav}
+                  isFav={movie.isFavorite}
                 />
               )}
             </div>

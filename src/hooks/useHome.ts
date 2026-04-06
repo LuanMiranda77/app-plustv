@@ -34,6 +34,7 @@ export function useHome() {
   const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'content';
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // const [isLoading, setIsLoading] = useState(false);
 
   // Estados para navegação de TV
   const [focusedSection, setFocusedSection] = useState(0);

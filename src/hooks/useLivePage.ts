@@ -6,7 +6,6 @@ import { useFocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
 import { useChannelStore } from '../store/contentStore';
-import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Channel } from '../types';
 import { requestWithRetry } from '../utils/nertwork';
@@ -19,9 +18,8 @@ import useWindowSize from './useWindowSize';
 
 export function useLivePage() {
   const location = useLocation();
-  const { channels, liveCategories } = useChannelStore();
+  const { channels, liveCategories, toggleFavorite } = useChannelStore();
   const { serverConfig } = useAuthStore();
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const { addChannelToHistory } = useWatchHistoryStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -61,11 +59,11 @@ export function useLivePage() {
       const matchesCategory =
         !selectedCategory ||
         channel.category === selectedCategory ||
-        (selectedCategory === '-1' && isFavorite(String(channel.id)));
+        (selectedCategory === '-1' && channel.isFavorite);
 
       return matchesSearch && matchesCategory;
     });
-  }, [channels, searchTerm, selectedCategory, isFavorite]);
+  }, [channels, searchTerm, selectedCategory]);
 
   const displayedChannels = useMemo(() => {
     return filteredChannels.slice(0, displayCount);
@@ -180,12 +178,7 @@ export function useLivePage() {
 
   const handleFavoriteToggle = (channel: Channel) => {
     if (!channel) return;
-
-    if (isFavorite(String(channel.id))) {
-      removeFavorite(String(channel.id), serverConfig!);
-    } else {
-      addFavorite(channel, 'live', serverConfig!);
-    }
+    toggleFavorite(channel.id, serverConfig!);
   };
 
   const isRestoringRef = useRef(false);
@@ -437,9 +430,6 @@ export function useLivePage() {
     setIsLoadingEpg,
     setlectLiveIndex,
     setSetlectLiveIndex,
-    isFavorite,
-    addFavorite,
-    removeFavorite,
     loadMoreRef,
     gridRef,
     categoriesRef,

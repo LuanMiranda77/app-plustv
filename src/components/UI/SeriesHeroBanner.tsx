@@ -1,5 +1,4 @@
 import { ChevronDown } from 'lucide-react';
-import { useFavoritesStore } from '../../store/favoritesStore';
 import type { Episode, Season, Series } from '../../types';
 import { TrailerModal } from '../Player/TrilerModal';
 import { ButtonBack } from './ButtonBack';
@@ -21,11 +20,11 @@ interface SeriesHeroBannerProps {
   currentEpisodeId?: string;
   onBack: () => void;
   onPlayNext: () => void;
-  onToggleFavorite?: (id: string) => void;
+  onToggleFavorite?: (series:Series) => void;
   onScrollToEpisodes: () => void;
   focusedButton?: number; // 0=Assistir, 1=Trailer, 2=Favorito, 3=Episódios
   showTrailer: boolean;
-  onSetShowTrailer: (params:boolean) => void;
+  onSetShowTrailer: (params: boolean) => void;
 }
 
 export const SeriesHeroBanner = ({
@@ -41,11 +40,8 @@ export const SeriesHeroBanner = ({
   onScrollToEpisodes,
   focusedButton = 0,
   showTrailer = false,
-  onSetShowTrailer,
+  onSetShowTrailer
 }: SeriesHeroBannerProps) => {
-  const { isFavorite } = useFavoritesStore();
-  const isFav = isFavorite(String(series.id));
-
   return (
     <div className="relative h-[60vh] min-h-[500px] overflow-hidden">
       {/* Backdrop */}
@@ -70,7 +66,7 @@ export const SeriesHeroBanner = ({
       <TrailerModal
         youtubeId={series.youtube_trailer ?? ''}
         open={showTrailer}
-        onClose={()=>onSetShowTrailer(false)}
+        onClose={() => onSetShowTrailer(false)}
       />
 
       {/* Conteúdo hero */}
@@ -115,9 +111,9 @@ export const SeriesHeroBanner = ({
               />
               {onToggleFavorite && (
                 <ButtonFavorite
-                  onClick={() => onToggleFavorite(series.id)}
+                  onClick={() => onToggleFavorite(series)}
                   isFocused={focusedButton === 3}
-                  isFav={isFav}
+                  isFav={series.isFavorite}
                 />
               )}
               <ButtonIcon

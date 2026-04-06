@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
-import { useFavoritesStore } from '../store/favoritesStore';
+import { useSeriesStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Episode, Season, Series } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
@@ -26,7 +26,6 @@ export function useSeriesDetail() {
     }
   }, [location]);
 
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const { activeProfile, serverConfig } = useAuthStore();
   const profileId = activeProfile?.id;
   const [activeSeason, setActiveSeason] = useState(1);
@@ -40,6 +39,7 @@ export function useSeriesDetail() {
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
   const currentEpisodes = seasons.find(s => s.number === activeSeason)?.episodes ?? [];
   const { toggleWatched } = useWatchHistoryStore();
+  const { toggleFavorite } = useSeriesStore();
   // ─── Helpers ──────────────────────────────────────────────────────────────────
   const getTotalProgress = (seasons: Season[]) => {
     const allEps = seasons.flatMap(s => s.episodes);
@@ -198,14 +198,10 @@ export function useSeriesDetail() {
     navigate('/series', { state: series });
   };
 
-  const handleToggleFavorite = (seriesId: string) => {
-    if (series) {
-      if (isFavorite(seriesId)) {
-        removeFavorite(seriesId, serverConfig!);
-      } else {
-        addFavorite(series, 'series', serverConfig!);
-      }
-    }
+  const handleToggleFavorite = (serie: Series) => {
+    if (!serie) return;
+    setSeries({ ...serie, isFavorite: !serie.isFavorite });
+    toggleFavorite(serie.id, serverConfig!);
   };
 
   const handleToggleWatched = (epsodioID: string) => {
@@ -297,7 +293,7 @@ export function useSeriesDetail() {
         setShowTrailer(true);
       } else if (focusedButton === 3) {
         // Favorito
-        handleToggleFavorite(series?.id || '');
+        handleToggleFavorite(series!);
       } else if (focusedButton === 4) {
         // Episódios
         scrollToEpisodes();

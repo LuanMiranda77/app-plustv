@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import { useMovieStore } from '../store/contentStore';
-import { useFavoritesStore } from '../store/favoritesStore';
 import type { Movie } from '../types';
 import { storage } from '../utils/storage';
 import { useBackGuard } from './useBackGuard';
@@ -20,7 +19,6 @@ export function useMoviesPage() {
   const gridRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const { activeZone, setActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -50,11 +48,11 @@ export function useMoviesPage() {
       const matchesCategory =
         !selectedCategory ||
         channel.category === selectedCategory ||
-        (selectedCategory === '-1' && isFavorite(String(channel.id)));
+        (selectedCategory === '-1' && channel.isFavorite);
 
       return matchesSearch && matchesCategory;
     });
-  }, [movies, searchTerm, selectedCategory, isFavorite]);
+  }, [movies, searchTerm, selectedCategory]);
 
   const displayedMovies = useMemo(() => {
     return filteredMovies.slice(0, displayCount);
@@ -302,9 +300,6 @@ export function useMoviesPage() {
     setDisplayCount,
     isLoadingMore,
     setIsLoadingMore,
-    isFavorite,
-    addFavorite,
-    removeFavorite,
     loadMoreRef,
     gridRef,
     categoriesRef,

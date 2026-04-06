@@ -8,7 +8,6 @@ import RemoteHint from '../components/UI/RemoteHint';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
-import { useFavoritesStore } from '../store/favoritesStore';
 import { useHomeStore } from '../store/homeStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Profile } from '../types';
@@ -25,7 +24,6 @@ export const ProfileSelect = () => {
   const navigate = useNavigate();
   const { serverConfig } = useAuthStore();
   const { profiles, addProfile, updateProfile, setActiveProfile } = useAuthStore();
-  const { setCurrentProfile: setFavoritesProfile } = useFavoritesStore();
   const { setCurrentProfile: setHistoryProfile } = useWatchHistoryStore();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProfile, setNewProfile] = useState({ name: '', avatar: '🎬' });
@@ -188,7 +186,6 @@ export const ProfileSelect = () => {
 
   const handleSelectProfile = (profile: Profile) => {
     setActiveProfile(profile);
-    setFavoritesProfile(profile.id, serverConfig!);
     setHistoryProfile(profile.id, serverConfig!);
     navigate('/home');
   };

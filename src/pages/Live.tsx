@@ -42,8 +42,7 @@ export const Live = () => {
     handlePlayStream,
     navigateLive,
     isAdultUnlocked,
-    handleFavoriteToggle,
-    isFavorite,
+    handleFavoriteToggle
   } = useLivePage();
 
   return (
@@ -106,9 +105,8 @@ export const Live = () => {
                   id={channel.id}
                   channel={channel}
                   isFocused={isZoneList && focusedIndex === i}
-                  setlected={setlectLiveIndex === channel.id}
+                  setlected={setlectLiveIndex == Number(channel.id)}
                   onFavoriteToggle={handleFavoriteToggle}
-                  isFav={isFavorite(String(channel.id))}
                   onPlay={() => {
                     if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
                       handlePlayStream(channel);
