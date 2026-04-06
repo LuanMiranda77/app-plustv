@@ -119,10 +119,10 @@ export const DropdownBase = ({
       <button
         onClick={handleButtonClick}
         disabled={isLoading}
-        title="Atualizar conteúdo"
+        title="Configurações"
         className={`
           relative p-2 rounded-lg transition-all duration-200
-          disabled:opacity-50 disabled:cursor-not-allowed
+          disabled:opacity-70 disabled:cursor-not-allowed
           ${
             isFocused && isContent
               ? 'bg-red-600/20 scale-110': isFocused || isOpen
@@ -136,7 +136,6 @@ export const DropdownBase = ({
             className={`
               w-6 h-6 max-md:w-4 max-md:h-4
               ${isFocused || isOpen ? 'text-white' : 'text-red-600'}
-              ${isLoading ? 'animate-spin' : ''}
             `}
           />
         )}

@@ -6,6 +6,11 @@ export interface ServerConfig {
   password: string;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+}
+
 // Perfil de usuário
 export interface Profile {
   id: string;
@@ -17,7 +22,7 @@ export interface Profile {
 
 // Canal de TV ao vivo
 export interface Channel {
-  id: number; // → número de exibição
+  id: string; // → número de exibição
   name: string; // → "UFC TV 03"
   streamUrl: string; // → chave para montar a URL    // → chave para montar a URL
   logo: string; // → logo do canal
@@ -33,14 +38,14 @@ export interface Movie {
   streamUrl: string;
   category: string;
   rating?: string;
-  year?: string;
+  year: string;
   youtube_trailer?: string;
   genre?: string;
   plot?: string;
   isFavorite: boolean;
   watched: boolean;
-  progress?: number; // segundos assistidos
-  duration?: number; // duração total em segundos
+  progress: number; // segundos assistidos
+  duration: number; // duração total em segundos
   displayDuration?: string; // duração formatada (ex: "1h 30m")
 }
 
@@ -53,7 +58,7 @@ export interface Series {
   rating?: string;
   plot?: string;
   genre?: string;
-  year?: string;
+  year: string;
   youtube_trailer?: string;
   seasons: Season[];
   isFavorite: boolean;
@@ -83,8 +88,8 @@ export interface Episode {
   genre?: string;
   year?: string;
   watched: boolean;
-  progress?: number; // segundos assistidos
-  duration?: number; // duração total em segundos
+  progress: number; // segundos assistidos
+  duration: number; // duração total em segundos
   displayDuration?: string; // duração formatada (ex: "1h 30m")
 }
 

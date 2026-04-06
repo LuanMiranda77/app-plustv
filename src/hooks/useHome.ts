@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/preserve-manual-memoization */
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
-import { useContentStore } from '../store/contentStore';
+import { useHomeStore } from '../store/homeStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import { useRemoteControl } from './useRemotoControl';
 
@@ -26,7 +26,7 @@ interface Section {
 
 export function useHome() {
   const navigate = useNavigate();
-  const { movies, channels, series, isLoading, error } = useContentStore();
+  const { topChannel, newMovies, trendingMovies, newSeries, trendingSeries } = useHomeStore();
   const { getRecentlyWatched, getRecentChannels } = useWatchHistoryStore();
   const [recentlyWatched, setRecentlyWatched] = useState<any[]>([]);
   const [recentChannels, setRecentChannels] = useState<any[]>([]);
@@ -41,29 +41,8 @@ export function useHome() {
 
   // Memoizar dados derivados para evitar recálculos desnecessários
   const topChannels = useMemo(
-    () => (recentChannels.length > 0 ? recentChannels : channels.slice(0, 8)),
-    [recentChannels, channels]
-  );
-
-  const newMovies = useMemo(() => movies.slice(0, 10), [movies]);
-  const newSeries = useMemo(() => series.slice(0, 10), [series]);
-
-  const trendingMovies = useMemo(
-    () =>
-      movies.filter((m, i) => {
-        const ratingNum = m.rating && m.rating !== 'N/A' ? Number(m.rating) : 0;
-        return ratingNum >= 6 && i < 30;
-      }),
-    [movies]
-  );
-
-  const trendingSeries = useMemo(
-    () =>
-      series.filter((m, i) => {
-        const ratingNum = m.rating && m.rating !== 'N/A' ? Number(m.rating) : 0;
-        return ratingNum >= 7 && i < 30;
-      }),
-    [series]
+    () => (recentChannels.length > 0 ? recentChannels : topChannel),
+    [recentChannels, topChannel]
   );
 
   // Memoizar seções visíveis
@@ -128,16 +107,16 @@ export function useHome() {
   // Memoizar hero items
   const heroItems = useMemo(
     () => [
-      ...movies.slice(0, 5).map(m => ({
+      ...trendingMovies.slice(0, 5).map(m => ({
         ...m,
         onPlay: () => navigateMovie(m)
       })),
-      ...series.slice(0, 5).map(s => ({
+      ...trendingSeries.slice(0, 5).map(s => ({
         ...s,
         onPlay: () => navigateSerie(s, 'detail-series')
       }))
     ],
-    [movies, series]
+    [trendingMovies, trendingSeries]
   );
 
   // Funções de navegação memoizadas
@@ -353,8 +332,8 @@ export function useHome() {
 
   return {
     // Estado
-    isLoading,
-    error,
+    // isLoading,
+    // error,
     focusedSection,
     focusedItemIndex,
 

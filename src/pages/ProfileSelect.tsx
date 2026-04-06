@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-render */
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LogoHeader from '../components/Logos/LogoHeader';
 import { Button } from '../components/UI/Button';
@@ -8,8 +8,8 @@ import RemoteHint from '../components/UI/RemoteHint';
 import { useRemoteControl } from '../hooks/useRemotoControl';
 import useWindowSize from '../hooks/useWindowSize';
 import { useAuthStore } from '../store/authStore';
-import { useContentStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
+import { useHomeStore } from '../store/homeStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Profile } from '../types';
 
@@ -36,7 +36,7 @@ export const ProfileSelect = () => {
     name: string;
     avatar: string;
   } | null>(null);
-  const { movies, series, isLoading } = useContentStore();
+  const { trendingMovies, trendingSeries } = useHomeStore();
   const { isMobile } = useWindowSize();
 
   // Estado para controlar quando o carousel deve ser renderizado
@@ -49,16 +49,17 @@ export const ProfileSelect = () => {
 
   // Memoizar os itens do carousel para evitar recálculos desnecessários
   useMemo(() => {
-    if (!isLoading && (movies.length > 0 || series.length > 0)) {
+    if (trendingMovies.length > 0 || trendingSeries.length > 0) {
       const items = [
-        ...movies.slice(0, 3).map(m => ({ ...m })),
-        ...series.slice(0, 3).map(s => ({ ...s }))
+        ...trendingMovies.slice(0, 5).map(m => ({ ...m })),
+        ...trendingSeries.slice(0, 5).map(s => ({ ...s }))
       ];
+
       setCarouselItems(items);
       // Delay para mostrar o carousel apenas após os dados estarem prontos
       setTimeout(() => setShowCarousel(true), 100);
     }
-  }, [movies, series, isLoading]);
+  }, [trendingMovies, trendingSeries, setCarouselItems]);
 
   // Total de itens: perfis + botão de adicionar (se disponível)
   const totalItems = profiles.length + (profiles.length < 5 ? 1 : 0);
@@ -231,7 +232,7 @@ export const ProfileSelect = () => {
   return (
     <div className="relative min-h-screen overflow-y-auto bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-8">
       {/* Carousel otimizado - apenas renderiza quando os dados estão prontos */}
-      {!isLoading && carouselItems.length > 0 && !isMobile && (
+      {carouselItems.length > 0 && !isMobile && (
         <div className="absolute inset-0 z-10 right-0 w-full">
           <Suspense fallback={<CarouselLoader />}>
             {showCarousel && (

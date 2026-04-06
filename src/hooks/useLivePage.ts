@@ -1,25 +1,25 @@
 /* eslint-disable react-hooks/set-state-in-effect */
+import moment from 'moment';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
+import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
-import { useContentStore } from '../store/contentStore';
+import { useChannelStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import type { Channel } from '../types';
 import { requestWithRetry } from '../utils/nertwork';
+import { storage } from '../utils/storage';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 import useWindowSize from './useWindowSize';
-import type { Channel } from '../types';
-import type { PlayerStream } from '../pages/Player';
-import { storage } from '../utils/storage';
-import moment from 'moment';
 // import { epgMock } from '../data/mockData';
 
 export function useLivePage() {
   const location = useLocation();
-  const { channels, liveCategories } = useContentStore();
+  const { channels, liveCategories } = useChannelStore();
   const { serverConfig } = useAuthStore();
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const { addChannelToHistory } = useWatchHistoryStore();
@@ -175,11 +175,10 @@ export function useLivePage() {
 
   const handlePlayStream = (stream: Channel) => {
     setCurrentStream(stream);
-    setSetlectLiveIndex(stream.id);
+    setSetlectLiveIndex(Number(stream.id));
   };
 
   const handleFavoriteToggle = (channel: Channel) => {
-    console.log(channel);
     if (!channel) return;
 
     if (isFavorite(String(channel.id))) {

@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
-import { useContentStore } from '../store/contentStore';
+import { useMovieStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Movie } from '../types';
+import { storage } from '../utils/storage';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { storage } from '../utils/storage';
 
 export function useMoviesPage() {
-  const { movies, vodCategories } = useContentStore();
+  const { movies, vodCategories } = useMovieStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);

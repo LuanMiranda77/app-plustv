@@ -50,9 +50,31 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
   const [confirmFocusBtn, setConfirmFocusBtn] = useState(1); // 1 = confirmar por padrão
 
   const { activeProfile } = useAuthStore();
-  const { lastUpdate, forceRefresh, isLoading, loadingTarget } = useServerContent();
+  const { forceRefresh, isLoading, loadingTarget, lastChannel, lastSeries, lastVod } =
+    useServerContent();
   const { activeZone, setActiveZone } = useFocusZone();
   const { serverConfig } = useAuthStore();
+
+  const updateDates = useMemo(
+    () =>
+      [
+        lastChannel ? { label: 'Canais', date: lastChannel } : null,
+        lastVod ? { label: 'Filmes', date: lastVod } : null,
+        lastSeries ? { label: 'Séries', date: lastSeries } : null
+      ].filter(Boolean) as { label: string; date: number }[],
+    [lastChannel, lastVod, lastSeries]
+  );
+
+  const [updateDateIndex, setUpdateDateIndex] = useState(0);
+
+  useEffect(() => {
+    if (updateDates.length === 0) return;
+    setUpdateDateIndex(0);
+    const id = setInterval(() => {
+      setUpdateDateIndex(i => (i + 1) % updateDates.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, [updateDates.length]);
 
   const isAdultUnlocked = useMemo(() => {
     if (typeof window === 'undefined') return false;
@@ -292,12 +314,12 @@ const MainHeader: React.FC<Props> = ({ scrolling }) => {
               {/* ── Ações ───────────────────────────────────────────────── */}
               <section className="relative flex items-center gap-3">
                 {/* Data de atualização */}
-                {lastUpdate && (
+                {updateDates.length > 0 && (
                   <div className="text-right">
                     <b className="text-gray-300 text-lg max-md:text-xs">Atualizado em</b>{' '}
                     <p className="text-gray-400 text-sm max-md:text-[10px]">
-                      {serverConfig?.url?.replace(/^https?:\/\//, '')} -
-                      {moment(lastUpdate).format('DD/MM/YY HH:mm')}
+                      {serverConfig?.name} - {updateDates[updateDateIndex]?.label} |{' '}
+                      {moment(updateDates[updateDateIndex]?.date).format('DD/MM/YY HH:mm')}
                     </p>
                   </div>
                 )}

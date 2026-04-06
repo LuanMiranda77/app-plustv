@@ -1,100 +1,99 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { useContentStore } from '../store/contentStore';
-import { storage, STORAGE_KEYS } from '../utils/storage';
+import {
+  useChannelStore,
+  useContentStore,
+  useMovieStore,
+  useSeriesStore
+} from '../store/contentStore';
 
 type RefreshTarget = 'all' | 'live' | 'movies' | 'series';
 
 export const useServerContent = () => {
   const { serverConfig } = useAuthStore();
+  const { fetchServerContent } = useContentStore();
+  const { lastUpdate: lastChannel, fetchLiveContent } = useChannelStore();
   const {
-    fetchServerContent,
-    fetchLiveContent, // ← precisará existir no contentStore
-    fetchMoviesContent, // ← precisará existir no contentStore
-    fetchSeriesContent, // ← precisará existir no contentStore
-    isLoading,
-    error,
-    channels,
-    movies,
-    series,
-    lastUpdate,
-    isCacheValidAsync,
-    loadFromCache,
-    clearCache
-  } = useContentStore();
-
+    lastUpdate: lastVod,
+    fetchMoviesContent,
+    isCacheValidAsyncMovie,
+    loadFromCache: loadCacheMovie
+  } = useMovieStore();
+  const {
+    lastUpdate: lastSeries,
+    fetchSeriesContent,
+    isCacheValidAsyncSeries,
+    loadFromCache: loadCacheSerie
+  } = useSeriesStore();
   const [loadingTarget, setLoadingTarget] = useState<RefreshTarget | null>(null);
-
-  useEffect(() => {
-    const cached = storage.get(STORAGE_KEYS.PLAYLIST_CACHE);
-    if (cached && JSON.stringify(cached).length > 5000000) {
-      console.log('🧹 Cache localStorage muito grande! Limpando...');
-      clearCache(serverConfig!);
-    }
-
-    if (serverConfig) {
-      isCacheValidAsync(serverConfig)
-        .then(isValid => {
-          if (isValid) {
-            console.log('✅ Cache do IndexedDB VÁLIDO! Carregando dados...');
-            loadFromCache(serverConfig);
-          } else {
-            console.log('⏰ Cache expirado. Buscando dados do servidor...');
-            fetchServerContent(serverConfig);
-          }
-        })
-        .catch(error => {
-          console.error('❌ Erro ao verificar cache:', error);
-          fetchServerContent(serverConfig);
-        });
-    }
-  }, [serverConfig]);
+  const [isLoading, setIsLoading] = useState(false); // ← para forçar re-render quando necessário
 
   // ── forceRefresh com target ───────────────────────────────────────────────
   const forceRefresh = async (target: RefreshTarget = 'all') => {
     if (!serverConfig) return;
-
     setLoadingTarget(target);
-    console.log(`🔄 Atualizando: ${target}`);
-
+    setIsLoading(true);
     try {
-       switch (target) {
-         case 'all':
-           await fetchServerContent(serverConfig, true);
-           break;
-         case 'live':
-           await fetchLiveContent(serverConfig);
-           break;
-         case 'movies':
-           await fetchMoviesContent(serverConfig);
-           break;
-         case 'series':
-           await fetchSeriesContent(serverConfig);
-           break;
-       }
+      switch (target) {
+        case 'all':
+          await fetchServerContent(serverConfig, true);
+          break;
+        case 'live':
+          await fetchLiveContent(serverConfig, true);
+          break;
+        case 'movies':
+          await fetchMoviesContent(serverConfig, true);
+          break;
+        case 'series':
+          await fetchSeriesContent(serverConfig, true);
+          break;
+      }
     } catch (error) {
       console.error(`❌ Erro ao atualizar ${target}:`, error);
     } finally {
+      setIsLoading(false);
       setLoadingTarget(null);
     }
   };
 
-  const getTimeUntilNextUpdate = () => {
-    if (!lastUpdate) return null;
-    const CACHE_DURATION = 72 * 60 * 60 * 1000;
-    return new Date(lastUpdate + CACHE_DURATION);
-  };
+  useEffect(() => {
+    if (!serverConfig) return;
+
+    const checkCacheAndLoad = async () => {
+      setIsLoading(true);
+
+      try {
+        const [moviesValid, seriesValid] = await Promise.all([
+          isCacheValidAsyncMovie(serverConfig),
+          isCacheValidAsyncSeries(serverConfig)
+        ]);
+
+        await Promise.all([
+          moviesValid ? loadCacheMovie(serverConfig) : fetchMoviesContent(serverConfig),
+          seriesValid ? loadCacheSerie(serverConfig) : fetchSeriesContent(serverConfig)
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkCacheAndLoad();
+  }, [
+    serverConfig,
+    isCacheValidAsyncMovie,
+    isCacheValidAsyncSeries,
+    loadCacheMovie,
+    loadCacheSerie,
+    fetchMoviesContent,
+    fetchSeriesContent
+  ]);
 
   return {
     isLoading,
-    error,
-    channels,
-    movies,
-    series,
-    hasContent: channels.length > 0 || movies.length > 0 || series.length > 0,
-    lastUpdate: lastUpdate ? new Date(lastUpdate) : null,
-    nextUpdate: getTimeUntilNextUpdate(),
     loadingTarget, // ← novo
+    lastChannel,
+    lastVod,
+    lastSeries,
     forceRefresh // ← agora aceita target
   };
 };

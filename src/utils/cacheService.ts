@@ -5,16 +5,18 @@ import { STORAGE_KEYS } from './storage';
 
 const CACHE_DURATION = 72 * 60 * 60 * 1000; // 72h
 
+export type ListType = 'LIST_CHANNELS' | 'LIST_SERIES' | 'LIST_MOVIES';
+
 const getServerId = (config: ServerConfig) => `${config.url}|${config.username}`;
 
-const getKey = (config: ServerConfig) => `cache_${getServerId(config)}`;
+const getKey = (config: ServerConfig, typeList: ListType) => `CACHE_${typeList}_${getServerId(config)}`;
 
 export const CacheService = {
   // ─────────────────────────────────────────────
   // SALVAR CACHE COMPLETO (compressão)
   // ─────────────────────────────────────────────
-  async saveFull(data: any, config: ServerConfig) {
-    const key = getKey(config);
+  async saveCacheList(data: any, config: ServerConfig, typeList: ListType) {
+    const key = getKey(config, typeList);
     const payload = {
       ...data,
       timestamp: Date.now()
@@ -26,43 +28,59 @@ export const CacheService = {
 
     console.log('💾 Cache FULL salvo:', key);
   },
+  // ─────────────────────────────────────────────
+  // SALVAR CACHE COMPLETO (compressão)
+  // ─────────────────────────────────────────────
+  // async saveFull(data: any, config: ServerConfig) {
+  //   const key = getKey(config);
+  //   const payload = {
+  //     ...data,
+  //     timestamp: Date.now()
+  //   };
+
+  //   const compressed = LZString.compress(JSON.stringify(payload));
+
+  //   await indexedDbStorage.set(key, compressed);
+
+  //   console.log('💾 Cache FULL salvo:', key);
+  // },
 
   // ─────────────────────────────────────────────
   // SALVAR PARCIAL (incremental)
   // ─────────────────────────────────────────────
-  async savePartial(data: any, config: ServerConfig) {
-    const key = getKey(config);
+  // async savePartial(data: any, config: ServerConfig) {
+  //   const key = getKey(config);
 
-    const existingCompressed = await indexedDbStorage.get(key);
+  //   const existingCompressed = await indexedDbStorage.get(key);
 
-    let existing = {};
+  //   let existing = {};
 
-    if (existingCompressed) {
-      try {
-        existing = JSON.parse(LZString.decompress(String(existingCompressed)));
-      } catch {
-        existing = {};
-      }
-    }
+  //   if (existingCompressed) {
+  //     try {
+  //       existing = JSON.parse(LZString.decompress(String(existingCompressed)));
+  //     } catch {
+  //       existing = {};
+  //     }
+  //   }
 
-    const updated = {
-      ...existing,
-      ...data,
-      timestamp: Date.now()
-    };
+  //   const updated = {
+  //     ...existing,
+  //     ...data,
+  //     timestamp: Date.now()
+  //   };
 
-    const compressed = LZString.compress(JSON.stringify(updated));
+  //   const compressed = LZString.compress(JSON.stringify(updated));
 
-    await indexedDbStorage.set(key, compressed);
+  //   await indexedDbStorage.set(key, compressed);
 
-    console.log('💾 Cache PARCIAL atualizado:', key);
-  },
+  //   console.log('💾 Cache PARCIAL atualizado:', key);
+  // },
 
   // ─────────────────────────────────────────────
   // CARREGAR CACHE
   // ─────────────────────────────────────────────
-  async load(config: ServerConfig) {
-    const key = getKey(config);
+  async load(config: ServerConfig, typeList: ListType) {
+    const key = getKey(config, typeList || 'LIST_CHANNELS');
 
     const compressed = await indexedDbStorage.get(key);
 
@@ -83,8 +101,8 @@ export const CacheService = {
   // ─────────────────────────────────────────────
   // VALIDAR CACHE
   // ─────────────────────────────────────────────
-  async isValid(config: ServerConfig) {
-    const cache = await this.load(config);
+  async isValid(config: ServerConfig, typeList: ListType) {
+    const cache = await this.load(config, typeList);
 
     if (!cache?.timestamp) return false;
 
@@ -100,8 +118,8 @@ export const CacheService = {
   // ─────────────────────────────────────────────
   // LIMPAR CACHE
   // ─────────────────────────────────────────────
-  async clear(config: ServerConfig) {
-    const key = getKey(config);
+  async clear(config: ServerConfig, typeList?: ListType) {
+    const key = getKey(config, typeList || 'LIST_CHANNELS');
     await indexedDbStorage.remove(key);
 
     const prefixEpisodes = `${STORAGE_KEYS.LIST_EPISODES}_${config.url}`;

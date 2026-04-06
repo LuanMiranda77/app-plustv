@@ -181,7 +181,7 @@ export const Home = () => {
             {/* New Movies */}
             {newMovies.length > 0 && (
               <MemoizedCarouselSection
-                title="Lançamentos"
+                title="Filmes Lançamentos"
                 subtitle="Confira os novos filmes adicionados"
                 icon={Sparkles}
                 items={newMovies}
@@ -241,7 +241,7 @@ export const Home = () => {
             {/* New Series */}
             {newSeries.length > 0 && (
               <MemoizedCarouselSection
-                title="Lançamentos"
+                title="Séries Lançamentos"
                 subtitle="Confira as novas séries adicionadas"
                 icon={Sparkles}
                 items={newSeries}

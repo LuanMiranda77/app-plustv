@@ -2,15 +2,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFocusZone } from '../Context/FocusContext';
-import { useContentStore } from '../store/contentStore';
+import { useSeriesStore } from '../store/contentStore';
 import { useFavoritesStore } from '../store/favoritesStore';
 import type { Series } from '../types';
+import { storage } from '../utils/storage';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
-import { storage } from '../utils/storage';
 
 export function useSeriesPage() {
-  const { series, seriesCategories } = useContentStore();
+  const { series, seriesCategories } = useSeriesStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
