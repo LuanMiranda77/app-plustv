@@ -28,13 +28,13 @@ export default function ButtonFavorite({ isFav, isFocused, onClick, isLoading }:
       ) : (
         <Heart
           className={`
-          w-5 h-5 transition-all duration-200
+          w-8 h-8 max-sm:w-5 max-sm:h-5 transition-all duration-200
           ${isFocused || isFav ? 'stroke-red-500 fill-red-500' : 'fill-none stroke-current'}
         `}
           strokeWidth={2}
         />
       )}
-      {isFav ? 'Favoritado' : 'Favoritar'}
+      {/* {isFav ? 'Favoritado' : 'Favoritar'} */}
     </button>
   );
 }

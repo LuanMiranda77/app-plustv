@@ -11,7 +11,7 @@ export default function GenreBadges({ genre, max = 3 }: Props) {
       {genre.replaceAll('&', ',').replaceAll('|', ',').split(',').slice(0, max).map((g) => (
         <span
           key={g}
-          className="text-xl max-md:text-xs px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-zinc-300"
+          className="text-3xl max-md:text-xs px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-zinc-300"
         >
           {g.trim()}
         </span>

@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'lucide-react';
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -122,8 +123,6 @@ export function useMoviesPage() {
   };
   const handleClose = () => {
     setCurrentMovie(null);
-    setIsDetail(false);
-    setActiveZone('list');
     // navigate('/detail-movie', { state: movie });
   };
 
@@ -148,6 +147,13 @@ export function useMoviesPage() {
       setFocusedInput(false);
       inputRef.current?.blur();
       setActiveZone('menu');
+    }
+
+    if (e.key === 'ArrowLeft' || e.keyCode === 37) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('content');
     }
 
     if (e.key === 'ArrowDown' || e.keyCode === 40) {

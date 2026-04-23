@@ -10,7 +10,7 @@ type Props = {
 
 export default function MetaText({ year, rating, seasonsCount, total, percent }: Props) {
   return (
-    <div className="flex items-center gap-4 mb-4 flex-wrap text-2xl max-md:text-sm">
+    <div className="flex items-center gap-4 mb-4 flex-wrap text-4xl max-md:text-sm">
       {year && <span className="text-zinc-400 ">{year}</span>}
       {rating && <StarRating rating={rating} />}
       {seasonsCount && (

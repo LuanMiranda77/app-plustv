@@ -72,7 +72,7 @@ export const MovieHeroBanner = ({
 
       {/* Conteúdo hero */}
       <div className="absolute inset-0 mt-10 flex items-end pb-10 px-8 md:px-14">
-        <div className="flex gap-8 items-end max-w-7xl w-full">
+        <div className="flex gap-8 items-end w-full">
           {/* Poster */}
           <Poster
             poster={movie?.poster ?? ''}
@@ -86,7 +86,7 @@ export const MovieHeroBanner = ({
 
             {/* Título */}
             <h1
-              className="text-7xl max-md:text-4xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
+              className="text-8xl max-md:text-4xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
               style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
             >
               {movie?.name}

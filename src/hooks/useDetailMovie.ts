@@ -23,8 +23,8 @@ export function ueseDetailMovie({ ...props }: any) {
   const [isLoadingFav, setIsLoadingFav] = useState(false);
   const { serverConfig } = useAuthStore();
   const { isDetail, setIsDetail } = useDetailContext();
-  const { setActiveZone, isActiveZone } = useFocusZone();
-  const zone: FocusZone = 'detail';
+  const { isActiveZone, setActiveZone } = useFocusZone();
+  const zoneDetail: FocusZone = 'detail';
 
   // const currentMovie = props?.currentMovie as Movie | null;
 
@@ -72,8 +72,6 @@ export function ueseDetailMovie({ ...props }: any) {
       type: 'movie',
       location: 'movie'
     };
-
-    console.log(movie);
     // setMovie(movie);
     setPlayerStream(state);
     // setIsDetail(true);
@@ -84,9 +82,9 @@ export function ueseDetailMovie({ ...props }: any) {
     // navigate('/movie', { state: movie });
     // setIsDetail(false);
     setPlayerStream(null);
+    setIsDetail(false);
+    setActiveZone('list');
     props.onClose();
-    // props?.setCurrentMovie(null);
-    // setActiveZone('list');
   };
 
   const handleToggleFavorite = async () => {
@@ -106,22 +104,22 @@ export function ueseDetailMovie({ ...props }: any) {
   // Remote Control Navigation
   useRemoteControl({
     onUp: () => {
-      if (!isActiveZone(zone)) return;
+      if (!isActiveZone(zoneDetail)) return;
       setFocusedButtonDetail(0); // Focar no botão Voltar
     },
     onDown() {
-      if (!isActiveZone(zone)) return;
+      if (!isActiveZone(zoneDetail)) return;
       setFocusedButtonDetail(1); // Focar no botão Assistir
     },
     onRight: () => {
-      if (!isActiveZone(zone)) return;
+      if (!isActiveZone(zoneDetail)) return;
       if (focusedButtonDetail < maxButtons - 1) {
         console.log(focusedButtonDetail + 1);
         return setFocusedButtonDetail(prev => prev + 1);
       }
     },
     onLeft: () => {
-      if (!isActiveZone(zone)) return;
+      if (!isActiveZone(zoneDetail)) return;
       // Navegar entre botões ao contrário
       if (focusedButtonDetail > 1) {
         console.log(focusedButtonDetail - 1);
@@ -129,9 +127,7 @@ export function ueseDetailMovie({ ...props }: any) {
       }
     },
     onOk: () => {
-      console.log(isActiveZone(zone));
-      console.log(playerStream, isDetail);
-      if (!isActiveZone(zone)) return;
+      if (!isActiveZone(zoneDetail)) return;
       // Executar ação do botão focado
       if (focusedButtonDetail === 0) {
         // Voltar
@@ -148,7 +144,7 @@ export function ueseDetailMovie({ ...props }: any) {
       }
     },
     onBack: () => {
-      if (!isActiveZone(zone)) return;
+      if (!isActiveZone(zoneDetail)) return;
       handleBack();
     }
   });
