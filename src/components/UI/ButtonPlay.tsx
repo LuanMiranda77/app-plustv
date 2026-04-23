@@ -14,7 +14,7 @@ export default function ButtonPlay({ isFocused, disabled, streamId, nextEpisode,
       onClick={onClick}
       disabled={disabled}
       className={`
-        flex items-center gap-2.5 px-8 py-3 rounded-xl font-semibold text-2xl max-md:text-sm
+        flex items-center gap-2.5 px-8 py-3 rounded-xl font-semibold text-4xl max-md:text-sm
         transition-all duration-200 shadow-lg
         disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100
         ${
@@ -24,12 +24,12 @@ export default function ButtonPlay({ isFocused, disabled, streamId, nextEpisode,
         }
       `}
     >
-      <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 max-sm:w-5 max-sm:h-5 fill-white" viewBox="0 0 24 24">
         <path d="M8 5v14l11-7z" />
       </svg>
       {streamId ? 'Continuar' : 'Assistir'}
       {nextEpisode && (
-        <span className="text-red-200 font-normal text-xl max-md:text-xs">
+        <span className="text-red-200 font-normal text-3xl max-md:text-xs">
           E{String(nextEpisode?.number).padStart(2, '0')}
         </span>
       )}

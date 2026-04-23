@@ -3,10 +3,11 @@ import { Heart } from 'lucide-react';
 type Props = {
   isFav?: boolean;
   isFocused: boolean;
+  isLoading?: boolean;
   onClick: () => void;
 };
 
-export default function ButtonFavorite({ isFav, isFocused, onClick }: Props) {
+export default function ButtonFavorite({ isFav, isFocused, onClick, isLoading }: Props) {
   return (
     <button
       onClick={onClick}
@@ -22,13 +23,17 @@ export default function ButtonFavorite({ isFav, isFocused, onClick }: Props) {
         }
       `}
     >
-      <Heart
-        className={`
+      {isLoading ? (
+        <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+      ) : (
+        <Heart
+          className={`
           w-5 h-5 transition-all duration-200
           ${isFocused || isFav ? 'stroke-red-500 fill-red-500' : 'fill-none stroke-current'}
         `}
-        strokeWidth={2}
-      />
+          strokeWidth={2}
+        />
+      )}
       {isFav ? 'Favoritado' : 'Favoritar'}
     </button>
   );

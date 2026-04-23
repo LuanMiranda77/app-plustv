@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { VideoPlayer } from '../../components/Player/VideoPlayer';
 import { useBackGuard } from '../../hooks/useBackGuard';
 import { useRemoteControl } from '../../hooks/useRemotoControl';
 import { useAuthStore } from '../../store/authStore';
 import type { Episode, Season, Series } from '../../types';
 import { indexedDbStorage } from '../../utils/indexedDbStorage';
 import { KEYS_PROCESS_EPISODE } from '../../utils/keys_cache';
+import { VideoPlayer } from './VideoPlayer';
 
 export interface PlayerStream {
   id: string | number;
@@ -53,7 +53,12 @@ const normalizePlayerState = (state: PlayerStream): PlayerStream | null => {
   } as PlayerStream;
 };
 
-export const Player = () => {
+interface PlayerComponentProps {
+  playerStream?: PlayerStream;
+  handleBack: () => void;
+}
+
+export const PlayerCoomponent: React.FC<PlayerComponentProps> = ({ playerStream, handleBack }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -102,7 +107,8 @@ export const Player = () => {
 
   // ── Inicializar stream ────────────────────────────────────────────────────
   useEffect(() => {
-    const parsedStream = normalizePlayerState(location.state);
+    if (!playerStream) return;
+    const parsedStream = normalizePlayerState(playerStream);
 
     if (parsedStream && currentStream === null) {
       setCurrentStream(parsedStream);
@@ -112,7 +118,7 @@ export const Player = () => {
         setCurrentSeasonNumber(parsedStream.seasonNumber || 1);
       }
     }
-  }, [location, currentStream]);
+  }, [location, currentStream, playerStream]);
 
   // ── Lista flat de todos os episódios em ordem ─────────────────────────────
   const allEpisodes: (Episode & { _season: number })[] = seasons
@@ -173,9 +179,7 @@ export const Player = () => {
 
   // ── Voltar ────────────────────────────────────────────────────────────────
   const handleGoBack = () => {
-    navigate(`/${currentStream?.location ?? currentStream?.type}`, {
-      state: currentStream?.parentContent ?? currentStream
-    });
+    handleBack();
     setCurrentStream(null);
   };
 

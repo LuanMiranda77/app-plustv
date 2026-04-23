@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useDetailContext } from '../Context/DetailContext';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
 import { useMovieStore } from '../store/contentStore';
@@ -7,19 +7,26 @@ import type { Movie } from '../types';
 import { getProgress } from '../utils/progressWatched';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
+import { useFocusZone, type FocusZone } from '../Context/FocusContext';
 
-export function ueseDetailMovie() {
+export function ueseDetailMovie({ ...props }: any) {
   const { activeProfile } = useAuthStore();
   const profileId = activeProfile?.id;
   const [loading, setLoading] = useState(false);
-  const [focusedButton, setFocusedButton] = useState(1); // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
+  const maxButtons = 4;
+  const [focusedButtonDetail, setFocusedButtonDetail] = useState(1); // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
   const [showTrailer, setShowTrailer] = useState(false);
   const pageRef = useRef<HTMLDivElement>(null);
   const { toggleFavorite } = useMovieStore();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [playerStream, setPlayerStream] = useState<PlayerStream | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [isLoadingFav, setIsLoadingFav] = useState(false);
   const { serverConfig } = useAuthStore();
+  const { isDetail, setIsDetail } = useDetailContext();
+  const { setActiveZone, isActiveZone } = useFocusZone();
+  const zone: FocusZone = 'detail';
+
+  // const currentMovie = props?.currentMovie as Movie | null;
 
   const loadProgress = async (movie: Movie) => {
     const progress = await getProgress('movie', profileId!, String(movie!.id), serverConfig!);
@@ -33,22 +40,26 @@ export function ueseDetailMovie() {
   };
 
   useEffect(() => {
-    const state = location.state as any;
-    if (state && movie === null) {
-      const load = async () => {
-        setLoading(true);
-        try {
-          // ── Enriquecer com progresso ───────────────────────────────────
-          loadProgress(state);
-        } catch (error) {
-          console.error('❌ Erro ao carregar episódios:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      load();
-    }
-  }, [location]);
+    console.log(props);
+    // if (!props?.currentMovie) {
+    //   setMovie(null);
+    //   return;
+    // }
+
+    const load = async () => {
+      setLoading(true);
+      try {
+        // ── Enriquecer com progresso ───────────────────────────────────
+        await loadProgress(props?.currentMovie);
+      } catch (error) {
+        console.error('❌ Erro ao carregar episódios:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [props?.currentMovie]);
 
   const handlePlay = () => {
     if (!movie) return;
@@ -59,58 +70,85 @@ export function ueseDetailMovie() {
       title: movie.name,
       poster: movie.poster,
       type: 'movie',
-      location: 'detail-movie'
+      location: 'movie'
     };
 
-    setMovie(movie);
-    navigate('/player', { state: state });
+    console.log(movie);
+    // setMovie(movie);
+    setPlayerStream(state);
+    // setIsDetail(true);
+    // navigate('/player', { state: state });
   };
 
   const handleBack = () => {
-    navigate('/movie', { state: movie });
+    // navigate('/movie', { state: movie });
+    // setIsDetail(false);
+    setPlayerStream(null);
+    props.onClose();
+    // props?.setCurrentMovie(null);
+    // setActiveZone('list');
   };
 
-  const handleToggleFavorite = () => {
+  const handleToggleFavorite = async () => {
     if (!movie) return;
+    setIsLoadingFav(true);
+    await toggleFavorite(movie.id, serverConfig!);
     setMovie({ ...movie, isFavorite: !movie.isFavorite });
-    toggleFavorite(movie.id, serverConfig!);
+    setIsLoadingFav(false);
   };
 
   // Interceptar voltar nativo do navegador/TV
-  useBackGuard(!!movie, showTrailer ? () => setShowTrailer(false) : handleBack);
+  useBackGuard(isDetail, showTrailer ? () => setShowTrailer(false) : handleBack);
 
   const getPorcentagem =
     !movie?.progress || !movie.duration ? 0 : (movie.progress / movie.duration) * 100;
 
   // Remote Control Navigation
   useRemoteControl({
+    onUp: () => {
+      if (!isActiveZone(zone)) return;
+      setFocusedButtonDetail(0); // Focar no botão Voltar
+    },
+    onDown() {
+      if (!isActiveZone(zone)) return;
+      setFocusedButtonDetail(1); // Focar no botão Assistir
+    },
     onRight: () => {
-      // Navegar entre botões (Voltar → Assistir → Trailer → Favorito)
-      const maxButtons = 4; // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
-      setFocusedButton(prev => (prev + 1) % maxButtons);
+      if (!isActiveZone(zone)) return;
+      if (focusedButtonDetail < maxButtons - 1) {
+        console.log(focusedButtonDetail + 1);
+        return setFocusedButtonDetail(prev => prev + 1);
+      }
     },
     onLeft: () => {
+      if (!isActiveZone(zone)) return;
       // Navegar entre botões ao contrário
-      const maxButtons = 4;
-      setFocusedButton(prev => (prev - 1 + maxButtons) % maxButtons);
+      if (focusedButtonDetail > 1) {
+        console.log(focusedButtonDetail - 1);
+        setFocusedButtonDetail(prev => prev - 1);
+      }
     },
     onOk: () => {
+      console.log(isActiveZone(zone));
+      console.log(playerStream, isDetail);
+      if (!isActiveZone(zone)) return;
       // Executar ação do botão focado
-      if (focusedButton === 0) {
+      if (focusedButtonDetail === 0) {
         // Voltar
         handleBack();
-      } else if (focusedButton === 1) {
+      } else if (focusedButtonDetail === 1) {
         // Assistir
         handlePlay();
-      } else if (focusedButton === 2 && movie?.youtube_trailer) {
+      } else if (focusedButtonDetail === 2 && movie?.youtube_trailer) {
         // Trailer
         setShowTrailer(true);
-      } else if (focusedButton === 3) {
+      } else if (focusedButtonDetail === 3) {
         // Favorito
         handleToggleFavorite();
       }
     },
     onBack: () => {
+      if (!isActiveZone(zone)) return;
       handleBack();
     }
   });
@@ -123,10 +161,15 @@ export function ueseDetailMovie() {
     movie,
     setMovie,
     loading,
+    playerStream,
+    setPlayerStream,
+    isDetail,
+    isLoadingFav,
+    setIsLoadingFav,
 
     // UI
-    focusedButton,
-    setFocusedButton,
+    focusedButtonDetail,
+    setFocusedButtonDetail,
     showTrailer,
     setShowTrailer,
 

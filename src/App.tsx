@@ -1,21 +1,21 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { ConfigServer } from './pages/ConfigServer';
+import { DetailMovie } from './pages/DetailMovie';
+import { DetailSeries } from './pages/DetailSeries';
 import { Home } from './pages/Home';
 import { Live } from './pages/Live';
 import { Login } from './pages/Login';
-import { Movies } from './pages/Movies';
+import { Movies } from './pages/movie/Movies';
 import { Player } from './pages/Player';
 import { ProfileSelect } from './pages/ProfileSelect';
-import { PageSeries } from './pages/Series';
-import { DetailSeries } from './pages/DetailSeries';
+import { PageSeries } from './pages/series/Series';
 import { WatchHistory } from './pages/WatchHistory';
 import { useAuthStore } from './store/authStore';
-import { DetailMovie } from './pages/DetailMovie';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
-  
+
   return (
     <Routes>
       <Route

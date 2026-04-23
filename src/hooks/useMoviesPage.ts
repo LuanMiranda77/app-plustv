@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDetailContext } from '../Context/DetailContext';
 import { useFocusZone } from '../Context/FocusContext';
 import { useMovieStore } from '../store/contentStore';
 import type { Movie } from '../types';
@@ -13,7 +15,7 @@ export function useMoviesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
-  const [displayCount, setDisplayCount] = useState(20);
+  const [displayCount, setDisplayCount] = useState(15);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -23,6 +25,7 @@ export function useMoviesPage() {
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedInput, setFocusedInput] = useState(false);
+  const { isDetail, setIsDetail } = useDetailContext();
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
   const location = useLocation();
@@ -59,25 +62,26 @@ export function useMoviesPage() {
   }, [filteredMovies, displayCount]);
   const hasMoreMovies = displayCount < filteredMovies.length;
 
-  useBackGuard(!!currentMovie, () => setCurrentMovie(null));
   // Adicionar um ref para controlar se veio de navegação
   const isRestoringRef = useRef(false);
 
   // carregar filme do estado ao voltar para a página
-  useEffect(() => {
-    const state = location.state as any;
-    if (state && !isRestoringRef.current) {
-      isRestoringRef.current = true; // ← marca que está restaurando
-      setActiveZone('list');
-      setSelectedCategory(state.category || null);
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   const state = location.state as any;
+  //   if (state && !isRestoringRef.current) {
+  //     isRestoringRef.current = true; // ← marca que está restaurando
+  //     // Ao voltar para a página, força foco na lista e restaura a categoria vinda da navegação.
+  //     setActiveZone('list');
+  //     setSelectedCategory(state.category || null);
+  //   }
+  // }, [location]);
 
   // 2. só após filteredMovies atualizar, busca o índice correto
   useEffect(() => {
     const state = location.state as any;
     if (!state || !isRestoringRef.current) return;
 
+    // Ao voltar, encontra o filme que veio no state para restaurar foco/scroll no card correto.
     const index = filteredMovies.findIndex(s => s.id === state.id);
     if (index === -1) return;
 
@@ -106,12 +110,21 @@ export function useMoviesPage() {
       }
 
       isRestoringRef.current = false;
-    }, 300); // ← aumentar de 150ms para 300ms
+    }, 300);
+    // ← aumentar de 150ms para 300ms
   }, [filteredMovies]);
 
-  const handleNavigate = (movie: Movie) => {
-    setCurrentMovie(movie);
-    navigate('/detail-movie', { state: movie });
+  const handleNavigate = (current: Movie) => {
+    setCurrentMovie(current);
+    setIsDetail(true);
+    setActiveZone('detail');
+    // navigate('/detail-movie', { state: movie });
+  };
+  const handleClose = () => {
+    setCurrentMovie(null);
+    setIsDetail(false);
+    setActiveZone('list');
+    // navigate('/detail-movie', { state: movie });
   };
 
   const handleCategoryClick = (id: string | null) => {
@@ -145,6 +158,10 @@ export function useMoviesPage() {
       setFocusedIndex(0);
     }
   };
+
+  useBackGuard(!!currentMovie, () => {
+    isDetail ? handleClose() : setCurrentMovie(null);
+  });
 
   useRemoteControl({
     onRight: () => {
@@ -224,6 +241,7 @@ export function useMoviesPage() {
     onBack: () => {
       if (currentMovie) {
         window.history.back();
+        setIsDetail(false);
         return;
       }
       if (isZoneList || isZoneCat) {
@@ -235,6 +253,7 @@ export function useMoviesPage() {
   useEffect(() => {
     const state = location.state as any;
     if (state) {
+      // Ao voltar de outra tela, restaura o filme atual e a categoria selecionada.
       setCurrentMovie(state);
       setSelectedCategory(state.category || null);
     } else {
@@ -321,6 +340,8 @@ export function useMoviesPage() {
     handleNavigate,
     handleCategoryClick,
     handleInputKeyDown,
-    isAdultUnlocked
+    isAdultUnlocked,
+    isDetail,
+    handleClose
   };
 }

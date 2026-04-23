@@ -1,7 +1,9 @@
+import { useLocation } from 'react-router-dom';
 import MovieHeroBanner from '../components/UI/MovieHeroBanner';
 import { ueseDetailMovie } from '../hooks/useDetailMovie';
 
 export const DetailMovie = () => {
+  const location = useLocation();
   const {
     // Refs
     pageRef,
@@ -21,7 +23,7 @@ export const DetailMovie = () => {
     handleBack,
     handleToggleFavorite,
     setShowTrailer
-  } = ueseDetailMovie();
+  } = ueseDetailMovie({movie: location.state });
  
   return (
     movie && (

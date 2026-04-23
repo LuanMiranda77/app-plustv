@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable no-extra-boolean-cast */
+import { useMemo } from 'react';
 import type { Movie } from '../../types';
 import { calcProgressPercent } from '../../utils/progressWatched';
 import { TrailerModal } from '../Player/TrilerModal';
@@ -12,13 +14,14 @@ import PlotText from './PlotText';
 import Poster from './Poster';
 
 interface SeriesHeroBannerProps {
-  movie: Movie;
+  movie?: Movie;
   percent: number;
   onBack: () => void;
   onPlay: () => void;
   onToggleFavorite?: (movie: Movie) => void;
   focusedButton?: number; // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
   showTrailer: boolean;
+  isLoadingFav: boolean;
   onSetShowTrailer: (params: boolean) => void;
 }
 
@@ -31,8 +34,14 @@ export const MovieHeroBanner = ({
   onBack,
   onPlay,
   onToggleFavorite,
+  isLoadingFav
 }: SeriesHeroBannerProps) => {
-  const progressPercent = calcProgressPercent(movie.progress ?? 0, movie.duration);
+  const progressPercent = useMemo(
+    () => calcProgressPercent(movie?.progress ?? 0, movie?.duration),
+    [movie]
+  );
+
+  // useBackGuard(showTrailer, () => onSetShowTrailer(false));
 
   return (
     <div className="relative h-[calc(100vh-60px)] overflow-hidden">
@@ -40,7 +49,7 @@ export const MovieHeroBanner = ({
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${movie.poster})`,
+          backgroundImage: `url(${movie?.poster})`,
           animation: 'heroFade 0.8s ease both'
         }}
       />
@@ -53,10 +62,10 @@ export const MovieHeroBanner = ({
       <ButtonBack
         className="absolute top-6 left-6 z-10"
         onClick={onBack}
-        isFocused={focusedButton === 0}
+        isFocused={focusedButton == 0}
       />
       <TrailerModal
-        youtubeId={movie.youtube_trailer ?? ''}
+        youtubeId={movie?.youtube_trailer ?? ''}
         open={showTrailer}
         onClose={() => onSetShowTrailer(false)}
       />
@@ -65,44 +74,49 @@ export const MovieHeroBanner = ({
       <div className="absolute inset-0 mt-10 flex items-end pb-10 px-8 md:px-14">
         <div className="flex gap-8 items-end max-w-7xl w-full">
           {/* Poster */}
-          <Poster poster={movie.poster} name={movie.name} progressPercent={progressPercent} />
+          <Poster
+            poster={movie?.poster ?? ''}
+            name={movie?.name ?? ''}
+            progressPercent={progressPercent}
+          />
 
           {/* Info */}
           <div className="flex-1 min-w-0" style={{ animation: 'fadeSlideIn 0.6s ease 0.2s both' }}>
-            <GenreBadges genre={movie.genre ?? ''} max={5} />
+            <GenreBadges genre={movie?.genre ?? ''} max={5} />
 
             {/* Título */}
             <h1
               className="text-7xl max-md:text-4xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
               style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
             >
-              {movie.name}
+              {movie?.name}
             </h1>
             <MetaText
-              year={movie.year}
-              rating={movie.rating ? Number(movie.rating) : 0}
+              year={movie?.year}
+              rating={movie?.rating ? Number(movie?.rating) : 0}
               percent={percent}
             />
 
-            <PlotText plot={movie.plot ?? ''} />
+            <PlotText plot={movie?.plot ?? ''} />
 
             {/* Ações */}
             <div className="flex items-center gap-3 flex-wrap">
               <PlayButton
-                isFocused={focusedButton === 1}
-                streamId={movie.progress ? movie.id : undefined}
+                isFocused={focusedButton == 1}
+                streamId={movie?.progress ? movie?.id : undefined}
                 onClick={onPlay}
               />
               <ButtonTrailer
-                isFocused={focusedButton === 2}
+                isFocused={focusedButton == 2}
                 disabled={Boolean(movie?.youtube_trailer) == false}
                 onClick={() => onSetShowTrailer(true)}
               />
               {onToggleFavorite && (
                 <ButtonFavorite
-                  onClick={() => onToggleFavorite(movie)}
-                  isFocused={focusedButton === 3}
-                  isFav={movie.isFavorite}
+                  onClick={() => onToggleFavorite(movie!)}
+                  isFocused={focusedButton == 3}
+                  isFav={movie?.isFavorite}
+                  isLoading={isLoadingFav}
                 />
               )}
             </div>
