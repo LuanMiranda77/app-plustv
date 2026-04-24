@@ -80,7 +80,6 @@ export function ueseDetailMovie({ ...props }: any) {
 
   const handleBack = () => {
     // navigate('/movie', { state: movie });
-    // setIsDetail(false);
     setPlayerStream(null);
     setIsDetail(false);
     setActiveZone('list');

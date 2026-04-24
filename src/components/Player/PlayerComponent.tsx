@@ -187,7 +187,7 @@ export const PlayerCoomponent: React.FC<PlayerComponentProps> = ({ playerStream,
 
   useRemoteControl({
     onBack: () => {
-      if (currentStream) window.history.back();
+      if (currentStream) handleGoBack();
     }
   });
 

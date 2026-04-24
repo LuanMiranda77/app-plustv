@@ -86,7 +86,7 @@ export const MovieHeroBanner = ({
 
             {/* Título */}
             <h1
-              className="text-8xl max-md:text-4xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
+              className="text-6xl max-sm::text-xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
               style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
             >
               {movie?.name}

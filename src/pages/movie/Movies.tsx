@@ -48,10 +48,8 @@ export const Movies = () => {
   return (
     <Fragment>
       <Modal open={isDetail} onClose={handleClose}>
-        {/* <div>tedtedg</div> */}
         <DetailMovie currentMovie={currentMovie} onClose={handleClose} />
       </Modal>
-      {/* <DetailMovie currentMovie={currentMovie!} setCurrentMovie={setCurrentMovie} /> */}
       <div className={`max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950`}>
         <div className="flex mt-[60px] h-[calc(100vh-60px)]">
           {/* ── Categorias ───────────────────────────────────────────────────── */}

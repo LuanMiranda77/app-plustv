@@ -133,7 +133,7 @@ export const PlayerControls = ({
 
         {/* Title bar */}
         <div
-          className={`absolute top-4 left-4 flex items-center gap-2 transition-opacity duration-300 
+          className={`absolute top-4 left-4 pr-10 w-full flex items-center justify-between gap-2 transition-opacity duration-300 
           ${isVisible ? 'opacity-100' : 'opacity-0'}
           `}
         >
@@ -144,7 +144,7 @@ export const PlayerControls = ({
           >
             <ArrowLeft />
           </button>
-          {type != 'live' && <h2 className="text-xl font-semibold">{title}</h2>}
+          {type != 'live' && <h2 className="text-2xl max-sm:text-lg font-semibold">{title}</h2>}
         </div>
 
         {/* Loading spinner */}

@@ -91,7 +91,7 @@ export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
       )}
       {/* year lacament */}
       {stream.year && (
-        <div className="absolute bottom-0 right-0 bg-red-600 text-white text-xs px-1 py-0.5 rounded-tl opacity-80">
+        <div className="absolute bottom-0 right-0 bg-red-600 text-white text-2xl max-sm:text-xs px-1 py-0.5 rounded-tl opacity-80">
           {stream.year == 'N/A' ? '0000' : stream.year}
         </div>
       )}

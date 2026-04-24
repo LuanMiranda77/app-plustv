@@ -12,20 +12,22 @@ import { getProgress } from '../utils/progressWatched';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
+import { useDetailContext } from '../Context/DetailContext';
+import { useFocusZone, type FocusZone } from '../Context/FocusContext';
 
-export function useSeriesDetail() {
+export function useSeriesDetail({ ...props }: any) {
   const navigate = useNavigate();
   const location = useLocation();
   const [series, setSeries] = useState<Series | null>(null);
   const [seasons, setSeasons] = useState<Season[]>([]);
 
   useEffect(() => {
-    const state = location.state as any;
-    if (state && series === null) {
-      setSeries(state);
-      setSeasons(state.seasons || []);
+    // const state = location.state as any;
+    if (props.currentSerie && series === null) {
+      setSeries(props.currentSerie);
+      setSeasons(props.currentSerie.seasons || []);
     }
-  }, [location]);
+  }, [props.currentSerie]);
 
   const { activeProfile, serverConfig } = useAuthStore();
   const profileId = activeProfile?.id;
@@ -41,6 +43,11 @@ export function useSeriesDetail() {
   const currentEpisodes = seasons.find(s => s.number === activeSeason)?.episodes ?? [];
   const { toggleWatched } = useWatchHistoryStore();
   const { toggleFavorite } = useSeriesStore();
+  const [playerStream, setPlayerStream] = useState<PlayerStream | null>(null);
+  const { isDetail, setIsDetail } = useDetailContext();
+  const { isActiveZone, setActiveZone } = useFocusZone();
+  const zoneDetail: FocusZone = 'detail';
+
   // ─── Helpers ──────────────────────────────────────────────────────────────────
   const getTotalProgress = (seasons: Season[]) => {
     const allEps = seasons.flatMap(s => s.episodes);
@@ -124,7 +131,8 @@ export function useSeriesDetail() {
       const KEY = `${KEYS_PROCESS_EPISODE}_${serverConfig?.url}_${series.id}`;
       let loadedSeasons: Season[] | null = null;
 
-      const compressed = isForceRefresh ? null : await indexedDbStorage.get(KEY);
+      // const compressed = isForceRefresh ? null : await indexedDbStorage.get(KEY);
+      const compressed = null;
 
       if (compressed) {
         const cached = JSON.parse(LZString.decompress(String(compressed)));
@@ -191,9 +199,10 @@ export function useSeriesDetail() {
       parentContent: series
     };
 
+    setPlayerStream(state);
     setCurrentEpisode(episode);
     setActiveSeason(seasonNumber);
-    navigate('/player', { state: state });
+    // navigate('/player', { state: state });
   };
 
   const handlePlayNext = () => {
@@ -203,7 +212,11 @@ export function useSeriesDetail() {
   };
 
   const handleBack = () => {
-    navigate('/series', { state: series });
+    // navigate('/series', { state: series });
+    setPlayerStream(null);
+    setCurrentEpisode(null);
+    setIsDetail(false);
+    setActiveZone('list');
   };
 
   const handleToggleFavorite = (serie: Series) => {
@@ -249,11 +262,12 @@ export function useSeriesDetail() {
   };
 
   // Interceptar voltar nativo do navegador/TV
-  useBackGuard(!!series, showTrailer ? () => setShowTrailer(false) : handleBack);
+  useBackGuard(isDetail, showTrailer ? () => setShowTrailer(false) : handleBack);
 
   // Remote Control Navigation
   useRemoteControl({
     onUp: () => {
+      if (!isActiveZone(zoneDetail)) return;
       if (selectedEpisodeIndex === 0) {
         // Força o scroll da lista de episódios para o topo
         pageRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -268,22 +282,26 @@ export function useSeriesDetail() {
       }
     },
     onDown: () => {
+      if (!isActiveZone(zoneDetail)) return;
       // Navega para baixo, fica no último se chegar ao final
       setSelectedEpisodeIndex(prev => Math.min(prev + 1, currentEpisodes.length - 1));
       setFocusedButton(-1);
     },
     onRight: () => {
+      if (!isActiveZone(zoneDetail)) return;
       if (focusedButton < maxButtons - 1) {
         return setFocusedButton(prev => (prev + 1) % maxButtons);
       }
     },
     onLeft: () => {
+      if (!isActiveZone(zoneDetail)) return;
       // Navegar entre botões ao contrário
       if (focusedButton > 1) {
         setFocusedButton(prev => (prev - 1 + maxButtons) % maxButtons);
       }
     },
     onOk: () => {
+      if (!isActiveZone(zoneDetail)) return;
       if (currentEpisodes[selectedEpisodeIndex]) {
         handlePlay(currentEpisodes[selectedEpisodeIndex], activeSeason);
         return;
@@ -299,13 +317,13 @@ export function useSeriesDetail() {
       } else if (focusedButton === 2 && series?.youtube_trailer) {
         // Trailer
         setShowTrailer(true);
-      } else if (focusedButton === 3) {
+      } else if (focusedButton === 5) {
         // Favorito
         handleToggleFavorite(series!);
-      } else if (focusedButton === 4) {
+      } else if (focusedButton === 3) {
         // Episódios
         scrollToEpisodes();
-      } else if (focusedButton === 5) {
+      } else if (focusedButton === 4) {
         // Episódios
         handleLoadDetail(series!, true);
       }
@@ -325,6 +343,9 @@ export function useSeriesDetail() {
     focusedButton,
     setFocusedButton,
     series,
+    playerStream,
+    setPlayerStream,
+    isDetail,
 
     // Episódios
     currentEpisodes,

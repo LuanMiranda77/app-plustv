@@ -123,7 +123,6 @@ export function useMoviesPage() {
   };
   const handleClose = () => {
     setCurrentMovie(null);
-    // navigate('/detail-movie', { state: movie });
   };
 
   const handleCategoryClick = (id: string | null) => {

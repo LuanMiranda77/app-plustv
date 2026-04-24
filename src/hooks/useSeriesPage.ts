@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -7,6 +8,7 @@ import type { Series } from '../types';
 import { storage } from '../utils/storage';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
+import { useDetailContext } from '../Context/DetailContext';
 
 export function useSeriesPage() {
   const { series, seriesCategories } = useSeriesStore();
@@ -15,13 +17,13 @@ export function useSeriesPage() {
   const [currentSerie, setCurrentSerie] = useState<Series | null>(null);
   const [displayCount, setDisplayCount] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-
+  const { isDetail, setIsDetail } = useDetailContext();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const location = useLocation();
-  const { activeZone, setActiveZone } = useFocusZone();
+  const { activeZone, setActiveZone, isActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedInput, setFocusedInput] = useState(false);
@@ -32,7 +34,7 @@ export function useSeriesPage() {
   }, []);
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
-  const ITEMS_PER_PAGE = 30;
+  const ITEMS_PER_PAGE = 20;
   const categoriesWithAll = [
     { id: '-1', name: 'FAVORITOS' },
     { id: null, name: 'TODOS' },
@@ -53,20 +55,18 @@ export function useSeriesPage() {
   const displayedSeries = filteredSeries.slice(0, displayCount);
   const hasMoreSeries = displayCount < filteredSeries.length;
 
-  useBackGuard(!!currentSerie, () => setCurrentSerie(null));
-
   // Adicionar um ref para controlar se veio de navegação
   const isRestoringRef = useRef(false);
 
   // carregar filme do estado ao voltar para a página
-  useEffect(() => {
-    const state = location.state as any;
-    if (state && !isRestoringRef.current) {
-      isRestoringRef.current = true; // ← marca que está restaurando
-      setActiveZone('list');
-      setSelectedCategory(state.category || null);
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   const state = location.state as any;
+  //   if (state && !isRestoringRef.current) {
+  //     isRestoringRef.current = true; // ← marca que está restaurando
+  //     setActiveZone('list');
+  //     setSelectedCategory(state.category || null);
+  //   }
+  // }, [location]);
 
   // 2. só após filteredSeries atualizar, busca o índice correto
   useEffect(() => {
@@ -101,12 +101,18 @@ export function useSeriesPage() {
 
   const handleNavigate = (serie: Series) => {
     setCurrentSerie(serie);
-    navigate('/detail-series', { state: serie });
+    setIsDetail(true);
+    setActiveZone('detail');
+    // navigate('/detail-series', { state: serie });
   };
 
   const handleCategoryClick = (id: string | null) => {
     setSelectedCategory(id);
     setFocusedIndex(-1);
+  };
+
+  const handleClose = () => {
+    setCurrentSerie(null);
   };
 
   // Adicionar junto aos outros handlers
@@ -125,6 +131,12 @@ export function useSeriesPage() {
       inputRef.current?.blur();
       setActiveZone('menu');
     }
+    if (e.key === 'ArrowLeft' || e.keyCode === 37) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('content');
+    }
     if (e.key === 'ArrowDown' || e.keyCode === 40) {
       e.preventDefault();
       setFocusedInput(false);
@@ -133,6 +145,10 @@ export function useSeriesPage() {
       setFocusedIndex(0);
     }
   };
+
+  useBackGuard(!!currentSerie, () => {
+    isActiveZone("detail") && handleClose();
+  });
 
   useRemoteControl({
     onRight: () => {
@@ -307,10 +323,11 @@ export function useSeriesPage() {
     displayedSeries,
     hasMoreSeries,
     isAdultUnlocked,
-
+    isDetail,
     // functinons
     handleNavigate,
     handleCategoryClick,
-    handleInputKeyDown
+    handleInputKeyDown,
+    handleClose
   };
 }

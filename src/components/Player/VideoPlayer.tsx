@@ -120,7 +120,7 @@ export const VideoPlayer = ({
 
   // Não mostrar loader ao adiantar (seek manual)
   const [isSeeking, setIsSeeking] = useState(false);
-  const timeNextButton = 30; // segundos para mostrar botão de próximo episódio
+  const timeNextButton = 60; // segundos para mostrar botão de próximo episódio
 
   // Handler para detectar seek manual
   const handleSeek = (time: number) => {
@@ -362,7 +362,7 @@ export const VideoPlayer = ({
             episodeNumber={nextEpisode?.number}
             seasonNumber={currentSeason}
             timeRemaining={timeRemaining}
-            autoPlayDelay={10}
+            autoPlayDelay={30}
             onNext={() => {
               setShowNextEpisodeBtn(false);
               onNextEpisode();
