@@ -26,12 +26,12 @@ export default function ContinueWatchingSection({
           <Clock className="w-6 h-6 text-red-600" />
           <h2 className="text-2xl font-bold text-white">Continue Assistindo</h2>
         </div>
-        <button
+        {/* <button
           onClick={onViewHistory}
           className="text-red-600 hover:text-red-500 font-semibold text-sm transition-colors flex items-center gap-1"
         >
           Ver histórico <span className="text-lg">→</span>
-        </button>
+        </button> */}
       </div>
       <p className="text-gray-400 text-sm">Onde você parou</p>
 

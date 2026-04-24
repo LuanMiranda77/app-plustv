@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/preserve-manual-memoization */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDetailContext } from '../Context/DetailContext';
 import { useFocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
 import { useHomeStore } from '../store/homeStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
+import type { Movie, Series } from '../types';
 import { useRemoteControl } from './useRemotoControl';
 
 type SectionType =
@@ -34,6 +37,10 @@ export function useHome() {
   const { activeZone, setActiveZone } = useFocusZone();
   const isActive = activeZone === 'content';
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { isDetail, setIsDetail } = useDetailContext();
+  const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
+  const [currentSeries, setCurrentSeries] = useState<Series | null>(null);
+  const [currentStream, setCurrentStream] = useState<PlayerStream | null>(null);
   // const [isLoading, setIsLoading] = useState(false);
 
   // Estados para navegação de TV
@@ -131,7 +138,9 @@ export function useHome() {
         poster: live.poster,
         type: 'live'
       };
-      navigate(`/live`, { state: state });
+      setCurrentStream(state);
+      setIsDetail(true);
+      // navigate(`/live`, { state: state });
     },
     [navigate]
   );
@@ -147,7 +156,12 @@ export function useHome() {
         type: 'movie',
         location: dest
       };
-      navigate(`/${dest || 'player'}`, { state: state });
+      if (dest) {
+        setCurrentMovie(movie);
+      } else setCurrentStream(state);
+      setIsDetail(true);
+      setCurrentSeries(null);
+      // navigate(`/${dest || 'player'}`, { state: state });
     },
     [navigate]
   );
@@ -163,7 +177,12 @@ export function useHome() {
         type: 'series',
         location: dest
       };
-      navigate(`/${dest || 'player'}`, { state: state });
+      if (dest) {
+        setCurrentSeries(serie);
+      } else setCurrentStream(state);
+      setIsDetail(true);
+      setCurrentMovie(null);
+      // navigate(`/${dest || 'player'}`, { state: state });
     },
     [navigate]
   );
@@ -183,7 +202,9 @@ export function useHome() {
         seasonNumber: serie.content.season_number,
         parentContent: serie
       };
-      navigate('/player', { state: state });
+      setIsDetail(true);
+      setCurrentStream(state);
+      // navigate('/player', { state: state });
     },
     [navigate]
   );
@@ -286,14 +307,16 @@ export function useHome() {
 
     switch (sectionType) {
       case 'continue-watching':
+        console.log(item);
         if (item.type === 'movie') {
           navigateMovie(item);
         } else if (item.type === 'series') {
-          navigateSerie(item);
+          navigateEpisodio(item);
         }
         break;
       case 'live-channels':
-        navigate('/live', { state: item });
+        navigateLive(item);
+        // navigate('/live', { state: item });
         break;
       case 'last-movies':
       case 'trending-movies':
@@ -318,6 +341,13 @@ export function useHome() {
     navigateSerie
   ]);
 
+  const handleClose = () => {
+    setIsDetail(false);
+    setCurrentMovie(null);
+    setCurrentSeries(null);
+    setCurrentStream(null);
+  };
+
   const handleBack = useCallback(() => {
     setActiveZone('menu');
   }, [setActiveZone]);
@@ -337,6 +367,13 @@ export function useHome() {
     // error,
     focusedSection,
     focusedItemIndex,
+    isDetail,
+    currentStream,
+    currentMovie,
+    setCurrentMovie,
+    currentSeries,
+    setCurrentSeries,
+    handleClose,
 
     // Dados
     heroItems,

@@ -18,6 +18,7 @@ const placehoder = './placeholde.png';
 interface PlayerControlsProps {
   poster: string | undefined;
   title: string;
+  subtitle?: string;
   isPlaying: boolean;
   showLoader: boolean;
   onPlayPause: () => void;
@@ -42,6 +43,7 @@ interface PlayerControlsProps {
 export const PlayerControls = ({
   poster,
   title,
+  subtitle,
   isPlaying,
   onPlayPause,
   currentTime,
@@ -129,7 +131,8 @@ export const PlayerControls = ({
         className="absolute inset-0 flex flex-col justify-between group"
       >
         {/* Gradient top */}
-        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className={`absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-black/80 via-black/40 to-transparent 
+          ${isVisible ? "opacity-100" :"opacity-0"} transition-opacity duration-300`} />
 
         {/* Title bar */}
         <div
@@ -144,7 +147,12 @@ export const PlayerControls = ({
           >
             <ArrowLeft />
           </button>
-          {type != 'live' && <h2 className="text-2xl max-sm:text-lg font-semibold">{title}</h2>}
+          {type != 'live' && (
+            <div className='text-right'>
+              <h2 className="text-2xl max-sm:text-lg font-semibold">{title}</h2>
+              <legend className='text-zinc-300 text-lg'>{subtitle}</legend>
+            </div>
+          )}
         </div>
 
         {/* Loading spinner */}

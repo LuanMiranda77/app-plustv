@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useDetailContext } from '../Context/DetailContext';
 import { useFocusZone } from '../Context/FocusContext';
 import { useMovieStore } from '../store/contentStore';
@@ -29,7 +29,7 @@ export function useMoviesPage() {
   const isZoneCat = activeZone === 'content';
   const isZoneList = activeZone === 'list';
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const ITEMS_PER_PAGE = 20;
   const categoriesWithAll = [
     { id: '-1', name: 'FAVORITOS' },

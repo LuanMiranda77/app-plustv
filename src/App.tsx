@@ -1,8 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { ConfigServer } from './pages/ConfigServer';
-import { DetailMovie } from './pages/DetailMovie';
-import { DetailSeries } from './pages/DetailSeries';
 import { Home } from './pages/Home';
 import { Live } from './pages/Live';
 import { Login } from './pages/Login';
@@ -10,7 +8,6 @@ import { Movies } from './pages/movie/Movies';
 import { Player } from './pages/Player';
 import { ProfileSelect } from './pages/ProfileSelect';
 import { PageSeries } from './pages/series/Series';
-import { WatchHistory } from './pages/WatchHistory';
 import { useAuthStore } from './store/authStore';
 
 function App() {
@@ -30,10 +27,10 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/movie" element={<Movies />} />
       <Route path="/series" element={<PageSeries />} />
-      <Route path="/detail-movie" element={<DetailMovie />} />
-      <Route path="/detail-series" element={<DetailSeries />} />
+      {/* <Route path="/detail-movie" element={<DetailMovie />} /> */}
+      {/* <Route path="/detail-series" element={<DetailSeries />} /> */}
       <Route path="/live" element={<Live />} />
-      <Route path="/watch-history" element={<WatchHistory />} />
+      {/* <Route path="/watch-history" element={<WatchHistory />} /> */}
       <Route path="/player" element={<Player />} />
       <Route path="/config-server" element={<ConfigServer />} />
     </Routes>

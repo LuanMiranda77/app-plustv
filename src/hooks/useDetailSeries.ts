@@ -131,8 +131,8 @@ export function useSeriesDetail({ ...props }: any) {
       const KEY = `${KEYS_PROCESS_EPISODE}_${serverConfig?.url}_${series.id}`;
       let loadedSeasons: Season[] | null = null;
 
-      // const compressed = isForceRefresh ? null : await indexedDbStorage.get(KEY);
-      const compressed = null;
+      const compressed = isForceRefresh ? null : await indexedDbStorage.get(KEY);
+      // const compressed = null;
 
       if (compressed) {
         const cached = JSON.parse(LZString.decompress(String(compressed)));

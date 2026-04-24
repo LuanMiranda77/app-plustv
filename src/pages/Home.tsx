@@ -1,11 +1,15 @@
 import { Film, Sparkles, TrendingUp, Tv2, TvMinimalPlay } from 'lucide-react';
-import { lazy, Suspense, memo, useMemo, useCallback } from 'react';
+import { Fragment, lazy, memo, Suspense, useCallback, useMemo } from 'react';
 import { ChannelPoster } from '../components/Cards/ChannelPoster';
 import { StreamPoster } from '../components/Cards/StreamPoster';
+import { PlayerCoomponent } from '../components/Player/PlayerComponent';
 import AdvertisementCarousel from '../components/UI/AdvertisementCarousel';
 import CarouselSection from '../components/UI/CarouselSection';
 import ContinueWatchingSection from '../components/UI/ContinueWatchingSection';
+import { Modal } from '../components/UI/Modal';
 import { useHome } from '../hooks/useHome';
+import { DetailMovie } from './movie/DetailMovies';
+import { DetailSeries } from './series/DetailSeries';
 
 // Lazy load do AutoCarousel
 const AutoCarousel = lazy(() => import('../components/UI/AutoCarousel'));
@@ -33,6 +37,12 @@ export const Home = () => {
     newSeries,
     trendingMovies,
     trendingSeries,
+    isDetail,
+    currentSeries,
+    currentMovie,
+    currentStream,
+    handleClose,
+    // handleClose,
     getFocusedIndex,
     setRecentlyWatched,
     navigate,
@@ -76,193 +86,202 @@ export const Home = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-y-scroll">
-      {/* Auto Carousel Hero - Lazy loading */}
-      {heroItems.length > 0 && (
-        <div
-          data-focused={focusedSection === -1}
-          className={focusedSection === -1 ? 'ring-2 ring-red-600 rounded-lg m-4' : ''}
-        >
-          <Suspense fallback={<CarouselLoader />}>
-            <AutoCarousel className="max-h-[700px]" items={heroItems} autoPlayInterval={5000} />
-          </Suspense>
+    <Fragment>
+      <Modal open={isDetail} onClose={handleClose} disableBackGuard>
+        {currentStream && (
+          <PlayerCoomponent playerStream={currentStream} handleBack={handleClose} />
+        )}
+        {currentMovie && <DetailMovie currentMovie={currentMovie} onClose={handleClose} />}
+        {currentSeries && <DetailSeries currentSerie={currentSeries} onClose={handleClose} />}
+      </Modal>
+      <div className={`bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 ${isDetail ? 'h-screen overflow-hidden' : 'min-h-screen overflow-y-scroll'}`}>
+        {/* Auto Carousel Hero - Lazy loading */}
+        {heroItems.length > 0 && (
+          <div
+            data-focused={focusedSection === -1}
+            className={focusedSection === -1 ? 'ring-2 ring-red-600 rounded-lg m-4' : ''}
+          >
+            <Suspense fallback={<CarouselLoader />}>
+              <AutoCarousel className="max-h-[700px]" items={heroItems} autoPlayInterval={5000} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* Advertisement Carousel - Memoizado */}
+        <MemoizedAdvertisementCarousel />
+
+        {/* Main Content */}
+        <div className="w-9/12 mx-auto px-6 space-y-16 pb-16">
+          {
+            <>
+              {/* Continue Watching */}
+              {recentlyWatched.length > 0 && (
+                <MemoizedContinueWatchingSection
+                  items={recentlyWatched}
+                  focusedItemIndex={getFocusedIndex('continue-watching')}
+                  onPlay={handleContinueWatchingPlay}
+                  onViewHistory={() => navigate('/watch-history')}
+                  onRecentlyWatched={setRecentlyWatched}
+                />
+              )}
+
+              {/* Live Channels */}
+              {displayChannels.length > 0 && (
+                <MemoizedCarouselSection
+                  title={recentChannels.length > 0 ? 'Últimos Canais Assistidos' : 'Canais ao Vivo'}
+                  subtitle={
+                    recentChannels.length > 0
+                      ? 'Continue de onde parou'
+                      : 'Seus canais favoritos em tempo real'
+                  }
+                  icon={Tv2}
+                  items={displayChannels}
+                  focusedItemIndex={getFocusedIndex('live-channels')}
+                  renderItem={(channel, idx, isFocused) => (
+                    <MemoizedChannelPoster
+                      channel={channel}
+                      isFocused={isFocused}
+                      onPlay={() => navigateLive(channel)}
+                    />
+                  )}
+                  onViewMore={() => navigate('/live')}
+                />
+              )}
+
+              {/* Last Movies */}
+              {lastMovies.length > 0 && (
+                <MemoizedCarouselSection
+                  title="Últimos Filmes Assistidos"
+                  subtitle="Se gostou, assista novamente"
+                  icon={TrendingUp}
+                  items={lastMovies}
+                  badge="repeat"
+                  focusedItemIndex={getFocusedIndex('last-movies')}
+                  renderItem={(movie, idx, isFocused) => (
+                    <MemoizedStreamPoster
+                      stream={movie}
+                      isFocused={isFocused}
+                      onPlay={() => navigateMovie(movie.content)}
+                    />
+                  )}
+                  onViewMore={() => navigate('/movie')}
+                />
+              )}
+
+              {/* Trending Movies */}
+              {trendingMovies.length > 0 && (
+                <MemoizedCarouselSection
+                  title="Filmes em Tendência"
+                  subtitle="Os filmes mais assistidos neste mês"
+                  icon={TrendingUp}
+                  items={trendingMovies}
+                  badge="trending"
+                  focusedItemIndex={getFocusedIndex('trending-movies')}
+                  renderItem={(movie, idx, isFocused) => (
+                    <MemoizedStreamPoster
+                      stream={movie}
+                      isFocused={isFocused}
+                      onPlay={() => navigateMovie(movie, 'detail-movie')}
+                    />
+                  )}
+                  onViewMore={() => navigate('/movie')}
+                />
+              )}
+
+              {/* New Movies */}
+              {newMovies.length > 0 && (
+                <MemoizedCarouselSection
+                  title="Filmes Lançamentos"
+                  subtitle="Confira os novos filmes adicionados"
+                  icon={Sparkles}
+                  items={newMovies}
+                  badge="novo"
+                  focusedItemIndex={getFocusedIndex('new-movies')}
+                  renderItem={(movie, idx, isFocused) => (
+                    <MemoizedStreamPoster
+                      stream={movie}
+                      isFocused={isFocused}
+                      onPlay={() => navigateMovie(movie, 'detail-movie')}
+                    />
+                  )}
+                  onViewMore={() => navigate('/movie')}
+                />
+              )}
+
+              {/* Last Series */}
+              {lastSeries.length > 0 && (
+                <MemoizedCarouselSection
+                  title="Últimas Séries Assistidas"
+                  subtitle="Se gostou, assista novamente"
+                  icon={TrendingUp}
+                  items={lastSeries}
+                  badge="repeat"
+                  focusedItemIndex={getFocusedIndex('last-series')}
+                  renderItem={(series, idx, isFocused) => (
+                    <MemoizedStreamPoster
+                      stream={series}
+                      isFocused={isFocused}
+                      onPlay={() => navigateSerie(series, 'detail-series')}
+                    />
+                  )}
+                  onViewMore={() => navigate('/series')}
+                />
+              )}
+
+              {/* Trending Series */}
+              {trendingSeries.length > 0 && (
+                <MemoizedCarouselSection
+                  title="Séries Populares"
+                  subtitle="Acompanhe as séries mais assistidas"
+                  icon={TvMinimalPlay}
+                  items={trendingSeries}
+                  badge="trending"
+                  focusedItemIndex={getFocusedIndex('trending-series')}
+                  renderItem={(s, idx, isFocused) => (
+                    <MemoizedStreamPoster
+                      stream={s}
+                      isFocused={isFocused}
+                      onPlay={() => navigateSerie(s, 'detail-series')}
+                    />
+                  )}
+                  onViewMore={() => navigate('/series')}
+                />
+              )}
+
+              {/* New Series */}
+              {newSeries.length > 0 && (
+                <MemoizedCarouselSection
+                  title="Séries Lançamentos"
+                  subtitle="Confira as novas séries adicionadas"
+                  icon={Sparkles}
+                  items={newSeries}
+                  badge="novo"
+                  focusedItemIndex={getFocusedIndex('new-series')}
+                  renderItem={(s, idx, isFocused) => (
+                    <MemoizedStreamPoster
+                      stream={s}
+                      isFocused={isFocused}
+                      onPlay={() => navigateSerie(s, 'detail-series')}
+                    />
+                  )}
+                  onViewMore={() => navigate('/series')}
+                />
+              )}
+
+              {/* Empty State */}
+              {!hasAnyContent && (
+                <div className="text-center py-16">
+                  <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
+                  <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Faça login com suas credenciais IPTV para ver o conteúdo
+                  </p>
+                </div>
+              )}
+            </>
+          }
         </div>
-      )}
-
-      {/* Advertisement Carousel - Memoizado */}
-      <MemoizedAdvertisementCarousel />
-
-      {/* Main Content */}
-      <div className="w-9/12 mx-auto px-6 space-y-16 pb-16">
-        {
-          <>
-            {/* Continue Watching */}
-            {recentlyWatched.length > 0 && (
-              <MemoizedContinueWatchingSection
-                items={recentlyWatched}
-                focusedItemIndex={getFocusedIndex('continue-watching')}
-                onPlay={handleContinueWatchingPlay}
-                onViewHistory={() => navigate('/watch-history')}
-                onRecentlyWatched={setRecentlyWatched}
-              />
-            )}
-
-            {/* Live Channels */}
-            {displayChannels.length > 0 && (
-              <MemoizedCarouselSection
-                title={recentChannels.length > 0 ? 'Últimos Canais Assistidos' : 'Canais ao Vivo'}
-                subtitle={
-                  recentChannels.length > 0
-                    ? 'Continue de onde parou'
-                    : 'Seus canais favoritos em tempo real'
-                }
-                icon={Tv2}
-                items={displayChannels}
-                focusedItemIndex={getFocusedIndex('live-channels')}
-                renderItem={(channel, idx, isFocused) => (
-                  <MemoizedChannelPoster
-                    channel={channel}
-                    isFocused={isFocused}
-                    onPlay={() => navigateLive(channel)}
-                  />
-                )}
-                onViewMore={() => navigate('/live')}
-              />
-            )}
-
-            {/* Last Movies */}
-            {lastMovies.length > 0 && (
-              <MemoizedCarouselSection
-                title="Últimos Filmes Assistidos"
-                subtitle="Se gostou, assista novamente"
-                icon={TrendingUp}
-                items={lastMovies}
-                badge="repeat"
-                focusedItemIndex={getFocusedIndex('last-movies')}
-                renderItem={(movie, idx, isFocused) => (
-                  <MemoizedStreamPoster
-                    stream={movie}
-                    isFocused={isFocused}
-                    onPlay={() => navigateMovie(movie.content)}
-                  />
-                )}
-                onViewMore={() => navigate('/movie')}
-              />
-            )}
-
-            {/* Trending Movies */}
-            {trendingMovies.length > 0 && (
-              <MemoizedCarouselSection
-                title="Filmes em Tendência"
-                subtitle="Os filmes mais assistidos neste mês"
-                icon={TrendingUp}
-                items={trendingMovies}
-                badge="trending"
-                focusedItemIndex={getFocusedIndex('trending-movies')}
-                renderItem={(movie, idx, isFocused) => (
-                  <MemoizedStreamPoster
-                    stream={movie}
-                    isFocused={isFocused}
-                    onPlay={() => navigateMovie(movie, 'detail-movie')}
-                  />
-                )}
-                onViewMore={() => navigate('/movie')}
-              />
-            )}
-
-            {/* New Movies */}
-            {newMovies.length > 0 && (
-              <MemoizedCarouselSection
-                title="Filmes Lançamentos"
-                subtitle="Confira os novos filmes adicionados"
-                icon={Sparkles}
-                items={newMovies}
-                badge="novo"
-                focusedItemIndex={getFocusedIndex('new-movies')}
-                renderItem={(movie, idx, isFocused) => (
-                  <MemoizedStreamPoster
-                    stream={movie}
-                    isFocused={isFocused}
-                    onPlay={() => navigateMovie(movie, 'detail-movie')}
-                  />
-                )}
-                onViewMore={() => navigate('/movie')}
-              />
-            )}
-
-            {/* Last Series */}
-            {lastSeries.length > 0 && (
-              <MemoizedCarouselSection
-                title="Últimas Séries Assistidas"
-                subtitle="Se gostou, assista novamente"
-                icon={TrendingUp}
-                items={lastSeries}
-                badge="repeat"
-                focusedItemIndex={getFocusedIndex('last-series')}
-                renderItem={(series, idx, isFocused) => (
-                  <MemoizedStreamPoster
-                    stream={series}
-                    isFocused={isFocused}
-                    onPlay={() => navigateSerie(series, 'detail-series')}
-                  />
-                )}
-                onViewMore={() => navigate('/series')}
-              />
-            )}
-
-            {/* Trending Series */}
-            {trendingSeries.length > 0 && (
-              <MemoizedCarouselSection
-                title="Séries Populares"
-                subtitle="Acompanhe as séries mais assistidas"
-                icon={TvMinimalPlay}
-                items={trendingSeries}
-                badge="trending"
-                focusedItemIndex={getFocusedIndex('trending-series')}
-                renderItem={(s, idx, isFocused) => (
-                  <MemoizedStreamPoster
-                    stream={s}
-                    isFocused={isFocused}
-                    onPlay={() => navigateSerie(s, 'detail-series')}
-                  />
-                )}
-                onViewMore={() => navigate('/series')}
-              />
-            )}
-
-            {/* New Series */}
-            {newSeries.length > 0 && (
-              <MemoizedCarouselSection
-                title="Séries Lançamentos"
-                subtitle="Confira as novas séries adicionadas"
-                icon={Sparkles}
-                items={newSeries}
-                badge="novo"
-                focusedItemIndex={getFocusedIndex('new-series')}
-                renderItem={(s, idx, isFocused) => (
-                  <MemoizedStreamPoster
-                    stream={s}
-                    isFocused={isFocused}
-                    onPlay={() => navigateSerie(s, 'detail-series')}
-                  />
-                )}
-                onViewMore={() => navigate('/series')}
-              />
-            )}
-
-            {/* Empty State */}
-            {!hasAnyContent && (
-              <div className="text-center py-16">
-                <Film className="w-16 h-16 text-gray-600 mx-auto mb-4 opacity-50" />
-                <p className="text-gray-400 text-lg">Nenhum conteúdo carregado ainda</p>
-                <p className="text-gray-500 text-sm mt-2">
-                  Faça login com suas credenciais IPTV para ver o conteúdo
-                </p>
-              </div>
-            )}
-          </>
-        }
       </div>
-    </div>
+    </Fragment>
   );
 };

@@ -379,7 +379,8 @@ export const VideoPlayer = ({
       {isControlsVisible && (
         <PlayerControls
           poster={poster}
-          title={title}
+          title={type === 'series' ? `${parentContent?.name}`:title}
+          subtitle={type === 'series' ? `${title.replaceAll(parentContent?.name+" - ", "")}` : ""}
           isPlaying={isPlaying}
           onPlayPause={handlePlayPause}
           currentTime={currentTime}

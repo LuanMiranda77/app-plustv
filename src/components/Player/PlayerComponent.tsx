@@ -8,6 +8,7 @@ import type { Episode, Season, Series } from '../../types';
 import { indexedDbStorage } from '../../utils/indexedDbStorage';
 import { KEYS_PROCESS_EPISODE } from '../../utils/keys_cache';
 import { VideoPlayer } from './VideoPlayer';
+import LZString from 'lz-string';
 
 export interface PlayerStream {
   id: string | number;
@@ -70,8 +71,9 @@ export const PlayerCoomponent: React.FC<PlayerComponentProps> = ({ playerStream,
   // ── Carregar episódios do cache ───────────────────────────────────────────
   const loadEpisodesForSeries = async (seriesId: string | number) => {
     const KEY = `${KEYS_PROCESS_EPISODE}_${serverConfig?.url}_${seriesId}`;
-    const cached = await indexedDbStorage.get(KEY);
-    if (cached && Array.isArray(cached)) {
+    const compressed = await indexedDbStorage.get(KEY);
+    if (compressed) {
+      const cached = JSON.parse(LZString.decompress(String(compressed)));
       console.log('📺 Episódios carregados do cache - player:', seriesId);
       setSeasons(cached as Season[]);
     }
@@ -143,7 +145,7 @@ export const PlayerCoomponent: React.FC<PlayerComponentProps> = ({ playerStream,
       ...prev!,
       id: previousEpisode.id,
       streamUrl: previousEpisode.streamUrl,
-      title: `${currentStream.parentContent?.name} — T${previousSeasonNumber}:E${String(previousEpisode.number).padStart(2, '0')}${previousEpisode.name ? ` · ${previousEpisode.name}` : ''}`,
+      title: `${previousEpisode.name ? `${previousEpisode.name}` : ''}`,
       poster: previousEpisode.thumbnail || prev!.poster,
       episodeId: previousEpisode.id,
       episodeNumber: previousEpisode.number,
@@ -166,7 +168,7 @@ export const PlayerCoomponent: React.FC<PlayerComponentProps> = ({ playerStream,
       ...prev!,
       id: nextEpisode.id,
       streamUrl: nextEpisode.streamUrl,
-      title: `${currentStream.parentContent?.name} — T${nextSeasonNumber}:E${String(nextEpisode.number).padStart(2, '0')}${nextEpisode.name ? ` · ${nextEpisode.name}` : ''}`,
+      title: `${nextEpisode.name ? `${nextEpisode.name}` : ''}`,
       poster: nextEpisode.thumbnail || prev!.poster,
       episodeId: nextEpisode.id,
       episodeNumber: nextEpisode.number,

@@ -14,7 +14,7 @@ export const Movies = () => {
     setSearchTerm,
     selectedCategory,
     currentMovie,
-    setCurrentMovie,
+    // setCurrentMovie,
     isDetail,
 
     // Refs
