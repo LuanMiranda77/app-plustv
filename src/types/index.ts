@@ -28,6 +28,7 @@ export interface Channel {
   logo: string; // → logo do canal
   category: string; // → para agrupar por categoria
   isFavorite: boolean; // → 1 = tem gravação disponível
+  added:number; // → timestamp de quando foi adicionado (para ordenar)
 }
 
 // Filme
@@ -47,6 +48,7 @@ export interface Movie {
   progress: number; // segundos assistidos
   duration: number; // duração total em segundos
   displayDuration?: string; // duração formatada (ex: "1h 30m")
+  added: number; // → timestamp de quando foi adicionado (para ordenar)
 }
 
 // Série
@@ -63,6 +65,7 @@ export interface Series {
   seasons: Season[];
   isFavorite: boolean;
   loaded: false;
+  added: number; // → timestamp de quando foi adicionado (para ordenar)
 }
 
 export type StreamType = 'series' | 'movie' | 'live';

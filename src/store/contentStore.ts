@@ -62,6 +62,9 @@ interface MovieState {
 const orderByName = (list: any[]): any[] => {
   return list.sort((a: Channel, b: Channel) => a.name.localeCompare(b.name));
 };
+const orderByTimestamp = (list: any[]): any[] => {
+  return list.sort((a: Channel, b: Channel) => b.added - a.added);
+};
 
 // ─────────────────────────────────────────────
 // MAPPERS (mantidos iguais)
@@ -93,7 +96,8 @@ const mapChannel = (stream: any, config: ServerConfig, cache?: Channel): Channel
     'live'
   ),
   category: stream.category_id || 'Sem categoria',
-  isFavorite: cache?.isFavorite || false
+  isFavorite: cache?.isFavorite || false,
+  added: stream.added ? Number(stream.added) : Date.now()
 });
 
 const mapMovie = (stream: any, config: ServerConfig, cache?: Movie): Movie => ({
@@ -116,7 +120,8 @@ const mapMovie = (stream: any, config: ServerConfig, cache?: Movie): Movie => ({
   duration: cache?.duration || stream.duration || 0,
   plot: stream.plot || '',
   genre: stream.genre || '',
-  youtube_trailer: stream.youtube_trailer || ''
+  youtube_trailer: stream.youtube_trailer || '',
+  added: stream.added ? Number(stream.added) : Date.now()
 });
 
 const mapSeries = (stream: any, cache?: Series): Series => ({
@@ -131,7 +136,8 @@ const mapSeries = (stream: any, cache?: Series): Series => ({
   plot: stream.plot || '',
   genre: stream.genre || '',
   year: stream.year || 'N/A',
-  youtube_trailer: stream.youtube_trailer || ''
+  youtube_trailer: stream.youtube_trailer || '',
+  added: stream.last_modified ? Number(stream.last_modified) : Date.now()
 });
 
 const findLiveSevice = async (config: ServerConfig) => {
@@ -141,7 +147,7 @@ const findLiveSevice = async (config: ServerConfig) => {
   // const { addToHistory } = useHomeStore();
 
   for (const category of categories) {
-    await delay(200);
+    await delay(100);
 
     try {
       const data = await requestWithRetry(() =>
@@ -161,7 +167,7 @@ const findLiveSevice = async (config: ServerConfig) => {
 
   await CacheService.saveCacheList(
     {
-      channels: orderByName(channels),
+      channels: orderByTimestamp(channels),
       liveCategories: orderByName(liveCatsRaw)
     },
     config,
@@ -179,7 +185,7 @@ const findVodSevice = async (config: ServerConfig) => {
   const movies: any[] = [];
 
   for (const category of categories) {
-    await delay(300);
+    await delay(100);
 
     try {
       const data = await requestWithRetry(() =>
@@ -216,7 +222,7 @@ const findVodSevice = async (config: ServerConfig) => {
 
   await CacheService.saveCacheList(
     {
-      movies: orderByName(movies),
+      movies: orderByTimestamp(movies),
       vodCategories: orderByName(vodCatsRaw)
     },
     config,
@@ -236,7 +242,7 @@ const findSeriesSevice = async (config: ServerConfig) => {
 
   if (Array.isArray(categories)) {
     for (const category of categories) {
-      await delay(300); // 🔥 evita flood no servidor
+      await delay(100); // 🔥 evita flood no servidor
 
       try {
         const data = await requestWithRetry(() =>
@@ -280,7 +286,7 @@ const findSeriesSevice = async (config: ServerConfig) => {
 
   await CacheService.saveCacheList(
     {
-      series: orderByName(series),
+      series: orderByTimestamp(series),
       seriesCategories: orderByName(seriesCatsRaw)
     },
     config,
