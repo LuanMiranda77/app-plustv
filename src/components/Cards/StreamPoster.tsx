@@ -2,6 +2,7 @@ import { Heart } from 'lucide-react';
 import { useState } from 'react';
 import type { Movie, Series } from '../../types';
 import StartRating from '../UI/StarRating';
+import { useFavoritesStore } from '../../store/favoriteStore';
 const placehoder = './placeholde.png';
 
 interface MovieCardProps {
@@ -12,6 +13,7 @@ interface MovieCardProps {
 
 export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
   const [loadingImg, setLoadingImg] = useState(true);
+    const { isFavorite } = useFavoritesStore();
 
   return (
     <button
@@ -84,7 +86,7 @@ export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
           />
         </div>
       )}
-      {stream.isFavorite && (
+      {isFavorite(stream.id) && (
         <div className="absolute top-0 left-0 text-netflix-red text-ms px-1 py-0.5 rounded-tl opacity-80">
           <Heart className="fill-current" size={18} />
         </div>

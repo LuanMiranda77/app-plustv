@@ -3,7 +3,7 @@ import { useDetailContext } from '../Context/DetailContext';
 import { useFocusZone, type FocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
-import { useMovieStore } from '../store/contentStore';
+import { useFavoritesStore } from '../store/favoriteStore';
 import type { Movie } from '../types';
 import { getProgress } from '../utils/progressWatched';
 import { useBackGuard } from './useBackGuard';
@@ -17,13 +17,13 @@ export function ueseDetailMovie({ ...props }: any) {
   const [focusedButtonDetail, setFocusedButtonDetail] = useState(1); // 0=Voltar, 1=Assistir, 2=Trailer, 3=Favorito
   const [showTrailer, setShowTrailer] = useState(false);
   const pageRef = useRef<HTMLDivElement>(null);
-  const { toggleFavorite } = useMovieStore();
   const [playerStream, setPlayerStream] = useState<PlayerStream | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoadingFav, setIsLoadingFav] = useState(false);
   const { serverConfig } = useAuthStore();
   const { isDetail, setIsDetail } = useDetailContext();
   const { isActiveZone, setActiveZone } = useFocusZone();
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const zoneDetail: FocusZone = 'detail';
 
   // const currentMovie = props?.currentMovie as Movie | null;
@@ -88,10 +88,11 @@ export function ueseDetailMovie({ ...props }: any) {
 
   const handleToggleFavorite = async () => {
     if (!movie) return;
-    setIsLoadingFav(true);
-    await toggleFavorite(movie.id, serverConfig!);
-    setMovie({ ...movie, isFavorite: !movie.isFavorite });
-    setIsLoadingFav(false);
+    if (isFavorite(String(movie.id))) {
+      removeFavorite(String(movie.id), serverConfig!);
+    } else {
+      addFavorite(movie, 'movie', serverConfig!);
+    }
   };
 
   // Interceptar voltar nativo do navegador/TV
@@ -176,6 +177,7 @@ export function ueseDetailMovie({ ...props }: any) {
     handlePlay,
     handleBack,
     handleToggleFavorite,
-    loadProgress
+    loadProgress,
+    isFavorite
   };
 }

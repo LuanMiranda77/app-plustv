@@ -1,9 +1,10 @@
 import LZString from 'lz-string';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useDetailContext } from '../Context/DetailContext';
+import { useFocusZone, type FocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
-import { useSeriesStore } from '../store/contentStore';
+import { useFavoritesStore } from '../store/favoriteStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Episode, Season, Series } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
@@ -12,12 +13,10 @@ import { getProgress } from '../utils/progressWatched';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
-import { useDetailContext } from '../Context/DetailContext';
-import { useFocusZone, type FocusZone } from '../Context/FocusContext';
 
 export function useSeriesDetail({ ...props }: any) {
-  const navigate = useNavigate();
-  const location = useLocation();
+  // const navigate = useNavigate();
+  // const location = useLocation();
   const [series, setSeries] = useState<Series | null>(null);
   const [seasons, setSeasons] = useState<Season[]>([]);
 
@@ -42,10 +41,10 @@ export function useSeriesDetail({ ...props }: any) {
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
   const currentEpisodes = seasons.find(s => s.number === activeSeason)?.episodes ?? [];
   const { toggleWatched } = useWatchHistoryStore();
-  const { toggleFavorite } = useSeriesStore();
   const [playerStream, setPlayerStream] = useState<PlayerStream | null>(null);
   const { isDetail, setIsDetail } = useDetailContext();
   const { isActiveZone, setActiveZone } = useFocusZone();
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const zoneDetail: FocusZone = 'detail';
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -221,8 +220,13 @@ export function useSeriesDetail({ ...props }: any) {
 
   const handleToggleFavorite = (serie: Series) => {
     if (!serie) return;
-    setSeries({ ...serie, isFavorite: !serie.isFavorite });
-    toggleFavorite(serie.id, serverConfig!);
+    if (isFavorite(String(serie.id))) {
+      removeFavorite(String(serie.id), serverConfig!);
+    } else {
+      addFavorite(serie, 'series', serverConfig!);
+    }
+    // setSeries({ ...serie, isFavorite: !serie.isFavorite });
+    // toggleFavorite(serie.id, serverConfig!);
   };
 
   const handleToggleWatched = (epsodioID: string) => {
@@ -346,6 +350,7 @@ export function useSeriesDetail({ ...props }: any) {
     playerStream,
     setPlayerStream,
     isDetail,
+    isFavorite,
 
     // Episódios
     currentEpisodes,

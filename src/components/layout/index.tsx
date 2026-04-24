@@ -17,6 +17,7 @@ import { storage } from '../../utils/storage';
 import ExpiredTrialModal from '../UI/ExpiredTrialModal';
 import ToastLoading from '../UI/ToastLoading';
 import MainHeader from './MainHeader';
+import { useFavoritesStore } from '../../store/favoriteStore';
 
 const Layout: React.FC = () => {
   const { serverConfig } = useAuthStore();
@@ -27,6 +28,8 @@ const Layout: React.FC = () => {
   const { loadFromStorage: loadHomeStorage } = useHomeStore();
   const { loadFromStorage: loadHistoryFromStorage, setCurrentProfile: setHistoryProfile } =
     useWatchHistoryStore();
+  const { loadFromStorage: loadFavoritesFromStorage, setCurrentProfile: setFavoritesProfile } =
+    useFavoritesStore();
   const location = useLocation();
   const [isTest, setIsTest] = useState(false);
   const [isTestEspired, setIsTestExpired] = useState(false);
@@ -45,6 +48,7 @@ const Layout: React.FC = () => {
     if (isMobile) closeBar();
     loadFromStorage();
     loadHistoryFromStorage();
+    loadFavoritesFromStorage();
   }, [isMobile, loadHomeStorage, loadFromStorage, loadHistoryFromStorage]);
 
   useEffect(() => {
@@ -62,9 +66,10 @@ const Layout: React.FC = () => {
   // Quando activeProfile muda, carregar dados específicos do perfil
   useEffect(() => {
     if (activeProfile?.id) {
+      setFavoritesProfile(activeProfile.id, serverConfig!);
       setHistoryProfile(activeProfile.id, serverConfig!);
     }
-  }, [activeProfile?.id, setHistoryProfile]);
+  }, [activeProfile?.id, setHistoryProfile, setFavoritesProfile]);
 
   useEffect(() => {
     let active = true;

@@ -9,10 +9,12 @@ import type { Movie } from '../types';
 import { storage } from '../utils/storage';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
+import { useFavoritesStore } from '../store/favoriteStore';
 
 export function useMoviesPage() {
   const { movies, vodCategories } = useMovieStore();
   const [searchTerm, setSearchTerm] = useState('');
+    const { isFavorite } = useFavoritesStore();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const [displayCount, setDisplayCount] = useState(15);
@@ -51,11 +53,11 @@ export function useMoviesPage() {
       const matchesCategory =
         !selectedCategory ||
         channel.category === selectedCategory ||
-        (selectedCategory === '-1' && channel.isFavorite);
+        (selectedCategory === '-1' && isFavorite(String(channel.id)));
 
       return matchesSearch && matchesCategory;
     });
-  }, [movies, searchTerm, selectedCategory]);
+  }, [movies, searchTerm, selectedCategory, isFavorite]);
 
   const displayedMovies = useMemo(() => {
     return filteredMovies.slice(0, displayCount);

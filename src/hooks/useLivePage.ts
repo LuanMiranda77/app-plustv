@@ -14,11 +14,13 @@ import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 import useWindowSize from './useWindowSize';
+import { useFavoritesStore } from '../store/favoriteStore';
 // import { epgMock } from '../data/mockData';
 
 export function useLivePage() {
   const location = useLocation();
-  const { channels, liveCategories, toggleFavorite } = useChannelStore();
+  const { channels, liveCategories } = useChannelStore();
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const { serverConfig } = useAuthStore();
   const { addChannelToHistory } = useWatchHistoryStore();
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,11 +61,11 @@ export function useLivePage() {
       const matchesCategory =
         !selectedCategory ||
         channel.category === selectedCategory ||
-        (selectedCategory === '-1' && channel.isFavorite);
+        (selectedCategory === '-1' && isFavorite(String(channel.id)));
 
       return matchesSearch && matchesCategory;
     });
-  }, [channels, searchTerm, selectedCategory]);
+  }, [channels, searchTerm, selectedCategory, isFavorite]);
 
   const displayedChannels = useMemo(() => {
     return filteredChannels.slice(0, displayCount);
@@ -178,7 +180,11 @@ export function useLivePage() {
 
   const handleFavoriteToggle = (channel: Channel) => {
     if (!channel) return;
-    toggleFavorite(channel.id, serverConfig!);
+    if (isFavorite(String(channel.id))) {
+      removeFavorite(String(channel.id), serverConfig!);
+    } else {
+      addFavorite(channel, 'live', serverConfig!);
+    }
   };
 
   const isRestoringRef = useRef(false);
@@ -421,6 +427,7 @@ export function useLivePage() {
     displayCount,
     setDisplayCount,
     isLoadingMore,
+    isFavorite,
     setIsLoadingMore,
     isFullScreen,
     setIsFullScreen,

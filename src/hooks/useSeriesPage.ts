@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useDetailContext } from '../Context/DetailContext';
 import { useFocusZone } from '../Context/FocusContext';
 import { useSeriesStore } from '../store/contentStore';
+import { useFavoritesStore } from '../store/favoriteStore';
 import type { Series } from '../types';
 import { storage } from '../utils/storage';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
-import { useDetailContext } from '../Context/DetailContext';
 
 export function useSeriesPage() {
   const { series, seriesCategories } = useSeriesStore();
@@ -23,11 +24,12 @@ export function useSeriesPage() {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const location = useLocation();
-  const { activeZone, setActiveZone, isActiveZone } = useFocusZone();
+  const { activeZone, setActiveZone } = useFocusZone();
   const [focusedCat, setFocusedCat] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [focusedInput, setFocusedInput] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const { isFavorite } = useFavoritesStore();
   const isAdultUnlocked = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return storage.get('adult-unlocked') === true;
@@ -41,16 +43,18 @@ export function useSeriesPage() {
     ...seriesCategories
   ];
 
-  const filteredSeries = series.filter(s => {
-    const matchesSearch =
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      !selectedCategory ||
-      s.category === selectedCategory ||
-      (selectedCategory === '-1' && s.isFavorite);
-    return matchesSearch && matchesCategory;
-  });
+  const filteredSeries = useMemo(() => {
+    return series.filter(s => {
+      const matchesSearch =
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.category?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        !selectedCategory ||
+        s.category === selectedCategory ||
+        (selectedCategory === '-1' && isFavorite(String(s.id)));
+      return matchesSearch && matchesCategory;
+    });
+  }, [series, searchTerm, selectedCategory, isFavorite]);
 
   const displayedSeries = filteredSeries.slice(0, displayCount);
   const hasMoreSeries = displayCount < filteredSeries.length;

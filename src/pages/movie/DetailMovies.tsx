@@ -32,7 +32,8 @@ export const DetailMovie = ({ ...porps }: DetailMovieProps) => {
     handlePlay,
     handleBack,
     handleToggleFavorite,
-    setShowTrailer
+    setShowTrailer,
+    isFavorite
   } = ueseDetailMovie({ ...porps });
 
   return (
@@ -55,6 +56,7 @@ export const DetailMovie = ({ ...porps }: DetailMovieProps) => {
           showTrailer={showTrailer}
           onSetShowTrailer={setShowTrailer}
           isLoadingFav={isLoadingFav}
+          isFav={isFavorite(String(movie?.id))}
         />
       </div>
     </>

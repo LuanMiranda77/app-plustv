@@ -11,6 +11,7 @@ interface ChannelCardProps {
   onFavoriteToggle?: (channel: Channel) => void;
   isFocused?: boolean;
   setlected?: boolean;
+  isFav?: boolean;
 }
 
 export const ChannelCard = ({
@@ -19,7 +20,8 @@ export const ChannelCard = ({
   onPlay,
   isFocused,
   setlected,
-  onFavoriteToggle
+  onFavoriteToggle,
+  isFav
 }: ChannelCardProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -109,10 +111,10 @@ export const ChannelCard = ({
           flex items-center justify-center
           rounded-r-lg transition-colors 
           bg-gray-700/30 hover:bg-gray-600 
-          ${channel.isFavorite ? 'text-red-500' : 'text-gray-400'}
+          ${isFav ? 'text-red-500' : 'text-gray-400'}
         `}
         >
-          <Heart className={`w-6 h-6 ${channel.isFavorite ? 'fill-current' : ''}`} />
+          <Heart className={`w-6 h-6 ${isFav ? 'fill-current' : ''}`} />
         </button>
       </div>
     </div>

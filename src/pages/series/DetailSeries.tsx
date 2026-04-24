@@ -19,7 +19,7 @@ export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
     loading,
     showTrailer,
     focusedButton,
-    series,
+    // series,
     playerStream,
     setPlayerStream,
     isDetail,
@@ -46,6 +46,7 @@ export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
     handleToggleWatched,
     setShowTrailer,
     handleLoadDetail,
+    isFavorite,
 
     // Refs
     episodesRef,
@@ -78,6 +79,7 @@ export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
             showTrailer={showTrailer}
             onSetShowTrailer={setShowTrailer}
             onLoadDetail={handleLoadDetail}
+            isFav={isFavorite(String(props.currentSerie.id))}
           />
           {/* ── Episódios ─────────────────────────────────────────────────────────── */}
           <div ref={episodesRef} className="px-6 md:px-14 py-8">

@@ -71,6 +71,10 @@ const mapCategory = (cat: any): Category => ({
   name: cat.category_name
     .replace('FILMES |', '')
     .replace('Filmes |', '')
+    .replace('FILMES - ', '')
+    .replace('Filmes - ', '')
+    .replace('FILMES :', '')
+    .replace('Filmes :', '')
     .replace('SÉRIES |', '')
     .replace('Séries |', '')
     .replace('CANAIS |', '')
@@ -130,7 +134,7 @@ const mapSeries = (stream: any, cache?: Series): Series => ({
   youtube_trailer: stream.youtube_trailer || ''
 });
 
-const findLiveSevice = async (config: ServerConfig, cache: Channel[]) => {
+const findLiveSevice = async (config: ServerConfig) => {
   const categories = await xtreamApi.getLiveCategories(config);
   const liveCatsRaw = categories.map(mapCategory);
   const channels: any[] = [];
@@ -145,8 +149,8 @@ const findLiveSevice = async (config: ServerConfig, cache: Channel[]) => {
       );
 
       for (const s of data.flat()) {
-        const channel = cache.find(c => c.id == String(s.stream_id));
-        channels.push(mapChannel(s, config, channel));
+        // const channel = cache.find(c => c.id == String(s.stream_id));
+        channels.push(mapChannel(s, config));
       }
     } catch {
       console.warn('Erro live categoria:', category.category_id);
@@ -166,7 +170,7 @@ const findLiveSevice = async (config: ServerConfig, cache: Channel[]) => {
   return { channels, liveCatsRaw };
 };
 
-const findVodSevice = async (config: ServerConfig, cache: Movie[]) => {
+const findVodSevice = async (config: ServerConfig) => {
   const categories = await xtreamApi.getVodCategories(config);
   const vodCatsRaw = categories.map(mapCategory);
   const trending = [];
@@ -183,8 +187,8 @@ const findVodSevice = async (config: ServerConfig, cache: Movie[]) => {
       );
 
       for (const s of data.flat()) {
-        const movie = cache.find(c => c.id == String(s.stream_id));
-        const mapped = mapMovie(s, config, movie);
+        // const movie = cache.find(c => c.id == String(s.stream_id));
+        const mapped = mapMovie(s, config);
         if (
           news.length < 10 &&
           mapped.year &&
@@ -222,7 +226,7 @@ const findVodSevice = async (config: ServerConfig, cache: Movie[]) => {
   return { movies, vodCatsRaw };
 };
 
-const findSeriesSevice = async (config: ServerConfig, cache: Series[]) => {
+const findSeriesSevice = async (config: ServerConfig) => {
   const categories = await xtreamApi.getSeriesCategories(config);
   const seriesCatsRaw = categories.map(mapCategory);
   const trending = [];
@@ -241,8 +245,8 @@ const findSeriesSevice = async (config: ServerConfig, cache: Series[]) => {
 
         if (Array.isArray(data)) {
           for (const s of data.flat()) {
-            const serie = cache.find(c => c.id == String(s.stream_id));
-            const mapped = mapSeries(s, serie);
+            // const serie = cache.find(c => c.id == String(s.stream_id));
+            const mapped = mapSeries(s);
             if (
               news.length < 15 &&
               mapped.year &&
@@ -258,7 +262,7 @@ const findSeriesSevice = async (config: ServerConfig, cache: Series[]) => {
             ) {
               trending.push(mapped);
             }
-            series.push(mapSeries(s, serie));
+            series.push(mapSeries(s));
           }
         }
       } catch (e: any) {
@@ -330,10 +334,9 @@ export const useChannelStore = create<ChannelState>((set, get) => ({
         return;
       }
       set({ isLoading: true });
-      await get().loadFromCache(config);
-      const cahceChannels = get().channels;
-      console.log('carregar');
-      const { channels, liveCatsRaw } = await findLiveSevice(config, cahceChannels);
+      // await get().loadFromCache(config);
+      // const cahceChannels = get().channels;
+      const { channels, liveCatsRaw } = await findLiveSevice(config);
       set({ channels, liveCategories: liveCatsRaw, isLoading: false });
     } catch (e) {
       console.error('Erro ao atualizar canais', e);
@@ -398,9 +401,9 @@ export const useMovieStore = create<MovieState>((set, get) => ({
         return;
       }
       set({ isLoading: true });
-      await get().loadFromCache(config);
-      const cahceMovies = get().movies;
-      const { movies, vodCatsRaw } = await findVodSevice(config, cahceMovies);
+      // await get().loadFromCache(config);
+      // const cahceMovies = get().movies;
+      const { movies, vodCatsRaw } = await findVodSevice(config);
       set({ movies, vodCategories: vodCatsRaw, isLoading: false });
     } catch {
       set({ error: 'Erro ao atualizar canais', isLoading: false });
@@ -463,9 +466,9 @@ export const useSeriesStore = create<SeriesState>((set, get) => ({
         return;
       }
       set({ isLoading: true });
-      await get().loadFromCache(config);
-      const cahceSeries = get().series;
-      const { series, seriesCatsRaw } = await findSeriesSevice(config, cahceSeries);
+      // await get().loadFromCache(config);
+      // const cahceSeries = get().series;
+      const { series, seriesCatsRaw } = await findSeriesSevice(config);
       set({ series, seriesCategories: seriesCatsRaw, isLoading: false });
     } catch {
       set({ error: 'Erro ao atualizar canais', isLoading: false });

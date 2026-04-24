@@ -26,6 +26,7 @@ interface SeriesHeroBannerProps {
   showTrailer: boolean;
   onSetShowTrailer: (params: boolean) => void;
   onLoadDetail: (series: Series, isForceRefresh: boolean) => void;
+  isFav?: boolean;
 }
 
 export const SeriesHeroBanner = ({
@@ -42,7 +43,8 @@ export const SeriesHeroBanner = ({
   focusedButton = 0,
   showTrailer = false,
   onSetShowTrailer,
-  onLoadDetail
+  onLoadDetail,
+  isFav
 }: SeriesHeroBannerProps) => {
   return (
     <div className="relative h-[60vh] min-h-[500px] overflow-hidden">
@@ -127,7 +129,7 @@ export const SeriesHeroBanner = ({
                 <ButtonFavorite
                   onClick={() => onToggleFavorite(series)}
                   isFocused={focusedButton === 5}
-                  isFav={series.isFavorite}
+                  isFav={isFav}
                 />
               )}
             </div>
