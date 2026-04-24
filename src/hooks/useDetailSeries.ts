@@ -262,7 +262,7 @@ export function useSeriesDetail({ ...props }: any) {
   };
 
   // Interceptar voltar nativo do navegador/TV
-  useBackGuard(isDetail, showTrailer ? () => setShowTrailer(false) : handleBack);
+  useBackGuard(isDetail && !playerStream, showTrailer ? () => setShowTrailer(false) : handleBack);
 
   // Remote Control Navigation
   useRemoteControl({

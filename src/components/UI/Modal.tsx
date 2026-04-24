@@ -8,6 +8,8 @@ interface ModalProps {
   children: React.ReactNode;
   /** Classes extras aplicadas ao painel do modal (tamanho, padding, etc.) */
   className?: string;
+  /** Desativa o useBackGuard interno quando o consumidor gerencia o back por conta própria */
+  disableBackGuard?: boolean;
 }
 
 /**
@@ -19,7 +21,7 @@ interface ModalProps {
  * - Renderizado via portal sobre toda a árvore
  * - Memorizado para evitar re-renders desnecessários
  */
-export const Modal = memo(({ open, onClose, children, className = '' }: ModalProps) => {
+export const Modal = memo(({ open, onClose, children, className = '', disableBackGuard = false }: ModalProps) => {
   const [visible, setVisible] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +49,8 @@ export const Modal = memo(({ open, onClose, children, className = '' }: ModalPro
   }, [open, handleKeyDown]);
 
   // Intercepta voltar nativo do navegador/TV (popstate)
-  useBackGuard(open, onClose);
+  // Desativado quando o consumidor gerencia o back internamente (ex: useDetailSeries, useDetailMovie)
+  useBackGuard(open && !disableBackGuard, onClose);
 
   // Clique fora do painel (apenas no overlay)
   const handleOverlayClick = useCallback(

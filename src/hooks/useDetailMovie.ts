@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDetailContext } from '../Context/DetailContext';
+import { useFocusZone, type FocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
 import { useMovieStore } from '../store/contentStore';
@@ -7,7 +8,6 @@ import type { Movie } from '../types';
 import { getProgress } from '../utils/progressWatched';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
-import { useFocusZone, type FocusZone } from '../Context/FocusContext';
 
 export function ueseDetailMovie({ ...props }: any) {
   const { activeProfile } = useAuthStore();
@@ -95,7 +95,8 @@ export function ueseDetailMovie({ ...props }: any) {
   };
 
   // Interceptar voltar nativo do navegador/TV
-  useBackGuard(isDetail, showTrailer ? () => setShowTrailer(false) : handleBack);
+  // Desativa quando o player está aberto — o PlayerComponent tem seu próprio useBackGuard
+  useBackGuard(isDetail && !playerStream, showTrailer ? () => setShowTrailer(false) : handleBack);
 
   const getPorcentagem =
     !movie?.progress || !movie.duration ? 0 : (movie.progress / movie.duration) * 100;

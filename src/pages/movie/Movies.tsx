@@ -1,11 +1,11 @@
 import { Heart } from 'lucide-react';
+import { Fragment } from 'react';
 import { StreamPoster } from '../../components/Cards/StreamPoster';
 import ButtonCategory from '../../components/UI/ButtonCategory';
 import { Input } from '../../components/UI/Input';
+import { Modal } from '../../components/UI/Modal';
 import { useMoviesPage } from '../../hooks/useMoviesPage';
 import { DetailMovie } from './DetailMovies';
-import { Fragment } from 'react';
-import { Modal } from '../../components/UI/Modal';
 
 export const Movies = () => {
   const {
@@ -47,7 +47,7 @@ export const Movies = () => {
 
   return (
     <Fragment>
-      <Modal open={isDetail} onClose={handleClose}>
+      <Modal open={isDetail} onClose={handleClose} disableBackGuard>
         <DetailMovie currentMovie={currentMovie} onClose={handleClose} />
       </Modal>
       <div className={`max-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950`}>

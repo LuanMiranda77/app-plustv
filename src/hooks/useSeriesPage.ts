@@ -146,8 +146,9 @@ export function useSeriesPage() {
     }
   };
 
-  useBackGuard(!!currentSerie, () => {
-    isActiveZone("detail") && handleClose();
+  // Desativa quando o detail está aberto — useDetailSeries assume o controle do back
+  useBackGuard(!!currentSerie && !isDetail, () => {
+    handleClose();
   });
 
   useRemoteControl({
@@ -228,10 +229,7 @@ export function useSeriesPage() {
       }
     },
     onBack: () => {
-      if (currentSerie) {
-        window.history.back();
-        return;
-      }
+      if (isDetail) return; // useDetailSeries handles back when detail is open
       if (isZoneList || isZoneCat) {
         setActiveZone('menu');
       }

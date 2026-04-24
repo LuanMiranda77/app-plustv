@@ -1,11 +1,11 @@
 import { Heart } from 'lucide-react';
+import { Fragment } from 'react';
 import { StreamPoster } from '../../components/Cards/StreamPoster';
 import ButtonCategory from '../../components/UI/ButtonCategory';
 import { Input } from '../../components/UI/Input';
-import { useSeriesPage } from '../../hooks/useSeriesPage';
 import { Modal } from '../../components/UI/Modal';
+import { useSeriesPage } from '../../hooks/useSeriesPage';
 import { DetailSeries } from './DetailSeries';
-import { Fragment } from 'react';
 
 export const PageSeries = () => {
   const {
@@ -49,7 +49,7 @@ export const PageSeries = () => {
 
   return (
     <Fragment>
-      <Modal open={isDetail} onClose={handleClose}>
+      <Modal open={isDetail} onClose={handleClose} disableBackGuard>
         <DetailSeries currentSerie={currentSerie} onClose={handleClose} />
       </Modal>
       <div className="max-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950">

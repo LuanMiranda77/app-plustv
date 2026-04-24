@@ -1,4 +1,3 @@
-import { ArrowLeft } from 'lucide-react';
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -164,8 +163,10 @@ export function useMoviesPage() {
     }
   };
 
-  useBackGuard(!!currentMovie, () => {
-    isDetail ? handleClose() : setCurrentMovie(null);
+  // Só intercepta o back quando currentMovie está definido mas o detail ainda não abriu
+  // Quando isDetail=true, o useDetailMovie assume o controle do back
+  useBackGuard(!!currentMovie && !isDetail, () => {
+    handleClose();
   });
 
   useRemoteControl({
@@ -244,27 +245,22 @@ export function useMoviesPage() {
       }
     },
     onBack: () => {
-      if (currentMovie) {
-        window.history.back();
-        setIsDetail(false);
-        return;
-      }
+      if (isDetail) return;
       if (isZoneList || isZoneCat) {
         setActiveZone('menu');
       }
     }
   });
 
-  useEffect(() => {
-    const state = location.state as any;
-    if (state) {
-      // Ao voltar de outra tela, restaura o filme atual e a categoria selecionada.
-      setCurrentMovie(state);
-      setSelectedCategory(state.category || null);
-    } else {
-      setCurrentMovie(null);
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   const state = location.state as any;
+  //   // Ignorar estados do back guard para não corromper currentMovie
+  //   if (state?.backGuard) return;
+  //   // Não restaurar currentMovie via location state — seleção é feita pelo handleNavigate
+  //   if (!state) {
+  //     setCurrentMovie(null);
+  //   }
+  // }, [location]);
 
   useEffect(() => {
     if (!loadMoreRef.current) return;
