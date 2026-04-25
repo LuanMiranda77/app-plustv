@@ -4,7 +4,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader,
-  Maximize,
   Pause,
   Play,
   Volume2,
@@ -13,6 +12,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import useWindowSize from '../../hooks/useWindowSize';
 import { formatTimeEpg, safeAtob } from '../../utils/geral';
+import ButtonFullscreen from '../UI/ButtonFullscreen';
 const placehoder = './placeholde.png';
 
 interface PlayerControlsProps {
@@ -29,6 +29,7 @@ interface PlayerControlsProps {
   onSeek: (time: number) => void;
   volume: number;
   onVolumeChange: (vol: number) => void;
+  isFullscreen: boolean;
   onFullscreen: () => void;
   isLoading?: boolean;
   qualities: string[];
@@ -51,6 +52,7 @@ export const PlayerControls = ({
   onSeek,
   volume,
   onVolumeChange,
+  isFullscreen,
   onFullscreen,
   isLoading = false,
   qualities,
@@ -128,7 +130,7 @@ export const PlayerControls = ({
     showLoader && (
       <div
         onMouseMove={handleMouseMove}
-        className="absolute inset-0 flex flex-col justify-between group"
+        className="absolute inset-0 flex flex-col justify-between group z-[10]"
       >
         {/* Gradient top */}
         <div
@@ -286,53 +288,51 @@ export const PlayerControls = ({
                 )}
 
                 {/* Fullscreen */}
-                <button
-                  onClick={onFullscreen}
-                  className="text-white hover:text-red-600 transition-colors p-2 rounded hover:bg-white/10"
-                  title="Tela cheia (F)"
-                >
-                  <Maximize className="w-6 h-6" />
-                </button>
+                <ButtonFullscreen isFullscreen={isFullscreen} onFullscreen={onFullscreen} />
               </div>
             </div>
           </div>
         ) : (
           <div
-            className={`absolute bottom-0 flex  bg-black/60 w-full ${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
+            className={`absolute bottom-0 flex items-center justify-between  bg-black/60 w-full ${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
           >
-            <div className="bg-black/40 shrink-0 flex items-center justify-center rounded-l-lg">
-              <img
-                src={poster}
-                alt={title}
-                loading="lazy"
-                decoding="async"
-                className="w-25 h-25 max-md:w-15 max-md:h-15 object-contain p-2"
-                onError={(e: any) => {
-                  e.currentTarget.style.display = 'none';
-                  if (e.currentTarget.nextElementSibling)
-                    e.currentTarget.nextElementSibling.style.display = 'flex';
-                }}
-              />
-              <img
-                className="hidden w-25 h-25 max-md:w-15 max-md:h-15 object-contain p-2"
-                src={placehoder}
-              />
-            </div>
-            <div className="flex flex-col gap-2 text-left p-3">
-              <h2 className="text-3xl max-md:text-md font-semibold">{title}</h2>
-              <div className="flex flex-col">
-                {epgList?.map(epg => {
-                  const startTime = formatTimeEpg(epg.start_timestamp);
-                  const endTime = formatTimeEpg(epg.stop_timestamp);
-                  const title = safeAtob(epg.title) || safeAtob(epg.name) || 'Sem título';
-                  return (
-                    <p>
-                      {startTime && endTime ? `${startTime} - ${endTime}` : ''} ➜ {title}
-                    </p>
-                  );
-                })}
+            <div className="flex">
+              <div className="bg-black/40 shrink-0 flex items-center justify-center rounded-l-lg">
+                <img
+                  src={poster}
+                  alt={title}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-25 h-25 max-md:w-15 max-md:h-15 object-contain p-2"
+                  onError={(e: any) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.nextElementSibling)
+                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
+                />
+                <img
+                  className="hidden w-25 h-25 max-md:w-15 max-md:h-15 object-contain p-2"
+                  src={placehoder}
+                />
+              </div>
+              <div className="flex flex-col gap-2 text-left p-3">
+                <h2 className="text-3xl max-md:text-md font-semibold">{title}</h2>
+                <div className="flex flex-col">
+                  {epgList?.map(epg => {
+                    const startTime = formatTimeEpg(epg.start_timestamp);
+                    const endTime = formatTimeEpg(epg.stop_timestamp);
+                    const title = safeAtob(epg.title) || safeAtob(epg.name) || 'Sem título';
+                    return (
+                      <p>
+                        {startTime && endTime ? `${startTime} - ${endTime}` : ''} ➜ {title}
+                      </p>
+                    );
+                  })}
+                </div>
               </div>
             </div>
+            {/* Fullscreen */}
+            <ButtonFullscreen isFullscreen={isFullscreen} onFullscreen={onFullscreen} />
           </div>
         )}
       </div>

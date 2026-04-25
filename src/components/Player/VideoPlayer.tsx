@@ -392,6 +392,7 @@ export const VideoPlayer = ({
           onSeek={handleSeek}
           volume={volume}
           onVolumeChange={handleVolumeChange}
+          isFullscreen={isFullscreen}
           onFullscreen={handleFullscreen}
           isLoading={isLoading}
           qualities={qualities}
