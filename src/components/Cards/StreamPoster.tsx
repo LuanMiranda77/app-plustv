@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
 import { useFavoritesStore } from '../../store/favoriteStore';
@@ -9,14 +10,16 @@ interface MovieCardProps {
   stream: Movie | Series;
   onPlay?: () => void;
   isFocused?: boolean;
+  key: string | number;
 }
 
-export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
+export const StreamPoster = ({ stream, onPlay, isFocused, key }: MovieCardProps) => {
   const [loadingImg, setLoadingImg] = useState(true);
   const { isFavorite } = useFavoritesStore();
 
   return (
     <button
+      key={key}
       data-focused={isFocused ? 'true' : 'false'}
       onClick={onPlay}
       className={`group relative bg-gray-800 rounded-lg overflow-hidden 

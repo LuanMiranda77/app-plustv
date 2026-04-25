@@ -60,7 +60,7 @@ export function useLivePage() {
 
       const matchesCategory =
         !selectedCategory ||
-        channel.category === selectedCategory ||
+        String(channel.category) === String(selectedCategory) ||
         (selectedCategory === '-1' && isFavorite(String(channel.id)));
 
       return matchesSearch && matchesCategory;

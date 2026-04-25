@@ -17,7 +17,7 @@ export const PageSeries = () => {
 
     // Série atual
     currentSerie,
-    setCurrentSerie,
+    // setCurrentSerie,
 
     // Refs
     loadMoreRef,
@@ -38,7 +38,7 @@ export const PageSeries = () => {
     displayedSeries,
     hasMoreSeries,
     isLoadingMore,
-    isAdultUnlocked,
+    // isAdultUnlocked,
 
     // Funções
     handleNavigate,
@@ -99,7 +99,10 @@ export const PageSeries = () => {
             </div>
 
             {filteredSeries.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div
+                key={selectedCategory ?? 'all'}
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+              >
                 {displayedSeries.map((s, i) => (
                   <StreamPoster
                     key={s.id}

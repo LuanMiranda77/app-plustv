@@ -94,7 +94,7 @@ export const Live = () => {
           </div>
 
           {filteredChannels.length > 0 ? (
-            <div className="grid gap-4 grid-cols-1">
+            <div key={selectedCategory ?? 'all'} className="grid gap-4 grid-cols-1">
               {displayedChannels.map((channel, i) => (
                 <ChannelCard
                   key={channel.id}

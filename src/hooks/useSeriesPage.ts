@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDetailContext } from '../Context/DetailContext';
 import { useFocusZone } from '../Context/FocusContext';
@@ -49,8 +49,8 @@ export function useSeriesPage() {
         s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.category?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory =
-        !selectedCategory ||
-        s.category === selectedCategory ||
+        selectedCategory == null ||
+        String(s.category) === String(selectedCategory) ||
         (selectedCategory === '-1' && isFavorite(String(s.id)));
       return matchesSearch && matchesCategory;
     });
@@ -263,8 +263,11 @@ export function useSeriesPage() {
     };
   }, [hasMoreSeries, isLoadingMore]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setDisplayCount(ITEMS_PER_PAGE);
+    if (gridRef.current) {
+      gridRef.current.scrollTop = 0;
+    }
   }, [searchTerm, selectedCategory]);
 
   useEffect(() => {
