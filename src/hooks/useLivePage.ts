@@ -1,4 +1,3 @@
-import { ArrowLeft } from 'lucide-react';
 /* eslint-disable react-hooks/set-state-in-effect */
 import moment from 'moment';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -7,6 +6,7 @@ import { useFocusZone } from '../Context/FocusContext';
 import type { PlayerStream } from '../pages/Player';
 import { useAuthStore } from '../store/authStore';
 import { useChannelStore } from '../store/contentStore';
+import { useFavoritesStore } from '../store/favoriteStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Channel } from '../types';
 import { requestWithRetry } from '../utils/nertwork';
@@ -15,7 +15,6 @@ import { xtreamApi } from '../utils/xtreamApi';
 import { useBackGuard } from './useBackGuard';
 import { useRemoteControl } from './useRemotoControl';
 import useWindowSize from './useWindowSize';
-import { useFavoritesStore } from '../store/favoriteStore';
 // import { epgMock } from '../data/mockData';
 
 export function useLivePage() {

@@ -24,7 +24,7 @@ export const Live = () => {
     categoriesRef,
     inputRef,
     // epgRef,
-    isMobile,
+    // isMobile,
     isZoneCat,
     isZoneList,
     isZoneEpg,
