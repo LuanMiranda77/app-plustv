@@ -48,6 +48,10 @@ export const DetailSeries: React.FC<DetailProps> = ({ ...props }) => {
     handleLoadDetail,
     isFavorite,
 
+    // Season
+    isSeasonFocused,
+    isSeasonDropdownOpen,
+
     // Refs
     episodesRef,
     pageRef
@@ -114,6 +118,8 @@ export const DetailSeries: React.FC<DetailProps> = ({ ...props }) => {
                   activeSeason={activeSeason}
                   onSeasonChange={setActiveSeason}
                   currentEpisodeId={currentEpisode?.id}
+                  isFocused={isSeasonFocused}
+                  isDropdownOpen={isSeasonDropdownOpen}
                 />
               )}
             </div>
@@ -144,7 +150,8 @@ export const DetailSeries: React.FC<DetailProps> = ({ ...props }) => {
                       seasonNumber={activeSeason}
                       onPlay={ep => handlePlay(ep, activeSeason)}
                       onToggleWatched={handleToggleWatched}
-                      isActive={episode.id === currentEpisode?.id || index === selectedEpisodeIndex}
+                      isActive={episode.id === currentEpisode?.id}
+                      isFocused={index === selectedEpisodeIndex}
                     />
                   </div>
                 ))}

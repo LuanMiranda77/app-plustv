@@ -1,25 +1,26 @@
-import { useState } from 'react'
-import type { Episode } from '../../types'
-import StartRating from '../UI/StarRating'
-import { calcProgressPercent } from '../../utils/progressWatched'
+import { useState } from 'react';
+import type { Episode } from '../../types';
+import { calcProgressPercent } from '../../utils/progressWatched';
+import StartRating from '../UI/StarRating';
 
 interface EpisodeCardProps {
-  episode: Episode
-  seasonNumber: number
-  onPlay: (episode: Episode) => void
-  onToggleWatched?: (episodeId: string) => void
-  isActive?: boolean // episódio sendo assistido agora
+  episode: Episode;
+  seasonNumber: number;
+  onPlay: (episode: Episode) => void;
+  onToggleWatched?: (episodeId: string) => void;
+  isActive?: boolean; // episódio sendo assistido agora (OK pressionado)
+  isFocused?: boolean; // foco via controle remoto (navegação d-pad)
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const formatTime = (seconds: number): string => {
-  if (!seconds) return ''
-  const h = Math.floor(seconds / 3600)
-  const m = Math.floor((seconds % 3600) / 60)
-  if (h > 0) return `${h}h ${m}m`
-  return `${m}m`
-}
+  if (!seconds) return '';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+};
 
 export const EpisodeCard = ({
   episode,
@@ -27,24 +28,29 @@ export const EpisodeCard = ({
   onPlay,
   onToggleWatched,
   isActive = false,
+  isFocused = false
 }: EpisodeCardProps) => {
-  const [expanded, setExpanded] = useState(false)
-  const [imgError, setImgError] = useState(false)
+  const [expanded, setExpanded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const progressPercent = calcProgressPercent(episode.progress ?? 0, episode.duration);
-  const hasProgress = progressPercent > 0 && progressPercent < 100
-  const isWatched = episode.watched
+  const hasProgress = progressPercent > 0 && progressPercent < 100;
+  const isWatched = episode.watched;
+
+  const focus = 'border-zinc-400/60 ring-2 ring-white/30 scale-[1.01] shadow-xl shadow-black/40';
 
   return (
     <div
       className={`
         group relative flex gap-4 rounded-xl p-3 cursor-pointer
         transition-all duration-300 ease-out
-        border border-transparent
+        border hover:bg-zinc-800/80 hover:border-zinc-600/40
         ${
           isActive
-            ? 'bg-zinc-800/80 border-zinc-600/40shadow-lg shadow-red-900/20'
-            : 'bg-zinc-900/60 hover:bg-zinc-800/80 hover:border-zinc-600/40'
+            ? `bg-red-900/60 border-red-600/60 shadow-lg shadow-red-900/30 ${isFocused ? focus : ''}`
+            : isFocused
+              ? focus + ' bg-zinc-800/80'
+              : 'bg-zinc-900/60 border-transparent'
         }
         ${isWatched && !isActive ? 'opacity-60 hover:opacity-90' : ''}
       `}
@@ -164,7 +170,7 @@ export const EpisodeCard = ({
             {episode.plot.length > 120 && (
               <button
                 className="text-zinc-500 hover:text-zinc-300 text-2xl max-md:text-xs mt-0.5 transition-colors"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   setExpanded(!expanded);
                 }}
@@ -224,7 +230,7 @@ export const EpisodeCard = ({
             <button
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-2xl max-md:text-xs font-semibold
                          bg-red-600 hover:bg-red-500 text-white transition-colors duration-200"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 onPlay(episode);
               }}
@@ -242,10 +248,9 @@ export const EpisodeCard = ({
       {isActive && <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full bg-red-500" />}
     </div>
   );
-}
+};
 
-export default EpisodeCard
-
+export default EpisodeCard;
 
 // ─── Exemplo de uso ───────────────────────────────────────────────────────────
 //

@@ -36,6 +36,8 @@ export function useSeriesDetail({ ...props }: any) {
   const maxButtons = 6;
   const [focusedButton, setFocusedButton] = useState(1); //0=voltar 1=Assistir, 2=Trailer, 3=Favorito, 4=Episódios
   const [showTrailer, setShowTrailer] = useState(false);
+  const [isSeasonFocused, setIsSeasonFocused] = useState(false);
+  const [isSeasonDropdownOpen, setIsSeasonDropdownOpen] = useState(false);
   const episodesRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
@@ -272,40 +274,120 @@ export function useSeriesDetail({ ...props }: any) {
   useRemoteControl({
     onUp: () => {
       if (!isActiveZone(zoneDetail)) return;
+      // Dropdown aberto: ↑ navega para temporada anterior
+      if (isSeasonFocused && isSeasonDropdownOpen) {
+        const currentIdx = seasons.findIndex(s => s.number === activeSeason);
+        if (currentIdx > 0) {
+          setActiveSeason(seasons[currentIdx - 1].number);
+        }
+        return;
+      }
+      // Season Selector (fechado) → Botões
+      if (isSeasonFocused) {
+        setIsSeasonFocused(false);
+        pageRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        return setFocusedButton(1);
+      }
+      // Episódios → Season Selector
+      if (focusedButton === -1 && selectedEpisodeIndex === 0 && seasons.length > 1) {
+        setSelectedEpisodeIndex(-1);
+        setIsSeasonFocused(true);
+        return;
+      }
+      // Episódios → Botões (sem season selector)
       if (selectedEpisodeIndex === 0) {
-        // Força o scroll da lista de episódios para o topo
         pageRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
         setSelectedEpisodeIndex(-1);
+        setIsSeasonFocused(false);
         return setFocusedButton(1);
       }
       if (focusedButton !== 0 && focusedButton > 0) {
         return setFocusedButton(0);
       }
-      if (focusedButton == -1) {
+      if (focusedButton === -1) {
         return setSelectedEpisodeIndex(prev => Math.max(0, prev - 1));
       }
     },
     onDown: () => {
       if (!isActiveZone(zoneDetail)) return;
-      // Navega para baixo, fica no último se chegar ao final
+      // Dropdown aberto: ↓ navega para próxima temporada
+      if (isSeasonFocused && isSeasonDropdownOpen) {
+        const currentIdx = seasons.findIndex(s => s.number === activeSeason);
+        if (currentIdx < seasons.length - 1) {
+          setActiveSeason(seasons[currentIdx + 1].number);
+        }
+        return;
+      }
+      // Season Selector (fechado) → Episódios
+      if (isSeasonFocused) {
+        setIsSeasonFocused(false);
+        setSelectedEpisodeIndex(0);
+        return;
+      }
+      // Botões → Season Selector (se houver mais de 1 temporada)
+      if (focusedButton >= 0 && seasons.length > 1) {
+        setIsSeasonFocused(true);
+        setFocusedButton(-1);
+        return;
+      }
+      // Botões → Episódios (sem season selector ou 1 temporada)
+      if (focusedButton >= 0) {
+        setIsSeasonFocused(false);
+        setSelectedEpisodeIndex(0);
+        setFocusedButton(-1);
+        return;
+      }
+      // Episódios → próximo
       setSelectedEpisodeIndex(prev => Math.min(prev + 1, currentEpisodes.length - 1));
       setFocusedButton(-1);
     },
     onRight: () => {
       if (!isActiveZone(zoneDetail)) return;
+      // Season Selector → próxima temporada
+      if (isSeasonFocused) {
+        const currentIdx = seasons.findIndex(s => s.number === activeSeason);
+        if (currentIdx < seasons.length - 1) {
+          setActiveSeason(seasons[currentIdx + 1].number);
+        }
+        return;
+      }
       if (focusedButton < maxButtons - 1) {
         return setFocusedButton(prev => (prev + 1) % maxButtons);
       }
     },
     onLeft: () => {
       if (!isActiveZone(zoneDetail)) return;
-      // Navegar entre botões ao contrário
+      // Season Selector → temporada anterior
+      if (isSeasonFocused) {
+        const currentIdx = seasons.findIndex(s => s.number === activeSeason);
+        if (currentIdx > 0) {
+          setActiveSeason(seasons[currentIdx - 1].number);
+        }
+        return;
+      }
       if (focusedButton > 1) {
         setFocusedButton(prev => (prev - 1 + maxButtons) % maxButtons);
       }
     },
     onOk: () => {
       if (!isActiveZone(zoneDetail)) return;
+      // Dropdown aberto: OK fecha, confirma e vai para o primeiro episódio
+      if (isSeasonFocused && isSeasonDropdownOpen) {
+        setIsSeasonDropdownOpen(false);
+        setIsSeasonFocused(false);
+        setSelectedEpisodeIndex(0);
+        return;
+      }
+      // Season Selector fechado: >6 temporadas → abre dropdown; ≤6 → vai para episódios
+      if (isSeasonFocused) {
+        if (seasons.length > 6) {
+          setIsSeasonDropdownOpen(true);
+        } else {
+          setIsSeasonFocused(false);
+          setSelectedEpisodeIndex(0);
+        }
+        return;
+      }
       if (currentEpisodes[selectedEpisodeIndex]) {
         handlePlay(currentEpisodes[selectedEpisodeIndex], activeSeason);
         return;
@@ -377,6 +459,12 @@ export function useSeriesDetail({ ...props }: any) {
     handleToggleWatched,
     onLoadDetail,
     handleLoadDetail,
+
+    // Season
+    isSeasonFocused,
+    setIsSeasonFocused,
+    isSeasonDropdownOpen,
+    setIsSeasonDropdownOpen,
 
     // Refs
     episodesRef,
