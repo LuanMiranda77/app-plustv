@@ -10,7 +10,7 @@ interface DetailProps {
   onClose: () => void;
   // setCurrentMovie: (movie: Movie | null) => void;
 }
-export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
+export const DetailSeries: React.FC<DetailProps> = ({ ...props }) => {
   const {
     // Estado da UI
     activeSeason,
@@ -51,7 +51,7 @@ export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
     // Refs
     episodesRef,
     pageRef
-  } = useSeriesDetail({...props});
+  } = useSeriesDetail({ ...props });
 
   return (
     props.currentSerie && (
@@ -87,7 +87,7 @@ export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
             <div className="text-left flex items-center justify-between mb-6 flex-wrap gap-4">
               <div>
                 <h2
-                  className="text-4xl max-sm:text-sm font-bold text-white mb-1"
+                  className="text-4xl max-md:text-sm font-bold text-white mb-1"
                   style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
                 >
                   Episódios
@@ -100,7 +100,7 @@ export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
                         style={{ width: `${percent}%` }}
                       />
                     </div>
-                    <span className="text-zinc-500 text-2xl max-sm:text-sm">
+                    <span className="text-zinc-500 text-2xl max-md:text-sm">
                       {watched}/{total} assistidos
                     </span>
                   </div>
@@ -133,7 +133,7 @@ export const DetailSeries: React.FC<DetailProps> = ({...props}) => {
                   <rect x="2" y="7" width="20" height="15" rx="2" />
                   <path d="M16 3l-4 4-4-4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="text-4xl max-sm:text-sm">Nenhum episódio encontrado</span>
+                <span className="text-4xl max-md:text-sm">Nenhum episódio encontrado</span>
               </div>
             ) : (
               <div className="flex flex-col gap-2" data-episodes-container>

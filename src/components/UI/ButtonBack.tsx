@@ -19,7 +19,7 @@ export const ButtonBack = React.forwardRef<HTMLButtonElement, ButtonProps>(
           hover:text-red-600 hover:bg-white/10`}
           {...props}
         >
-          <ArrowLeft className="w-8 h-8" />
+          <ArrowLeft className="w-8 h-8 max-md:w-5 max-md:h-5 " />
           <span className="text-4xl max-md:text-sm">Voltar</span>
         </button>
         <h6>{title}</h6>

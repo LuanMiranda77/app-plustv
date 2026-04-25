@@ -1,8 +1,8 @@
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
+import { useFavoritesStore } from '../../store/favoriteStore';
 import type { Movie, Series } from '../../types';
 import StartRating from '../UI/StarRating';
-import { useFavoritesStore } from '../../store/favoriteStore';
 const placehoder = './placeholde.png';
 
 interface MovieCardProps {
@@ -13,7 +13,7 @@ interface MovieCardProps {
 
 export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
   const [loadingImg, setLoadingImg] = useState(true);
-    const { isFavorite } = useFavoritesStore();
+  const { isFavorite } = useFavoritesStore();
 
   return (
     <button
@@ -93,7 +93,7 @@ export const StreamPoster = ({ stream, onPlay, isFocused }: MovieCardProps) => {
       )}
       {/* year lacament */}
       {stream.year && (
-        <div className="absolute bottom-0 right-0 bg-red-600 text-white text-2xl max-sm:text-xs px-1 py-0.5 rounded-tl opacity-80">
+        <div className="absolute bottom-0 right-0 bg-red-600 text-white text-2xl max-md:text-xs px-1 py-0.5 rounded-tl opacity-80">
           {stream.year == 'N/A' ? '0000' : stream.year}
         </div>
       )}

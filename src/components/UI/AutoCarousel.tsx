@@ -123,7 +123,7 @@ export const AutoCarousel = ({
           {/* Info */}
           <div>
             {/* Título */}
-            <h1 className="text-left text-7xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg line-clamp-2">
+            <h1 className="text-left text-7xl max-md:text-3xl font-bold text-white mb-3 drop-shadow-lg line-clamp-2">
               {currentItem.name}
             </h1>
 

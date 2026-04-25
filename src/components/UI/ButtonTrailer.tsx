@@ -7,13 +7,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const ButtonTrailer = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ label = 'Trailer ', className = '', isFocused,  ...props }, ref) => {
+  ({ label = 'Trailer ', className = '', isFocused, ...props }, ref) => {
     return (
       <div className={`${className}`}>
         <button
           ref={ref}
           className={`
-            flex items-center gap-2 px-6 py-3 rounded-xl text-4xl max-md:text-sm font-medium
+            flex items-center gap-2 px-5 py-3 rounded-xl text-4xl max-md:text-sm font-medium
             bg-white/10 border border-white/10 text-zinc-300
             hover:bg-white/20 hover:text-white transition-all duration-200
             disbled:cursor-not-allowed disabled:bg-white/5 disabled:border-white/10 disabled:text-gray-800
@@ -22,7 +22,7 @@ export const ButtonTrailer = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {...props}
         >
           <FaYoutube
-            className={`w-8 h-8 max-sm:w-5 max-sm:h-5 ${props.disabled ? 'text-gray-800' : ' text-netflix-red'}`}
+            className={`w-8 h-8 max-md:w-5 max-md:h-5 ${props.disabled ? 'text-gray-800' : ' text-netflix-red'}`}
             // size={20}
           />
           {label}

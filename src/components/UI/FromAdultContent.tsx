@@ -28,7 +28,7 @@ export function AdultContentUnlock({ open, onClose }: Props) {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 ">
         <div className="bg-gray-800 rounded-lg shadow-lg p-4 relative">
           <button
-            className="absolute top-0 right-2 text-gray-400 hover:text-white text-4xl max-sm:text-2xl"
+            className="absolute top-0 right-2 text-gray-400 hover:text-white text-4xl max-md:text-2xl"
             onClick={onClose}
             aria-label="Fechar"
           >

@@ -122,7 +122,7 @@ export const PlayerControls = ({
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const isControlesVisible = type === 'live' ? (isMobile ? false : false) : true;
+  const isControlesVisible = type == 'live' ? (isMobile ? false : false) : true;
 
   return (
     showLoader && (
@@ -131,8 +131,10 @@ export const PlayerControls = ({
         className="absolute inset-0 flex flex-col justify-between group"
       >
         {/* Gradient top */}
-        <div className={`absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-black/80 via-black/40 to-transparent 
-          ${isVisible ? "opacity-100" :"opacity-0"} transition-opacity duration-300`} />
+        <div
+          className={`absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-black/80 via-black/40 to-transparent 
+          ${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+        />
 
         {/* Title bar */}
         <div
@@ -148,9 +150,9 @@ export const PlayerControls = ({
             <ArrowLeft />
           </button>
           {type != 'live' && (
-            <div className='text-right'>
-              <h2 className="text-2xl max-sm:text-lg font-semibold">{title}</h2>
-              <legend className='text-zinc-300 text-lg'>{subtitle}</legend>
+            <div className="text-right">
+              <h2 className="text-2xl max-md:text-lg font-semibold">{title}</h2>
+              <legend className="text-zinc-300 text-lg">{subtitle}</legend>
             </div>
           )}
         </div>

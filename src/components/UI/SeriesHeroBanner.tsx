@@ -47,7 +47,7 @@ export const SeriesHeroBanner = ({
   isFav
 }: SeriesHeroBannerProps) => {
   return (
-    <div className="relative h-[60vh] min-h-[500px] overflow-hidden">
+    <div className="relative h-[60vh] min-h-[500px] max-md:min-h-[400px] overflow-hidden">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -77,7 +77,7 @@ export const SeriesHeroBanner = ({
       <div className="absolute inset-0 flex items-end pb-10 px-8 md:px-14">
         <div className="flex gap-8 items-end  w-full">
           {/* Poster */}
-          <Poster poster={series.poster} name={series.name}  width={"300px"}/>
+          <Poster poster={series.poster} name={series.name} width={'w-[300px]'} />
 
           {/* Info */}
           <div className="flex-1 min-w-0" style={{ animation: 'fadeSlideIn 0.6s ease 0.2s both' }}>
@@ -85,7 +85,7 @@ export const SeriesHeroBanner = ({
 
             {/* Título */}
             <h1
-              className="text-6xl max-sm:text-xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
+              className="text-6xl max-md:text-xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
               style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
             >
               {series.name}
@@ -116,13 +116,13 @@ export const SeriesHeroBanner = ({
               <ButtonIcon
                 label={'Episódios'}
                 onClick={onScrollToEpisodes}
-                icon={<ChevronDown className="w-8 h-8 max-sm:w-5 max-sm:h-5" />}
+                icon={<ChevronDown className="w-8 h-8 max-md:w-5 max-md:h-5" />}
                 isFocused={focusedButton === 3}
               />
               <ButtonIcon
                 label={'Atualizar lista'}
                 onClick={() => onLoadDetail(series, true)}
-                icon={<RefreshCcwDotIcon className="w-8 h-8 max-sm:w-5 max-sm:h-5" />}
+                icon={<RefreshCcwDotIcon className="w-8 h-8 max-md:w-5 max-md:h-5" />}
                 isFocused={focusedButton === 4}
               />
               {onToggleFavorite && (

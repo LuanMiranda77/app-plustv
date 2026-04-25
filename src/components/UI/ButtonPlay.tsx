@@ -8,13 +8,13 @@ type Props = {
   nextEpisode?: Episode;
 };
 
-export default function ButtonPlay({ isFocused, disabled, streamId, nextEpisode,  onClick }: Props) {
+export default function ButtonPlay({ isFocused, disabled, streamId, nextEpisode, onClick }: Props) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={`
-        flex items-center gap-2.5 px-8 py-3 rounded-xl font-semibold text-4xl max-md:text-sm
+        flex items-center gap-2.5 px-5 py-3 rounded-xl font-semibold text-4xl max-md:text-sm
         transition-all duration-200 shadow-lg
         disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100
         ${
@@ -24,7 +24,7 @@ export default function ButtonPlay({ isFocused, disabled, streamId, nextEpisode,
         }
       `}
     >
-      <svg className="w-8 h-8 max-sm:w-5 max-sm:h-5 fill-white" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 max-md:w-5 max-md:h-5 fill-white" viewBox="0 0 24 24">
         <path d="M8 5v14l11-7z" />
       </svg>
       {streamId ? 'Continuar' : 'Assistir'}

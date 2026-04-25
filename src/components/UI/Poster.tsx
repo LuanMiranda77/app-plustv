@@ -7,13 +7,13 @@ type Props = {
   width?: number | string;
 };
 
-export default function Poster({ poster, name, progressPercent = 0, width = '450px' }: Props) {
+export default function Poster({ poster, name, progressPercent = 0, width = 'w-[450px]' }: Props) {
   const hasProgress = progressPercent > 0;
 
   return (
     <div
-      className="relative flex-shrink-0 max-md:w-40 rounded-2xl overflow-hidden shadow-2xl shadow-black/80 border border-white/10"
-      style={{ width: width }}
+      className={`relative shrink-0 max-md:w-40 rounded-2xl ${width} overflow-hidden shadow-2xl shadow-black/80 border border-white/10`}
+      // style={{ width: width }}
     >
       <img
         src={poster}

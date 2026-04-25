@@ -46,7 +46,7 @@ export const MovieHeroBanner = ({
   // useBackGuard(showTrailer, () => onSetShowTrailer(false));
 
   return (
-    <div className="relative h-[calc(100vh-60px)] overflow-hidden">
+    <div className="relative h-screen overflow-hidden">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -88,7 +88,7 @@ export const MovieHeroBanner = ({
 
             {/* Título */}
             <h1
-              className="text-6xl max-sm::text-xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
+              className="text-6xl max-md:text-xl font-bold leading-tight mb-3 text-white drop-shadow-lg text-left"
               style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
             >
               {movie?.name}

@@ -63,7 +63,7 @@ export default function CarouselSection({
         </button>
       </div>
 
-      {subtitle && <p className="text-gray-400 text-sm">{subtitle}</p>}
+      {subtitle && <p className="text-gray-400 tex-lg max-md:text-sm">{subtitle}</p>}
 
       {items.length > 0 ? (
         <Carousel>

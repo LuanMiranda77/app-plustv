@@ -34,22 +34,22 @@ export const DropdownBase = ({
   options,
   mainElement,
   isOpen: isOpenProp,
-  onOpenChange,
+  onOpenChange
 }: RefreshDropdownProps) => {
   // Se vier isOpen/onOpenChange de fora, usa controlled. Senão, uncontrolled.
-  const isControlled = isOpenProp !== undefined
-  const [isOpenInternal, setIsOpenInternal] = useState(false)
-  const isOpen = isControlled ? isOpenProp! : isOpenInternal
-    const { activeZone } = useFocusZone();
-    const isContent = activeZone === 'content';
+  const isControlled = isOpenProp !== undefined;
+  const [isOpenInternal, setIsOpenInternal] = useState(false);
+  const isOpen = isControlled ? isOpenProp! : isOpenInternal;
+  const { activeZone } = useFocusZone();
+  const isContent = activeZone === 'content';
 
   const setIsOpen = (val: boolean) => {
     if (isControlled) {
-      onOpenChange?.(val)
+      onOpenChange?.(val);
     } else {
-      setIsOpenInternal(val)
+      setIsOpenInternal(val);
     }
-  }
+  };
 
   const [focusedOption, setFocusedOption] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -67,8 +67,8 @@ export const DropdownBase = ({
 
   // Reset focusedOption ao abrir
   useEffect(() => {
-    if (isOpen) setFocusedOption(0)
-  }, [isOpen])
+    if (isOpen) setFocusedOption(0);
+  }, [isOpen]);
 
   // Navegação por teclado quando aberto
   useEffect(() => {
@@ -110,8 +110,7 @@ export const DropdownBase = ({
     setIsOpen(!isOpen);
   };
 
-  const isItemLoading = (id: TargetConfig) =>
-    isLoading && (loadingTarget === id);
+  const isItemLoading = (id: TargetConfig) => isLoading && loadingTarget === id;
 
   return (
     <div ref={dropdownRef} className="relative">
@@ -125,9 +124,10 @@ export const DropdownBase = ({
           disabled:opacity-70 disabled:cursor-not-allowed
           ${
             isFocused && isContent
-              ? 'bg-red-600/20 scale-110': isFocused || isOpen
-              ? 'bg-red-600 scale-110 shadow-lg shadow-red-600/50'
-              : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+              ? 'bg-red-600/20 scale-110'
+              : isFocused || isOpen
+                ? 'bg-red-600 scale-110 shadow-lg shadow-red-600/50'
+                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
           }
         `}
       >
@@ -206,10 +206,10 @@ export const DropdownBase = ({
 
                 {/* Texto */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-lg max-sm:text-sm font-medium leading-none mb-0.5">
+                  <p className="text-lg max-md:text-sm font-medium leading-none mb-0.5">
                     {option.label}
                   </p>
-                  <p className="text-zinc-500 text-sm max-sm:text-xs">
+                  <p className="text-zinc-500 text-sm max-md:text-xs">
                     {loading ? 'Atualizando...' : option.description}
                   </p>
                 </div>
