@@ -1,6 +1,4 @@
 import { Repeat, Sparkles, TrendingUp } from 'lucide-react';
-import { useMemo } from 'react';
-import { storage } from '../../utils/storage';
 import { Carousel } from './Carousel';
 
 type Props = {
@@ -24,10 +22,6 @@ export default function CarouselSection({
   badge,
   focusedItemIndex = -1
 }: Props) {
-  const isAdultUnlocked = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    return storage.get('adult-unlocked') === true;
-  }, []);
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between border-b border-gray-800 pb-2">
@@ -67,23 +61,18 @@ export default function CarouselSection({
 
       {items.length > 0 ? (
         <Carousel>
-          {items
-            .filter(item => {
-              if (isAdultUnlocked) return item;
-              if (!item.name.toUpperCase().includes('ADULTO')) return item;
-            })
-            .map((item, idx) => {
-              const isFocused = focusedItemIndex === idx;
-              return (
-                <div
-                  key={item.id}
-                  data-focused={isFocused}
-                  className={`${title == 'Canais ao Vivo' ? 'w-125' : 'w-64'} flex-shrink-0`}
-                >
-                  {renderItem(item, idx, isFocused)}
-                </div>
-              );
-            })}
+          {items.map((item, idx) => {
+            const isFocused = focusedItemIndex === idx;
+            return (
+              <div
+                key={item.id}
+                data-focused={isFocused}
+                className={`${title == 'Canais ao Vivo' ? 'w-125' : 'w-64'} flex-shrink-0`}
+              >
+                {renderItem(item, idx, isFocused)}
+              </div>
+            );
+          })}
         </Carousel>
       ) : (
         <div className="text-center py-8">

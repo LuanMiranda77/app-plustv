@@ -61,10 +61,6 @@ export const Movies = () => {
               <div className="px-6 py-4">
                 <div className="flex flex-col gap-2 pb-2">
                   {categoriesWithAll
-                    .filter(item => {
-                      if (isAdultUnlocked) return item;
-                      if (!item.name.toUpperCase().includes('ADULTO')) return item;
-                    })
                     .map((cat, i) => {
                       const isSelected = selectedCategory === (cat.id as any);
                       const isFocused = isZoneCat && focusedCat === i;

@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { create } from 'zustand';
 import type { Category, Channel, Movie, Series, ServerConfig } from '../types';
 import { CacheService } from '../utils/cacheService';
 import { delay, requestWithRetry } from '../utils/nertwork';
+import { storage } from '../utils/storage';
 import { xtreamApi } from '../utils/xtreamApi';
 import { useHomeStore } from './homeStore';
 
@@ -11,7 +13,7 @@ interface ContentState {
 
   loadFromCache: (config: ServerConfig) => Promise<void>;
   clearCache: (config: ServerConfig) => Promise<void>;
-  fetchServerContent: (config: ServerConfig, forceRefresh?: boolean) => void;
+  fetchServerContent: (config: ServerConfig, forceRefresh?: boolean) => Promise<void>;
 }
 interface ChannelState {
   channels: Channel[];
@@ -58,6 +60,30 @@ interface MovieState {
   isFavorite: (id: string) => boolean;
   getFavorites: () => Movie[];
 }
+
+// ─────────────────────────────────────────────
+// FILTROS DE CONTEÚDO ADULTO
+// ─────────────────────────────────────────────
+const ADULT_KEYWORDS = ['XXX', '[XXX]'];
+
+const isAdultBlocked = (): boolean => !storage.get('adult-unlocked');
+
+export const filterAdultStreams = <T extends { name: string }>(list: T[]): T[] => {
+  if (!isAdultBlocked()) return list;
+  return list.filter(item => !ADULT_KEYWORDS.some(kw => item.name.toUpperCase().includes(kw)));
+};
+
+export const filterAdultCategories = <T extends { name: string }>(list: T[]): T[] => {
+  if (!isAdultBlocked()) return list;
+  return list.filter(item => {
+    const upper = item.name.toUpperCase();
+    return (
+      !ADULT_KEYWORDS.some(kw => upper.includes(kw)) &&
+      !upper.includes('ADULTO') &&
+      !upper.includes('ADULTOS')
+    );
+  });
+};
 
 const orderByName = (list: any[]): any[] => {
   return list.sort((a: Channel, b: Channel) => a.name.localeCompare(b.name));
@@ -312,8 +338,8 @@ export const useChannelStore = create<ChannelState>((set, get) => ({
     console.log('📦 Cache aplicado na UI - LIST_CHANNELS');
 
     set({
-      channels: cache.channels || [],
-      liveCategories: cache.liveCategories || [],
+      channels: filterAdultStreams(cache.channels || []),
+      liveCategories: filterAdultCategories(cache.liveCategories || []),
       lastUpdate: cache.timestamp || null
     });
   },
@@ -343,7 +369,11 @@ export const useChannelStore = create<ChannelState>((set, get) => ({
       // await get().loadFromCache(config);
       // const cahceChannels = get().channels;
       const { channels, liveCatsRaw } = await findLiveSevice(config);
-      set({ channels, liveCategories: liveCatsRaw, isLoading: false });
+      set({
+        channels: filterAdultStreams(channels),
+        liveCategories: filterAdultCategories(liveCatsRaw),
+        isLoading: false
+      });
     } catch (e) {
       console.error('Erro ao atualizar canais', e);
       set({ error: 'Erro ao atualizar canais', isLoading: false });
@@ -381,8 +411,8 @@ export const useMovieStore = create<MovieState>((set, get) => ({
     console.log('📦 Cache aplicado na UI - LIST_MOVIES');
 
     set({
-      movies: cache.movies || [],
-      vodCategories: cache.vodCategories || [],
+      movies: filterAdultStreams(cache.movies || []),
+      vodCategories: filterAdultCategories(cache.vodCategories || []),
       lastUpdate: cache.timestamp || null
     });
   },
@@ -410,7 +440,11 @@ export const useMovieStore = create<MovieState>((set, get) => ({
       // await get().loadFromCache(config);
       // const cahceMovies = get().movies;
       const { movies, vodCatsRaw } = await findVodSevice(config);
-      set({ movies, vodCategories: vodCatsRaw, isLoading: false });
+      set({
+        movies: filterAdultStreams(movies),
+        vodCategories: filterAdultCategories(vodCatsRaw),
+        isLoading: false
+      });
     } catch {
       set({ error: 'Erro ao atualizar canais', isLoading: false });
     }
@@ -445,8 +479,8 @@ export const useSeriesStore = create<SeriesState>((set, get) => ({
     console.log('📦 Cache aplicado na UI - LIST_SERIES');
 
     set({
-      series: cache.series || [],
-      seriesCategories: cache.seriesCategories || [],
+      series: filterAdultStreams(cache.series || []),
+      seriesCategories: filterAdultCategories(cache.seriesCategories || []),
       lastUpdate: cache.timestamp || null
     });
   },
@@ -475,7 +509,11 @@ export const useSeriesStore = create<SeriesState>((set, get) => ({
       // await get().loadFromCache(config);
       // const cahceSeries = get().series;
       const { series, seriesCatsRaw } = await findSeriesSevice(config);
-      set({ series, seriesCategories: seriesCatsRaw, isLoading: false });
+      set({
+        series: filterAdultStreams(series),
+        seriesCategories: filterAdultCategories(seriesCatsRaw),
+        isLoading: false
+      });
     } catch {
       set({ error: 'Erro ao atualizar canais', isLoading: false });
     }

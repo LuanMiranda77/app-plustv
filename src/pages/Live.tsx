@@ -41,7 +41,7 @@ export const Live = () => {
     handleInputKeyDown,
     handlePlayStream,
     // navigateLive,
-    isAdultUnlocked,
+    // isAdultUnlocked,
     handleFavoriteToggle,
     isFavorite
   } = useLivePage();
@@ -57,26 +57,21 @@ export const Live = () => {
           >
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2">
-                {categoriesWithAll
-                  .filter(item => {
-                    if (isAdultUnlocked) return item;
-                    if (!item.name.toUpperCase().includes('ADULTO')) return item;
-                  })
-                  .map((cat, i) => (
-                    <ButtonCategory
-                      key={cat.id || 'all'}
-                      id={String(cat.id || '-2')}
-                      name={cat.name}
-                      isSelected={selectedCategory === (cat.id as any)}
-                      isFocused={isZoneCat && focusedCat === i}
-                      icon={
-                        cat.id === '-1' ? (
-                          <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
-                        ) : undefined
-                      }
-                      onClick={() => setSelectedCategory(cat.id as any)}
-                    />
-                  ))}
+                {categoriesWithAll.map((cat, i) => (
+                  <ButtonCategory
+                    key={cat.id || 'all'}
+                    id={String(cat.id || '-2')}
+                    name={cat.name}
+                    isSelected={selectedCategory === (cat.id as any)}
+                    isFocused={isZoneCat && focusedCat === i}
+                    icon={
+                      cat.id === '-1' ? (
+                        <Heart className="w-6 h-6 max-md:w-6 max-md:h-4 text-white-600 fill-white" />
+                      ) : undefined
+                    }
+                    onClick={() => setSelectedCategory(cat.id as any)}
+                  />
+                ))}
               </div>
             </div>
           </div>

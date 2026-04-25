@@ -18,6 +18,7 @@ export function AdultContentUnlock({ open, onClose }: Props) {
       setError('');
       storage.set('adult-unlocked', !adultUnlocked);
       onClose();
+      window.location.reload(); // ← para atualizar o estado em toda a aplicação
     } else {
       setError('Senha incorreta');
     }
