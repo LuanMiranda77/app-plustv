@@ -94,7 +94,9 @@ export const Home = () => {
         {currentMovie && <DetailMovie currentMovie={currentMovie} onClose={handleClose} />}
         {currentSeries && <DetailSeries currentSerie={currentSeries} onClose={handleClose} />}
       </Modal>
-      <div className={`bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 ${isDetail ? 'h-screen overflow-hidden' : 'min-h-screen overflow-y-scroll'}`}>
+      <div
+        className={`bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 ${isDetail ? 'h-screen overflow-hidden' : 'min-h-screen overflow-y-scroll'}`}
+      >
         {/* Auto Carousel Hero - Lazy loading */}
         {heroItems.length > 0 && (
           <div
@@ -162,6 +164,7 @@ export const Home = () => {
                       stream={movie}
                       isFocused={isFocused}
                       onPlay={() => navigateMovie(movie.content)}
+                      key={idx}
                     />
                   )}
                   onViewMore={() => navigate('/movie')}
@@ -182,6 +185,7 @@ export const Home = () => {
                       stream={movie}
                       isFocused={isFocused}
                       onPlay={() => navigateMovie(movie, 'detail-movie')}
+                      key={idx}
                     />
                   )}
                   onViewMore={() => navigate('/movie')}
@@ -202,6 +206,7 @@ export const Home = () => {
                       stream={movie}
                       isFocused={isFocused}
                       onPlay={() => navigateMovie(movie, 'detail-movie')}
+                      key={idx}
                     />
                   )}
                   onViewMore={() => navigate('/movie')}
@@ -222,6 +227,7 @@ export const Home = () => {
                       stream={series}
                       isFocused={isFocused}
                       onPlay={() => navigateSerie(series, 'detail-series')}
+                      key={idx}
                     />
                   )}
                   onViewMore={() => navigate('/series')}
@@ -242,6 +248,7 @@ export const Home = () => {
                       stream={s}
                       isFocused={isFocused}
                       onPlay={() => navigateSerie(s, 'detail-series')}
+                      key={idx}
                     />
                   )}
                   onViewMore={() => navigate('/series')}
@@ -262,6 +269,7 @@ export const Home = () => {
                       stream={s}
                       isFocused={isFocused}
                       onPlay={() => navigateSerie(s, 'detail-series')}
+                      key={idx}
                     />
                   )}
                   onViewMore={() => navigate('/series')}
