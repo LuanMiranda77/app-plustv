@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { useEffect, useState } from 'react';
 
 interface WindowSize {
   screenWidth: number;
@@ -10,17 +11,19 @@ const useWindowSize = (): WindowSize => {
   const [windowSize, setWindowSize] = useState<WindowSize>({
     screenWidth: 0,
     screenHeight: 0,
-    isMobile: false,
+    isMobile: false
   });
 
   useEffect(() => {
     const handleResize = () => {
       const hasTouch = navigator.maxTouchPoints > 0;
       const isTV = /TV|television|SmartTV|smart-tv/i.test(navigator.userAgent);
+      // Em APK nativo (Capacitor), maxTouchPoints pode ser 0 — usa isNativePlatform como fallback
+      const isNative = Capacitor.isNativePlatform();
       setWindowSize({
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
-        isMobile: window.innerWidth <= 992 && hasTouch && !isTV,
+        isMobile: window.innerWidth <= 992 && !isTV && (hasTouch || isNative)
       });
     };
 

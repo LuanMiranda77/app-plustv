@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build-tv": "tsc -b && vite build && ares-package dist/",
-    "build-tv:teste": "ares-inspect --device minha-lg --app com.plustv.iptv",
-    "build-tv:prod": "tsc -b && vite build --mode production && ares-package dist/ && ares-install --device minha-lg --remove com.plustv.iptv ; ares-install --device minha-lg com.plustv.iptv_1.0.0_all.ipk && ares-launch --device minha-lg com.plustv.iptv",
+    "build:tv": "tsc -b && vite build && ares-package dist/",
+    "build:tv-teste": "ares-inspect --device minha-lg --app com.plustv.iptv",
+    "build:tv-prod": "tsc -b && vite build --mode production && ares-package dist/ && ares-install --device minha-lg --remove com.plustv.iptv ; ares-install --device minha-lg com.plustv.iptv_1.0.0_all.ipk && ares-launch --device minha-lg com.plustv.iptv",
     "build:apk": "vite build && npx cap sync android",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\"",

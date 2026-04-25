@@ -245,14 +245,13 @@ export const ProfileSelect = () => {
       )}
 
       <div className="mx-auto z-30 absolute inset-0 left-10 top-10">
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-end mb-5 gap-4">
           <div className="">
             <LogoHeader />
             <p className="text-gray-400 mt-2">Selecione um perfil para continuar</p>
           </div>
+          <RemoteHint color="yellow" label="Editar perfil" />
         </div>
-
-        <RemoteHint color="yellow" label="Editar perfil" />
 
         {/* Profiles Grid - Otimizado para TV */}
         <div className="grid grid-cols-1 max-md:grid-cols-4 gap-4">

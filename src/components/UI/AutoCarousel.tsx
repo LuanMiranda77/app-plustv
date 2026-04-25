@@ -119,11 +119,11 @@ export const AutoCarousel = ({
         <div
           className={`flex gap-4 items-end ${infoRight ? 'justify-end' : 'justify-start'} max-w-7xl w-full px-6`}
         >
-          {!infoRight && <Poster poster={currentItem.poster} name={currentItem.name} />}
+          {!infoRight && <Poster poster={currentItem.poster} name={currentItem.name} width={"w-[300px]"} />}
           {/* Info */}
           <div>
             {/* Título */}
-            <h1 className="text-left text-7xl max-md:text-3xl font-bold text-white mb-3 drop-shadow-lg line-clamp-2">
+            <h1 className="text-left text-6xl max-md:text-3xl font-bold text-white mb-3 drop-shadow-lg line-clamp-1">
               {currentItem.name}
             </h1>
 
