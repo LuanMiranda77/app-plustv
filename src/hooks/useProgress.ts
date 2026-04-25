@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/preserve-manual-memoization */
 import { useCallback, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { useContentStore } from '../store/contentStore';
+import { useChannelStore, useMovieStore, useSeriesStore } from '../store/contentStore';
 import { useWatchHistoryStore } from '../store/watchHistoryStore';
 import type { Channel, Episode, Movie, ProgressData, Series } from '../types';
 import { indexedDbStorage } from '../utils/indexedDbStorage';
@@ -34,7 +34,9 @@ export const useProgress = ({
   const hasAddedToHistory = useRef(false);
   const { activeProfile } = useAuthStore();
   const { addToHistory } = useWatchHistoryStore();
-  const { movies, series, channels } = useContentStore();
+  const { series } = useSeriesStore();
+  const { channels } = useChannelStore();
+  const { movies } = useMovieStore();
   const { serverConfig } = useAuthStore();
 
   // Chave única por perfil + tipo + stream

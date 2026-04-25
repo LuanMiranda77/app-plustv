@@ -12,7 +12,7 @@ export const DetailMovie = () => {
     movie,
 
     // UI
-    focusedButton,
+    focusedButtonDetail,
     showTrailer,
 
     // Progresso
@@ -23,8 +23,8 @@ export const DetailMovie = () => {
     handleBack,
     handleToggleFavorite,
     setShowTrailer
-  } = ueseDetailMovie({movie: location.state });
- 
+  } = ueseDetailMovie({ movie: location.state });
+
   return (
     movie && (
       <div
@@ -38,9 +38,10 @@ export const DetailMovie = () => {
           percent={getPorcentagem}
           onBack={handleBack}
           onToggleFavorite={handleToggleFavorite}
-          focusedButton={focusedButton}
+          focusedButton={focusedButtonDetail}
           showTrailer={showTrailer}
           onSetShowTrailer={setShowTrailer}
+          isLoadingFav={false}
         />
       </div>
     )

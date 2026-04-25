@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import EpisodeCard from '../components/Cards/EpisodeCard';
 import { LoadingSpinner } from '../components/UI/LoadingSpinner';
 import SeasonSelector from '../components/UI/SeasonSelector';
@@ -5,6 +6,7 @@ import SeriesHeroBanner from '../components/UI/SeriesHeroBanner';
 import { useSeriesDetail } from '../hooks/useDetailSeries';
 
 export const DetailSeries = () => {
+    const location = useLocation();
   const {
     // Estado da UI
     activeSeason,
@@ -41,7 +43,7 @@ export const DetailSeries = () => {
     // Refs
     episodesRef,
     pageRef
-  } = useSeriesDetail();
+  } = useSeriesDetail({ movie: location.state });
 
   return (
     series && (
