@@ -40,7 +40,7 @@ export const Live = () => {
     setlectLiveIndex,
     handleInputKeyDown,
     handlePlayStream,
-    navigateLive,
+    // navigateLive,
     isAdultUnlocked,
     handleFavoriteToggle,
     isFavorite
@@ -53,7 +53,7 @@ export const Live = () => {
         {categoriesWithAll.length > 0 && (
           <div
             ref={categoriesRef}
-            className="w-3/12 max-md:w-4/12 max-w-[400px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4"
+            className="w-3/12 max-w-[400px] border-gray-800 w-border-b bg-gray-900/50 overflow-y-scroll pt-4"
           >
             <div className="px-3 py-4 mx-auto max-w-7xl">
               <div className="flex flex-col gap-2 pb-2">
@@ -110,10 +110,8 @@ export const Live = () => {
                   onFavoriteToggle={handleFavoriteToggle}
                   isFav={isFavorite(String(channel.id))}
                   onPlay={() => {
-                    if (!isMobile && (!currentStream || currentStream.id !== channel.id)) {
+                    if (!currentStream || currentStream.id !== channel.id) {
                       handlePlayStream(channel);
-                    } else if (isMobile) {
-                      navigateLive(channel);
                     } else {
                       setIsFullScreen(true);
                     }
@@ -141,66 +139,62 @@ export const Live = () => {
         </div>
 
         {/* ── Player + EPG ─────────────────────────────────────────────────── */}
-        {!isMobile && (
-          <div
-            className={`
+
+        <div
+          className={`
               flex flex-col items-center
               ${
                 isFullScreen
                   ? 'fixed inset-0 z-50 bg-black'
-                  : 'w-5/12 max-w-[1000px] relative mt-[35px] mx-4'
+                  : 'w-5/12 max-md:w-[30%] max-w-250 relative mt-8.75 mx-4 h-[calc(100vh-250px)]'
               }
             `}
-          >
-            {!isFullScreen && (
-              <div className="w-full text-2xl max-md:text-sm font-semibold line-clamp-1 bg-netflix-red">
-                {currentStream
-                  ? ` Canal - ${currentStream.name}`
-                  : 'Escolha um canal para assistir'}
-              </div>
-            )}
+        >
+          {!isFullScreen && (
+            <div className="w-full text-2xl max-md:text-sm font-semibold line-clamp-1 bg-netflix-red">
+              {currentStream ? ` Canal - ${currentStream.name}` : 'Escolha um canal para assistir'}
+            </div>
+          )}
 
-            {currentStream ? (
-              <VideoPlayer
-                title={currentStream?.name || ''}
-                source={currentStream ? currentStream.streamUrl : ''}
-                poster={currentStream?.logo}
-                autoPlay
-                isControlsVisible
-                onError={error => console.error('Erro no player:', error)}
-                streamId={currentStream?.id}
-                type="live"
-                onBack={() => setIsFullScreen(false)}
-                epgList={epgList ? epgList.slice(0, 2) : []} // ← passar só os próximos 5 programas para o player
+          {currentStream ? (
+            <VideoPlayer
+              title={currentStream?.name || ''}
+              source={currentStream ? currentStream.streamUrl : ''}
+              poster={currentStream?.logo}
+              autoPlay
+              isControlsVisible
+              onError={error => console.error('Erro no player:', error)}
+              streamId={currentStream?.id}
+              type="live"
+              onBack={() => setIsFullScreen(false)}
+              epgList={epgList ? epgList.slice(0, 2) : []} // ← passar só os próximos 5 programas para o player
+            />
+          ) : (
+            <div className="w-full aspect-video bg-zinc-900 flex items-center justify-center rounded-xl">
+              <p className="text-zinc-500 text-3xl max-md:text-sm">Nenhum canal selecionado</p>
+            </div>
+          )}
+
+          {!isFullScreen && (
+            <Fragment>
+              <section className="flex flex-col gap-4 w-full max-w-7xl mt-4 max-md:hidden">
+                <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
+                  <h4>Funções dos botão</h4>
+                </div>
+                <div className="flex items-center text-2xl">
+                  <RemoteHint color="yellow" label="Favoritar canal" />
+                </div>
+              </section>
+
+              <EpgList
+                epgList={epgList}
+                isZoneEpg={isZoneEpg}
+                focusedEpgIndex={focusedEpgIndex}
+                isLoadingEpg={isLoadingEpg}
               />
-            ) : (
-              <div className="w-full aspect-video bg-zinc-900 flex items-center justify-center rounded-xl">
-                <p className="text-zinc-500 text-3xl max-md:text-sm">Nenhum canal selecionado</p>
-              </div>
-            )}
-
-            {!isFullScreen && (
-              <Fragment>
-                <section className="flex flex-col gap-4 w-full max-w-7xl mt-4">
-                  <div className="border-b border-gray-800 text-2xl font-semibold line-clamp-1 pb-2">
-                    <h4>Funções dos botão</h4>
-                  </div>
-                  <div className="flex items-center text-2xl">
-                    <RemoteHint color="yellow" label="Favoritar canal" />
-                  </div>
-                </section>
-
-                <EpgList
-                  // ref={epgRef}
-                  epgList={epgList}
-                  isZoneEpg={isZoneEpg}
-                  focusedEpgIndex={focusedEpgIndex}
-                  isLoadingEpg={isLoadingEpg}
-                />
-              </Fragment>
-            )}
-          </div>
-        )}
+            </Fragment>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'lucide-react';
 /* eslint-disable react-hooks/set-state-in-effect */
 import moment from 'moment';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -155,6 +156,13 @@ export function useLivePage() {
       setFocusedInput(false);
       inputRef.current?.blur();
       setActiveZone('list');
+      setFocusedIndex(0);
+    }
+    if (e.key === 'ArrowLeft' || e.keyCode === 37) {
+      e.preventDefault();
+      setFocusedInput(false);
+      inputRef.current?.blur();
+      setActiveZone('content');
       setFocusedIndex(0);
     }
     // ✅ Up no input → vai para o menu

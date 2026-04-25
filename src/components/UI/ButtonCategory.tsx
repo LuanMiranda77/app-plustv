@@ -24,9 +24,10 @@ export default function ButtonCategory({
       className={`
         flex items-center gap-2 max-md:gap-1
         text-left px-4 py-2 rounded-tl-full rounded-bl-full
-        text-2xl max-md:text-lg font-semibold whitespace-nowrap
+        text-2xl max-md:text-sm font-semibold whitespace-nowrap
         transition-all duration-200
         focus:bg-red-600 focus:text-white focus:scale-105
+        line-clamp-3
         ${
           isSelected
             ? `bg-red-600 text-white ${isFocused && 'scale-105'}`

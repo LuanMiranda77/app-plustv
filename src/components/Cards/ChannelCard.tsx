@@ -95,7 +95,7 @@ export const ChannelCard = ({
 
         {/* Channel info */}
         <div className="flex-1 flex flex-col justify-center py-3 pr-2 text-left min-w-0">
-          <h3 className="text-white text-2xl max-md:text-base font-semibold line-clamp-1 break-all">
+          <h3 className="text-white text-2xl max-md:text-sm font-semibold line-clamp-1 break-all">
             {channel.name}
           </h3>
         </div>

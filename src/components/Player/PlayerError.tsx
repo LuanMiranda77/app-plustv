@@ -19,11 +19,11 @@ const PlayerError: React.FC<PlayerErrorProps> = ({
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/90">
       <div className="text-center px-8 max-w-sm">
         <div
-          className="w-16 h-16 rounded-full bg-red-600/20 border border-red-600/40
-                        flex items-center justify-center mx-auto mb-4"
+          className="w-16 h-16 max-md:w-6 max-md:h-6 rounded-full bg-red-600/20 border border-red-600/40
+                        flex items-center justify-center mx-auto mb-4 max-md:mb-2"
         >
           <svg
-            className="w-8 h-8 text-red-500"
+            className="w-8 h-8 max-md:w-3 max-md:h-3 text-red-500"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -36,8 +36,8 @@ const PlayerError: React.FC<PlayerErrorProps> = ({
             />
           </svg>
         </div>
-        <p className="text-white font-semibold mb-1">Erro ao reproduzir</p>
-        <p className="text-zinc-400 text-sm mb-6">{error}</p>
+        <p className="text-white font-semibold mb-1 max-md:text-sm">Erro ao reproduzir</p>
+        <p className="text-zinc-400 text-sm max-md:text-xs mb-6 max-md:mb-3">{error}</p>
         {canRetry && onRetry && (
           <button
             onClick={onRetry}
@@ -47,14 +47,14 @@ const PlayerError: React.FC<PlayerErrorProps> = ({
           </button>
         )}
         {!canRetry && (
-          <p className="text-gray-400 text-xs mt-4">
+          <p className="text-gray-400 text-sm max-md:text-xs mt-4 max-md:mt-2">
             Limite de tentativas atingido. Verifique sua conexão e tente novamente mais tarde.
           </p>
         )}
         {onBack && (
           <button
             onClick={onBack}
-            className="px-5 py-2 bg-red-600 hover:bg-red-500 text-white text-sm
+            className="px-5 py-2 bg-red-600 hover:bg-red-500 text-white text-2xl max-md:text-sm
                        font-medium rounded-lg transition-colors"
           >
             Voltar

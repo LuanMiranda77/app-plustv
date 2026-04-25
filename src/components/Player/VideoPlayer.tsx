@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/immutability */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHls } from '../../hooks/useHls';
 import { useProgress } from '../../hooks/useProgress';
 import { useRemoteControl } from '../../hooks/useRemotoControl';
+import useWindowSize from '../../hooks/useWindowSize';
 import type { Channel, Episode, Movie, Series } from '../../types';
 import NextEpisodeButton from './NextEpisodeButton';
 import PlayerLoader from './PlaerLoader';
 import { PlayerControls } from './PlayerControls';
 import PlayerError from './PlayerError';
-import useWindowSize from '../../hooks/useWindowSize';
 
 interface VideoPlayerProps {
   title: string;
@@ -289,11 +289,15 @@ export const VideoPlayer = ({
       className={`relative w-full bg-black group ${isMobile && 'h-screen'}`}
       style={{ aspectRatio: isMobile ? undefined : '16 / 9' }}
     >
+      {/* ── Poster ───────────────────────────────────────────────────────── */}
+      {!hasStarted && poster && (
+        <img src={poster} alt="" className="absolute inset-0 w-full h-full object-cover z-[1]" />
+      )}
+
       {/* ── Video ────────────────────────────────────────────────────────── */}
       <video
         ref={videoRef}
-        className="w-full h-full z-[999]"
-        poster={!hasStarted ? poster : undefined}
+        className="absolute inset-0 w-full h-full z-[2] object-cover"
         autoPlay={autoPlay}
         playsInline
         onPlay={() => {
@@ -379,8 +383,8 @@ export const VideoPlayer = ({
       {isControlsVisible && (
         <PlayerControls
           poster={poster}
-          title={type === 'series' ? `${parentContent?.name}`:title}
-          subtitle={type === 'series' ? `${title.replaceAll(parentContent?.name+" - ", "")}` : ""}
+          title={type === 'series' ? `${parentContent?.name}` : title}
+          subtitle={type === 'series' ? `${title.replaceAll(parentContent?.name + ' - ', '')}` : ''}
           isPlaying={isPlaying}
           onPlayPause={handlePlayPause}
           currentTime={currentTime}
