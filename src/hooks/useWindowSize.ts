@@ -15,10 +15,12 @@ const useWindowSize = (): WindowSize => {
 
   useEffect(() => {
     const handleResize = () => {
+      const hasTouch = navigator.maxTouchPoints > 0;
+      const isTV = /TV|television|SmartTV|smart-tv/i.test(navigator.userAgent);
       setWindowSize({
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
-        isMobile: window.innerWidth <= 992, // Define mobile as width <= 768px
+        isMobile: window.innerWidth <= 992 && hasTouch && !isTV,
       });
     };
 
